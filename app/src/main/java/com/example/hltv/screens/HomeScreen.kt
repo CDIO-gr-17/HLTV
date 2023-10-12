@@ -13,6 +13,7 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.AccountBox
 import androidx.compose.material.icons.filled.Check
 import androidx.compose.material.icons.filled.CheckCircle
 import androidx.compose.material3.Card
@@ -32,13 +33,16 @@ import androidx.compose.ui.unit.sp
 
 
 @Composable
-fun HomeScreen () {
+fun HomeScreen (modifier: Modifier=Modifier.background(MaterialTheme.colorScheme.background)) {
+    val R = MaterialTheme
+
     Column (
         horizontalAlignment = Alignment.CenterHorizontally,
-        modifier = Modifier.fillMaxSize()
+        modifier = Modifier
+            .fillMaxSize()
     ) {
         Card (
-            modifier = Modifier
+            modifier = modifier
                 .fillMaxWidth()
                 .padding(8.dp)
                 .height(200.dp)
@@ -57,8 +61,8 @@ fun HomeScreen () {
                             .padding(12.dp)
                             .fillMaxHeight()
                             .weight(1f),
-                        fontSize = 16.sp,
-                        color = MaterialTheme.colorScheme.primary,
+                        fontSize = R.typography.bodyLarge.fontSize,
+                        color = R.colorScheme.primary,
                         )
 
                     Icon(
@@ -77,7 +81,7 @@ fun HomeScreen () {
                         modifier = Modifier
                             .padding(8.dp),
                         fontSize = 14.sp,
-                        color = MaterialTheme.colorScheme.primary,
+                        color = R.colorScheme.primary,
                         textAlign = TextAlign.Center,
                         )
                     Icon(imageVector = Icons.Default.Check,
@@ -99,7 +103,7 @@ fun HomeScreen () {
                         modifier = Modifier
                             .padding(8.dp),
                         fontSize = 14.sp,
-                        color = MaterialTheme.colorScheme.primary,
+                        color = R.colorScheme.primary,
                         textAlign = TextAlign.Center,
                     )
                     Icon(imageVector = Icons.Default.Check,
@@ -112,41 +116,56 @@ fun HomeScreen () {
                 }
             }
         }
-        Divider(modifier = Modifier.padding(horizontal = 8.dp))
+        Divider(modifier = modifier.padding(horizontal = 8.dp))
         Card (
-            modifier = Modifier
+
+            modifier = modifier
                 .fillMaxWidth()
                 .padding(8.dp)
                 .height(150.dp)
 
 
         ){
-            Text(text = "Your match is live!",
-                modifier = Modifier
-                    .padding(8.dp),
-                fontSize = 16.sp,
-                color = MaterialTheme.colorScheme.primary,
-
-
-                )
-        }
-        Card (
-            modifier = Modifier
+            Box(modifier = Modifier
+                .background(color = Color.Magenta)
                 .fillMaxWidth()
-                .padding(8.dp)
-                .height(150.dp)
+                .fillMaxHeight(0.5f)
+            ) {
+                Row {
+                    Column {
+                        Text(
+                            text = "Blast Premier: World final 2023",
+                            modifier = Modifier
+                                .padding(8.dp)
+                                .fillMaxHeight()
+                                .weight(1f),
+                            fontSize = R.typography.bodyLarge.fontSize,
+                            color = R.colorScheme.primary,
 
+                        )
+                        Text(
+                            text = "Dec 13-17, 2023",
+                            modifier = Modifier
+                                .padding(4.dp)
+                                .fillMaxHeight()
+                                .weight(1f),
+                            fontSize = R.typography.bodyLarge.fontSize,
+                            color = R.colorScheme.primary,
+                        )
+                    }
 
-        ){
-            Text(text = "Your match is live!",
-                modifier = Modifier
-                    .padding(8.dp),
-                fontSize = 16.sp,
-                color = MaterialTheme.colorScheme.primary,
+                    Icon(
+                        imageVector = Icons.Default.AccountBox,
+                        contentDescription = "Blast icon",
+                        modifier = Modifier
+                            .padding(12.dp)
+                            .fillMaxSize()
+                    )
 
-
-                )
+                }
+            }
         }
+
     }
 }
 
