@@ -42,4 +42,4 @@ object Ranking : Destination {
     override val screen: @Composable () -> Unit = { RankingScreen()}
 }
 
-val bottomAppBarRowScreens = listOf(News,Events,Home,)
+val bottomAppBarRowScreens = listOf(News,Events,Home,Ranking,Matches)

@@ -7,6 +7,11 @@ import androidx.navigation.NavController
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
+import com.example.hltv.screens.EventsScreen
+import com.example.hltv.screens.HomeScreen
+import com.example.hltv.screens.MatchesScreen
+import com.example.hltv.screens.NewsScreen
+import com.example.hltv.screens.RankingScreen
 
 @Composable
 fun mainNavHost(navController: NavHostController,modifier: Modifier) {
@@ -16,20 +21,19 @@ fun mainNavHost(navController: NavHostController,modifier: Modifier) {
         modifier = modifier.padding()
     ) {
         composable(route = Home.route){
-            Home.screen
+            HomeScreen()
         }
         composable(route = Events.route) {
-            Events.screen
+            EventsScreen()
         }
         composable(route = Matches.route) {
-            Matches.screen
+            MatchesScreen()
         }
         composable(route = News.route) {
-            News.screen
+            NewsScreen()
         }
         composable(route = Ranking.route) {
-            Ranking.screen
+            RankingScreen()
         }
     }
-
 }
