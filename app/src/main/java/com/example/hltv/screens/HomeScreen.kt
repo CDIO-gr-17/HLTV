@@ -16,6 +16,7 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.AccountBox
 import androidx.compose.material.icons.filled.Check
 import androidx.compose.material.icons.filled.CheckCircle
+import androidx.compose.material.icons.filled.Delete
 import androidx.compose.material3.Card
 import androidx.compose.material3.Divider
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -147,9 +148,10 @@ fun HomeScreen (modifier: Modifier=Modifier.background(MaterialTheme.colorScheme
                             text = "Dec 13-17, 2023",
                             modifier = Modifier
                                 .padding(4.dp)
+                                .padding(start = 4.dp)
                                 .fillMaxHeight()
                                 .weight(1f),
-                            fontSize = R.typography.bodyLarge.fontSize,
+                            fontSize = R.typography.bodyMedium.fontSize,
                             color = R.colorScheme.primary,
                         )
                     }
@@ -162,9 +164,75 @@ fun HomeScreen (modifier: Modifier=Modifier.background(MaterialTheme.colorScheme
                             .fillMaxSize()
                     )
 
+
+                }
+
+            }
+            Row {
+                Column(
+                    modifier = Modifier.weight(0.5f)
+                ) {
+                    Text(
+                        text = "Location",
+                        color = R.colorScheme.primary,
+                        fontSize = R.typography.bodyMedium.fontSize,
+                        modifier = Modifier
+                            .padding(all = 8.dp)
+                            .padding(start = 8.dp)
+                    )
+                    Text(
+                        text = "Prize pool",
+                        color = R.colorScheme.primary,
+                        fontSize = R.typography.bodyMedium.fontSize,
+                        modifier = Modifier
+                            .padding(all = 8.dp)
+                            .padding(start = 8.dp)
+                    )
+                }
+                Column(
+                    modifier = Modifier.weight(0.5f),
+                    horizontalAlignment = Alignment.End
+                ) {
+                    Row {
+                        Text(
+                            text = "Abu Dhabi",
+                            color = R.colorScheme.primary,
+                            fontSize = R.typography.bodyMedium.fontSize,
+                            textAlign = TextAlign.End,
+                            modifier = Modifier
+                                .padding(8.dp)
+                        )
+                        Icon(
+                            imageVector = Icons.Default.Delete,
+                            contentDescription = "Abu Dhabi flag",
+                            modifier = Modifier
+                                .padding(4.dp)
+                                .padding(end = 8.dp)
+                        )
+                    }
+
+                    Text(
+                        text = "$1,000,000",
+                        color = R.colorScheme.primary,
+                        fontSize = R.typography.bodyMedium.fontSize,
+                        modifier = Modifier
+                            .padding(all = 8.dp)
+                            .padding(end = 8.dp)
+
+
+                    )
                 }
             }
+
         }
+        Divider(modifier = modifier.padding(horizontal = 8.dp))
+
+        Text(
+            text = "News",
+            color = R.colorScheme.primary,
+            textAlign = TextAlign.Start
+            
+            )
 
     }
 }
