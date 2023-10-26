@@ -9,20 +9,21 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.ArrowBack
+import androidx.compose.material.icons.filled.Settings
 import androidx.compose.material3.BottomAppBar
+import androidx.compose.material3.CenterAlignedTopAppBar
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
-import androidx.compose.material3.NavigationBar
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
-import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
-import androidx.navigation.Navigation
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
 import com.example.hltv.ui.theme.HLTVTheme
@@ -33,9 +34,6 @@ class MainActivity : ComponentActivity() {
         setContent {
                     HLTVApp()
                 }
-
-
-
     }
 }
 
@@ -50,7 +48,20 @@ fun HLTVApp() {
 
         Scaffold (
             topBar = {
-                TopAppBar(title = { Text(text = currentScreen.route)}
+                CenterAlignedTopAppBar (
+                    title = if (currentDestination?.route != Settings.route) {
+                        { Text(text = currentScreen.route) }
+                    } else {
+                        {Text(text = "Settings") }
+                    },
+                    navigationIcon = {
+                        IconButton(onClick = {navController.popBackStack()}) {
+                            Icon(imageVector = Icons.Default.ArrowBack, contentDescription ="Back-Arrow" )
+                        }
+                    },
+                    actions = { IconButton(onClick = { navController.navigate(Settings.route) }) {
+                        Icon(imageVector = Icons.Default.Settings, contentDescription = "Settings Icon") }
+                    }
                 )
             },
             bottomBar = {
@@ -61,7 +72,6 @@ fun HLTVApp() {
                             .fillMaxWidth()
                             .padding(16.dp)
                     ) {
-
                         for (screen in bottomAppBarRowScreens) {
                             IconButton(onClick = { navController.navigate(screen.route) }) {
                                 Icon(
@@ -73,16 +83,14 @@ fun HLTVApp() {
                                 )
 
                             }
-
                         }
                     }
                 }
             }
         ) {
-            mainNavHost(
+            MainNavHost(
                 navController = navController,
                 modifier = Modifier.padding(it))
         }
-
     }
 }
