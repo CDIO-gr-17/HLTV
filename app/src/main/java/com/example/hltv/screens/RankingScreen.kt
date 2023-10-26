@@ -14,7 +14,6 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.wrapContentSize
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.material3.Card
-import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -22,19 +21,17 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
-import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
-import com.example.hltv.R
 
+//Used for testing
 val items = (1..20).map { index ->
     ListItem(index, "Item $index Text 1", "Item $index Text 2")
 }
 data class ListItem(val ranking: Int, val text1: String, val text2: String)
 
 @Composable
-fun ItemList(items: List<ListItem>) {
+fun RankingScreen() {
     val R = MaterialTheme
     LazyColumn {
         items(items.size) {index ->
@@ -47,6 +44,8 @@ fun ItemList(items: List<ListItem>) {
     }
 }
 
+//Deprecated
+/*
 @Composable
 fun CardRow(team: String, subtext: String, index: Int) {Card(
     colors = CardDefaults.cardColors(
@@ -77,6 +76,8 @@ fun CardRow(team: String, subtext: String, index: Int) {Card(
             }
         }
 }
+
+ */
 
 @Composable
 fun teamCard(modifier: Modifier, R: MaterialTheme, text1: String, text2: String) =
@@ -146,5 +147,5 @@ fun teamCard(modifier: Modifier, R: MaterialTheme, text1: String, text2: String)
 @Preview(showBackground = true)
 @Composable
 fun RankingPreview() {
-    ItemList(items = items)
+    RankingScreen()
 }
