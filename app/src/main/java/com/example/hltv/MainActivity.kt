@@ -1,4 +1,4 @@
-@file:OptIn(ExperimentalMaterial3Api::class)
+@file:OptIn(ExperimentalMaterial3Api::class, ExperimentalMaterial3Api::class)
 
 package com.example.hltv
 
@@ -32,8 +32,8 @@ class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContent {
-                    HLTVApp()
-                }
+            HLTVApp()
+        }
     }
 }
 
@@ -43,29 +43,42 @@ fun HLTVApp() {
         val navController = rememberNavController()
         val currentBackStack by navController.currentBackStackEntryAsState()
         val currentDestination = currentBackStack?.destination
+        val canNavigateBack = !bottomAppBarRowScreens.any { it.route == currentDestination?.route }
         val currentScreen =
             bottomAppBarRowScreens.find { it.route == currentDestination?.route } ?: Home
 
-        Scaffold (
+        Scaffold(
             topBar = {
-                CenterAlignedTopAppBar (
+                CenterAlignedTopAppBar(
                     title = if (currentDestination?.route != Settings.route) {
                         { Text(text = currentScreen.route) }
                     } else {
-                        {Text(text = "Settings") }
+                        { Text(text = "Settings") }
                     },
-                    navigationIcon = {
-                        IconButton(onClick = {navController.popBackStack()}) {
-                            Icon(imageVector = Icons.Default.ArrowBack, contentDescription ="Back-Arrow" )
+                    navigationIcon = if (canNavigateBack) {
+                        {
+                            IconButton(onClick = { navController.popBackStack() }) {
+                                Icon(
+                                    imageVector = Icons.Default.ArrowBack,
+                                    contentDescription = "Back-Arrow"
+                                )
+                            }
                         }
+                    } else {
+                        {}
                     },
-                    actions = { IconButton(onClick = { navController.navigate(Settings.route) }) {
-                        Icon(imageVector = Icons.Default.Settings, contentDescription = "Settings Icon") }
+                    actions = {
+                        IconButton(onClick = { navController.navigate(Settings.route) }) {
+                            Icon(
+                                imageVector = Icons.Default.Settings,
+                                contentDescription = "Settings Icon"
+                            )
+                        }
                     }
                 )
             },
             bottomBar = {
-                BottomAppBar () {
+                BottomAppBar() {
                     Row(
                         horizontalArrangement = Arrangement.SpaceAround,
                         modifier = Modifier
@@ -90,7 +103,8 @@ fun HLTVApp() {
         ) {
             MainNavHost(
                 navController = navController,
-                modifier = Modifier.padding(it))
+                modifier = Modifier.padding(it)
+            )
         }
     }
 }
