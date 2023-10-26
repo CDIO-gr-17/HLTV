@@ -14,6 +14,7 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.scale
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
@@ -38,7 +39,7 @@ fun ItemList(items: List<ListItem>) {
     LazyColumn {
         items(items.size) {index ->
             //CardRow(team = "Astralis", subtext = "RUSH B", index+1)
-            teamCard(modifier = Modifier, R = R, text1 = (index + 1).toString() + "  Holdnavn", text2 = "Scoop")
+            teamCard(modifier = Modifier, R = R, text1 = "#" + (index + 1).toString() + "  Holdnavn", text2 = "Scoop") //ugly hardcoding, but we ball
             if (index < items.size-1){
                 Spacer(modifier = Modifier.height(1.dp))
             }
@@ -69,7 +70,9 @@ fun CardRow(team: String, subtext: String, index: Int) {Card(
                     painter = painterResource(id = R.drawable.astralis_logo),
                     contentDescription = null, //TODO
                     alignment = Alignment.TopEnd,
-                    modifier = Modifier.fillMaxSize().padding(2.dp)//.padding(start = 120.dp)
+                    modifier = Modifier
+                        .fillMaxSize()
+                        .padding(2.dp)//.padding(start = 120.dp)
                 )
             }
         }
@@ -81,39 +84,58 @@ fun teamCard(modifier: Modifier, R: MaterialTheme, text1: String, text2: String)
         modifier = modifier
             .fillMaxWidth()
             .padding(8.dp)
-            .height(200.dp)
-
-
+            .height(131.dp)
     ){
         Box(modifier = Modifier
-            .background(color = Color.Magenta)
+            .background(color = Color.DarkGray)
             .fillMaxWidth()
             .height(42.dp)
         ) {
             Text(
                 text = text1,
-                modifier = Modifier
-                    .padding(12.dp)
-                    .fillMaxHeight(),
-                    //.weight(1f),
                 fontSize = R.typography.bodyLarge.fontSize,
                 color = R.colorScheme.primary,
+                modifier = Modifier
+                    .align(Alignment.CenterStart)
+                    .padding(start = 10.dp)
             )
         }
-        Row () {
+        Row (modifier = Modifier.padding(start = 10.dp)) {
+
             for (i in 1..5){
-                Column () {
+                Column (modifier = Modifier
+                    .fillMaxSize()
+                    .weight(1f)){
                     Image(
                         painter = painterResource(id = com.example.hltv.R.drawable.astralis_logo),
                         contentDescription = null, //TODO
                         alignment = Alignment.TopStart,
-                        modifier = Modifier.size(69.dp)
+                        modifier = Modifier
+                            .size(69.dp)
+                            .offset(y = 10.dp)
                     )
-                    Text(
-                        text = "Name",
-                        fontSize = R.typography.bodyLarge.fontSize,
-                        color = R.colorScheme.primary,
-                    )
+                    Card (
+                        modifier = modifier
+                            .fillMaxWidth()
+                            .height(12.dp)
+                            .padding(end = 10.dp)
+                    ) {
+                        Box(modifier = Modifier
+                            .background(color = Color.LightGray)
+                            .fillMaxWidth()
+                        ) {
+                            Text(
+                                text = "Name",
+                                fontSize = R.typography.bodySmall.fontSize,
+                                color = R.colorScheme.primary,
+                                modifier = Modifier
+                                    .align(Alignment.Center)
+                                    .offset(y = (-0.5).dp) //Makes text look more centered, I think?
+                                    .wrapContentSize(unbounded = true) //Renders bottom of text
+                            )
+                        }
+                    }
+
                 }
             }
 
