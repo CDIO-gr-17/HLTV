@@ -44,41 +44,6 @@ fun RankingScreen() {
     }
 }
 
-//Deprecated
-/*
-@Composable
-fun CardRow(team: String, subtext: String, index: Int) {Card(
-    colors = CardDefaults.cardColors(
-        containerColor = MaterialTheme.colorScheme.surfaceVariant,
-    ),
-    modifier = Modifier
-        .fillMaxWidth()
-        .height(80.dp)
-        ){
-            Row(modifier = Modifier.fillMaxSize(),
-                verticalAlignment = Alignment.CenterVertically) {
-                Text("#$index ",
-                    fontSize = 36.sp
-                    )
-                //Image(bitmap = artist.image, contentDescription = "Artist image")
-                Column (){
-                    Text(team, fontWeight = FontWeight.Bold, modifier = Modifier.padding(bottom = 4.dp), fontSize = 16.sp)
-                    Text(subtext, fontSize = 14.sp)
-                }
-                Image(
-                    painter = painterResource(id = R.drawable.astralis_logo),
-                    contentDescription = null, //TODO
-                    alignment = Alignment.TopEnd,
-                    modifier = Modifier
-                        .fillMaxSize()
-                        .padding(2.dp)//.padding(start = 120.dp)
-                )
-            }
-        }
-}
-
- */
-
 @Composable
 fun teamCard(modifier: Modifier, R: MaterialTheme, text1: String, text2: String) =
     Card (
