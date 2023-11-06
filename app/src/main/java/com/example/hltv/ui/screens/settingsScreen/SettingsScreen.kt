@@ -1,4 +1,4 @@
-package com.example.hltv.screens
+package com.example.hltv.ui.screens.settingsScreen
 
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth

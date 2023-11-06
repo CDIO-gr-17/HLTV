@@ -26,6 +26,10 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
+import com.example.hltv.navigation.Home
+import com.example.hltv.navigation.MainNavHost
+import com.example.hltv.navigation.Settings
+import com.example.hltv.navigation.bottomAppBarRowScreens
 import com.example.hltv.ui.theme.HLTVTheme
 
 class MainActivity : ComponentActivity() {
@@ -78,6 +82,8 @@ fun HLTVApp() {
                 )
             },
             bottomBar = {
+                //navigationBar should be used instead of BottomAppBar
+
                 BottomAppBar() {
                     Row(
                         horizontalArrangement = Arrangement.SpaceAround,
@@ -86,6 +92,7 @@ fun HLTVApp() {
                             .padding(16.dp)
                     ) {
                         for (screen in bottomAppBarRowScreens) {
+
                             IconButton(onClick = { navController.navigate(screen.route) }) {
                                 Icon(
                                     screen.icon,

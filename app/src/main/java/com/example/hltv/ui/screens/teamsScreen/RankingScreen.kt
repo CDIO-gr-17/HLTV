@@ -1,4 +1,4 @@
-package com.example.hltv.screens
+package com.example.hltv.ui.screens.teamsScreen
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
@@ -34,7 +34,7 @@ data class ListItem(val ranking: Int, val text1: String, val text2: String)
 fun RankingScreen() {
     val R = MaterialTheme
     LazyColumn {
-        items(items.size) {index ->
+        items(items.size) { index ->
             //CardRow(team = "Astralis", subtext = "RUSH B", index+1)
             teamCard(modifier = Modifier, R = R, text1 = "#" + (index + 1).toString() + "  Holdnavn", text2 = "Scoop") //ugly hardcoding, but we ball
             if (index < items.size-1){

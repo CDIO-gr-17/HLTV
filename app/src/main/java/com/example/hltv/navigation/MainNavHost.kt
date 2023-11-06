@@ -1,4 +1,4 @@
-package com.example.hltv
+package com.example.hltv.navigation
 
 import androidx.compose.foundation.layout.padding
 import androidx.compose.runtime.Composable
@@ -6,12 +6,18 @@ import androidx.compose.ui.Modifier
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
-import com.example.hltv.screens.EventsScreen
-import com.example.hltv.screens.HomeScreen
-import com.example.hltv.screens.MatchesScreen
-import com.example.hltv.screens.NewsScreen
-import com.example.hltv.screens.RankingScreen
-import com.example.hltv.screens.SettingsScreen
+import com.example.hltv.navigation.Events
+import com.example.hltv.navigation.Home
+import com.example.hltv.navigation.Matches
+import com.example.hltv.navigation.News
+import com.example.hltv.navigation.Ranking
+import com.example.hltv.navigation.Settings
+import com.example.hltv.ui.screens.eventsScreen.EventsScreen
+import com.example.hltv.ui.screens.homeScreen.HomeScreen
+import com.example.hltv.ui.screens.matchesScreen.MatchesScreen
+import com.example.hltv.ui.screens.newsScreen.NewsScreen
+import com.example.hltv.ui.screens.teamsScreen.RankingScreen
+import com.example.hltv.ui.screens.settingsScreen.SettingsScreen
 
 @Composable
 fun MainNavHost(navController: NavHostController, modifier: Modifier) {

@@ -1,9 +1,9 @@
-package com.example.hltv.screens
+package com.example.hltv.ui.screens.matchesScreen
 
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 
 @Composable
-fun NewsScreen() {
-Text(text = "News")
+fun MatchesScreen() {
+Text(text = "Matches")
 }
