@@ -19,16 +19,18 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 
 @Composable
+//Eksempelkode for commonComposables
 fun CommonComposable() {
     LazyColumn{
         item {
-           TeamCard(
+            //Eksempel med brug af headText og subText uden bottomBox
+           commonCard(
                modifier = Modifier,
                R = MaterialTheme,
                cardWidth = Modifier.fillMaxWidth(),
-               //headText = "Blast Premier world final 2023",
-               //subText = "Oct. 13 - Nov. 13",
-               topBox = {
+               headText = "Blast Premier world final 2023", //Valgfri - Erstatning for topBox
+               subText = "Oct. 13 - Nov. 13", //Valgfri - Erstatning for topBox
+               /*topBox = { //Valgfri - Erstatning for headText / subText
                    Box {
                        Text(
                            text = "Test",
@@ -37,11 +39,11 @@ fun CommonComposable() {
                                .align(Alignment.CenterStart)
                        )
                    }
-               },
+               },*/
                bottomBox = {
                    Box {
                        Text(
-                           text = "Test",
+                           text = "Eventinformation",
                            fontSize = MaterialTheme.typography.bodyLarge.fontSize,
                            modifier = Modifier
                                .align(Alignment.CenterStart)
@@ -49,13 +51,54 @@ fun CommonComposable() {
                    }
                }
            )
-
+            //Eksempel med brug af topBox og bottomBox
+            commonCard(
+                modifier = Modifier,
+                R = MaterialTheme,
+                cardWidth = Modifier.fillMaxWidth(),
+                topBox = { //Valgfri - Erstatning for headText / subText
+                    Box {
+                        Text(
+                            text = "topBox information",
+                            fontSize = MaterialTheme.typography.bodyLarge.fontSize,
+                            modifier = Modifier
+                                .align(Alignment.CenterStart)
+                        )
+                    }
+                },
+                bottomBox = {
+                    Box {
+                        Text(
+                            text = "bottomBox information",
+                            fontSize = MaterialTheme.typography.bodyLarge.fontSize,
+                            modifier = Modifier
+                                .align(Alignment.CenterStart)
+                        )
+                    }
+                }
+            )
+            //Eksempel med brug af topBox uden bottomBox
+            commonCard(
+                modifier = Modifier,
+                R = MaterialTheme,
+                cardWidth = Modifier.fillMaxWidth(),
+                topBox = { //Valgfri - Erstatning for headText / subText
+                    Box {
+                        Text(
+                            text = "topBox information",
+                            fontSize = MaterialTheme.typography.bodyLarge.fontSize,
+                            modifier = Modifier
+                                .align(Alignment.CenterStart)
+                        )
+                    }
+                }
+            )
         }
     }
 }
 
 @Composable
-fun TeamCard(
+fun commonCard(
     modifier: Modifier,
     R: MaterialTheme,
     cardWidth: Modifier,
