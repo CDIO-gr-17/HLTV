@@ -15,7 +15,6 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 
@@ -26,12 +25,11 @@ fun CommonComposable() {
            TeamCard(
                modifier = Modifier,
                R = MaterialTheme,
-               headText = "Blast Premier world final 2023",
-               subText = "NOW",
                cardWidth = Modifier.fillMaxWidth(),
-               box = {
-                   Box(modifier = Modifier
-                   ) {
+               headText = "Blast Premier world final 2023",
+               subText = "Oct. 13 - Nov. 13",
+               bottomBox = {
+                   Box {
                        Text(
                            text = "Test",
                            fontSize = MaterialTheme.typography.bodyLarge.fontSize,
@@ -42,7 +40,8 @@ fun CommonComposable() {
                    }
                }
            )
-       }
+
+        }
     }
 }
 
@@ -50,10 +49,11 @@ fun CommonComposable() {
 fun TeamCard(
     modifier: Modifier,
     R: MaterialTheme,
-    headText: String,
-    subText: String ?= null,
     cardWidth: Modifier,
-    box: @Composable() BoxScope.() -> Unit
+    headText: String ?= null,
+    subText: String ?= null,
+    topBox: @Composable() (BoxScope.() -> Unit?)? = null,
+    bottomBox: @Composable() (BoxScope.() -> Unit?)? = null
 ) =
     Card (
         modifier = modifier
@@ -63,35 +63,36 @@ fun TeamCard(
     ) {
         Box(
             modifier = Modifier
-                .background(color = Color.DarkGray)
+                .background(color = R.colorScheme.primary)
                 .fillMaxWidth()
                 .height(IntrinsicSize.Max)
                 .padding(8.dp)
         ) {
             Column {
-                Text(
-                    text = headText,
-                    fontSize = R.typography.bodyLarge.fontSize,
-                    color = R.colorScheme.primary,
-                    modifier = Modifier
-                        .padding(start = 10.dp)
-                )
+                headText?.let {
+                    Text(
+                        text = it,
+                        fontSize = R.typography.bodyLarge.fontSize,
+                        color = R.colorScheme.onSecondary,
+                    )
+                }
                 subText?.let {
                     Text(
                         text = it,
                         fontSize = R.typography.bodyMedium.fontSize,
-                        color = R.colorScheme.primary,
-                        modifier = Modifier
-                            .padding(start = 10.dp)
+                        color = R.colorScheme.onSecondary,
                     )
                 }
             }
         }
-        Box(modifier = Modifier
-            .padding(8.dp)
-            .height(IntrinsicSize.Max)
-        ){
-            box()
+        bottomBox?.let { bottomBox ->
+            Box(
+                modifier = Modifier
+                    .padding(8.dp)
+                    .height(IntrinsicSize.Max)
+            ) {
+                bottomBox()
+            }
         }
     }
 
