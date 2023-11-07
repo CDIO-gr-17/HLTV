@@ -26,14 +26,23 @@ fun CommonComposable() {
                modifier = Modifier,
                R = MaterialTheme,
                cardWidth = Modifier.fillMaxWidth(),
-               headText = "Blast Premier world final 2023",
-               subText = "Oct. 13 - Nov. 13",
+               //headText = "Blast Premier world final 2023",
+               //subText = "Oct. 13 - Nov. 13",
+               topBox = {
+                   Box {
+                       Text(
+                           text = "Test",
+                           fontSize = MaterialTheme.typography.bodyLarge.fontSize,
+                           modifier = Modifier
+                               .align(Alignment.CenterStart)
+                       )
+                   }
+               },
                bottomBox = {
                    Box {
                        Text(
                            text = "Test",
                            fontSize = MaterialTheme.typography.bodyLarge.fontSize,
-                           color = MaterialTheme.colorScheme.primary,
                            modifier = Modifier
                                .align(Alignment.CenterStart)
                        )
@@ -67,7 +76,11 @@ fun TeamCard(
                 .fillMaxWidth()
                 .height(IntrinsicSize.Max)
                 .padding(8.dp)
-        ) {
+        ) {if(topBox != null){
+            Box() {
+                topBox()
+            }
+        }else
             Column {
                 headText?.let {
                     Text(
