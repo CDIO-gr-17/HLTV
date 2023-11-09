@@ -21,6 +21,8 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.compose.ui.res.vectorResource
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
 import com.example.hltv.navigation.Home
@@ -87,7 +89,7 @@ fun HLTVApp() {
                             onClick = { navController.navigate(item.route) },
                             icon = {
                                 Icon(
-                                    imageVector = item.icon,
+                                    imageVector = ImageVector.vectorResource(id =item.icon),
                                     contentDescription = item.route + "Icon",
                                     tint = if (currentScreen == item) Color.Red else Color.Green
 
