@@ -34,7 +34,7 @@ import androidx.compose.ui.unit.sp
 
 
 @Composable
-fun HomeScreen (modifier: Modifier=Modifier.background(MaterialTheme.colorScheme.background)) {
+fun HomeScreen (modifier: Modifier=Modifier.background(MaterialTheme.colorScheme.surface)) {
     val R = MaterialTheme
 
     Column (
@@ -51,7 +51,7 @@ fun HomeScreen (modifier: Modifier=Modifier.background(MaterialTheme.colorScheme
 
         ){
             Box(modifier = Modifier
-                .background(color = Color.Magenta)
+                .background(color = R.colorScheme.onSurface)
                 .fillMaxWidth()
                 .height(50.dp)
             ) {
