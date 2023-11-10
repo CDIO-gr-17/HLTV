@@ -7,11 +7,8 @@ import androidx.compose.foundation.layout.BoxScope
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.IntrinsicSize
 import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.defaultMinSize
-import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
@@ -30,23 +27,13 @@ import androidx.compose.ui.unit.dp
 fun CommonComposable() {
     LazyColumn{
         item {
-            //Eksempel med brug af headText og subText uden bottomBox
+            //Eksempel med brug af headText og subText uden topBox
            commonCard(
                modifier = Modifier,
                R = MaterialTheme,
                cardWidth = Modifier.fillMaxWidth(),
                headText = "Blast Premier world final 2023", //Valgfri - Erstatning for topBox
                subText = "Oct. 13 - Nov. 13", //Valgfri - Erstatning for topBox
-               /*topBox = { //Valgfri - Erstatning for headText / subText
-                   Box {
-                       Text(
-                           text = "Test",
-                           fontSize = MaterialTheme.typography.bodyLarge.fontSize,
-                           modifier = Modifier
-                               .align(Alignment.CenterStart)
-                       )
-                   }
-               },*/
                bottomBox = {
                    Box {
                        Text(
@@ -124,7 +111,6 @@ fun commonCard(
             modifier = Modifier
                 .background(color = R.colorScheme.primary)
                 .fillMaxWidth()
-                .height(IntrinsicSize.Max)
                 .padding(8.dp)
         ) {
             if (topBox != null) {
@@ -133,7 +119,8 @@ fun commonCard(
                 }
             } else
                 Row (
-                    modifier = Modifier.fillMaxWidth(),
+                    modifier = Modifier
+                        .fillMaxWidth(),
                     verticalAlignment = Alignment.CenterVertically
                 ){
 
@@ -160,7 +147,7 @@ fun commonCard(
                         contentDescription = null,
                         alignment = Alignment.CenterEnd,
                         modifier = Modifier
-                            .size(40.dp) //Burde ikke være hardcoded, da det ikke ville passe uden subText
+                            .size(40.dp)
                     )
                 }
         }
