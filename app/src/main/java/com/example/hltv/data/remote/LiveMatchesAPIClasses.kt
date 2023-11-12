@@ -6,18 +6,23 @@ import com.google.gson.annotations.SerializedName
 //Kotlin docs saying this long thing is okay: https://kotlinlang.org/docs/coding-conventions.html
 
 
+sealed class APIResponse{
+    data class EventsWrapper(
 
-data class EventsWrapper(
-    @SerializedName("events") var events: List<Event>
-)
+        @SerializedName("events") var events: List<Event>
 
-data class Lineup (
+    ) : APIResponse()
+    data class Lineup (
 
-    @SerializedName("confirmed" ) var confirmed : Boolean? = null,
-    @SerializedName("home"      ) var home      : PlayerGroup?    = PlayerGroup(),
-    @SerializedName("away"      ) var away      : PlayerGroup?    = PlayerGroup()
+        @SerializedName("confirmed" ) var confirmed : Boolean? = null,
+        @SerializedName("home"      ) var home      : PlayerGroup?    = PlayerGroup(),
+        @SerializedName("away"      ) var away      : PlayerGroup?    = PlayerGroup()
 
-)
+    ) : APIResponse()
+}
+
+
+
 
 ////////////////////////////////////////////////////////////////////////
 data class Sport (

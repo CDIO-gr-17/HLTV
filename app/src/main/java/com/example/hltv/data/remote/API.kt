@@ -1,13 +1,24 @@
 package com.example.hltv.data.remote
 import okhttp3.Request
+
 const val APIKEY = "478aa6c7a2msh89c2c0c24f19184p1edb29jsn1d19bce3a650"
 const val ONLYCS = false
 
+
+/*
+sealed class APIResponse{
+    data class EventsWrapper(val event: List<Event>) : APIResponse()
+    data class Lineup(val event: List<Event>) : APIResponse()
+
+    //More to be added here
+}
+
+ */
 /**
  * @return: Returns an object of type eventsWrapper, which just contains a list of "event",
  * event being the api's name for a match
  */
-fun getLiveMatches(): EventsWrapper? {
+fun getLiveMatches(): APIResponse.EventsWrapper? {
 
 
     val request = Request.Builder()
@@ -24,7 +35,7 @@ fun getLiveMatches(): EventsWrapper? {
 
     //Initiating as late as possible for performance reasons. Don't think it makes much of a difference
     val gson = GsonSingleton.instance
-    val eventsWrapper = gson.fromJson(jsonString, EventsWrapper::class.java)
+    val eventsWrapper = gson.fromJson(jsonString, APIResponse.EventsWrapper::class.java)
 
     if (ONLYCS){
         val csEvents: MutableList<Event> = mutableListOf()
@@ -40,6 +51,52 @@ fun getLiveMatches(): EventsWrapper? {
     return eventsWrapper
 }
 
+
+/**
+ * Doesnt work atm
+ */
+/*
+private fun getTypeFromURLSnippet(urlSnippet: String): Class<out APIResponse> {
+    return when (urlSnippet){
+        "matches/live" -> APIResponse.EventsWrapper::class.java
+        "Example" -> APIResponse.EventsWrapper::class.java
+        else -> APIResponse.EventsWrapper::class.java
+
+    }
+}
+
+ */
+
+private fun getAPIResponse(apiURL: String, apiKEY: String): APIResponse {
+
+
+    val request = Request.Builder()
+        .url("https://allsportsapi2.p.rapidapi.com/api/esport/$apiURL")
+        .get()
+        .addHeader("X-RapidAPI-Key", apiKEY)
+        .addHeader("X-RapidAPI-Host", "allsportsapi2.p.rapidapi.com")
+        .build()
+
+    val client = OkHttpClientSingleton.instance
+    val response = client.newCall(request).execute()
+    // Get the HTTP response as a string
+    val jsonString = response.body()?.string()
+
+    //Initiating as late as possible for performance reasons. Don't think it makes much of a difference
+    val gson = GsonSingleton.instance
+    val a = when (apiURL) {
+        "matches/live" -> APIResponse.EventsWrapper::class.java
+        "Example" -> APIResponse.EventsWrapper::class.java
+        else -> APIResponse.EventsWrapper::class.java
+
+    }
+
+    val c = gson.fromJson(jsonString, a)
+    return c
+}
+
 fun main() {
-    print(getLiveMatches())
+    //print(getLiveMatches())
+    val a = getAPIResponse("matches/live", APIKEY)
+    print(a)
 }
