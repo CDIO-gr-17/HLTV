@@ -1,13 +1,25 @@
 package com.example.hltv.data.remote
-
-//Classes for parsing this: https://rapidapi.com/fluis.lacasse/api/allsportsapi2/
-//All classes are auto-generated from https://json2kt.com/
-//Kotlin docs saying this long thing is okay: https://kotlinlang.org/docs/coding-conventions.html
-
-//package com.example.example
-
 import com.google.gson.annotations.SerializedName
 
+//Classes for parsing this: https://rapidapi.com/fluis.lacasse/api/allsportsapi2/
+//Most classes are auto-generated from https://json2kt.com/
+//Kotlin docs saying this long thing is okay: https://kotlinlang.org/docs/coding-conventions.html
+
+
+
+data class EventsWrapper(
+    @SerializedName("events") var events: List<Event>
+)
+
+data class Lineup (
+
+    @SerializedName("confirmed" ) var confirmed : Boolean? = null,
+    @SerializedName("home"      ) var home      : PlayerGroup?    = PlayerGroup(),
+    @SerializedName("away"      ) var away      : PlayerGroup?    = PlayerGroup()
+
+)
+
+////////////////////////////////////////////////////////////////////////
 data class Sport (
 
     @SerializedName("name" ) var name : String? = null,
@@ -78,6 +90,9 @@ data class TeamColors (
 
 )
 
+/**
+ * Does not hold players
+ */
 data class Team (
 
     @SerializedName("name"       ) var name       : String?           = null,
@@ -97,21 +112,12 @@ data class Team (
 
 
 
-data class HomeScore (
+data class Score (
 
     @SerializedName("current" ) var current : Int? = null,
     @SerializedName("display" ) var display : Int? = null
 
 )
-
-
-data class AwayScore (
-
-    @SerializedName("current" ) var current : Int? = null,
-    @SerializedName("display" ) var display : Int? = null
-
-)
-
 
 data class Time (
 
@@ -139,8 +145,8 @@ data class Event (
     @SerializedName("winnerCode"                      ) var winnerCode                      : Int?        = null,
     @SerializedName("homeTeam"                        ) var homeTeam                        : Team?   = Team(),
     @SerializedName("awayTeam"                        ) var awayTeam                        : Team?   = Team(),
-    @SerializedName("homeScore"                       ) var homeScore                       : HomeScore?  = HomeScore(),
-    @SerializedName("awayScore"                       ) var awayScore                       : AwayScore?  = AwayScore(),
+    @SerializedName("homeScore"                       ) var homeScore                       : Score?  = Score(),
+    @SerializedName("awayScore"                       ) var awayScore                       : Score?  = Score(),
     @SerializedName("coverage"                        ) var coverage                        : Int?        = null,
     @SerializedName("time"                            ) var time                            : Time?       = Time(),
     @SerializedName("changes"                         ) var changes                         : Changes?    = Changes(),
@@ -157,6 +163,54 @@ data class Event (
 
 )
 
-data class EventsWrapper(
-    @SerializedName("events") var events: List<Event>
+
+
+
+////////////////////////////////////////////////////////////////////////////////////////////
+//Below are for the "event lineup" API endpoint
+//https://rapidapi.com/fluis.lacasse/api/allsportsapi2/
+////////////////////////////////////////////////////////////////////////////////////////////
+
+
+
+data class Player (
+
+    @SerializedName("name"                 ) var name                 : String?  = null,
+    @SerializedName("firstName"            ) var firstName            : String?  = null,
+    @SerializedName("lastName"             ) var lastName             : String?  = null,
+    @SerializedName("slug"                 ) var slug                 : String?  = null,
+    @SerializedName("shortName"            ) var shortName            : String?  = null,
+    @SerializedName("userCount"            ) var userCount            : Int?     = null,
+    @SerializedName("id"                   ) var id                   : Int?     = null,
+    @SerializedName("country"              ) var country              : Country? = Country(),
+    @SerializedName("marketValueCurrency"  ) var marketValueCurrency  : String?  = null,
+    @SerializedName("dateOfBirthTimestamp" ) var dateOfBirthTimestamp : Int?     = null
+
+)
+
+data class Players (
+
+    @SerializedName("player"     ) var player     : Player?  = Player(),
+    @SerializedName("substitute" ) var substitute : Boolean? = null
+
+)
+
+data class PlayerColor (
+
+    @SerializedName("primary"     ) var primary     : String? = null,
+    @SerializedName("number"      ) var number      : String? = null,
+    @SerializedName("outline"     ) var outline     : String? = null,
+    @SerializedName("fancyNumber" ) var fancyNumber : String? = null
+
+)
+
+/**
+ * I have no idea how the goalkeeper is relevant to CSGO, but this is what it is
+ */
+data class PlayerGroup (
+
+    @SerializedName("players"         ) var players         : ArrayList<Players> = arrayListOf(),
+    @SerializedName("playerColor"     ) var playerColor     : PlayerColor?       = PlayerColor(),
+    @SerializedName("goalkeeperColor" ) var goalkeeperColor : PlayerColor?       = PlayerColor()
+
 )
