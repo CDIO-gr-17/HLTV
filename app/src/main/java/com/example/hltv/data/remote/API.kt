@@ -1,20 +1,14 @@
 package com.example.hltv.data.remote
-import com.google.gson.Gson
-import retrofit2.Retrofit
-import retrofit2.converter.gson.GsonConverterFactory
-import retrofit2.Call
-import retrofit2.http.GET
-import retrofit2.http.Path
-import okhttp3.OkHttpClient
 import okhttp3.Request
-import com.google.gson.annotations.SerializedName
-val APIKEY = "478aa6c7a2msh89c2c0c24f19184p1edb29jsn1d19bce3a650"
-data class Student (
-    var name: String? = null,
-    var address: String? = null) {
-}
+const val APIKEY = "478aa6c7a2msh89c2c0c24f19184p1edb29jsn1d19bce3a650"
+const val ONLYCS = false
+
+/**
+ * @return: Returns an object of type eventsWrapper, which just contains a list of "event",
+ * event being the api's name for a match
+ */
 fun getLiveMatches(): EventsWrapper? {
-    val client = OkHttpClient()
+
 
     val request = Request.Builder()
         .url("https://allsportsapi2.p.rapidapi.com/api/esport/matches/live")
@@ -23,54 +17,29 @@ fun getLiveMatches(): EventsWrapper? {
         .addHeader("X-RapidAPI-Host", "allsportsapi2.p.rapidapi.com")
         .build()
 
+    val client = OkHttpClientSingleton.instance
     val response = client.newCall(request).execute()
-
     // Get the HTTP response as a string
     val jsonString = response.body()?.string()
 
-    val gson = Gson()
+    //Initiating as late as possible for performance reasons. Don't think it makes much of a difference
+    val gson = GsonSingleton.instance
     val eventsWrapper = gson.fromJson(jsonString, EventsWrapper::class.java)
+
+    if (ONLYCS){
+        val csEvents: MutableList<Event> = mutableListOf()
+        for (event in eventsWrapper.events){//We should also be able to use slug or flag instead of name
+            if(event.tournament?.category?.name.equals("CS:GO")){
+                print("Adding CSGO event " + event.tournament?.name + "\n")
+                csEvents.add(event)
+            }
+        }
+        eventsWrapper.events = csEvents
+    }
 
     return eventsWrapper
 }
 
-/*
-object RetrofitClient {
-    private const val BASE_URL = "https://allsportsapi2.p.rapidapi.com/api/esport/matches/live"
-
-    val retrofit: Retrofit by lazy {
-        Retrofit.Builder()
-            .baseUrl(BASE_URL)
-            .addConverterFactory(GsonConverterFactory.create())
-            .build()
-    }
+fun main() {
+    print(getLiveMatches())
 }
-
-object ApiClient {
-    val apiService: ApiService by lazy {
-        RetrofitClient.retrofit.create(ApiService::class.java)
-    }
-}
-
-object AllApi {
-
-    private external fun baseUrlFromJNI(boolean: Boolean): String
-
-    const val BASE_URL = "https://api.example.com/"
-
-    private const val V1 = "v1/"
-
-    const val DATA_LIST = V1 + "my_data.php"
-}
-interface ApiService {
-    @GET("posts/{id}")
-    fun getPostById(@Path("id") postId: Int): Call<Events>
-}
-
-
-
-fun main(args : Array<String>) {
-    println("Hello, World!")
-}
-
- */

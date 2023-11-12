@@ -1,4 +1,4 @@
-package com.example.hltv.data.remote;
+package com.example.hltv.data.remote
 
 //Classes for parsing this: https://rapidapi.com/fluis.lacasse/api/allsportsapi2/
 //All classes are auto-generated from https://json2kt.com/
@@ -6,13 +6,8 @@ package com.example.hltv.data.remote;
 
 //package com.example.example
 
-import com.google.gson.annotations.SerializedName;
+import com.google.gson.annotations.SerializedName
 
-data class ExampleJson2KtKotlin (
-
-        @SerializedName("events" ) var events : ArrayList<Events> = arrayListOf()
-
-)
 data class Sport (
 
     @SerializedName("name" ) var name : String? = null,
@@ -136,7 +131,7 @@ data class Changes (
 /**
  * Is actually only one event?
  */
-data class Events (
+data class Event (
 
     @SerializedName("tournament"                      ) var tournament                      : Tournament? = Tournament(),
     @SerializedName("customId"                        ) var customId                        : String?     = null,
@@ -163,5 +158,5 @@ data class Events (
 )
 
 data class EventsWrapper(
-    @SerializedName("events") val events: List<Events>
+    @SerializedName("events") var events: List<Event>
 )
