@@ -38,6 +38,13 @@ fun getLiveMatches(): APIResponse.EventsWrapper? {
     return eventsWrapper
 }
 
+/**
+ * @return 2x5 players. I don't know what "confirmed" means
+ */
+fun getPlayersFromEvent(eventID: Int? = 10945127): APIResponse.Lineup {
+    return getAPIResponse("event/" + eventID.toString() + "/lineups", APIKEY) as APIResponse.Lineup
+}
+
 
 /**
  * Doesnt work atm
@@ -73,15 +80,23 @@ private fun getAPIResponse(apiURL: String, apiKEY: String): APIResponse {
     val gson = GsonSingleton.instance
     val a = when (apiURL) {
         "matches/live" -> APIResponse.EventsWrapper::class.java
-        "Example" -> APIResponse.EventsWrapper::class.java
-        else -> APIResponse.EventsWrapper::class.java
+        "Example" -> APIResponse.Lineup::class.java
+        else -> APIResponse.Lineup::class.java
 
     }
+    response.close()
     return gson.fromJson(jsonString, a)
 }
 
 fun main() {
-    //print(getLiveMatches())
-    val a = getAPIResponse("matches/live", APIKEY)
-    print(a)
+
+    val a = getLiveMatches()
+    if (a != null) {
+        val b = getPlayersFromEvent(a.events[0].id)
+        for (players in b.home?.players!!){
+            print(players.player?.name + "\n")
+        }
+    }
+
+
 }
