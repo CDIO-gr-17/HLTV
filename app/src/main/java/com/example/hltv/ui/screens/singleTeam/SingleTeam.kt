@@ -17,6 +17,8 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.example.hltv.R
 import com.example.hltv.ui.common.commonCard
+import androidx.compose.ui.text.font.FontWeight
+
 
 @Composable
 fun SingleTeam(){
@@ -58,7 +60,8 @@ fun recentTeams(){
                         Text(
                             text = "16-10",
                             fontSize = MaterialTheme.typography.bodyLarge.fontSize,
-                            color = MaterialTheme.colorScheme.onPrimary
+                            color = MaterialTheme.colorScheme.onPrimary,
+                            fontWeight = FontWeight.Bold
                         )
                         Text(
                             text = "10 October",
