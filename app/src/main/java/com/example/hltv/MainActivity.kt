@@ -25,11 +25,11 @@ import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.res.vectorResource
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
+import com.example.compose.HLTVTheme
 import com.example.hltv.navigation.Home
 import com.example.hltv.navigation.MainNavHost
 import com.example.hltv.navigation.Settings
 import com.example.hltv.navigation.bottomAppBarScreens
-import com.example.hltv.ui.theme.HLTVTheme
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -51,11 +51,12 @@ fun HLTVApp() {
         val currentScreen =
             bottomAppBarScreens.find { it.route == currentDestination?.route } ?: Home
 
+
         Scaffold(
             topBar = {
                 CenterAlignedTopAppBar(
                     title = if (currentDestination?.route != Settings.route) {
-                        { Text(text = currentScreen.route) }
+                        { Text(text = currentScreen.route, color = MaterialTheme.colorScheme.onSurface) }
                     } else {
                         { Text(text = "Settings") }
                     },
@@ -76,10 +77,10 @@ fun HLTVApp() {
                             Icon(
                                 imageVector = Icons.Default.Settings,
                                 contentDescription = "Settings Icon",
-                                tint = MaterialTheme.colorScheme.primaryContainer
+                                tint = MaterialTheme.colorScheme.onSurface
                             )
                         }
-                    }
+                    },
                 )
             },
             bottomBar = {
@@ -92,7 +93,7 @@ fun HLTVApp() {
                                 Icon(
                                     imageVector = ImageVector.vectorResource(id =item.icon),
                                     contentDescription = item.route + "Icon",
-                                    tint = if (currentScreen == item) MaterialTheme.colorScheme.primaryContainer else MaterialTheme.colorScheme.onSurface
+                                    tint = if (currentScreen == item) MaterialTheme.colorScheme.tertiary else MaterialTheme.colorScheme.onSurface
 
                                 )
                             },
