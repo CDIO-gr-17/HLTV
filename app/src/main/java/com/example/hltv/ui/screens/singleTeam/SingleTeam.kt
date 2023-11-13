@@ -18,7 +18,7 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.example.hltv.R
-import com.example.hltv.ui.common.commonCard
+import com.example.hltv.ui.common.CommonCard
 import androidx.compose.ui.text.font.FontWeight
 
 
@@ -126,7 +126,7 @@ fun recentMatches(
     date: String,
 
 ){
-    commonCard(
+    CommonCard(
         modifier = Modifier,
         R = MaterialTheme,
         cardWidth = Modifier.fillMaxWidth(),
