@@ -57,6 +57,7 @@ fun SingleTeam(){
 }
 
 
+// Lige nu er der 'gap' mellem hver spiller. Det skal fjernes. Evt. Equal Weight i stedet for SpaceEvenly?
 @Composable
 fun overviewPlayers(players: List<Player>) {
     Row (
@@ -82,10 +83,11 @@ fun overviewPlayer(
                 contentDescription = null,
                 alignment = Alignment.CenterStart,
                 modifier = Modifier
-                    .size(80.dp)
-                    .offset(y = 30.dp)
+                    .size(70.dp)
+                    .offset(y = 20.dp)
             )
             CommonCard (modifier = Modifier.width(IntrinsicSize.Min),
+                customOuterPadding = 0.dp,
                 topBox = {
                     Text(
                         text = player.name,
