@@ -42,6 +42,7 @@ fun getLiveMatches(): APIResponse.EventsWrapper? {
  * @return 2x5 players. I don't know what "confirmed" means
  */
 fun getPlayersFromEvent(eventID: Int? = 10945127): APIResponse.Lineup {
+    print(eventID)
     return getAPIResponse("event/" + eventID.toString() + "/lineups", APIKEY) as APIResponse.Lineup
 }
 
@@ -78,21 +79,35 @@ private fun getAPIResponse(apiURL: String, apiKEY: String): APIResponse {
 
     //Initiating as late as possible for performance reasons. Don't think it makes much of a difference
     val gson = GsonSingleton.instance
-    val a = when (apiURL) {
-        "matches/live" -> APIResponse.EventsWrapper::class.java
-        "Example" -> APIResponse.Lineup::class.java
-        else -> APIResponse.Lineup::class.java
+    //val regexForPlayersFromEvent = Regex("event/[0-9]+/lineups")
+    val regexForPlayersFromEvent = Regex("^event\\/\\d+\\/lineups\$")
+
+    val match = regexForPlayersFromEvent.matchEntire(apiURL)
+    print("Match is null: " + (match==null) + "\n\n")
+
+    val a = if (match != null){
+        APIResponse.Lineup::class.java
+    } else {
+        when (apiURL) { //
+            "matches/live" -> APIResponse.EventsWrapper::class.java
+            "Example" -> APIResponse.Lineup::class.java
+            else -> APIResponse.Lineup::class.java
+    }
+
 
     }
     response.close()
+
     return gson.fromJson(jsonString, a)
 }
 
 fun main() {
 
     val a = getLiveMatches()
+    print(a)
     if (a != null) {
         val b = getPlayersFromEvent(a.events[0].id)
+        print(b.toString() + "\n")
         for (players in b.home?.players!!){
             print(players.player?.name + "\n")
         }
