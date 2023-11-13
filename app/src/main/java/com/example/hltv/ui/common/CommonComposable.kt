@@ -29,9 +29,8 @@ fun CommonComposable() {
         item {
             //Eksempel med brug af headText og subText uden topBox
            CommonCard(
-               modifier = Modifier,
+               modifier = Modifier.fillMaxWidth(),
                R = MaterialTheme,
-               cardWidth = Modifier.fillMaxWidth(),
                headText = "Blast Premier world final 2023", //Valgfri - Erstatning for topBox
                subText = "Oct. 13 - Nov. 13", //Valgfri - Erstatning for topBox
                bottomBox = {
@@ -39,6 +38,7 @@ fun CommonComposable() {
                        Text(
                            text = "Eventinformation",
                            fontSize = MaterialTheme.typography.bodyLarge.fontSize,
+                           color = MaterialTheme.colorScheme.onSecondaryContainer,
                            modifier = Modifier
                                .align(Alignment.CenterStart)
                        )
@@ -47,14 +47,14 @@ fun CommonComposable() {
            )
             //Eksempel med brug af topBox og bottomBox
             CommonCard(
-                modifier = Modifier,
+                modifier = Modifier.fillMaxWidth(),
                 R = MaterialTheme,
-                cardWidth = Modifier.fillMaxWidth(),
                 topBox = { //Valgfri - Erstatning for headText / subText
                     Box {
                         Text(
                             text = "topBox information",
                             fontSize = MaterialTheme.typography.bodyLarge.fontSize,
+                            color = MaterialTheme.colorScheme.onPrimaryContainer,
                             modifier = Modifier
                                 .align(Alignment.CenterStart)
                         )
@@ -65,6 +65,7 @@ fun CommonComposable() {
                         Text(
                             text = "bottomBox information",
                             fontSize = MaterialTheme.typography.bodyLarge.fontSize,
+                            color = MaterialTheme.colorScheme.onSecondaryContainer,
                             modifier = Modifier
                                 .align(Alignment.CenterStart)
                         )
@@ -73,14 +74,14 @@ fun CommonComposable() {
             )
             //Eksempel med brug af topBox uden bottomBox
             CommonCard(
-                modifier = Modifier,
+                modifier = Modifier.fillMaxWidth(),
                 R = MaterialTheme,
-                cardWidth = Modifier.fillMaxWidth(),
                 topBox = { //Valgfri - Erstatning for headText / subText
                     Box {
                         Text(
                             text = "topBox information",
                             fontSize = MaterialTheme.typography.bodyLarge.fontSize,
+                            color = MaterialTheme.colorScheme.onPrimaryContainer,
                             modifier = Modifier
                                 .align(Alignment.CenterStart)
                         )
@@ -95,7 +96,6 @@ fun CommonComposable() {
 fun CommonCard(
     modifier: Modifier,
     R: MaterialTheme,
-    cardWidth: Modifier,
     headText: String ?= null,
     subText: String ?= null,
     topBox: @Composable (BoxScope.() -> Unit?)? = null,
@@ -103,7 +103,6 @@ fun CommonCard(
 ) =
     Card (
         modifier = modifier
-            .then(cardWidth)
             .padding(8.dp)
             .height(IntrinsicSize.Max)
     ) {
@@ -131,14 +130,14 @@ fun CommonCard(
                             Text(
                                 text = it,
                                 fontSize = R.typography.bodyLarge.fontSize,
-                                color = R.colorScheme.onPrimary,
+                                color = R.colorScheme.onPrimaryContainer,
                             )
                         }
                         subText?.let {
                             Text(
                                 text = it,
                                 fontSize = R.typography.bodyMedium.fontSize,
-                                color = R.colorScheme.onPrimary,
+                                color = R.colorScheme.onPrimaryContainer,
                             )
                         }
                     }
