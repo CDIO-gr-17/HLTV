@@ -30,6 +30,7 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.example.hltv.ui.common.CommonCard
 
 
 @Composable
@@ -42,6 +43,17 @@ fun HomeScreen () {
             .fillMaxSize()
             .background(color = R.colorScheme.background)
     ) {
+        CommonCard(
+            modifier = Modifier, R = MaterialTheme,
+            cardWidth = Modifier.fillMaxWidth(),
+            headText = "Tester lige overskriften",
+            subText = "Hele tiden tester jeg"
+            ) {
+            Text(text ="Bottombox")
+            
+        }
+
+
         Card (
             modifier = Modifier
                 .fillMaxWidth()

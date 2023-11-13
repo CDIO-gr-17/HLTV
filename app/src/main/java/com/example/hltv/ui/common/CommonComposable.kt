@@ -28,7 +28,7 @@ fun CommonComposable() {
     LazyColumn{
         item {
             //Eksempel med brug af headText og subText uden topBox
-           commonCard(
+           CommonCard(
                modifier = Modifier,
                R = MaterialTheme,
                cardWidth = Modifier.fillMaxWidth(),
@@ -46,7 +46,7 @@ fun CommonComposable() {
                }
            )
             //Eksempel med brug af topBox og bottomBox
-            commonCard(
+            CommonCard(
                 modifier = Modifier,
                 R = MaterialTheme,
                 cardWidth = Modifier.fillMaxWidth(),
@@ -72,7 +72,7 @@ fun CommonComposable() {
                 }
             )
             //Eksempel med brug af topBox uden bottomBox
-            commonCard(
+            CommonCard(
                 modifier = Modifier,
                 R = MaterialTheme,
                 cardWidth = Modifier.fillMaxWidth(),
@@ -92,14 +92,14 @@ fun CommonComposable() {
 }
 
 @Composable
-fun commonCard(
+fun CommonCard(
     modifier: Modifier,
     R: MaterialTheme,
     cardWidth: Modifier,
     headText: String ?= null,
     subText: String ?= null,
-    topBox: @Composable() (BoxScope.() -> Unit?)? = null,
-    bottomBox: @Composable() (BoxScope.() -> Unit?)? = null
+    topBox: @Composable (BoxScope.() -> Unit?)? = null,
+    bottomBox: @Composable (BoxScope.() -> Unit?)? = null
 ) =
     Card (
         modifier = modifier
@@ -109,7 +109,7 @@ fun commonCard(
     ) {
         Box(
             modifier = Modifier
-                .background(color = R.colorScheme.primary)
+                .background(color = MaterialTheme.colorScheme.primaryContainer)
                 .fillMaxWidth()
                 .padding(8.dp)
         ) {
@@ -131,14 +131,14 @@ fun commonCard(
                             Text(
                                 text = it,
                                 fontSize = R.typography.bodyLarge.fontSize,
-                                color = R.colorScheme.onSecondary,
+                                color = R.colorScheme.onPrimary,
                             )
                         }
                         subText?.let {
                             Text(
                                 text = it,
                                 fontSize = R.typography.bodyMedium.fontSize,
-                                color = R.colorScheme.onSecondary,
+                                color = R.colorScheme.onPrimary,
                             )
                         }
                     }
@@ -156,6 +156,7 @@ fun commonCard(
                 modifier = Modifier
                     .padding(8.dp)
                     .height(IntrinsicSize.Max)
+                    .background(color = MaterialTheme.colorScheme.secondaryContainer)
             ) {
                 bottomBox()
             }
