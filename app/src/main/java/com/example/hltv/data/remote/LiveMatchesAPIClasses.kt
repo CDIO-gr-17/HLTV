@@ -35,7 +35,7 @@ data class Sport (
 
 data class Category (
 
-    @SerializedName("name"  ) var name  : String? = null,
+    @SerializedName("name"  ) var name : String? = null,
     @SerializedName("slug"  ) var slug  : String? = null,
     @SerializedName("sport" ) var sport : Sport?  = Sport(),
     @SerializedName("id"    ) var id    : Int?    = null,
