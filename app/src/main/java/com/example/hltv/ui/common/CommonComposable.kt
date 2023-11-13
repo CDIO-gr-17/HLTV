@@ -30,7 +30,6 @@ fun CommonComposable() {
             //Eksempel med brug af headText og subText uden topBox
            CommonCard(
                modifier = Modifier.fillMaxWidth(),
-               R = MaterialTheme,
                headText = "Blast Premier world final 2023", //Valgfri - Erstatning for topBox
                subText = "Oct. 13 - Nov. 13", //Valgfri - Erstatning for topBox
                bottomBox = {
@@ -48,7 +47,6 @@ fun CommonComposable() {
             //Eksempel med brug af topBox og bottomBox
             CommonCard(
                 modifier = Modifier.fillMaxWidth(),
-                R = MaterialTheme,
                 topBox = { //Valgfri - Erstatning for headText / subText
                     Box {
                         Text(
@@ -75,7 +73,6 @@ fun CommonComposable() {
             //Eksempel med brug af topBox uden bottomBox
             CommonCard(
                 modifier = Modifier.fillMaxWidth(),
-                R = MaterialTheme,
                 topBox = { //Valgfri - Erstatning for headText / subText
                     Box {
                         Text(
@@ -95,7 +92,6 @@ fun CommonComposable() {
 @Composable
 fun CommonCard(
     modifier: Modifier,
-    R: MaterialTheme,
     headText: String ?= null,
     subText: String ?= null,
     topBox: @Composable (BoxScope.() -> Unit?)? = null,
@@ -129,15 +125,15 @@ fun CommonCard(
                         headText?.let {
                             Text(
                                 text = it,
-                                fontSize = R.typography.bodyLarge.fontSize,
-                                color = R.colorScheme.onPrimaryContainer,
+                                fontSize = MaterialTheme.typography.bodyLarge.fontSize,
+                                color = MaterialTheme.colorScheme.onPrimaryContainer,
                             )
                         }
                         subText?.let {
                             Text(
                                 text = it,
-                                fontSize = R.typography.bodyMedium.fontSize,
-                                color = R.colorScheme.onPrimaryContainer,
+                                fontSize = MaterialTheme.typography.bodyMedium.fontSize,
+                                color = MaterialTheme.colorScheme.onPrimaryContainer,
                             )
                         }
                     }
@@ -163,7 +159,7 @@ fun CommonCard(
     }
 
 
-@Preview(showBackground = true)
+@Preview
 @Composable
 fun CommonComposablePreview() {
     CommonComposable()
