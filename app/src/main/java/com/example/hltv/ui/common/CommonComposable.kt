@@ -109,7 +109,7 @@ fun commonCard(
     ) {
         Box(
             modifier = Modifier
-                .background(color = R.colorScheme.primary)
+                .background(color = MaterialTheme.colorScheme.primaryContainer)
                 .fillMaxWidth()
                 .padding(8.dp)
         ) {
@@ -131,14 +131,14 @@ fun commonCard(
                             Text(
                                 text = it,
                                 fontSize = R.typography.bodyLarge.fontSize,
-                                color = R.colorScheme.onSecondary,
+                                color = R.colorScheme.onPrimary,
                             )
                         }
                         subText?.let {
                             Text(
                                 text = it,
                                 fontSize = R.typography.bodyMedium.fontSize,
-                                color = R.colorScheme.onSecondary,
+                                color = R.colorScheme.onPrimary,
                             )
                         }
                     }
@@ -156,6 +156,7 @@ fun commonCard(
                 modifier = Modifier
                     .padding(8.dp)
                     .height(IntrinsicSize.Max)
+                    .background(color = MaterialTheme.colorScheme.secondaryContainer)
             ) {
                 bottomBox()
             }
