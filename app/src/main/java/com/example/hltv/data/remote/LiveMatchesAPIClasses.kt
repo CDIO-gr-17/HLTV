@@ -19,6 +19,11 @@ sealed class APIResponse{
         @SerializedName("away"      ) var away      : PlayerGroup?    = PlayerGroup()
 
     ) : APIResponse()
+
+
+    data class Player (
+        @SerializedName(  "player" ) var player: List<Players>
+    )
 }
 
 
