@@ -20,6 +20,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 
 @Composable
@@ -94,22 +95,24 @@ fun CommonCard(
     modifier: Modifier,
     headText: String ?= null,
     subText: String ?= null,
+    customOuterPadding: Dp ?= null,
+    customInnerPadding: Dp ?= null,
     topBox: @Composable (BoxScope.() -> Unit?)? = null,
-    bottomBox: @Composable (BoxScope.() -> Unit?)? = null
+    bottomBox: @Composable (BoxScope.() -> Unit?)? = null,
 ) =
     Card (
         modifier = modifier
-            .padding(8.dp)
+            .padding(customOuterPadding ?: 8.dp)
             .height(IntrinsicSize.Max)
     ) {
         Box(
             modifier = Modifier
                 .background(color = MaterialTheme.colorScheme.primaryContainer)
                 .fillMaxWidth()
-                .padding(8.dp)
+                .padding(customInnerPadding ?: 8.dp)
         ) {
             if (topBox != null) {
-                Box() {
+                Box {
                     topBox()
                 }
             } else
