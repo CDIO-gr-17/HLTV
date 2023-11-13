@@ -51,26 +51,9 @@ fun getPlayersFromEvent(eventID: Int? = 10945127): APIResponse.Lineup {
 
 fun getPreviousMatches(teamID: Int, pageID: Int = 0 ):APIResponse.EventsWrapper{
 
-    return getAPIResponse("team/"+teamID.toString()+"/matches"+"/previous"+ pageID, APIKEY, APIResponse.EventsWrapper::class.java) as APIResponse.EventsWrapper
+    return getAPIResponse("team/"+teamID.toString()+"/matches/previous/"+ pageID, APIKEY, APIResponse.EventsWrapper::class.java) as APIResponse.EventsWrapper
 }
 
-
-
-
-/**
- * Doesnt work atm
- */
-/*
-private fun getTypeFromURLSnippet(urlSnippet: String): Class<out APIResponse> {
-    return when (urlSnippet){
-        "matches/live" -> APIResponse.EventsWrapper::class.java
-        "Example" -> APIResponse.EventsWrapper::class.java
-        else -> APIResponse.EventsWrapper::class.java
-
-    }
-}
-
- */
 
 private fun getAPIResponse(apiURL: String, apiKEY: String, classtopass:Class<*>): APIResponse {
 
@@ -90,39 +73,13 @@ private fun getAPIResponse(apiURL: String, apiKEY: String, classtopass:Class<*>)
     //Initiating as late as possible for performance reasons. Don't think it makes much of a difference
     val gson = GsonSingleton.instance
     //val regexForPlayersFromEvent = Regex("event/[0-9]+/lineups")
-    val regexForPlayersFromEvent = Regex("^event\\/\\d+\\/lineups\$")
 
-    val match = regexForPlayersFromEvent.matchEntire(apiURL)
-    print("Match is null: " + (match==null) + "\n\n")
-
-    val a = if (match != null){
-        APIResponse.Lineup::class.java
-    } else {
-        when (apiURL) { //
-            "matches/live" -> APIResponse.EventsWrapper::class.java
-            "Example" -> APIResponse.Lineup::class.java
-            else -> APIResponse.Lineup::class.java
-    }
-
-
-    }
     response.close()
 
     return gson.fromJson(jsonString, classtopass) as APIResponse
 }
 
 fun main() {
-   /* val a = getLiveMatches()
-    print(a)
-    if (a != null) {
-        val b = getPlayersFromEvent(a.events[0].id)
-        print(b.toString() + "\n")
-        for (players in b.home?.players!!){
-            print(players.player?.name + "\n")
-
-        }
-    }
-    */
 
     val a = getPreviousMatches(364425,0)
     print(a)
