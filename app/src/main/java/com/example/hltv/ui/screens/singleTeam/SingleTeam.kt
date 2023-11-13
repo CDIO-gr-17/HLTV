@@ -4,9 +4,12 @@ import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.IntrinsicSize
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
@@ -20,23 +23,21 @@ import androidx.compose.ui.unit.dp
 import com.example.hltv.R
 import com.example.hltv.ui.common.CommonCard
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextAlign
 
-
+data class Player(val name: String, val image: Painter)
 @Composable
 fun SingleTeam(){
     LazyColumn{
         item{
             overviewPlayers(
-                player1 = "Device",
-                player2 = "b0RUP",
-                player3 = "blameF",
-                player4 = "Staehr",
-                player5 = "Buzz",
-                player1Image = painterResource(id = R.drawable.person_24px),
-                player2Image = painterResource(id = R.drawable.person_24px),
-                player3Image = painterResource(id = R.drawable.person_24px),
-                player4Image = painterResource(id = R.drawable.person_24px),
-                player5Image = painterResource(id = R.drawable.person_24px)
+                players = listOf(
+                    Player("Device", painterResource(id = R.drawable.person_24px)),
+                    Player("b0RUP", painterResource(id = R.drawable.person_24px)),
+                    Player("blameF", painterResource(id = R.drawable.person_24px)),
+                    Player("Staehr", painterResource(id = R.drawable.person_24px)),
+                    Player("Buzz", painterResource(id = R.drawable.person_24px))
+                )
             )
             overviewInfo(
                 country = "Denmark",
@@ -55,20 +56,49 @@ fun SingleTeam(){
     }
 }
 
-@Composable
-fun overviewPlayers(
-    player1: String,
-    player2: String,
-    player3: String,
-    player4: String,
-    player5: String,
-    player1Image: Painter,
-    player2Image: Painter,
-    player3Image: Painter,
-    player4Image: Painter,
-    player5Image: Painter,
-){
 
+@Composable
+fun overviewPlayers(players: List<Player>) {
+    Row (
+        modifier = Modifier.fillMaxWidth(),
+        horizontalArrangement = Arrangement.SpaceEvenly
+    ){
+        for (player in players) {
+            overviewPlayer(player = player)
+        }
+    }
+}
+
+@Composable
+fun overviewPlayer(
+    player: Player
+){
+    Row {
+        Column(
+            horizontalAlignment = Alignment.CenterHorizontally
+        ){
+            Image(
+                painter = player.image,
+                contentDescription = null,
+                alignment = Alignment.CenterStart,
+                modifier = Modifier
+                    .size(80.dp)
+                    .offset(y = 30.dp)
+            )
+            CommonCard (modifier = Modifier.width(IntrinsicSize.Min),
+                topBox = {
+                    Text(
+                        text = player.name,
+                        fontSize = MaterialTheme.typography.bodyLarge.fontSize,
+                        color = MaterialTheme.colorScheme.onPrimary,
+                        textAlign = TextAlign.Center,
+                        modifier = Modifier.fillMaxWidth(),
+                        fontWeight = FontWeight.Bold
+                    )
+                }
+            )
+        }
+    }
 }
 
 @Composable
@@ -127,9 +157,7 @@ fun recentMatches(
 
 ){
     CommonCard(
-        modifier = Modifier,
-        R = MaterialTheme,
-        cardWidth = Modifier.fillMaxWidth(),
+        modifier = Modifier.fillMaxWidth(),
         topBox = {
             Box {
                 Row (
