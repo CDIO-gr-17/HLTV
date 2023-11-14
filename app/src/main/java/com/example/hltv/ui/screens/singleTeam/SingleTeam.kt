@@ -4,10 +4,9 @@ import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.IntrinsicSize
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.absoluteOffset
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
@@ -25,18 +24,18 @@ import com.example.hltv.ui.common.CommonCard
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 
-data class Player(val name: String, val image: Painter)
+data class Player(val name: String?, val image: Painter?)
 @Composable
 fun SingleTeam(){
     LazyColumn{
         item{
             overviewPlayers(
                 players = listOf(
-                    Player("Device", painterResource(id = R.drawable.person_24px)),
-                    Player("b0RUP", painterResource(id = R.drawable.person_24px)),
-                    Player("blameF", painterResource(id = R.drawable.person_24px)),
-                    Player("Staehr", painterResource(id = R.drawable.person_24px)),
-                    Player("Buzz", painterResource(id = R.drawable.person_24px))
+                    Player("Device", null),
+                    Player("b0RUP", null),
+                    Player("blameF", null),
+                    Player("Staehr", null),
+                    Player("Buzz", null)
                 )
             )
             overviewInfo(
@@ -56,15 +55,12 @@ fun SingleTeam(){
     }
 }
 
-
-// Lige nu er der 'gap' mellem hver spiller. Det skal fjernes. Evt. Equal Weight i stedet for SpaceEvenly?
 @Composable
 fun overviewPlayers(players: List<Player>) {
     Row (
         modifier = Modifier.fillMaxWidth(),
-        horizontalArrangement = Arrangement.SpaceEvenly
-    ){
-        for (player in players) {
+        horizontalArrangement = Arrangement.SpaceEvenly){
+        players.forEach { player ->
             overviewPlayer(player = player)
         }
     }
@@ -72,34 +68,33 @@ fun overviewPlayers(players: List<Player>) {
 
 @Composable
 fun overviewPlayer(
-    player: Player
+    player: Player?
 ){
-    Row {
-        Column(
-            horizontalAlignment = Alignment.CenterHorizontally
-        ){
-            Image(
-                painter = player.image,
-                contentDescription = null,
-                alignment = Alignment.CenterStart,
-                modifier = Modifier
-                    .size(70.dp)
-                    .offset(y = 20.dp)
-            )
-            CommonCard (modifier = Modifier.width(IntrinsicSize.Min),
-                customOuterPadding = 0.dp,
-                topBox = {
-                    Text(
-                        text = player.name,
-                        fontSize = MaterialTheme.typography.bodyLarge.fontSize,
-                        color = MaterialTheme.colorScheme.onPrimary,
-                        textAlign = TextAlign.Center,
-                        modifier = Modifier.fillMaxWidth(),
-                        fontWeight = FontWeight.Bold
-                    )
-                }
-            )
-        }
+    Column(
+        horizontalAlignment = Alignment.CenterHorizontally
+    ) {
+        Image(
+            painter = player?.image ?: painterResource(id = R.drawable.person_24px),
+            contentDescription = null,
+            alignment = Alignment.CenterStart,
+            modifier = Modifier
+                .size(60.dp, 100.dp) //Might change when images of players are imported
+                .absoluteOffset(y = 20.dp) //Not optimal as it leaves space above the images
+        )
+        CommonCard(modifier = Modifier.width(80.dp),
+            customOuterPadding = 1.dp,
+            customInnerPadding = 3.dp,
+            topBox = {
+                Text(
+                    text = player?.name ?: "Unknown",
+                    fontSize = MaterialTheme.typography.bodyMedium.fontSize,
+                    color = MaterialTheme.colorScheme.onPrimary,
+                    textAlign = TextAlign.Center,
+                    modifier = Modifier.fillMaxWidth(),
+                    fontWeight = FontWeight.Bold
+                )
+            }
+        )
     }
 }
 
@@ -194,7 +189,7 @@ fun recentMatches(
                         )
                         Text(
                             text = date,
-                            fontSize = MaterialTheme.typography.bodyMedium.fontSize,
+                            fontSize = MaterialTheme.typography.bodySmall.fontSize,
                             color = MaterialTheme.colorScheme.onPrimary
                         )
                     }
