@@ -44,8 +44,7 @@ fun HomeScreen () {
             .background(color = R.colorScheme.background)
     ) {
         CommonCard(
-            modifier = Modifier, R = MaterialTheme,
-            cardWidth = Modifier.fillMaxWidth(),
+            modifier = Modifier,
             headText = "Tester lige overskriften",
             subText = "Hele tiden tester jeg"
             ) {
