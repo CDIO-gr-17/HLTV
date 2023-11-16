@@ -61,6 +61,23 @@ fun RankingScreen(viewModel: RankingScreenViewModel) {
                 Spacer(modifier = Modifier.height(1.dp))
             }
         }
+        /*
+        CoroutineScope(Dispatchers.IO).launch {
+            // Simulate loading data
+            val liveMatches = getLiveMatches();
+            if (liveMatches != null) {
+                Log.i("RankingScreen", "Size of liveMatches is: " + liveMatches.events.size.toString())
+                teamNames.removeAt(0)
+
+                for ((index, event) in liveMatches.events.withIndex()) {
+                    Log.i("RankingScreen","Adding string with event" + index.toString() + ". Name is: " + event.homeTeam.name + " VS " + event.awayTeam.name)
+                    teamNames.add(event.homeTeam.name + " VS " + event.awayTeam.name)
+                }
+            }
+
+
+        }
+         */
     }
 }
 

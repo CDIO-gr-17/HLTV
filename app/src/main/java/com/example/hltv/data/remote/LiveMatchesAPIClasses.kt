@@ -147,7 +147,7 @@ data class Changes (
 /**
  * Is actually only one event?
  */
-data class Event (
+data class  Event (
 
     @SerializedName("tournament"                      ) var tournament                      : Tournament? = Tournament(),
     @SerializedName("customId"                        ) var customId                        : String?     = null,
