@@ -29,38 +29,42 @@ import androidx.compose.ui.text.style.TextAlign
 data class Player(val name: String, val image: Painter)
 @Composable
 fun SingleTeam(){
-    LazyColumn{
-        item{
-            overviewPlayers(
-                players = listOf(
-                    Player("Device", painterResource(id = R.drawable.person_24px)),
-                    Player("b0RUP", painterResource(id = R.drawable.person_24px)),
-                    Player("blameF", painterResource(id = R.drawable.person_24px)),
-                    Player("Staehr", painterResource(id = R.drawable.person_24px)),
-                    Player("Buzz", painterResource(id = R.drawable.person_24px))
-                )
-            )
-            overviewInfo(
-                country = "Denmark",
-                countryImage = painterResource(id = R.drawable.dk_flag),
-                worldRank = "5"
-            )
-            recentMatches(
-                team1 = "Astralis",
-                team2 = "Astralis",
-                imageTeam1 = painterResource(id = R.drawable.astralis_logo),
-                imageTeam2 = painterResource(id = R.drawable.astralis_logo),
-                score = "16-10",
-                date = "10 October"
-            )
-            stats(
-                coach = "Peter 'Castle' Ardenskjold",
-                points = "1000",
-                winRate = "61%",
-                bestMap = "Overpass",
-                averagePlayerAge = "25",
-                imageNat = painterResource(R.drawable.dk_flag)
-            )
+    LazyColumn {
+        item {
+            CommonCard(modifier = Modifier, bottomBox = {
+                Column {
+                    overviewPlayers(
+                        players = listOf(
+                            Player("Device", painterResource(id = R.drawable.person_24px)),
+                            Player("b0RUP", painterResource(id = R.drawable.person_24px)),
+                            Player("blameF", painterResource(id = R.drawable.person_24px)),
+                            Player("Staehr", painterResource(id = R.drawable.person_24px)),
+                            Player("Buzz", painterResource(id = R.drawable.person_24px))
+                        )
+                    )
+                    overviewInfo(
+                        country = "Denmark",
+                        countryImage = painterResource(id = R.drawable.dk_flag),
+                        worldRank = "5"
+                    )
+                    recentMatches(
+                        team1 = "Astralis",
+                        team2 = "Astralis",
+                        imageTeam1 = painterResource(id = R.drawable.astralis_logo),
+                        imageTeam2 = painterResource(id = R.drawable.astralis_logo),
+                        score = "16-10",
+                        date = "10 October"
+                    )
+                    stats(
+                        coach = "Peter 'Castle' Ardenskjold",
+                        points = "1000",
+                        winRate = "61%",
+                        bestMap = "Overpass",
+                        averagePlayerAge = "25",
+                        imageNat = painterResource(R.drawable.dk_flag)
+                    )
+                }
+            })
         }
     }
 }
