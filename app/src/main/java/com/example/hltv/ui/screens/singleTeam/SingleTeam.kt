@@ -8,6 +8,7 @@ import androidx.compose.foundation.layout.IntrinsicSize
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.offset
+import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
@@ -51,6 +52,14 @@ fun SingleTeam(){
                 imageTeam2 = painterResource(id = R.drawable.astralis_logo),
                 score = "16-10",
                 date = "10 October"
+            )
+            stats(
+                coach = "Peter 'Castle' Ardenskjold",
+                points = "1000",
+                winRate = "61%",
+                bestMap = "Overpass",
+                averagePlayerAge = "25",
+                imageNat = painterResource(R.drawable.dk_flag)
             )
         }
     }
@@ -220,17 +229,7 @@ fun recentMatches(
     )
 }
 
-@Composable
-fun eh(){
-    stats(
-        coach = "Peter 'Castle' Ardenskjold",
-        points = "1000",
-        winRate = "61%",
-        bestMap = "Overpass",
-        averagePlayerAge = "25",
-        imageNat = painterResource(R.drawable.dk_flag)
-    )
-}
+
 @Composable
 fun stats(coach: String,
           points: String,
@@ -238,11 +237,7 @@ fun stats(coach: String,
           bestMap: String,
           averagePlayerAge: String,
           imageNat: Painter){
-    commonCard(
-        modifier = Modifier,
-        R = MaterialTheme,
-        cardWidth = Modifier.fillMaxWidth(),
-        bottomBox = {
+
             Box{
                 Row(
                     modifier = Modifier
@@ -253,13 +248,29 @@ fun stats(coach: String,
                         horizontalAlignment = Alignment.Start
                     ){
                         Text(text = "Statistics",
-                            fontWeight = FontWeight.Bold
+                            fontWeight = FontWeight.Bold,
+                            color = MaterialTheme.colorScheme.onPrimary
                         )
-                        Text(text = "Coach:")
-                        Text(text = "Points:")
-                        Text(text = "Win Rate:")
-                        Text(text = "Best Map:")
-                        Text(text = "Average Player Age:")
+                        Text(
+                            text = "Coach:",
+                            color = MaterialTheme.colorScheme.onPrimary
+                        )
+                        Text(
+                            text = "Points:",
+                            color = MaterialTheme.colorScheme.onPrimary
+                        )
+                        Text(
+                            text = "Win Rate:",
+                            color = MaterialTheme.colorScheme.onPrimary
+                        )
+                        Text(
+                            text = "Best Map:",
+                            color = MaterialTheme.colorScheme.onPrimary
+                        )
+                        Text(
+                            text = "Average Player Age:",
+                            color = MaterialTheme.colorScheme.onPrimary
+                        )
                     }
                     Column (
                         horizontalAlignment = Alignment.End
@@ -267,30 +278,39 @@ fun stats(coach: String,
                         Text(text = "")
                         Row (verticalAlignment = Alignment.CenterVertically
                         ){
-                            Text(text = coach)
+                            Text(
+                                text = coach,
+                                color = MaterialTheme.colorScheme.onPrimary)
                             Image(
                                 painter = imageNat,
                                 contentDescription = null,
                                 alignment = Alignment.CenterEnd,
                                 modifier = Modifier
-                                    .size(17.dp)
+                                    .size(20.dp)
+                                    .padding(1.dp)
                                 )
                         }
-                        Text(text = points)
-                        Text(text = winRate)
-                        Text(text = bestMap)
-                        Text(text = averagePlayerAge)
+                        Text(
+                            text = points,
+                            color = MaterialTheme.colorScheme.onPrimary)
+                        Text(
+                            text = winRate,
+                            color = MaterialTheme.colorScheme.onPrimary)
+                        Text(
+                            text = bestMap,
+                            color = MaterialTheme.colorScheme.onPrimary)
+                        Text(
+                            text = averagePlayerAge,
+                            color = MaterialTheme.colorScheme.onPrimary)
                     }
                 }
             }
         }
-    )
-}
+
 
 
 @Composable
 @Preview
 fun SingleTeamPreview(){
     SingleTeam()
-    eh()
 }
