@@ -7,7 +7,7 @@ const val ONLYCS = false //This seems unnecessary but we ball
 /**
  * Returns live matches
  */
-fun getLiveMatches(): APIResponse.EventsWrapper? {
+suspend fun getLiveMatches(): APIResponse.EventsWrapper? {
 
     val eventsWrapper = getAPIResponse("matches/live", APIKEY, APIResponse.EventsWrapper::class.java) as APIResponse.EventsWrapper
     if (ONLYCS){
@@ -65,11 +65,8 @@ private fun getAPIResponse(apiURL: String, apiKEY: String, desiredClass:Class<*>
 fun main() {
 
     val a = getPreviousMatches(364425,0)
-    val b = getLiveMatches()
-    val c = getPlayersFromEvent(b?.events?.get(0)?.id)
+    //val b = getLiveMatches()
+    //val c = getPlayersFromEvent(b?.events?.get(0)?.id)
     print(a)
-
-
-
 
 }

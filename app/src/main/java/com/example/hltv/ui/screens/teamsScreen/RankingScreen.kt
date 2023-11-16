@@ -13,17 +13,36 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.wrapContentSize
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.material3.Button
 import androidx.compose.material3.Card
+import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateListOf
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-
+import com.example.hltv.data.remote.APIResponse
+import com.example.hltv.data.remote.Event
+import com.example.hltv.data.remote.getLiveMatches
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.setValue
+import androidx.compose.runtime.mutableStateListOf
+import android.util.Log;
 //Used for testing
 val items = (1..20).map { index ->
     ListItem(index, "Item $index Text 1", "Item $index Text 2")
@@ -33,19 +52,38 @@ data class ListItem(val ranking: Int, val text1: String, val text2: String)
 @Composable
 fun RankingScreen() {
     val R = MaterialTheme
+    val teamNames = remember { mutableStateListOf(" ", " ", " ") }
     LazyColumn {
-        items(items.size) { index ->
+
+        items(teamNames.size) { index ->
             //CardRow(team = "Astralis", subtext = "RUSH B", index+1)
-            teamCard(modifier = Modifier, R = R, text1 = "#" + (index + 1).toString() + "  Holdnavn", text2 = "Scoop") //ugly hardcoding, but we ball
+            teamCard(modifier = Modifier, R = R, text1 = "#" + (index + 1).toString() + teamNames[index], text2 = "Scoop") //ugly hardcoding, but we ball
             if (index < items.size-1){
                 Spacer(modifier = Modifier.height(1.dp))
             }
         }
+        /*
+        CoroutineScope(Dispatchers.IO).launch {
+            // Simulate loading data
+            val liveMatches = getLiveMatches();
+            if (liveMatches != null) {
+                Log.i("RankingScreen", "Size of liveMatches is: " + liveMatches.events.size.toString())
+                teamNames.removeAt(0)
+
+                for ((index, event) in liveMatches.events.withIndex()) {
+                    Log.i("RankingScreen","Adding string with event" + index.toString() + ". Name is: " + event.homeTeam.name + " VS " + event.awayTeam.name)
+                    teamNames.add(event.homeTeam.name + " VS " + event.awayTeam.name)
+                }
+            }
+
+
+        }
+         */
     }
 }
 
 @Composable
-fun teamCard(modifier: Modifier, R: MaterialTheme, text1: String, text2: String) =
+fun teamCard(modifier: Modifier, R: MaterialTheme, text1: String = " ", text2: String) =
     Card (
         modifier = modifier
             .fillMaxWidth()
@@ -101,16 +139,45 @@ fun teamCard(modifier: Modifier, R: MaterialTheme, text1: String, text2: String)
                             )
                         }
                     }
-
                 }
             }
-
         }
     }
 
+@Composable
+fun RankingScreenb() {
+    var isLoading by remember { mutableStateOf(false) }
+    var data by remember { mutableStateOf("") }
 
+    Column {
+        if (isLoading) {
+            // Show a progress indicator while loading data
+            CircularProgressIndicator()
+        } else {
+            // Show the loaded data
+            Text(data)
+        }
+
+        Button(onClick = {
+            isLoading = true
+            CoroutineScope(Dispatchers.IO).launch {
+                // Simulate loading data
+                delay(2000)
+
+                // Update data on the main thread
+                withContext(Dispatchers.Main) {
+                    data = "Loaded data"
+                    isLoading = false
+                }
+            }
+        }) {
+            Text("Load Data")
+        }
+    }
+}
 @Preview(showBackground = true)
 @Composable
 fun RankingPreview() {
-    RankingScreen()
+    //MyScreen()
+    //RankingScreen()
 }
