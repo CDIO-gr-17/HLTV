@@ -26,7 +26,7 @@ import com.example.hltv.ui.common.CommonCard
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 
-data class Player(val name: String, val image: Painter)
+data class Player(val name: String ?= null, val image: Painter ?= null)
 @Composable
 fun SingleTeam(){
     LazyColumn {
@@ -35,11 +35,11 @@ fun SingleTeam(){
                 Column {
                     overviewPlayers(
                         players = listOf(
-                            Player("Device", painterResource(id = R.drawable.person_24px)),
-                            Player("b0RUP", painterResource(id = R.drawable.person_24px)),
-                            Player("blameF", painterResource(id = R.drawable.person_24px)),
-                            Player("Staehr", painterResource(id = R.drawable.person_24px)),
-                            Player("Buzz", painterResource(id = R.drawable.person_24px))
+                            Player(name = null, image = null),
+                            Player("b0RUP", image = null),
+                            Player("blameF", image = null),
+                            Player("Staehr", image = null),
+                            Player("Buzz", image = null)
                         )
                     )
                     overviewInfo(
@@ -92,7 +92,7 @@ fun overviewPlayer(
             horizontalAlignment = Alignment.CenterHorizontally
         ){
             Image(
-                painter = player.image,
+                painter = player.image ?: painterResource(id = R.drawable.person_24px),
                 contentDescription = null,
                 alignment = Alignment.CenterStart,
                 modifier = Modifier
@@ -103,8 +103,8 @@ fun overviewPlayer(
                 customOuterPadding = 0.dp,
                 topBox = {
                     Text(
-                        text = player.name,
-                        fontSize = MaterialTheme.typography.bodyLarge.fontSize,
+                        text = player.name ?: "Unknown",
+                        fontSize = MaterialTheme.typography.bodyMedium.fontSize,
                         color = MaterialTheme.colorScheme.onPrimary,
                         textAlign = TextAlign.Center,
                         modifier = Modifier.fillMaxWidth(),
