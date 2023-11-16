@@ -18,6 +18,7 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.painter.Painter
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.Dp
@@ -33,6 +34,7 @@ fun CommonComposable() {
                modifier = Modifier.fillMaxWidth(),
                headText = "Blast Premier world final 2023", //Valgfri - Erstatning for topBox
                subText = "Oct. 13 - Nov. 13", //Valgfri - Erstatning for topBox
+               image = painterResource(id = com.example.hltv.R.drawable.astralis_logo),
                bottomBox = {
                    Box {
                        Text(
@@ -95,6 +97,7 @@ fun CommonCard(
     modifier: Modifier,
     headText: String ?= null,
     subText: String ?= null,
+    image: Painter?= null,
     customOuterPadding: Dp ?= null,
     customInnerPadding: Dp ?= null,
     topBox: @Composable (BoxScope.() -> Unit?)? = null,
@@ -140,13 +143,15 @@ fun CommonCard(
                             )
                         }
                     }
-                    Image(
-                        painter = painterResource(id = com.example.hltv.R.drawable.astralis_logo),
-                        contentDescription = null,
-                        alignment = Alignment.CenterEnd,
-                        modifier = Modifier
-                            .size(40.dp)
-                    )
+                    image?.let {
+                        Image(
+                            painter = image,
+                            contentDescription = null,
+                            alignment = Alignment.CenterEnd,
+                            modifier = Modifier
+                                .size(40.dp)
+                        )
+                    }
                 }
         }
         bottomBox?.let { bottomBox ->
