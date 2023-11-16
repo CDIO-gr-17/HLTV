@@ -19,6 +19,7 @@ import androidx.compose.ui.unit.dp
 import com.example.hltv.R
 import com.example.hltv.ui.common.commonCard
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextAlign
 
 
 @Composable
@@ -108,7 +109,76 @@ fun recentMatches(
 }
 
 @Composable
+fun eh(){
+    stats(
+        coach = "Peter 'Castle' Ardenskjold",
+        points = "1000",
+        winRate = "61%",
+        bestMap = "Overpass",
+        averagePlayerAge = "25",
+        imageNat = painterResource(R.drawable.dk_flag)
+    )
+}
+@Composable
+fun stats(coach: String,
+          points: String,
+          winRate: String,
+          bestMap: String,
+          averagePlayerAge: String,
+          imageNat: Painter){
+    commonCard(
+        modifier = Modifier,
+        R = MaterialTheme,
+        cardWidth = Modifier.fillMaxWidth(),
+        bottomBox = {
+            Box{
+                Row(
+                    modifier = Modifier
+                        .fillMaxWidth(),
+                    horizontalArrangement = Arrangement.SpaceBetween
+                ){
+                    Column (
+                        horizontalAlignment = Alignment.Start
+                    ){
+                        Text(text = "Statistics",
+                            fontWeight = FontWeight.Bold
+                        )
+                        Text(text = "Coach:")
+                        Text(text = "Points:")
+                        Text(text = "Win Rate:")
+                        Text(text = "Best Map:")
+                        Text(text = "Average Player Age:")
+                    }
+                    Column (
+                        horizontalAlignment = Alignment.End
+                    ){
+                        Text(text = "")
+                        Row (verticalAlignment = Alignment.CenterVertically
+                        ){
+                            Text(text = coach)
+                            Image(
+                                painter = imageNat,
+                                contentDescription = null,
+                                alignment = Alignment.CenterEnd,
+                                modifier = Modifier
+                                    .size(17.dp)
+                                )
+                        }
+                        Text(text = points)
+                        Text(text = winRate)
+                        Text(text = bestMap)
+                        Text(text = averagePlayerAge)
+                    }
+                }
+            }
+        }
+    )
+}
+
+
+@Composable
 @Preview
 fun SingleTeamPreview(){
     SingleTeam()
+    eh()
 }
