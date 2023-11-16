@@ -56,7 +56,7 @@ fun RankingScreen(viewModel: RankingScreenViewModel) {
     LazyColumn {
         items(viewModel.teamNames.size) { index ->
             //CardRow(team = "Astralis", subtext = "RUSH B", index+1)
-            teamCard(modifier = Modifier, R = R, text1 = "#" + (index + 1).toString() + viewModel.teamNames[index], text2 = "Unused") //ugly hardcoding, but we ball
+            teamCard(modifier = Modifier, R = R, text1 = viewModel.teamNames[index], text2 = "Unused") //ugly hardcoding, but we ball
             if (index < items.size-1){
                 Spacer(modifier = Modifier.height(1.dp))
             }

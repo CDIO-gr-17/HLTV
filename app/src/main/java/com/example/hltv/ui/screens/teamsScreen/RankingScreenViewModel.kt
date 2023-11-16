@@ -18,7 +18,7 @@ class RankingScreenViewModel: ViewModel() {
             val liveMatches = getLiveMatches();
             teamNames.clear()
             if (liveMatches != null) {
-                Log.i("RankingScreen", "Size of liveMatches is: " + liveMatches.events.size.toString())
+                //Log.i("RankingScreen", "Size of liveMatches is: " + liveMatches.events.size.toString())
 
                 for ((index, event) in liveMatches.events.withIndex()) {
                     Log.i("RankingScreen","Adding string with event" + index.toString() + ". Name is: " + event.homeTeam.name + " VS " + event.awayTeam.name)
