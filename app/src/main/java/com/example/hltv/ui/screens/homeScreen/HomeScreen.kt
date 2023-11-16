@@ -26,24 +26,36 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.example.hltv.ui.common.CommonCard
 
 
 @Composable
-fun HomeScreen (modifier: Modifier=Modifier.background(MaterialTheme.colorScheme.background)) {
+fun HomeScreen () {
     val R = MaterialTheme
 
     Column (
         horizontalAlignment = Alignment.CenterHorizontally,
         modifier = Modifier
             .fillMaxSize()
+            .background(color = R.colorScheme.background)
     ) {
+        CommonCard(
+            modifier = Modifier, R = MaterialTheme,
+            cardWidth = Modifier.fillMaxWidth(),
+            headText = "Tester lige overskriften",
+            subText = "Hele tiden tester jeg"
+            ) {
+            Text(text ="Bottombox")
+            
+        }
+
+
         Card (
-            modifier = modifier
+            modifier = Modifier
                 .fillMaxWidth()
                 .padding(8.dp)
                 .height(200.dp)
@@ -51,7 +63,7 @@ fun HomeScreen (modifier: Modifier=Modifier.background(MaterialTheme.colorScheme
 
         ){
             Box(modifier = Modifier
-                .background(color = Color.Magenta)
+                .background(color = R.colorScheme.primaryContainer)
                 .fillMaxWidth()
                 .height(50.dp)
             ) {
@@ -63,7 +75,7 @@ fun HomeScreen (modifier: Modifier=Modifier.background(MaterialTheme.colorScheme
                             .fillMaxHeight()
                             .weight(1f),
                         fontSize = R.typography.bodyLarge.fontSize,
-                        color = R.colorScheme.primary,
+                        color = R.colorScheme.onPrimaryContainer,
                         )
 
                     Icon(
@@ -75,14 +87,14 @@ fun HomeScreen (modifier: Modifier=Modifier.background(MaterialTheme.colorScheme
 
                 }
             }
-            Row () {
+            Row (modifier = Modifier.background(color = R.colorScheme.secondaryContainer)) {
                 Column (horizontalAlignment = Alignment.CenterHorizontally,
                     modifier = Modifier.fillMaxWidth(0.5f)){
                     Text(text = "Astralis",
                         modifier = Modifier
                             .padding(8.dp),
                         fontSize = 14.sp,
-                        color = R.colorScheme.primary,
+                        color = R.colorScheme.onSecondaryContainer,
                         textAlign = TextAlign.Center,
                         )
                     Icon(imageVector = Icons.Default.Check,
@@ -96,7 +108,8 @@ fun HomeScreen (modifier: Modifier=Modifier.background(MaterialTheme.colorScheme
                 Divider(modifier = Modifier
                     .fillMaxHeight()
                     .width(1.dp)
-                    .padding(vertical = 4.dp)
+                    .padding(vertical = 4.dp),
+                    color = R.colorScheme.onBackground
                 )
                 Column (horizontalAlignment = Alignment.CenterHorizontally,
                     modifier = Modifier.fillMaxWidth()){
@@ -104,7 +117,7 @@ fun HomeScreen (modifier: Modifier=Modifier.background(MaterialTheme.colorScheme
                         modifier = Modifier
                             .padding(8.dp),
                         fontSize = 14.sp,
-                        color = R.colorScheme.primary,
+                        color = R.colorScheme.onSecondaryContainer,
                         textAlign = TextAlign.Center,
                     )
                     Icon(imageVector = Icons.Default.Check,
@@ -117,10 +130,10 @@ fun HomeScreen (modifier: Modifier=Modifier.background(MaterialTheme.colorScheme
                 }
             }
         }
-        Divider(modifier = modifier.padding(horizontal = 8.dp))
+        Divider(modifier = Modifier.padding(horizontal = 8.dp), color = R.colorScheme.onBackground)
         Card (
 
-            modifier = modifier
+            modifier = Modifier
                 .fillMaxWidth()
                 .padding(8.dp)
                 .height(150.dp)
@@ -128,7 +141,7 @@ fun HomeScreen (modifier: Modifier=Modifier.background(MaterialTheme.colorScheme
 
         ){
             Box(modifier = Modifier
-                .background(color = Color.Magenta)
+                .background(color = R.colorScheme.primaryContainer)
                 .fillMaxWidth()
                 .fillMaxHeight(0.5f)
             ) {
@@ -139,9 +152,10 @@ fun HomeScreen (modifier: Modifier=Modifier.background(MaterialTheme.colorScheme
                             modifier = Modifier
                                 .padding(8.dp)
                                 .fillMaxHeight()
-                                .weight(1f),
+                                .weight(1f)
+                            ,
                             fontSize = R.typography.bodyLarge.fontSize,
-                            color = R.colorScheme.primary,
+                            color = R.colorScheme.onPrimaryContainer,
 
                         )
                         Text(
@@ -152,7 +166,7 @@ fun HomeScreen (modifier: Modifier=Modifier.background(MaterialTheme.colorScheme
                                 .fillMaxHeight()
                                 .weight(1f),
                             fontSize = R.typography.bodyMedium.fontSize,
-                            color = R.colorScheme.primary,
+                            color = R.colorScheme.onPrimaryContainer,
                         )
                     }
 
@@ -168,13 +182,13 @@ fun HomeScreen (modifier: Modifier=Modifier.background(MaterialTheme.colorScheme
                 }
 
             }
-            Row {
+            Row (modifier = Modifier.background(color = R.colorScheme.secondaryContainer)) {
                 Column(
                     modifier = Modifier.weight(0.5f)
                 ) {
                     Text(
                         text = "Location",
-                        color = R.colorScheme.primary,
+                        color = R.colorScheme.onSecondaryContainer,
                         fontSize = R.typography.bodyMedium.fontSize,
                         modifier = Modifier
                             .padding(all = 8.dp)
@@ -182,7 +196,7 @@ fun HomeScreen (modifier: Modifier=Modifier.background(MaterialTheme.colorScheme
                     )
                     Text(
                         text = "Prize pool",
-                        color = R.colorScheme.primary,
+                        color = R.colorScheme.onSecondaryContainer,
                         fontSize = R.typography.bodyMedium.fontSize,
                         modifier = Modifier
                             .padding(all = 8.dp)
@@ -196,7 +210,7 @@ fun HomeScreen (modifier: Modifier=Modifier.background(MaterialTheme.colorScheme
                     Row {
                         Text(
                             text = "Abu Dhabi",
-                            color = R.colorScheme.primary,
+                            color = R.colorScheme.onSecondaryContainer,
                             fontSize = R.typography.bodyMedium.fontSize,
                             textAlign = TextAlign.End,
                             modifier = Modifier
@@ -213,7 +227,7 @@ fun HomeScreen (modifier: Modifier=Modifier.background(MaterialTheme.colorScheme
 
                     Text(
                         text = "$1,000,000",
-                        color = R.colorScheme.primary,
+                        color = R.colorScheme.onSecondaryContainer,
                         fontSize = R.typography.bodyMedium.fontSize,
                         modifier = Modifier
                             .padding(all = 8.dp)
@@ -225,7 +239,7 @@ fun HomeScreen (modifier: Modifier=Modifier.background(MaterialTheme.colorScheme
             }
 
         }
-        Divider(modifier = modifier.padding(horizontal = 8.dp))
+        Divider(modifier = Modifier.padding(horizontal = 8.dp), color = R.colorScheme.onBackground)
 
         Text(
             text = "News",

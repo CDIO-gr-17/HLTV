@@ -4,9 +4,13 @@ import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.IntrinsicSize
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -17,21 +21,131 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.example.hltv.R
-import com.example.hltv.ui.common.commonCard
+import com.example.hltv.ui.common.CommonCard
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 
-
+data class Player(val name: String, val image: Painter)
 @Composable
 fun SingleTeam(){
-    recentMatches(
-        team1 = "Astralis",
-        team2 = "Astralis",
-        imageTeam1 = painterResource(id = R.drawable.astralis_logo),
-        imageTeam2 = painterResource(id = R.drawable.astralis_logo),
-        score = "16-10",
-        date = "10 October"
-        )
+    LazyColumn{
+        item{
+            overviewPlayers(
+                players = listOf(
+                    Player("Device", painterResource(id = R.drawable.person_24px)),
+                    Player("b0RUP", painterResource(id = R.drawable.person_24px)),
+                    Player("blameF", painterResource(id = R.drawable.person_24px)),
+                    Player("Staehr", painterResource(id = R.drawable.person_24px)),
+                    Player("Buzz", painterResource(id = R.drawable.person_24px))
+                )
+            )
+            overviewInfo(
+                country = "Denmark",
+                countryImage = painterResource(id = R.drawable.dk_flag),
+                worldRank = "5"
+            )
+            recentMatches(
+                team1 = "Astralis",
+                team2 = "Astralis",
+                imageTeam1 = painterResource(id = R.drawable.astralis_logo),
+                imageTeam2 = painterResource(id = R.drawable.astralis_logo),
+                score = "16-10",
+                date = "10 October"
+            )
+        }
+    }
+}
+
+
+// Lige nu er der 'gap' mellem hver spiller. Det skal fjernes. Evt. Equal Weight i stedet for SpaceEvenly?
+@Composable
+fun overviewPlayers(players: List<Player>) {
+    Row (
+        modifier = Modifier.fillMaxWidth(),
+        horizontalArrangement = Arrangement.SpaceEvenly
+    ){
+        for (player in players) {
+            overviewPlayer(player = player)
+        }
+    }
+}
+
+@Composable
+fun overviewPlayer(
+    player: Player
+){
+    Row {
+        Column(
+            horizontalAlignment = Alignment.CenterHorizontally
+        ){
+            Image(
+                painter = player.image,
+                contentDescription = null,
+                alignment = Alignment.CenterStart,
+                modifier = Modifier
+                    .size(70.dp)
+                    .offset(y = 20.dp)
+            )
+            CommonCard (modifier = Modifier.width(IntrinsicSize.Min),
+                customOuterPadding = 0.dp,
+                topBox = {
+                    Text(
+                        text = player.name,
+                        fontSize = MaterialTheme.typography.bodyLarge.fontSize,
+                        color = MaterialTheme.colorScheme.onPrimary,
+                        textAlign = TextAlign.Center,
+                        modifier = Modifier.fillMaxWidth(),
+                        fontWeight = FontWeight.Bold
+                    )
+                }
+            )
+        }
+    }
+}
+
+@Composable
+fun overviewInfo(
+    country: String,
+    countryImage: Painter,
+    worldRank: String
+){
+    Row (
+        modifier = Modifier.fillMaxWidth(),
+        horizontalArrangement = Arrangement.SpaceAround
+    ){
+        Column(
+            horizontalAlignment = Alignment.CenterHorizontally
+        ){
+            Text(
+                text = country,
+                fontSize = MaterialTheme.typography.bodyLarge.fontSize,
+                color = MaterialTheme.colorScheme.onPrimary,
+                fontWeight = FontWeight.Bold
+            )
+            Image(
+                painter = countryImage,
+                contentDescription = null,
+                alignment = Alignment.CenterStart,
+                modifier = Modifier
+                    .size(40.dp)
+            )
+        }
+        Column(
+            horizontalAlignment = Alignment.CenterHorizontally
+        ){
+            Text(
+                text = "World Ranking",
+                fontSize = MaterialTheme.typography.bodyLarge.fontSize,
+                color = MaterialTheme.colorScheme.onPrimary,
+                fontWeight = FontWeight.Bold
+            )
+            Text(
+                text = "#" + worldRank,
+                fontSize = MaterialTheme.typography.bodyLarge.fontSize,
+                color = MaterialTheme.colorScheme.onPrimary
+            )
+        }
+    }
 }
 
 @Composable
@@ -44,10 +158,8 @@ fun recentMatches(
     date: String,
 
 ){
-    commonCard(
-        modifier = Modifier,
-        R = MaterialTheme,
-        cardWidth = Modifier.fillMaxWidth(),
+    CommonCard(
+        modifier = Modifier.fillMaxWidth(),
         topBox = {
             Box {
                 Row (

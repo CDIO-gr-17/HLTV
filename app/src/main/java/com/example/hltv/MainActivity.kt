@@ -13,6 +13,7 @@ import androidx.compose.material3.CenterAlignedTopAppBar
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.NavigationBar
 import androidx.compose.material3.NavigationBarItem
 import androidx.compose.material3.Scaffold
@@ -20,16 +21,15 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.res.vectorResource
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
+import com.example.compose.HLTVTheme
 import com.example.hltv.navigation.Home
 import com.example.hltv.navigation.MainNavHost
 import com.example.hltv.navigation.Settings
 import com.example.hltv.navigation.bottomAppBarScreens
-import com.example.hltv.ui.theme.HLTVTheme
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -51,11 +51,12 @@ fun HLTVApp() {
         val currentScreen =
             bottomAppBarScreens.find { it.route == currentDestination?.route } ?: Home
 
+
         Scaffold(
             topBar = {
                 CenterAlignedTopAppBar(
                     title = if (currentDestination?.route != Settings.route) {
-                        { Text(text = currentScreen.route) }
+                        { Text(text = currentScreen.route, color = MaterialTheme.colorScheme.onSurface) }
                     } else {
                         { Text(text = "Settings") }
                     },
@@ -75,14 +76,15 @@ fun HLTVApp() {
                         IconButton(onClick = { navController.navigate(Settings.route) }) {
                             Icon(
                                 imageVector = Icons.Default.Settings,
-                                contentDescription = "Settings Icon"
+                                contentDescription = "Settings Icon",
+                                tint = MaterialTheme.colorScheme.onSurface
                             )
                         }
-                    }
+                    },
                 )
             },
             bottomBar = {
-                NavigationBar {
+                NavigationBar (containerColor = MaterialTheme.colorScheme.surface) {
                     bottomAppBarScreens.forEach() { item ->
                         NavigationBarItem(
                             selected = currentScreen == item,
@@ -91,7 +93,7 @@ fun HLTVApp() {
                                 Icon(
                                     imageVector = ImageVector.vectorResource(id =item.icon),
                                     contentDescription = item.route + "Icon",
-                                    tint = if (currentScreen == item) Color.Red else Color.Green
+                                    tint = if (currentScreen == item) MaterialTheme.colorScheme.tertiary else MaterialTheme.colorScheme.onSurface
 
                                 )
                             },

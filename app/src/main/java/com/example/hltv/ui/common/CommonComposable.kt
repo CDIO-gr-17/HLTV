@@ -20,6 +20,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 
 @Composable
@@ -28,10 +29,8 @@ fun CommonComposable() {
     LazyColumn{
         item {
             //Eksempel med brug af headText og subText uden topBox
-           commonCard(
-               modifier = Modifier,
-               R = MaterialTheme,
-               cardWidth = Modifier.fillMaxWidth(),
+           CommonCard(
+               modifier = Modifier.fillMaxWidth(),
                headText = "Blast Premier world final 2023", //Valgfri - Erstatning for topBox
                subText = "Oct. 13 - Nov. 13", //Valgfri - Erstatning for topBox
                bottomBox = {
@@ -39,6 +38,7 @@ fun CommonComposable() {
                        Text(
                            text = "Eventinformation",
                            fontSize = MaterialTheme.typography.bodyLarge.fontSize,
+                           color = MaterialTheme.colorScheme.onSecondaryContainer,
                            modifier = Modifier
                                .align(Alignment.CenterStart)
                        )
@@ -46,15 +46,14 @@ fun CommonComposable() {
                }
            )
             //Eksempel med brug af topBox og bottomBox
-            commonCard(
-                modifier = Modifier,
-                R = MaterialTheme,
-                cardWidth = Modifier.fillMaxWidth(),
+            CommonCard(
+                modifier = Modifier.fillMaxWidth(),
                 topBox = { //Valgfri - Erstatning for headText / subText
                     Box {
                         Text(
                             text = "topBox information",
                             fontSize = MaterialTheme.typography.bodyLarge.fontSize,
+                            color = MaterialTheme.colorScheme.onPrimaryContainer,
                             modifier = Modifier
                                 .align(Alignment.CenterStart)
                         )
@@ -65,6 +64,7 @@ fun CommonComposable() {
                         Text(
                             text = "bottomBox information",
                             fontSize = MaterialTheme.typography.bodyLarge.fontSize,
+                            color = MaterialTheme.colorScheme.onSecondaryContainer,
                             modifier = Modifier
                                 .align(Alignment.CenterStart)
                         )
@@ -72,15 +72,14 @@ fun CommonComposable() {
                 }
             )
             //Eksempel med brug af topBox uden bottomBox
-            commonCard(
-                modifier = Modifier,
-                R = MaterialTheme,
-                cardWidth = Modifier.fillMaxWidth(),
+            CommonCard(
+                modifier = Modifier.fillMaxWidth(),
                 topBox = { //Valgfri - Erstatning for headText / subText
                     Box {
                         Text(
                             text = "topBox information",
                             fontSize = MaterialTheme.typography.bodyLarge.fontSize,
+                            color = MaterialTheme.colorScheme.onPrimaryContainer,
                             modifier = Modifier
                                 .align(Alignment.CenterStart)
                         )
@@ -92,29 +91,28 @@ fun CommonComposable() {
 }
 
 @Composable
-fun commonCard(
+fun CommonCard(
     modifier: Modifier,
-    R: MaterialTheme,
-    cardWidth: Modifier,
     headText: String ?= null,
     subText: String ?= null,
-    topBox: @Composable() (BoxScope.() -> Unit?)? = null,
-    bottomBox: @Composable() (BoxScope.() -> Unit?)? = null
+    customOuterPadding: Dp ?= null,
+    customInnerPadding: Dp ?= null,
+    topBox: @Composable (BoxScope.() -> Unit?)? = null,
+    bottomBox: @Composable (BoxScope.() -> Unit?)? = null,
 ) =
     Card (
         modifier = modifier
-            .then(cardWidth)
-            .padding(8.dp)
+            .padding(customOuterPadding ?: 8.dp)
             .height(IntrinsicSize.Max)
     ) {
         Box(
             modifier = Modifier
-                .background(color = R.colorScheme.primary)
+                .background(color = MaterialTheme.colorScheme.primaryContainer)
                 .fillMaxWidth()
-                .padding(8.dp)
+                .padding(customInnerPadding ?: 8.dp)
         ) {
             if (topBox != null) {
-                Box() {
+                Box {
                     topBox()
                 }
             } else
@@ -130,15 +128,15 @@ fun commonCard(
                         headText?.let {
                             Text(
                                 text = it,
-                                fontSize = R.typography.bodyLarge.fontSize,
-                                color = R.colorScheme.onSecondary,
+                                fontSize = MaterialTheme.typography.bodyLarge.fontSize,
+                                color = MaterialTheme.colorScheme.onPrimaryContainer,
                             )
                         }
                         subText?.let {
                             Text(
                                 text = it,
-                                fontSize = R.typography.bodyMedium.fontSize,
-                                color = R.colorScheme.onSecondary,
+                                fontSize = MaterialTheme.typography.bodyMedium.fontSize,
+                                color = MaterialTheme.colorScheme.onPrimaryContainer,
                             )
                         }
                     }
@@ -156,6 +154,7 @@ fun commonCard(
                 modifier = Modifier
                     .padding(8.dp)
                     .height(IntrinsicSize.Max)
+                    .background(color = MaterialTheme.colorScheme.secondaryContainer)
             ) {
                 bottomBox()
             }
@@ -163,7 +162,7 @@ fun commonCard(
     }
 
 
-@Preview(showBackground = true)
+@Preview
 @Composable
 fun CommonComposablePreview() {
     CommonComposable()
