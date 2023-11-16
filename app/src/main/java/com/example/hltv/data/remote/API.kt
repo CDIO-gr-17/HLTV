@@ -1,7 +1,7 @@
 package com.example.hltv.data.remote
 import okhttp3.Request
 
-const val APIKEY = "0bb790a9cemsh84cfcecde257781p164a86jsn329610f90740"
+const val APIKEY = "478aa6c7a2msh89c2c0c24f19184p1edb29jsn1d19bce3a650"
 const val ONLYCS = false //This seems unnecessary but we ball
 
 /**
@@ -34,7 +34,7 @@ fun getPlayersFromEvent(eventID: Int? = 10945127): APIResponse.Lineup {
 
 
 
-fun getPreviousMatches(teamID: Int, pageID: Int = 0 ):APIResponse.EventsWrapper{
+fun getPreviousMatches(teamID: Int, pageID: Int = 0):APIResponse.EventsWrapper{
 
     return getAPIResponse("team/"+teamID.toString()+"/matches/previous/"+ pageID, APIKEY, APIResponse.EventsWrapper::class.java) as APIResponse.EventsWrapper
 }

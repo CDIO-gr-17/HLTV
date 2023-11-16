@@ -15,6 +15,7 @@ import com.example.hltv.ui.screens.matchesScreen.MatchesScreen
 import com.example.hltv.ui.screens.newsScreen.NewsScreen
 import com.example.hltv.ui.screens.teamsScreen.RankingScreen
 import com.example.hltv.ui.screens.settingsScreen.SettingsScreen
+import com.example.hltv.ui.screens.teamsScreen.RankingScreenViewModel
 
 interface Destination {
     val icon : ImageVector
@@ -45,7 +46,7 @@ object News : Destination {
 object Ranking : Destination {
     override val icon: ImageVector = Icons.Default.List
     override val route: String = "Ranking"
-    override val screen: @Composable () -> Unit = { RankingScreen() }
+    override val screen: @Composable () -> Unit = { RankingScreen(RankingScreenViewModel()) }
 }
 object Settings : Destination {
     override val icon: ImageVector = Icons.Default.Settings

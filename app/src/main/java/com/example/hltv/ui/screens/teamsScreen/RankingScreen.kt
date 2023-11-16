@@ -50,35 +50,17 @@ val items = (1..20).map { index ->
 data class ListItem(val ranking: Int, val text1: String, val text2: String)
 
 @Composable
-fun RankingScreen() {
+fun RankingScreen(viewModel: RankingScreenViewModel) {
     val R = MaterialTheme
-    val teamNames = remember { mutableStateListOf(" ", " ", " ") }
-    LazyColumn {
 
-        items(teamNames.size) { index ->
+    LazyColumn {
+        items(viewModel.teamNames.size) { index ->
             //CardRow(team = "Astralis", subtext = "RUSH B", index+1)
-            teamCard(modifier = Modifier, R = R, text1 = "#" + (index + 1).toString() + teamNames[index], text2 = "Scoop") //ugly hardcoding, but we ball
+            teamCard(modifier = Modifier, R = R, text1 = "#" + (index + 1).toString() + viewModel.teamNames[index], text2 = "Unused") //ugly hardcoding, but we ball
             if (index < items.size-1){
                 Spacer(modifier = Modifier.height(1.dp))
             }
         }
-        /*
-        CoroutineScope(Dispatchers.IO).launch {
-            // Simulate loading data
-            val liveMatches = getLiveMatches();
-            if (liveMatches != null) {
-                Log.i("RankingScreen", "Size of liveMatches is: " + liveMatches.events.size.toString())
-                teamNames.removeAt(0)
-
-                for ((index, event) in liveMatches.events.withIndex()) {
-                    Log.i("RankingScreen","Adding string with event" + index.toString() + ". Name is: " + event.homeTeam.name + " VS " + event.awayTeam.name)
-                    teamNames.add(event.homeTeam.name + " VS " + event.awayTeam.name)
-                }
-            }
-
-
-        }
-         */
     }
 }
 
