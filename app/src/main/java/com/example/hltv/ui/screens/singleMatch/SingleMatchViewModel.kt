@@ -19,22 +19,24 @@ import okhttp3.Dispatcher
 class SingleMatchViewModel: ViewModel() {
     private val _matches = MutableStateFlow<List<APIResponse.EventsWrapper>>(emptyList())
     val matches =_matches.asStateFlow()
-    val teamNames =  mutableStateListOf(" ", " ", " ")
+    val matchResult =  mutableStateListOf(" ", " ", " ")
+
 
 
 
  init{
 
+
      CoroutineScope(Dispatchers.IO).launch {
          // Simulate loading data
-         val liveMatches = getLiveMatches();
-         if (liveMatches != null) {
-             Log.i("RankingScreen", "Size of liveMatches is: " + liveMatches.events.size.toString())
-             teamNames.removeAt(0)
 
-             for ((index, event) in liveMatches.events.withIndex()) {
-                 Log.i("RankingScreen","Adding string with event" + index.toString() + ". Name is: " + event.homeTeam.name + " VS " + event.awayTeam.name)
-                 teamNames.add(event.homeTeam.name + " VS " + event.awayTeam.name)
+         val prevMatches = getPreviousMatches(364425,0)
+         matchResult.clear()
+         if (prevMatches != null) {
+             Log.i("RankingScreen", "Size of liveMatches is: " + prevMatches.events.size.toString())
+             for ((index, event) in prevMatches.events.withIndex()) {
+                 Log.i("RankingScreen","Adding string with event" + index.toString() + ". Name is: " + event.winnerCode.toString()+ " VS " + event.time)
+                 matchResult.add(event.winnerCode.toString() + " VS " + event.awayTeam.name)
              }
          }
 
