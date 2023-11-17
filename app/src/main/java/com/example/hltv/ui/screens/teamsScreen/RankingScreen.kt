@@ -1,4 +1,5 @@
 package com.example.hltv.ui.screens.teamsScreen
+import android.graphics.Bitmap
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
@@ -43,6 +44,17 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.setValue
 import androidx.compose.runtime.mutableStateListOf
 import android.util.Log;
+import android.widget.ImageView
+import androidx.compose.material3.LocalContentColor
+import androidx.compose.ui.graphics.painter.Painter
+import androidx.compose.ui.platform.LocalContext
+import coil.ImageLoader
+import coil.compose.AsyncImage
+import coil.compose.AsyncImagePainter
+import coil.compose.rememberAsyncImagePainter
+import coil.compose.rememberImagePainter
+import com.example.hltv.data.remote.getPlayerImage
+
 //Used for testing
 val items = (1..20).map { index ->
     ListItem(index, "Item $index Text 1", "Item $index Text 2")
@@ -52,7 +64,6 @@ data class ListItem(val ranking: Int, val text1: String, val text2: String)
 @Composable
 fun RankingScreen(viewModel: RankingScreenViewModel) {
     val R = MaterialTheme
-
     LazyColumn {
         items(viewModel.teamNames.size) { index ->
             //CardRow(team = "Astralis", subtext = "RUSH B", index+1)

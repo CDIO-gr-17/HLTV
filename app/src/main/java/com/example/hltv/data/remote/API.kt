@@ -1,13 +1,19 @@
 package com.example.hltv.data.remote
+import android.graphics.Bitmap
+import android.graphics.BitmapFactory
+import android.util.Base64
+import android.util.Log
 import okhttp3.Request
+import java.io.ByteArrayOutputStream
 
-const val APIKEY = "478aa6c7a2msh89c2c0c24f19184p1edb29jsn1d19bce3a650"
+const val APIKEY = "24b0f292d5mshdf7eb12b4760333p19075ajsncc1561769190"
 const val ONLYCS = false //This seems unnecessary but we ball
 
 /**
  * Returns live matches
  */
-suspend fun getLiveMatches(): APIResponse.EventsWrapper? {
+fun getLiveMatches(): APIResponse.EventsWrapper? {
+
 
     val eventsWrapper = getAPIResponse("matches/live", APIKEY, APIResponse.EventsWrapper::class.java) as APIResponse.EventsWrapper
     if (ONLYCS){
@@ -33,6 +39,45 @@ fun getPlayersFromEvent(eventID: Int? = 10945127): APIResponse.Lineup {
 
 
 
+//Doesnt use the reusable function because of the return type
+fun getPlayerImage(playerID: Int? = 1078255): Bitmap {
+
+    val apiKEY = APIKEY;
+
+    val request = Request.Builder()
+        .url("https://allsportsapi2.p.rapidapi.com/api/esport/player/" + playerID.toString() + "/image")
+        .get()
+        .addHeader("X-RapidAPI-Key", apiKEY)
+        .addHeader("X-RapidAPI-Host", "allsportsapi2.p.rapidapi.com")
+        .build()
+
+    val client = OkHttpClientSingleton.instance
+    val response = client.newCall(request).execute()
+
+    val inputStream2 = response.body?.byteStream()
+    val buffer = ByteArray(1024)
+    val output = ByteArrayOutputStream()
+
+    if (inputStream2 != null) {
+        var bytesRead = inputStream2.read(buffer)
+        Log.i("getPlayerImage", "bytesRead is: " + bytesRead.toString())
+        while (bytesRead != -1) {
+            output.write(buffer, 0, bytesRead)
+            bytesRead = inputStream2.read(buffer)
+        }
+    }else{
+        Log.i("getPlayerImage", "inputStream2 is null")
+    }
+
+
+    val base64String = Base64.encodeToString(output.toByteArray(), Base64.DEFAULT)
+    println(base64String)
+
+    val decodedImage: ByteArray = android.util.Base64.decode(base64String, 0)
+    val bitmap = BitmapFactory.decodeByteArray(decodedImage, 0, decodedImage.size)
+
+    return bitmap
+}
 
 fun getPreviousMatches(teamID: Int, pageID: Int = 0):APIResponse.EventsWrapper{
 
@@ -54,9 +99,10 @@ private fun getAPIResponse(apiURL: String, apiKEY: String, desiredClass:Class<*>
     val client = OkHttpClientSingleton.instance
     val response = client.newCall(request).execute()
     // Get the HTTP response as a string
-    val jsonString = response.body()?.string()
+    val jsonString = response.body?.string()
     response.close()
 
+    print(jsonString)
     //Initiating as late as possible for performance reasons. Don't think it makes much of a difference
     val gson = GsonSingleton.instance
     return gson.fromJson(jsonString, desiredClass) as APIResponse
@@ -64,9 +110,10 @@ private fun getAPIResponse(apiURL: String, apiKEY: String, desiredClass:Class<*>
 
 fun main() {
 
-    val a = getPreviousMatches(364425,0)
+    //val a = getPreviousMatches(364425,0)
     //val b = getLiveMatches()
     //val c = getPlayersFromEvent(b?.events?.get(0)?.id)
-    print(a)
+    val d = getPlayerImage()
+    print(d)
 
 }
