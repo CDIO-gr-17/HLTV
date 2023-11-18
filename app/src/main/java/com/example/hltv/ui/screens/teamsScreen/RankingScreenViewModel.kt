@@ -18,28 +18,23 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import java.util.EnumSet.range
-var initialized = false
 class RankingScreenViewModel: ViewModel() {
     val teamNames = mutableStateListOf("1", "2", "3", "4", "5")
     init{
+        CoroutineScope(Dispatchers.IO).launch {
+            val liveMatches = getLiveMatches();
+            teamNames.clear()
+            if (liveMatches != null && liveMatches.events!=null) {
+                //Log.i("RankingScreen", "Size of liveMatches is: " + liveMatches.events.size.toString())
 
-        if (!initialized){
-
-            CoroutineScope(Dispatchers.IO).launch {
-                val liveMatches = getLiveMatches();
-                teamNames.clear()
-                if (liveMatches != null && liveMatches.events!=null) {
-                    //Log.i("RankingScreen", "Size of liveMatches is: " + liveMatches.events.size.toString())
-
-                    //TODO: This loop is called multiple times. Pretty painful
-                    //Whole initializer is called multiple times
-                    for ((index, event) in liveMatches.events.withIndex()) {
-                        Log.i("RankingScreen","Adding string with event " + index.toString() + ". Name is: " + event.homeTeam.name + " VS " + event.awayTeam.name)
-                        teamNames.add(event.homeTeam.name + " VS " + event.awayTeam.name)
-                    }
-                }else{
-                    Log.i(this.toString(),"There were no live matches?")
+                //TODO: This loop is called multiple times. Pretty painful
+                //Whole initializer is called multiple times
+                for ((index, event) in liveMatches.events.withIndex()) {
+                    Log.i("RankingScreen","Adding string with event " + index.toString() + ". Name is: " + event.homeTeam.name + " VS " + event.awayTeam.name)
+                    teamNames.add(event.homeTeam.name + " VS " + event.awayTeam.name)
                 }
+            }else{
+                Log.i(this.toString(),"There were no live matches?")
             }
         }
     }
