@@ -6,7 +6,7 @@ import android.util.Log
 import okhttp3.Request
 import java.io.ByteArrayOutputStream
 
-const val APIKEY = "24b0f292d5mshdf7eb12b4760333p19075ajsncc1561769190"
+const val APIKEY = "478aa6c7a2msh89c2c0c24f19184p1edb29jsn1d19bce3a650"
 const val ONLYCS = false //This seems unnecessary but we ball
 
 /**
@@ -71,11 +71,13 @@ fun getPlayerImage(playerID: Int? = 1078255): Bitmap {
 
 
     val base64String = Base64.encodeToString(output.toByteArray(), Base64.DEFAULT)
-    println(base64String)
 
     val decodedImage: ByteArray = android.util.Base64.decode(base64String, 0)
+
+    Log.i("decodedImage is: ", decodedImage.toString())
     val bitmap = BitmapFactory.decodeByteArray(decodedImage, 0, decodedImage.size)
 
+    Log.i("Bitmap is: ", bitmap.toString())
     return bitmap
 }
 

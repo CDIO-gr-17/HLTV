@@ -46,7 +46,7 @@ object News : Destination {
 object Ranking : Destination {
     override val icon: ImageVector = Icons.Default.List
     override val route: String = "Ranking"
-    override val screen: @Composable () -> Unit = { RankingScreen(RankingScreenViewModel()) }
+    override val screen: @Composable () -> Unit = { RankingScreen() }
 }
 object Settings : Destination {
     override val icon: ImageVector = Icons.Default.Settings

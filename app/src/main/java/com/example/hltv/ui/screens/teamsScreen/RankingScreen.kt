@@ -1,5 +1,4 @@
 package com.example.hltv.ui.screens.teamsScreen
-import android.graphics.Bitmap
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
@@ -21,7 +20,6 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
@@ -31,29 +29,16 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import com.example.hltv.data.remote.APIResponse
-import com.example.hltv.data.remote.Event
-import com.example.hltv.data.remote.getLiveMatches
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
-import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.setValue
-import androidx.compose.runtime.mutableStateListOf
-import android.util.Log;
-import android.widget.ImageView
-import androidx.compose.material3.LocalContentColor
-import androidx.compose.ui.graphics.painter.Painter
-import androidx.compose.ui.platform.LocalContext
-import coil.ImageLoader
-import coil.compose.AsyncImage
-import coil.compose.AsyncImagePainter
+import androidx.compose.runtime.State
+import androidx.compose.runtime.collectAsState
+import androidx.compose.ui.graphics.ImageBitmap
+import coil.compose.ImagePainter
 import coil.compose.rememberAsyncImagePainter
-import coil.compose.rememberImagePainter
-import com.example.hltv.data.remote.getPlayerImage
 
 //Used for testing
 val items = (1..20).map { index ->
@@ -62,12 +47,16 @@ val items = (1..20).map { index ->
 data class ListItem(val ranking: Int, val text1: String, val text2: String)
 
 @Composable
-fun RankingScreen(viewModel: RankingScreenViewModel) {
+fun RankingScreen() {
     val R = MaterialTheme
+    val viewModel = RankingScreenViewModel()
+    val playerbmap = viewModel.playerImage.collectAsState()
+
     LazyColumn {
+
         items(viewModel.teamNames.size) { index ->
-            //CardRow(team = "Astralis", subtext = "RUSH B", index+1)
-            teamCard(modifier = Modifier, R = R, text1 = viewModel.teamNames[index], text2 = "Unused") //ugly hardcoding, but we ball
+
+            teamCard(modifier = Modifier, R = R, text1 = viewModel.teamNames[index], text2 = "Unused", playerbmap) //ugly hardcoding, but we ball
             if (index < items.size-1){
                 Spacer(modifier = Modifier.height(1.dp))
             }
@@ -76,7 +65,14 @@ fun RankingScreen(viewModel: RankingScreenViewModel) {
 }
 
 @Composable
-fun teamCard(modifier: Modifier, R: MaterialTheme, text1: String = " ", text2: String) =
+fun teamCard(
+    modifier: Modifier,
+    R: MaterialTheme,
+    text1: String = " ",
+    text2: String,
+    playerbmap: State<img>
+) =
+
     Card (
         modifier = modifier
             .fillMaxWidth()
@@ -96,6 +92,7 @@ fun teamCard(modifier: Modifier, R: MaterialTheme, text1: String = " ", text2: S
                     .align(Alignment.CenterStart)
                     .padding(start = 10.dp)
             )
+
         }
         Row (modifier = Modifier.padding(start = 10.dp)) {
 
@@ -104,7 +101,8 @@ fun teamCard(modifier: Modifier, R: MaterialTheme, text1: String = " ", text2: S
                     .fillMaxSize()
                     .weight(1f)){
                     Image(
-                        painter = painterResource(id = com.example.hltv.R.drawable.astralis_logo),
+                        //painter = painterResource(id = com.example.hltv.R.drawable.astralis_logo),
+                        painter = rememberAsyncImagePainter(playerbmap.value.bitMap),
                         contentDescription = null, //TODO
                         alignment = Alignment.TopStart,
                         modifier = Modifier
