@@ -7,7 +7,7 @@ import okhttp3.Request
 import java.io.ByteArrayOutputStream
 
 const val APIKEY = "478aa6c7a2msh89c2c0c24f19184p1edb29jsn1d19bce3a650"
-const val ONLYCS = false //This seems unnecessary but we ball
+const val ONLYCS = true
 
 /**
  * Returns live matches
@@ -97,26 +97,27 @@ private fun getAPIImage(apiURL: String, apiKEY: String): Bitmap{
  */
 private fun getAPIResponse(apiURL: String, apiKEY: String, desiredClass:Class<*>): APIResponse {
 
-    val request = Request.Builder()
-        .url("https://allsportsapi2.p.rapidapi.com/api/esport/$apiURL")
-        .get()
-        .addHeader("X-RapidAPI-Key", apiKEY)
-        .addHeader("X-RapidAPI-Host", "allsportsapi2.p.rapidapi.com")
-        .build()
+    var jsonString : String?
+    var tries = 3
+    do{
+        val request = Request.Builder()
+            .url("https://allsportsapi2.p.rapidapi.com/api/esport/$apiURL")
+            .get()
+            .addHeader("X-RapidAPI-Key", apiKEY)
+            .addHeader("X-RapidAPI-Host", "allsportsapi2.p.rapidapi.com")
+            .build()
 
-    val client = OkHttpClientSingleton.instance
-    val response = client.newCall(request).execute()
-    // Get the HTTP response as a string
-    val jsonString = response.body?.string()
-    response.close()
+        val client = OkHttpClientSingleton.instance
+        val response = client.newCall(request).execute()
+        // Get the HTTP response as a string
+        jsonString = response.body?.string()
+        response.close()
 
-    if (jsonString != null) {
-        Log.i("getAPIResponse", "jsonString is: " + jsonString)
-    }else {
-        Log.e("getAPIResponse", "jsonString is null")
-    }
+        Log.i("getAPIResponse", "Got json: " + jsonString)
+        tries--
+    }while (jsonString?.compareTo("") == 0 && tries > 0)
 
-    print(jsonString)
+
     //Initiating as late as possible for performance reasons. Don't think it makes much of a difference
     val gson = GsonSingleton.instance
     return gson.fromJson(jsonString, desiredClass) as APIResponse
