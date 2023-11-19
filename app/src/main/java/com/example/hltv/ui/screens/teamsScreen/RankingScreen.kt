@@ -19,6 +19,7 @@ import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.State
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -68,7 +69,7 @@ fun teamCard(
     R: MaterialTheme,
     text1: String = " ",
     text2: String,
-    allPlayerImagesState: StateFlow<img>
+    allPlayerImagesState: State<img>
 ) =
 
     Card (
@@ -100,7 +101,7 @@ fun teamCard(
                     .weight(1f)){
                     Image(
                         //painter = painterResource(id = com.example.hltv.R.drawable.astralis_logo),
-                        painter = rememberAsyncImagePainter(/*allPlayerImagesState.value.allTeamImages?.get(0)?.teamImages?.get(0)*/),
+                        painter = rememberAsyncImagePainter(/*allPlayerImagesState.value.allTeamImages?.get(0)?.teamImages?.get(0)*/allPlayerImagesState),
                         contentDescription = null, //TODO
                         alignment = Alignment.TopStart,
                         modifier = Modifier
