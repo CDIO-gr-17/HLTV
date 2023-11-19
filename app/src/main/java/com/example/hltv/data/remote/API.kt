@@ -12,7 +12,7 @@ const val ONLYCS = false //This seems unnecessary but we ball
 /**
  * Returns live matches
  */
-fun getLiveMatches(): APIResponse.EventsWrapper? {
+fun getLiveMatches(): APIResponse.EventsWrapper {
 
 
     val eventsWrapper = getAPIResponse("matches/live", APIKEY, APIResponse.EventsWrapper::class.java) as APIResponse.EventsWrapper
@@ -109,6 +109,12 @@ private fun getAPIResponse(apiURL: String, apiKEY: String, desiredClass:Class<*>
     // Get the HTTP response as a string
     val jsonString = response.body?.string()
     response.close()
+
+    if (jsonString != null) {
+        Log.i("getAPIResponse", "jsonString is: " + jsonString)
+    }else {
+        Log.e("getAPIResponse", "jsonString is null")
+    }
 
     print(jsonString)
     //Initiating as late as possible for performance reasons. Don't think it makes much of a difference

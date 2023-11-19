@@ -27,14 +27,17 @@ data class AllPlayerImages(
 )
 suspend fun getPlayerGroups(eventID : Int?): Deferred<APIResponse.Lineup> = coroutineScope{
     return@coroutineScope async {
+        Log.i("getPlayerGroups", "Getting player groups")
         return@async getPlayersFromEvent(eventID)
     }
 }
 
 suspend fun getAllPlayerImages(eventsWrapper: APIResponse.EventsWrapper): AllPlayerImages{
+    Log.i("getAllPlayerImages", "Getting All player images")
     var allPlayerImages = AllPlayerImages(null)
 
     for (event in eventsWrapper.events){ //For every event
+
         var playerGroups = getPlayerGroups(event.id)
         val teamPlayerImages = TeamPlayerImages(null, event.id, event.homeTeam.name)
         for (player in playerGroups.await().home?.players!!){ //For every home player in that event
@@ -56,6 +59,9 @@ class RankingScreenViewModel: ViewModel() {
         CoroutineScope(Dispatchers.IO).launch {
 
             val liveMatches = getLiveMatches()
+            CoroutineScope(Dispatchers.IO).launch {
+
+            }
             teamNames.clear()
             if (liveMatches != null && liveMatches.events!=null) {
 
@@ -65,8 +71,8 @@ class RankingScreenViewModel: ViewModel() {
                     Log.i("RankingScreen","Adding string with event " + index.toString() + ". Name is: " + event.homeTeam.name + " VS " + event.awayTeam.name)
                     teamNames.add(event.homeTeam.name + " VS " + event.awayTeam.name)
                 }
-                allPlayerImages.value = getAllPlayerImages(liveMatches)
-
+                //I dont think this should be called here, but it is going to wait for getLiveMatches() anyway
+                _allPlayerImages.value = getAllPlayerImages(liveMatches)
 
             }else{
                 teamNames.add("No current teams playing")
