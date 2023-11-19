@@ -34,17 +34,20 @@ suspend fun getPlayerGroups(eventID : Int?): Deferred<APIResponse.Lineup> = coro
 
 suspend fun getAllPlayerImages(eventsWrapper: APIResponse.EventsWrapper): AllPlayerImages{
     Log.i("getAllPlayerImages", "Getting All player images")
-    var allPlayerImages = AllPlayerImages(null)
-
+    var allPlayerImages = AllPlayerImages(mutableListOf())
     for (event in eventsWrapper.events){ //For every event
-
+        Log.i("getAllPlayerImages", "here1")
         var playerGroups = getPlayerGroups(event.id)
-        val teamPlayerImages = TeamPlayerImages(null, event.id, event.homeTeam.name)
+        val teamPlayerImages = TeamPlayerImages(mutableListOf(), event.id, event.homeTeam.name)
         for (player in playerGroups.await().home?.players!!){ //For every home player in that event
-            CoroutineScope(Dispatchers.IO).launch {
-                teamPlayerImages.teamImages?.add(getPlayerImage(player.player?.id))
-            }
+            Log.i("getAllPlayerImages", "here2")
+            //////////////////// SHOULD STRONGLY BE INSIDE COROUTINE
+            val a = getPlayerImage(player.player?.id)
+            Log.i("getAllPlayerImages", "Adding player image a: " + a.toString())
+            teamPlayerImages.teamImages?.add(a)
+            //////////////////
         }
+
         allPlayerImages.allTeamImages?.add(teamPlayerImages)
     }
     return allPlayerImages

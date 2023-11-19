@@ -6,7 +6,7 @@ import android.util.Log
 import okhttp3.Request
 import java.io.ByteArrayOutputStream
 
-const val APIKEY = "478aa6c7a2msh89c2c0c24f19184p1edb29jsn1d19bce3a650"
+const val APIKEY = "24b0f292d5mshdf7eb12b4760333p19075ajsncc1561769190"
 const val ONLYCS = true
 
 /**
@@ -41,6 +41,7 @@ fun getPlayersFromEvent(eventID: Int? = 10945127): APIResponse.Lineup {
 
 //Doesnt use the reusable function because of the return type
 fun getPlayerImage(playerID: Int? = 1078255): Bitmap {
+    Log.i("getPlayerImage", "Getting player image with playerID " + playerID.toString())
     val apiURL = "player/" + playerID.toString() + "/image"
     return getAPIImage(apiURL, APIKEY)
 }

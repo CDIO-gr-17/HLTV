@@ -1,4 +1,5 @@
 package com.example.hltv.ui.screens.teamsScreen
+import android.util.Log
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
@@ -99,9 +100,12 @@ fun teamCard(
                 Column (modifier = Modifier
                     .fillMaxSize()
                     .weight(1f)){
+                    Log.i("teamCard", "allPlayerImages is being rendered: " + allPlayerImages.value.toString())
                     Image(
                         //painter = painterResource(id = com.example.hltv.R.drawable.astralis_logo),
-                        painter = rememberAsyncImagePainter(/*allPlayerImagesState.value.allTeamImages?.get(0)?.teamImages?.get(0)*/singleImgState.value.bitMap),
+                        /*allPlayerImagesState.value.allTeamImages?.get(0)?.teamImages?.get(0)*/
+
+                        painter = rememberAsyncImagePainter(allPlayerImages.value.allTeamImages?.get(0)?.teamImages?.get(0)),
                         contentDescription = null, //TODO
                         alignment = Alignment.TopStart,
                         modifier = Modifier
@@ -134,37 +138,6 @@ fun teamCard(
         }
     }
 
-@Composable
-fun RankingScreenb() {
-    var isLoading by remember { mutableStateOf(false) }
-    var data by remember { mutableStateOf("") }
-
-    Column {
-        if (isLoading) {
-            // Show a progress indicator while loading data
-            CircularProgressIndicator()
-        } else {
-            // Show the loaded data
-            Text(data)
-        }
-
-        Button(onClick = {
-            isLoading = true
-            CoroutineScope(Dispatchers.IO).launch {
-                // Simulate loading data
-                delay(2000)
-
-                // Update data on the main thread
-                withContext(Dispatchers.Main) {
-                    data = "Loaded data"
-                    isLoading = false
-                }
-            }
-        }) {
-            Text("Load Data")
-        }
-    }
-}
 @Preview(showBackground = true)
 @Composable
 fun RankingPreview() {
