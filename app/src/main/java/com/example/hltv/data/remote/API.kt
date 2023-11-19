@@ -43,6 +43,10 @@ fun getPlayersFromEvent(eventID: Int? = 10945127): APIResponse.Lineup {
 fun getPlayerImage(playerID: Int? = 1078255): Bitmap {
     Log.i("getPlayerImage", "Getting player image with playerID " + playerID.toString())
     val apiURL = "player/" + playerID.toString() + "/image"
+    val bitmap = getAPIImage(apiURL, APIKEY)
+    if (bitmap==null){
+        bitmap =
+    }
     return getAPIImage(apiURL, APIKEY)
 }
 fun getTeamImage(teamID: Int? = 372647): Bitmap{
@@ -58,7 +62,7 @@ fun getPreviousMatches(teamID: Int, pageID: Int = 0):APIResponse.EventsWrapper{
  * I couldn't get coil to work with the whole APIkey, MVVM model and stuff
  * If you can, feel free to, but this slightly convoluted thing works
  */
-private fun getAPIImage(apiURL: String, apiKEY: String): Bitmap{
+private fun getAPIImage(apiURL: String, apiKEY: String): Bitmap?{
 
     val request = Request.Builder()
         .url("https://allsportsapi2.p.rapidapi.com/api/esport/" + apiURL)
@@ -89,7 +93,9 @@ private fun getAPIImage(apiURL: String, apiKEY: String): Bitmap{
     Log.i("getAPIImage","decodedImage is: "+ decodedImage.toString())
     val bitmap = BitmapFactory.decodeByteArray(decodedImage, 0, decodedImage.size)
 
-    Log.i("Bitmap is: ", bitmap.toString())
+    if (bitmap == null){
+       Log.i("getAPIImage", "Bitmap is null. Bitmap is null, probably because player image does not exist")
+    }
     return bitmap
 
 }

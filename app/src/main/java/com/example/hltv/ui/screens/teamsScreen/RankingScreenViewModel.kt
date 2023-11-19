@@ -42,9 +42,8 @@ suspend fun getAllPlayerImages(eventsWrapper: APIResponse.EventsWrapper): AllPla
         for (player in playerGroups.await().home?.players!!){ //For every home player in that event
             Log.i("getAllPlayerImages", "here2")
             //////////////////// SHOULD STRONGLY BE INSIDE COROUTINE
-            val a = getPlayerImage(player.player?.id)
-            Log.i("getAllPlayerImages", "Adding player image a: " + a.toString())
-            teamPlayerImages.teamImages?.add(a)
+            val bitmap = getPlayerImage(player.player?.id)
+            teamPlayerImages.teamImages?.add(bitmap)
             //////////////////
         }
 
