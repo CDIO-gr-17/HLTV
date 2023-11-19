@@ -48,13 +48,13 @@ fun RankingScreen() {
     val R = MaterialTheme
     val viewModel = RankingScreenViewModel()
     val allPlayerImages = viewModel.allPlayerImages.collectAsState()
-    val img = viewModel.playerImage.collectAsState()
+    val playerbmap = viewModel.playerImage.collectAsState()
 
     LazyColumn {
 
         items(viewModel.teamNames.size) { index ->
 
-            teamCard(modifier = Modifier, R = R, text1 = viewModel.teamNames[index], text2 = "Unused", img) //ugly hardcoding, but we ball
+            teamCard(modifier = Modifier, R = R, text1 = viewModel.teamNames[index], text2 = "Unused", playerbmap) //ugly hardcoding, but we ball
             if (index < items.size-1){
                 Spacer(modifier = Modifier.height(1.dp))
             }
@@ -100,7 +100,7 @@ fun teamCard(
                     .weight(1f)){
                     Image(
                         //painter = painterResource(id = com.example.hltv.R.drawable.astralis_logo),
-                        painter = rememberAsyncImagePainter(/*allPlayerImagesState.value.allTeamImages?.get(0)?.teamImages?.get(0)*/img),
+                        painter = rememberAsyncImagePainter(/*allPlayerImagesState.value.allTeamImages?.get(0)?.teamImages?.get(0)*/),
                         contentDescription = null, //TODO
                         alignment = Alignment.TopStart,
                         modifier = Modifier
