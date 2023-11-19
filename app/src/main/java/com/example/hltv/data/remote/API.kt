@@ -1,6 +1,7 @@
 package com.example.hltv.data.remote
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
+import android.os.ConditionVariable
 import android.util.Base64
 import android.util.Log
 import kotlinx.coroutines.delay
@@ -12,14 +13,31 @@ import java.io.ByteArrayOutputStream
 val mutexForAPILimit = Mutex()
 const val APIKEY = "24b0f292d5mshdf7eb12b4760333p19075ajsncc1561769190"
 const val ONLYCS = true
+var currentRequestCount = 0
+val cond = ConditionVariable()
 
 /**
  * Returns live matches
  */
 suspend fun waitForAPI(){
-    mutexForAPILimit.withLock {
-        delay(200)
+    if (currentRequestCount < 6){
+        currentRequestCount += 1
+        run{
+            delay(166)
+            currentRequestCount -=1
+            cond.open()
+        }
+        return
+    } else {
+        cond.block()
     }
+
+/*
+    mutexForAPILimit.withLock {
+        delay(166)
+    }
+
+ */
 }
 suspend fun getLiveMatches(): APIResponse.EventsWrapper {
 
@@ -29,7 +47,6 @@ suspend fun getLiveMatches(): APIResponse.EventsWrapper {
         val csEvents: MutableList<Event> = mutableListOf()
         for (event in eventsWrapper.events){//We should also be able to use slug or flag instead of name
             if(event.tournament?.category?.name.equals("CS:GO")){
-                print("Adding CSGO event " + event.tournament?.name + "\n")
                 csEvents.add(event)
             }
         }
@@ -98,7 +115,7 @@ private suspend fun getAPIImage(apiURL: String, apiKEY: String): Bitmap?{
     val bitmap = BitmapFactory.decodeByteArray(decodedImage, 0, decodedImage.size)
 
     if (bitmap == null){
-       Log.i("getAPIImage", "Bitmap is null. Bitmap is null, probably because player image does not exist")
+       Log.i("getAPIImage", "Bitmap is null, probably because player image does not exist")
     }
     return bitmap
 

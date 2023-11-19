@@ -27,7 +27,6 @@ data class AllPlayerImages(
 )
 suspend fun getPlayerGroups(eventID : Int?): Deferred<APIResponse.Lineup> = coroutineScope{
     return@coroutineScope async {
-        Log.i("getPlayerGroups", "Getting player groups")
         return@async getPlayersFromEvent(eventID)
     }
 }
@@ -36,12 +35,10 @@ suspend fun getAllPlayerImages(eventsWrapper: APIResponse.EventsWrapper): AllPla
     Log.i("getAllPlayerImages", "Getting All player images")
     var allPlayerImages = AllPlayerImages(mutableListOf())
     for (event in eventsWrapper.events){ //For every event
-        Log.i("getAllPlayerImages", "here1")
         var playerGroups = getPlayerGroups(event.id)
         val teamPlayerImages = TeamPlayerImages(mutableListOf(), event.id, event.homeTeam.name)
         for (player in playerGroups.await().home?.players!!){ //For every home player in that event
-            Log.i("getAllPlayerImages", "here2")
-            //////////////////// SHOULD STRONGLY BE INSIDE COROUTINE
+            //////////////////// SHOULD STRONGLY BE INSIDE COROUTINE? IDK because we are limited by api rate anyway
             val bitmap = getPlayerImage(player.player?.id)
             teamPlayerImages.teamImages?.add(bitmap)
             //////////////////
@@ -79,7 +76,7 @@ class RankingScreenViewModel: ViewModel() {
                 //TODO: This loop is called multiple times, i think. Pretty painful
                 //Whole initializer is called multiple times, but stopping that breaks it
                 for ((index, event) in liveMatches.events.withIndex()) {
-                    Log.i("RankingScreen","Adding string with event " + index.toString() + ". Name is: " + event.homeTeam.name + " VS " + event.awayTeam.name)
+                    //Log.i("RankingScreen","Adding string with event " + index.toString() + ". Name is: " + event.homeTeam.name + " VS " + event.awayTeam.name)
                     teamNames.add(event.homeTeam.name + " VS " + event.awayTeam.name)
                 }
                 //I dont think this should be called here, but it is going to wait for getLiveMatches() anyway
