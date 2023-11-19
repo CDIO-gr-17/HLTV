@@ -3,16 +3,25 @@ import android.graphics.Bitmap
 import android.graphics.BitmapFactory
 import android.util.Base64
 import android.util.Log
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.sync.Mutex
+import kotlinx.coroutines.sync.withLock
 import okhttp3.Request
 import java.io.ByteArrayOutputStream
 
+val mutexForAPILimit = Mutex()
 const val APIKEY = "24b0f292d5mshdf7eb12b4760333p19075ajsncc1561769190"
 const val ONLYCS = true
 
 /**
  * Returns live matches
  */
-fun getLiveMatches(): APIResponse.EventsWrapper {
+suspend fun waitForAPI(){
+    mutexForAPILimit.withLock {
+        delay(200)
+    }
+}
+suspend fun getLiveMatches(): APIResponse.EventsWrapper {
 
 
     val eventsWrapper = getAPIResponse("matches/live", APIKEY, APIResponse.EventsWrapper::class.java) as APIResponse.EventsWrapper
@@ -32,7 +41,7 @@ fun getLiveMatches(): APIResponse.EventsWrapper {
 /**
  * @return 2x5 players. I don't know what "confirmed" means
  */
-fun getPlayersFromEvent(eventID: Int? = 10945127): APIResponse.Lineup {
+suspend fun getPlayersFromEvent(eventID: Int? = 10945127): APIResponse.Lineup {
     print(eventID)
     return getAPIResponse("event/" + eventID.toString() + "/lineups", APIKEY, APIResponse.Lineup::class.java) as APIResponse.Lineup
 }
@@ -40,21 +49,17 @@ fun getPlayersFromEvent(eventID: Int? = 10945127): APIResponse.Lineup {
 
 
 //Doesnt use the reusable function because of the return type
-fun getPlayerImage(playerID: Int? = 1078255): Bitmap {
+suspend fun getPlayerImage(playerID: Int? = 1078255): Bitmap? {
     Log.i("getPlayerImage", "Getting player image with playerID " + playerID.toString())
     val apiURL = "player/" + playerID.toString() + "/image"
-    val bitmap = getAPIImage(apiURL, APIKEY)
-    if (bitmap==null){
-        bitmap =
-    }
     return getAPIImage(apiURL, APIKEY)
 }
-fun getTeamImage(teamID: Int? = 372647): Bitmap{
+suspend fun getTeamImage(teamID: Int? = 372647): Bitmap? {
     val apiURL = "team/" + teamID.toString() + "/image"
     return getAPIImage(apiURL, APIKEY)
 }
 
-fun getPreviousMatches(teamID: Int, pageID: Int = 0):APIResponse.EventsWrapper{
+suspend fun getPreviousMatches(teamID: Int, pageID: Int = 0):APIResponse.EventsWrapper{
     return getAPIResponse("team/"+teamID.toString()+"/matches/previous/"+ pageID, APIKEY, APIResponse.EventsWrapper::class.java) as APIResponse.EventsWrapper
 }
 
@@ -62,8 +67,9 @@ fun getPreviousMatches(teamID: Int, pageID: Int = 0):APIResponse.EventsWrapper{
  * I couldn't get coil to work with the whole APIkey, MVVM model and stuff
  * If you can, feel free to, but this slightly convoluted thing works
  */
-private fun getAPIImage(apiURL: String, apiKEY: String): Bitmap?{
+private suspend fun getAPIImage(apiURL: String, apiKEY: String): Bitmap?{
 
+    waitForAPI()
     val request = Request.Builder()
         .url("https://allsportsapi2.p.rapidapi.com/api/esport/" + apiURL)
         .get()
@@ -80,7 +86,6 @@ private fun getAPIImage(apiURL: String, apiKEY: String): Bitmap?{
 
     if (inputStream2 != null) {
         var bytesRead = inputStream2.read(buffer)
-        Log.i("getAPIImage", "bytesRead is: " + bytesRead.toString())
         while (bytesRead != -1) {
             output.write(buffer, 0, bytesRead)
             bytesRead = inputStream2.read(buffer)
@@ -90,7 +95,6 @@ private fun getAPIImage(apiURL: String, apiKEY: String): Bitmap?{
     }
     val base64String = Base64.encodeToString(output.toByteArray(), Base64.DEFAULT)
     val decodedImage: ByteArray = android.util.Base64.decode(base64String, 0)
-    Log.i("getAPIImage","decodedImage is: "+ decodedImage.toString())
     val bitmap = BitmapFactory.decodeByteArray(decodedImage, 0, decodedImage.size)
 
     if (bitmap == null){
@@ -102,8 +106,9 @@ private fun getAPIImage(apiURL: String, apiKEY: String): Bitmap?{
 /**
  * @param desiredClass The class to pass to gson. This is the same as your return class, e.g. APIResponse.Lineup::class.java
  */
-private fun getAPIResponse(apiURL: String, apiKEY: String, desiredClass:Class<*>): APIResponse {
+private suspend fun getAPIResponse(apiURL: String, apiKEY: String, desiredClass:Class<*>): APIResponse {
 
+    waitForAPI()
     var jsonString : String?
     var tries = 3
     do{
@@ -135,7 +140,6 @@ fun main() {
     //val a = getPreviousMatches(364425,0)
     //val b = getLiveMatches()
     //val c = getPlayersFromEvent(b?.events?.get(0)?.id)
-    val d = getPlayerImage()
-    print(d)
+    //val d = getPlayerImage()
 
 }

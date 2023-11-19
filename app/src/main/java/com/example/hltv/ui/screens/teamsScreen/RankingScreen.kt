@@ -1,5 +1,6 @@
 package com.example.hltv.ui.screens.teamsScreen
-import android.util.Log
+import android.graphics.Bitmap
+import android.os.SystemClock.sleep
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
@@ -14,29 +15,21 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.wrapContentSize
 import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.material3.Button
 import androidx.compose.material3.Card
-import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.State
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.delay
-import kotlinx.coroutines.launch
-import kotlinx.coroutines.withContext
 import androidx.compose.runtime.collectAsState
+import androidx.compose.ui.res.painterResource
+import coil.compose.AsyncImagePainter
 import coil.compose.rememberAsyncImagePainter
+import com.example.hltv.R
 
 //Used for testing
 val items = (1..20).map { index ->
@@ -54,9 +47,9 @@ fun RankingScreen() {
     LazyColumn {
 
         items(viewModel.teamNames.size) { index ->
-
-            teamCard(modifier = Modifier, R = R, text1 = viewModel.teamNames[index], text2 = "Unused", playerbmap, allPlayerImages) //ugly hardcoding, but we ball
-            if (index < items.size-1){
+            //I dont think the !! is particularly good coding practice?
+            teamCard(modifier = Modifier, materialTheme = R, text1 = viewModel.teamNames[index], text2 = "Unused", playerbmap, allPlayerImages.value.allTeamImages?.get(index)) //ugly hardcoding, but we ball
+            if (index < viewModel.teamNames.size-1){
                 Spacer(modifier = Modifier.height(1.dp))
             }
         }
@@ -66,11 +59,11 @@ fun RankingScreen() {
 @Composable
 fun teamCard(
     modifier: Modifier,
-    R: MaterialTheme,
+    materialTheme: MaterialTheme,
     text1: String = " ",
     text2: String,
     singleImgState: State<img>,
-    allPlayerImages: State<AllPlayerImages>
+    teamPlayerImages: TeamPlayerImages?
     ) =
 
     Card (
@@ -86,8 +79,8 @@ fun teamCard(
         ) {
             Text(
                 text = text1,
-                fontSize = R.typography.bodyLarge.fontSize,
-                color = R.colorScheme.primary,
+                fontSize = materialTheme.typography.bodyLarge.fontSize,
+                color = materialTheme.colorScheme.primary,
                 modifier = Modifier
                     .align(Alignment.CenterStart)
                     .padding(start = 10.dp)
@@ -97,15 +90,28 @@ fun teamCard(
         Row (modifier = Modifier.padding(start = 10.dp)) {
 
             for (i in 1..5){
+                var bitmap: Bitmap? = null
+                var retries = 5
+                while(teamPlayerImages != null && retries != 0){
+                    bitmap = teamPlayerImages.teamImages?.get(i-1)
+                    if (bitmap == null){
+                        break;
+                    }
+                    sleep(100)
+                    retries--
+                }
+
+                val painter: AsyncImagePainter = if (bitmap == null){
+                    rememberAsyncImagePainter(R.drawable.playersilouhette)
+                } else{
+                    rememberAsyncImagePainter(bitmap)
+                }
                 Column (modifier = Modifier
                     .fillMaxSize()
                     .weight(1f)){
-                    Log.i("teamCard", "allPlayerImages is being rendered: " + allPlayerImages.value.toString())
                     Image(
-                        //painter = painterResource(id = com.example.hltv.R.drawable.astralis_logo),
-                        /*allPlayerImagesState.value.allTeamImages?.get(0)?.teamImages?.get(0)*/
 
-                        painter = rememberAsyncImagePainter(allPlayerImages.value.allTeamImages?.get(0)?.teamImages?.get(0)),
+                        painter = painter,
                         contentDescription = null, //TODO
                         alignment = Alignment.TopStart,
                         modifier = Modifier
@@ -124,8 +130,8 @@ fun teamCard(
                         ) {
                             Text(
                                 text = "Name",
-                                fontSize = R.typography.bodySmall.fontSize,
-                                color = R.colorScheme.primary,
+                                fontSize = materialTheme.typography.bodySmall.fontSize,
+                                color = materialTheme.colorScheme.primary,
                                 modifier = Modifier
                                     .align(Alignment.Center)
                                     .offset(y = (-0.5).dp) //Makes text look more centered, I think?

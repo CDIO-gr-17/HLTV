@@ -18,7 +18,7 @@ import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
 
 data class TeamPlayerImages(
-    val teamImages: MutableList<Bitmap>?,
+    val teamImages: MutableList<Bitmap?>?,
     val teamID: Int?,
     val teamName: String?
 )
