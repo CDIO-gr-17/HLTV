@@ -104,26 +104,6 @@ fun teamCard(
                     }
 
                 }
-                /*
-                var retries = 1
-                while(teamPlayerImages != null && retries > 0){
-
-                    if (teamPlayerImages.teamImages?.size == 0){
-                        Log.i("RankingScreen", "TeamImages is of size 0. Sleeping 100ms and retrying")
-                        sleep(100)
-                        retries--
-                        continue
-                    }
-                    bitmap = teamPlayerImages.teamImages?.get(i-1)
-                    if (bitmap != null){
-                        break;
-                    }
-                    Log.i("RankingScreen", "bitmap is null. Sleeping 100ms and retrying")
-                    sleep(100)
-                    retries--
-                }
-
-                 */
 
                 val painter: AsyncImagePainter = if (bitmap == null){
                     rememberAsyncImagePainter(R.drawable.playersilouhette)

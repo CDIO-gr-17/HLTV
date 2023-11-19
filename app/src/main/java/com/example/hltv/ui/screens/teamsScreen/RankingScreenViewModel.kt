@@ -88,7 +88,7 @@ class RankingScreenViewModel: ViewModel() {
 
             }else{
                 teamNames.add("No current teams playing")
-                Log.i(this.toString(),"There were no live matches?")
+                Log.w(this.toString(),"There were no live matches?")
             }
         }
 

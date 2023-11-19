@@ -16,17 +16,16 @@ var currentRequestCount = 0
 val cond = ConditionVariable()
 var lastAPIPull: Long = 0
 val mutexForAPI = Mutex()
-/**
- * If 6 (API limit) messages have been sent within the last second, it waits 1/6s and returns.
- * Otherwise, it returns instantly.
- */
+
 suspend fun waitForAPI(){
 
+    //TODO: This needs to be optimized because it assumes that all other operations take 0 time
     mutexForAPI.withLock {
+
         delay(166)
     }
 
-    /* I don't think this works
+    /*
     val currentDateTime: java.util.Date = java.util.Date()
     val currentTimestamp = currentDateTime.time
     val nextAllowedTime = lastAPIPull + 166;
@@ -100,7 +99,7 @@ suspend fun getPreviousMatches(teamID: Int, pageID: Int = 0):APIResponse.EventsW
  */
 private suspend fun getAPIImage(apiURL: String, apiKEY: String): Bitmap?{
 
-    waitForAPI()
+
     val request = Request.Builder()
         .url("https://allsportsapi2.p.rapidapi.com/api/esport/" + apiURL)
         .get()
@@ -109,6 +108,7 @@ private suspend fun getAPIImage(apiURL: String, apiKEY: String): Bitmap?{
         .build()
 
     val client = OkHttpClientSingleton.instance
+    waitForAPI()
     val response = client.newCall(request).execute()
 
     val inputStream2 = response.body?.byteStream()
