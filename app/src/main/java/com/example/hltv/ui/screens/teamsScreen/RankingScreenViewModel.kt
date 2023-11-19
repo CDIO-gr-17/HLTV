@@ -49,12 +49,24 @@ suspend fun getAllPlayerImages(eventsWrapper: APIResponse.EventsWrapper): AllPla
     }
     return allPlayerImages
 }
+
+data class img(
+    val bitMap: Bitmap?
+)
+
 class RankingScreenViewModel: ViewModel() {
     val teamNames = mutableStateListOf("1", "2", "3", "4", "5")
     private var _allPlayerImages = MutableStateFlow<AllPlayerImages>(AllPlayerImages(null))
     var allPlayerImages = _allPlayerImages.asStateFlow()
+    private val _playerImage = MutableStateFlow<img>(img(null))
+    val playerImage = _playerImage.asStateFlow()
 
     init{
+        CoroutineScope(Dispatchers.IO).launch{
+            _playerImage.value = img(
+                getPlayerImage())
+
+        }
 
         CoroutineScope(Dispatchers.IO).launch {
 

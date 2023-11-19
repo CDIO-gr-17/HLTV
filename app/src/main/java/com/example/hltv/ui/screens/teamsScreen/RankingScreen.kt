@@ -33,9 +33,9 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
-import androidx.compose.runtime.State
 import androidx.compose.runtime.collectAsState
 import coil.compose.rememberAsyncImagePainter
+import kotlinx.coroutines.flow.StateFlow
 
 //Used for testing
 val items = (1..20).map { index ->
@@ -48,12 +48,13 @@ fun RankingScreen() {
     val R = MaterialTheme
     val viewModel = RankingScreenViewModel()
     val allPlayerImages = viewModel.allPlayerImages.collectAsState()
+    val img = viewModel.playerImage.collectAsState()
 
     LazyColumn {
 
         items(viewModel.teamNames.size) { index ->
 
-            teamCard(modifier = Modifier, R = R, text1 = viewModel.teamNames[index], text2 = "Unused", allPlayerImages) //ugly hardcoding, but we ball
+            teamCard(modifier = Modifier, R = R, text1 = viewModel.teamNames[index], text2 = "Unused", img) //ugly hardcoding, but we ball
             if (index < items.size-1){
                 Spacer(modifier = Modifier.height(1.dp))
             }
@@ -67,7 +68,7 @@ fun teamCard(
     R: MaterialTheme,
     text1: String = " ",
     text2: String,
-    allPlayerImagesState: State<AllPlayerImages>
+    allPlayerImagesState: StateFlow<img>
 ) =
 
     Card (
@@ -99,7 +100,7 @@ fun teamCard(
                     .weight(1f)){
                     Image(
                         //painter = painterResource(id = com.example.hltv.R.drawable.astralis_logo),
-                        painter = rememberAsyncImagePainter(allPlayerImagesState.value.allTeamImages?.get(0)?.teamImages?.get(0)),
+                        painter = rememberAsyncImagePainter(/*allPlayerImagesState.value.allTeamImages?.get(0)?.teamImages?.get(0)*/img),
                         contentDescription = null, //TODO
                         alignment = Alignment.TopStart,
                         modifier = Modifier
