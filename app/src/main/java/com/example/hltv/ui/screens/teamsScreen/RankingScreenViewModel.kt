@@ -62,21 +62,14 @@ class RankingScreenViewModel: ViewModel() {
     val playerImage = _playerImage.asStateFlow()
 
     init{
-        /*
-        CoroutineScope(Dispatchers.IO).launch{ //only for testing
-            _playerImage.value = img(
-                getPlayerImage())
 
-        }
-
-         */
-        var liveMatchesDeffered = CompletableDeferred<APIResponse.EventsWrapper>();
+        var liveMatchesDeferred = CompletableDeferred<APIResponse.EventsWrapper>();
 
         CoroutineScope(Dispatchers.IO).launch {
-            liveMatchesDeffered.complete(getLiveMatches())
+            liveMatchesDeferred.complete(getLiveMatches())
         }
         CoroutineScope(Dispatchers.Default).launch {
-            val liveMatches = liveMatchesDeffered.await()
+            val liveMatches = liveMatchesDeferred.await()
             teamNames.clear()
             if (liveMatches != null && liveMatches.events!=null) { //Despite what Android studio says, this seems to make a difference
                 for ((index, event) in liveMatches.events.withIndex()) {
@@ -95,7 +88,7 @@ class RankingScreenViewModel: ViewModel() {
 
 
         CoroutineScope(Dispatchers.IO).launch {
-            _allPlayerImages.value = getAllPlayerImages(liveMatchesDeffered.await())
+            _allPlayerImages.value = getAllPlayerImages(liveMatchesDeferred.await())
         }
     }
 }
