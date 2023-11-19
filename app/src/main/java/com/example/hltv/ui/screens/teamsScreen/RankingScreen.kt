@@ -36,7 +36,6 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import androidx.compose.runtime.collectAsState
 import coil.compose.rememberAsyncImagePainter
-import kotlinx.coroutines.flow.StateFlow
 
 //Used for testing
 val items = (1..20).map { index ->
@@ -55,7 +54,7 @@ fun RankingScreen() {
 
         items(viewModel.teamNames.size) { index ->
 
-            teamCard(modifier = Modifier, R = R, text1 = viewModel.teamNames[index], text2 = "Unused", playerbmap) //ugly hardcoding, but we ball
+            teamCard(modifier = Modifier, R = R, text1 = viewModel.teamNames[index], text2 = "Unused", playerbmap, allPlayerImages) //ugly hardcoding, but we ball
             if (index < items.size-1){
                 Spacer(modifier = Modifier.height(1.dp))
             }
@@ -69,8 +68,9 @@ fun teamCard(
     R: MaterialTheme,
     text1: String = " ",
     text2: String,
-    allPlayerImagesState: State<img>
-) =
+    singleImgState: State<img>,
+    allPlayerImages: State<AllPlayerImages>
+    ) =
 
     Card (
         modifier = modifier
@@ -101,7 +101,7 @@ fun teamCard(
                     .weight(1f)){
                     Image(
                         //painter = painterResource(id = com.example.hltv.R.drawable.astralis_logo),
-                        painter = rememberAsyncImagePainter(/*allPlayerImagesState.value.allTeamImages?.get(0)?.teamImages?.get(0)*/allPlayerImagesState),
+                        painter = rememberAsyncImagePainter(/*allPlayerImagesState.value.allTeamImages?.get(0)?.teamImages?.get(0)*/singleImgState.value.bitMap),
                         contentDescription = null, //TODO
                         alignment = Alignment.TopStart,
                         modifier = Modifier

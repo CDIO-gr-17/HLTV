@@ -62,7 +62,7 @@ class RankingScreenViewModel: ViewModel() {
     val playerImage = _playerImage.asStateFlow()
 
     init{
-        CoroutineScope(Dispatchers.IO).launch{
+        CoroutineScope(Dispatchers.IO).launch{ //only for testing
             _playerImage.value = img(
                 getPlayerImage())
 
@@ -71,9 +71,6 @@ class RankingScreenViewModel: ViewModel() {
         CoroutineScope(Dispatchers.IO).launch {
 
             val liveMatches = getLiveMatches()
-            CoroutineScope(Dispatchers.IO).launch {
-
-            }
             teamNames.clear()
             if (liveMatches != null && liveMatches.events!=null) { //Despite what Android studio says, this seems to make a difference
 
