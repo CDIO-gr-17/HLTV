@@ -41,11 +41,26 @@ fun getPlayersFromEvent(eventID: Int? = 10945127): APIResponse.Lineup {
 
 //Doesnt use the reusable function because of the return type
 fun getPlayerImage(playerID: Int? = 1078255): Bitmap {
+    val apiURL = "player/" + playerID.toString() + "/image"
+    return getAPIImage(apiURL, APIKEY)
+}
+fun getTeamImage(teamID: Int? = 372647): Bitmap{
+    val apiURL = "team/" + teamID.toString() + "/image"
+    return getAPIImage(apiURL, APIKEY)
+}
 
-    val apiKEY = APIKEY;
+fun getPreviousMatches(teamID: Int, pageID: Int = 0):APIResponse.EventsWrapper{
+    return getAPIResponse("team/"+teamID.toString()+"/matches/previous/"+ pageID, APIKEY, APIResponse.EventsWrapper::class.java) as APIResponse.EventsWrapper
+}
+
+/**
+ * I couldn't get coil to work with the whole APIkey, MVVM model and stuff
+ * If you can, feel free to, but this slightly convoluted thing works
+ */
+private fun getAPIImage(apiURL: String, apiKEY: String): Bitmap{
 
     val request = Request.Builder()
-        .url("https://allsportsapi2.p.rapidapi.com/api/esport/player/" + playerID.toString() + "/image")
+        .url("https://allsportsapi2.p.rapidapi.com/api/esport/" + apiURL)
         .get()
         .addHeader("X-RapidAPI-Key", apiKEY)
         .addHeader("X-RapidAPI-Host", "allsportsapi2.p.rapidapi.com")
@@ -60,32 +75,23 @@ fun getPlayerImage(playerID: Int? = 1078255): Bitmap {
 
     if (inputStream2 != null) {
         var bytesRead = inputStream2.read(buffer)
-        Log.i("getPlayerImage", "bytesRead is: " + bytesRead.toString())
+        Log.i("getAPIImage", "bytesRead is: " + bytesRead.toString())
         while (bytesRead != -1) {
             output.write(buffer, 0, bytesRead)
             bytesRead = inputStream2.read(buffer)
         }
     }else{
-        Log.i("getPlayerImage", "inputStream2 is null")
+        Log.i("getAPIImage", "inputStream2 is null")
     }
-
-
     val base64String = Base64.encodeToString(output.toByteArray(), Base64.DEFAULT)
-
     val decodedImage: ByteArray = android.util.Base64.decode(base64String, 0)
-
-    Log.i("decodedImage is: ", decodedImage.toString())
+    Log.i("getAPIImage","decodedImage is: "+ decodedImage.toString())
     val bitmap = BitmapFactory.decodeByteArray(decodedImage, 0, decodedImage.size)
 
     Log.i("Bitmap is: ", bitmap.toString())
     return bitmap
+
 }
-
-fun getPreviousMatches(teamID: Int, pageID: Int = 0):APIResponse.EventsWrapper{
-
-    return getAPIResponse("team/"+teamID.toString()+"/matches/previous/"+ pageID, APIKEY, APIResponse.EventsWrapper::class.java) as APIResponse.EventsWrapper
-}
-
 /**
  * @param desiredClass The class to pass to gson. This is the same as your return class, e.g. APIResponse.Lineup::class.java
  */

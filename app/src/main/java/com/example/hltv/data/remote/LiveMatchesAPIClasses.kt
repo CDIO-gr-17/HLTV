@@ -24,7 +24,7 @@ sealed class APIResponse{
 
 
     data class Player (
-        @SerializedName(  "player" ) var player: List<Players>
+        @SerializedName(  "player" ) var player: List<Player_orsub>
     )
 }
 
@@ -200,7 +200,7 @@ data class Player (
 
 )
 
-data class Players (
+data class Player_orsub (
 
     @SerializedName("player"     ) var player     : Player?  = Player(),
     @SerializedName("substitute" ) var substitute : Boolean? = null
@@ -221,7 +221,7 @@ data class PlayerColor (
  */
 data class PlayerGroup (
 
-    @SerializedName("players"         ) var players         : ArrayList<Players> = arrayListOf(),
+    @SerializedName("players"         ) var players         : ArrayList<Player_orsub> = arrayListOf(),
     @SerializedName("playerColor"     ) var playerColor     : PlayerColor?       = PlayerColor(),
     @SerializedName("goalkeeperColor" ) var goalkeeperColor : PlayerColor?       = PlayerColor()
 

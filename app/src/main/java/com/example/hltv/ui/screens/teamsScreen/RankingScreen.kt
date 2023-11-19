@@ -26,7 +26,6 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import kotlinx.coroutines.CoroutineScope
@@ -36,8 +35,6 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import androidx.compose.runtime.State
 import androidx.compose.runtime.collectAsState
-import androidx.compose.ui.graphics.ImageBitmap
-import coil.compose.ImagePainter
 import coil.compose.rememberAsyncImagePainter
 
 //Used for testing
@@ -50,7 +47,7 @@ data class ListItem(val ranking: Int, val text1: String, val text2: String)
 fun RankingScreen() {
     val R = MaterialTheme
     val viewModel = RankingScreenViewModel()
-    val playerbmap = viewModel.playerImage.collectAsState()
+    val playerbmap = viewModel.allPlayerImages.collectAsState()
 
     LazyColumn {
 
@@ -70,7 +67,7 @@ fun teamCard(
     R: MaterialTheme,
     text1: String = " ",
     text2: String,
-    playerbmap: State<img>
+    playerbmap: State<AllPlayerImages>
 ) =
 
     Card (
