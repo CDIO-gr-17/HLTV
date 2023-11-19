@@ -63,7 +63,7 @@ class RankingScreenViewModel: ViewModel() {
 
             }
             teamNames.clear()
-            if (liveMatches != null && liveMatches.events!=null) {
+            if (liveMatches != null && liveMatches.events!=null) { //Despite what Android studio says, this seems to make a difference
 
                 //TODO: This loop is called multiple times, i think. Pretty painful
                 //Whole initializer is called multiple times, but stopping that breaks it
