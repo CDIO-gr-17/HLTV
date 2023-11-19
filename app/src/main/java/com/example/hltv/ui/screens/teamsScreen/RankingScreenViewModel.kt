@@ -77,7 +77,7 @@ class RankingScreenViewModel: ViewModel() {
                     teamNames.add(event.homeTeam.name + " VS " + event.awayTeam.name)
                 }
                 //I dont think this should be called here, but it is going to wait for getLiveMatches() anyway
-                _allPlayerImages.value = getAllPlayerImages(liveMatches)
+                //_allPlayerImages.value = getAllPlayerImages(liveMatches)
 
             }else{
                 teamNames.add("No current teams playing")
