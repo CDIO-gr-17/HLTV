@@ -1,6 +1,7 @@
 package com.example.hltv.ui.screens.teamsScreen
 import android.graphics.Bitmap
 import android.os.SystemClock.sleep
+import android.util.Log
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
@@ -30,6 +31,7 @@ import androidx.compose.ui.res.painterResource
 import coil.compose.AsyncImagePainter
 import coil.compose.rememberAsyncImagePainter
 import com.example.hltv.R
+import kotlinx.coroutines.delay
 
 //Used for testing
 val items = (1..20).map { index ->
@@ -91,15 +93,37 @@ fun teamCard(
 
             for (i in 1..5){
                 var bitmap: Bitmap? = null
-                var retries = 5
-                while(teamPlayerImages != null && retries != 0){
+
+                if (teamPlayerImages != null){
+                    if (teamPlayerImages.teamImages?.size == 0){
+                        Log.w("RankingScreen", "TeamImages is of size 0. Sleeping 100ms and hoping for the best")
+                        sleep(100)
+                    }
+                    if (teamPlayerImages.teamImages?.size!=0){
+                        bitmap = teamPlayerImages.teamImages?.get(i-1)
+                    }
+
+                }
+                /*
+                var retries = 1
+                while(teamPlayerImages != null && retries > 0){
+
+                    if (teamPlayerImages.teamImages?.size == 0){
+                        Log.i("RankingScreen", "TeamImages is of size 0. Sleeping 100ms and retrying")
+                        sleep(100)
+                        retries--
+                        continue
+                    }
                     bitmap = teamPlayerImages.teamImages?.get(i-1)
-                    if (bitmap == null){
+                    if (bitmap != null){
                         break;
                     }
+                    Log.i("RankingScreen", "bitmap is null. Sleeping 100ms and retrying")
                     sleep(100)
                     retries--
                 }
+
+                 */
 
                 val painter: AsyncImagePainter = if (bitmap == null){
                     rememberAsyncImagePainter(R.drawable.playersilouhette)

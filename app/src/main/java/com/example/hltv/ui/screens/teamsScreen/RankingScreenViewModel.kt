@@ -8,6 +8,7 @@ import com.example.hltv.data.remote.APIResponse
 import com.example.hltv.data.remote.getLiveMatches
 import com.example.hltv.data.remote.getPlayerImage
 import com.example.hltv.data.remote.getPlayersFromEvent
+import kotlinx.coroutines.CompletableDeferred
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Deferred
 import kotlinx.coroutines.Dispatchers
@@ -32,7 +33,7 @@ suspend fun getPlayerGroups(eventID : Int?): Deferred<APIResponse.Lineup> = coro
 }
 
 suspend fun getAllPlayerImages(eventsWrapper: APIResponse.EventsWrapper): AllPlayerImages{
-    Log.i("getAllPlayerImages", "Getting All player images")
+    Log.d("getAllPlayerImages", "Getting All player images")
     var allPlayerImages = AllPlayerImages(mutableListOf())
     for (event in eventsWrapper.events){ //For every event
         var playerGroups = getPlayerGroups(event.id)
@@ -61,20 +62,23 @@ class RankingScreenViewModel: ViewModel() {
     val playerImage = _playerImage.asStateFlow()
 
     init{
+        /*
         CoroutineScope(Dispatchers.IO).launch{ //only for testing
             _playerImage.value = img(
                 getPlayerImage())
 
         }
 
-        CoroutineScope(Dispatchers.IO).launch {
+         */
+        var liveMatchesDeffered = CompletableDeferred<APIResponse.EventsWrapper>();
 
-            val liveMatches = getLiveMatches()
+        CoroutineScope(Dispatchers.IO).launch {
+            liveMatchesDeffered.complete(getLiveMatches())
+        }
+        CoroutineScope(Dispatchers.Default).launch {
+            val liveMatches = liveMatchesDeffered.await()
             teamNames.clear()
             if (liveMatches != null && liveMatches.events!=null) { //Despite what Android studio says, this seems to make a difference
-
-                //TODO: This loop is called multiple times, i think. Pretty painful
-                //Whole initializer is called multiple times, but stopping that breaks it
                 for ((index, event) in liveMatches.events.withIndex()) {
                     //Log.i("RankingScreen","Adding string with event " + index.toString() + ". Name is: " + event.homeTeam.name + " VS " + event.awayTeam.name)
                     teamNames.add(event.homeTeam.name + " VS " + event.awayTeam.name)
@@ -86,6 +90,12 @@ class RankingScreenViewModel: ViewModel() {
                 teamNames.add("No current teams playing")
                 Log.i(this.toString(),"There were no live matches?")
             }
+        }
+
+
+
+        CoroutineScope(Dispatchers.IO).launch {
+            _allPlayerImages.value = getAllPlayerImages(liveMatchesDeffered.await())
         }
     }
 }

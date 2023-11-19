@@ -10,16 +10,32 @@ import kotlinx.coroutines.sync.withLock
 import okhttp3.Request
 import java.io.ByteArrayOutputStream
 
-val mutexForAPILimit = Mutex()
 const val APIKEY = "24b0f292d5mshdf7eb12b4760333p19075ajsncc1561769190"
 const val ONLYCS = true
 var currentRequestCount = 0
 val cond = ConditionVariable()
-
+var lastAPIPull: Long = 0
+val mutexForAPI = Mutex()
 /**
- * Returns live matches
+ * If 6 (API limit) messages have been sent within the last second, it waits 1/6s and returns.
+ * Otherwise, it returns instantly.
  */
 suspend fun waitForAPI(){
+
+    mutexForAPI.withLock {
+        delay(166)
+    }
+
+    /* I don't think this works
+    val currentDateTime: java.util.Date = java.util.Date()
+    val currentTimestamp = currentDateTime.time
+    val nextAllowedTime = lastAPIPull + 166;
+    val delta = nextAllowedTime-currentTimestamp
+    delay(delta)
+    Log.i("waitForAPI", "I am being called")
+
+     */
+/*
     if (currentRequestCount < 6){
         currentRequestCount += 1
         run{
@@ -32,13 +48,11 @@ suspend fun waitForAPI(){
         cond.block()
     }
 
-/*
-    mutexForAPILimit.withLock {
-        delay(166)
-    }
-
  */
 }
+/**
+ * Returns live matches
+ */
 suspend fun getLiveMatches(): APIResponse.EventsWrapper {
 
 
@@ -67,7 +81,7 @@ suspend fun getPlayersFromEvent(eventID: Int? = 10945127): APIResponse.Lineup {
 
 //Doesnt use the reusable function because of the return type
 suspend fun getPlayerImage(playerID: Int? = 1078255): Bitmap? {
-    Log.i("getPlayerImage", "Getting player image with playerID " + playerID.toString())
+    Log.v("getPlayerImage", "Getting player image with playerID " + playerID.toString())
     val apiURL = "player/" + playerID.toString() + "/image"
     return getAPIImage(apiURL, APIKEY)
 }
@@ -115,7 +129,7 @@ private suspend fun getAPIImage(apiURL: String, apiKEY: String): Bitmap?{
     val bitmap = BitmapFactory.decodeByteArray(decodedImage, 0, decodedImage.size)
 
     if (bitmap == null){
-       Log.i("getAPIImage", "Bitmap is null, probably because player image does not exist")
+       Log.d("getAPIImage", "Bitmap is null, probably because player image does not exist")
     }
     return bitmap
 
@@ -125,7 +139,6 @@ private suspend fun getAPIImage(apiURL: String, apiKEY: String): Bitmap?{
  */
 private suspend fun getAPIResponse(apiURL: String, apiKEY: String, desiredClass:Class<*>): APIResponse {
 
-    waitForAPI()
     var jsonString : String?
     var tries = 3
     do{
@@ -137,12 +150,21 @@ private suspend fun getAPIResponse(apiURL: String, apiKEY: String, desiredClass:
             .build()
 
         val client = OkHttpClientSingleton.instance
+        waitForAPI()
         val response = client.newCall(request).execute()
         // Get the HTTP response as a string
         jsonString = response.body?.string()
         response.close()
 
-        Log.i("getAPIResponse", "Got json: " + jsonString)
+        if (jsonString != null) {
+            if (jsonString.contains("You have exceeded the rate limit per second for your plan")){
+                Log.e("getAPIResponse", "You have exceeded the rate limit per second for your plan")
+            }else {
+                Log.i("getAPIResponse", "Got json: " + jsonString)
+            }
+        }else {
+            Log.i("getAPIResponse", "jsonString is null")
+        }
         tries--
     }while (jsonString?.compareTo("") == 0 && tries > 0)
 
