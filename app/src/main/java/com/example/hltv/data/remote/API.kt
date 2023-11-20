@@ -141,7 +141,6 @@ private suspend fun getAPIImage(apiURL: String, apiKEY: String): Bitmap?{
 private suspend fun getAPIResponse(apiURL: String, apiKEY: String, desiredClass:Class<*>): APIResponse {
 
     var jsonString : String?
-    Log.i("getAPIResponse", "Getting: " + apiURL)
     var tries = 3
     do{
         val request = Request.Builder()
@@ -169,7 +168,7 @@ private suspend fun getAPIResponse(apiURL: String, apiKEY: String, desiredClass:
         }
         tries--
     }while (jsonString?.compareTo("") == 0 && tries > 0)
-    jsonString = "";
+
     if (jsonString?.compareTo("") == 0){
         Log.e("getAPIResponse", "jsonString is repeatedly null", IOException("STRING IS NULL"))
     }
