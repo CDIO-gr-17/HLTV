@@ -105,7 +105,7 @@ fun overviewPlayer(
                     Text(
                         text = player.name ?: "Unknown",
                         fontSize = MaterialTheme.typography.bodyMedium.fontSize,
-                        color = MaterialTheme.colorScheme.onPrimary,
+                        color = MaterialTheme.colorScheme.onPrimaryContainer,
                         textAlign = TextAlign.Center,
                         modifier = Modifier.fillMaxWidth(),
                         fontWeight = FontWeight.Bold
@@ -132,7 +132,7 @@ fun overviewInfo(
             Text(
                 text = country,
                 fontSize = MaterialTheme.typography.bodyLarge.fontSize,
-                color = MaterialTheme.colorScheme.onPrimary,
+                color = MaterialTheme.colorScheme.onPrimaryContainer,
                 fontWeight = FontWeight.Bold
             )
             Image(
@@ -149,13 +149,13 @@ fun overviewInfo(
             Text(
                 text = "World Ranking",
                 fontSize = MaterialTheme.typography.bodyLarge.fontSize,
-                color = MaterialTheme.colorScheme.onPrimary,
+                color = MaterialTheme.colorScheme.onPrimaryContainer,
                 fontWeight = FontWeight.Bold
             )
             Text(
                 text = "#" + worldRank,
                 fontSize = MaterialTheme.typography.bodyLarge.fontSize,
-                color = MaterialTheme.colorScheme.onPrimary
+                color = MaterialTheme.colorScheme.onPrimaryContainer
             )
         }
     }
@@ -193,7 +193,7 @@ fun recentMatches(
                         Text(
                             text = team1,
                             fontSize = MaterialTheme.typography.bodyLarge.fontSize,
-                            color = MaterialTheme.colorScheme.onPrimary
+                            color = MaterialTheme.colorScheme.onPrimaryContainer
                         )
                     }
                     Column (
@@ -202,13 +202,13 @@ fun recentMatches(
                         Text(
                             text = score,
                             fontSize = MaterialTheme.typography.bodyLarge.fontSize,
-                            color = MaterialTheme.colorScheme.onPrimary,
+                            color = MaterialTheme.colorScheme.onPrimaryContainer,
                             fontWeight = FontWeight.Bold
                         )
                         Text(
                             text = date,
                             fontSize = MaterialTheme.typography.bodyMedium.fontSize,
-                            color = MaterialTheme.colorScheme.onPrimary
+                            color = MaterialTheme.colorScheme.onPrimaryContainer
                         )
                     }
                     Row (
@@ -217,7 +217,7 @@ fun recentMatches(
                         Text(
                             text = team2,
                             fontSize = MaterialTheme.typography.bodyLarge.fontSize,
-                            color = MaterialTheme.colorScheme.onPrimary
+                            color = MaterialTheme.colorScheme.onPrimaryContainer
                         )
                         Image(
                             painter = imageTeam2,
@@ -253,27 +253,27 @@ fun stats(coach: String,
                     ){
                         Text(text = "Statistics",
                             fontWeight = FontWeight.Bold,
-                            color = MaterialTheme.colorScheme.onPrimary
+                            color = MaterialTheme.colorScheme.onPrimaryContainer
                         )
                         Text(
                             text = "Coach:",
-                            color = MaterialTheme.colorScheme.onPrimary
+                            color = MaterialTheme.colorScheme.onPrimaryContainer
                         )
                         Text(
                             text = "Points:",
-                            color = MaterialTheme.colorScheme.onPrimary
+                            color = MaterialTheme.colorScheme.onPrimaryContainer
                         )
                         Text(
                             text = "Win Rate:",
-                            color = MaterialTheme.colorScheme.onPrimary
+                            color = MaterialTheme.colorScheme.onPrimaryContainer
                         )
                         Text(
                             text = "Best Map:",
-                            color = MaterialTheme.colorScheme.onPrimary
+                            color = MaterialTheme.colorScheme.onPrimaryContainer
                         )
                         Text(
                             text = "Average Player Age:",
-                            color = MaterialTheme.colorScheme.onPrimary
+                            color = MaterialTheme.colorScheme.onPrimaryContainer
                         )
                     }
                     Column (
@@ -284,7 +284,7 @@ fun stats(coach: String,
                         ){
                             Text(
                                 text = coach,
-                                color = MaterialTheme.colorScheme.onPrimary)
+                                color = MaterialTheme.colorScheme.onPrimaryContainer)
                             Image(
                                 painter = imageNat,
                                 contentDescription = null,
@@ -296,16 +296,16 @@ fun stats(coach: String,
                         }
                         Text(
                             text = points,
-                            color = MaterialTheme.colorScheme.onPrimary)
+                            color = MaterialTheme.colorScheme.onPrimaryContainer)
                         Text(
                             text = winRate,
-                            color = MaterialTheme.colorScheme.onPrimary)
+                            color = MaterialTheme.colorScheme.onPrimaryContainer)
                         Text(
                             text = bestMap,
-                            color = MaterialTheme.colorScheme.onPrimary)
+                            color = MaterialTheme.colorScheme.onPrimaryContainer)
                         Text(
                             text = averagePlayerAge,
-                            color = MaterialTheme.colorScheme.onPrimary)
+                            color = MaterialTheme.colorScheme.onPrimaryContainer)
                     }
                 }
             }
