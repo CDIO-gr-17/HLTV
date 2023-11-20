@@ -9,6 +9,7 @@ import kotlinx.coroutines.sync.Mutex
 import kotlinx.coroutines.sync.withLock
 import okhttp3.Request
 import java.io.ByteArrayOutputStream
+import java.io.IOException
 
 const val APIKEY = "24b0f292d5mshdf7eb12b4760333p19075ajsncc1561769190"
 const val ONLYCS = true
@@ -140,6 +141,7 @@ private suspend fun getAPIImage(apiURL: String, apiKEY: String): Bitmap?{
 private suspend fun getAPIResponse(apiURL: String, apiKEY: String, desiredClass:Class<*>): APIResponse {
 
     var jsonString : String?
+    Log.i("getAPIResponse", "Getting: " + apiURL)
     var tries = 3
     do{
         val request = Request.Builder()
@@ -160,13 +162,17 @@ private suspend fun getAPIResponse(apiURL: String, apiKEY: String, desiredClass:
             if (jsonString.contains("You have exceeded the rate limit per second for your plan")){
                 Log.e("getAPIResponse", "You have exceeded the rate limit per second for your plan")
             }else {
-                Log.i("getAPIResponse", "Got json: " + jsonString)
+                Log.i("getAPIResponse", "Got json: "/* + jsonString*/)
             }
         }else {
             Log.i("getAPIResponse", "jsonString is null")
         }
         tries--
     }while (jsonString?.compareTo("") == 0 && tries > 0)
+    jsonString = "";
+    if (jsonString?.compareTo("") == 0){
+        Log.e("getAPIResponse", "jsonString is repeatedly null", IOException("STRING IS NULL"))
+    }
 
 
     //Initiating as late as possible for performance reasons. Don't think it makes much of a difference
