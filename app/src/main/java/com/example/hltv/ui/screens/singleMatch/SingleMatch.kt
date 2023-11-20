@@ -14,7 +14,7 @@ import com.example.hltv.ui.screens.teamsScreen.teamCard
 fun SingleMatchScreen(viewModel: SingleMatchViewModel){
 val R = MaterialTheme
     val singlematches by viewModel.matches.collectAsState()
-teamCard(modifier = Modifier, R = R, text1 = singlematches.toString(), text2 = "test")
+//teamCard(modifier = Modifier, R = R, text1 = singlematches.toString(), text2 = "test")
 }
 
 @Preview(showBackground = true)
