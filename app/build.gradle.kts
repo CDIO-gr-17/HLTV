@@ -53,6 +53,9 @@ dependencies {
 
     // https://mvnrepository.com/artifact/com.google.code.gson/gson
     implementation("com.google.code.gson:gson:2.10.1")
+    //Importing coil makes my thing die for some reason. Not sure why
+    implementation("io.coil-kt:coil-compose:2.5.0")
+    implementation ("com.squareup.okhttp3:okhttp:4.12.0") // Replace 4.9.1 with the latest version
     implementation("androidx.core:core-ktx:1.9.0")
     implementation("androidx.lifecycle:lifecycle-runtime-ktx:2.6.2")
     implementation("androidx.activity:activity-compose:1.7.2")

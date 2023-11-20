@@ -40,7 +40,7 @@ fun MainNavHost(navController: NavHostController, modifier: Modifier) {
             NewsScreen()
         }
         composable(route = Ranking.route) {
-            RankingScreen(RankingScreenViewModel())
+            RankingScreen()
         }
         composable(route = Settings.route) {
             SettingsScreen()
