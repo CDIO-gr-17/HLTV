@@ -171,6 +171,10 @@ fun recentMatches(
     date: String,
 
 ){
+    Text(text = "Recent Matches",
+        fontWeight = FontWeight.Bold,
+        color = MaterialTheme.colorScheme.onPrimaryContainer
+    )
     CommonCard(
         modifier = Modifier.fillMaxWidth(),
         topBox = {
