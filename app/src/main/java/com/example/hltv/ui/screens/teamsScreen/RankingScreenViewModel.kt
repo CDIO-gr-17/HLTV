@@ -63,6 +63,10 @@ class RankingScreenViewModel: ViewModel() {
 
     init{
 
+        //This shouldn't be a var, as we should be updating the value used in the view
+        //as often as possible, instead of collecting all updates and putting them in
+        //at the very end (which leads to all the info coming at once, instead of dynamically
+        //loading (much preferred)
         var liveMatchesDeferred = CompletableDeferred<APIResponse.EventsWrapper>();
 
         CoroutineScope(Dispatchers.IO).launch {
