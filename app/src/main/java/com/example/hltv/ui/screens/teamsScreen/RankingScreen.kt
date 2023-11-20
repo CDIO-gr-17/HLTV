@@ -1,4 +1,7 @@
 package com.example.hltv.ui.screens.teamsScreen
+import android.graphics.Bitmap
+import android.os.SystemClock.sleep
+import android.util.Log
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
@@ -13,32 +16,22 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.wrapContentSize
 import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.material3.Button
 import androidx.compose.material3.Card
-import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
+import androidx.compose.runtime.State
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.delay
-import kotlinx.coroutines.launch
-import kotlinx.coroutines.withContext
-import androidx.compose.runtime.State
 import androidx.compose.runtime.collectAsState
-import androidx.compose.ui.graphics.ImageBitmap
-import coil.compose.ImagePainter
+import androidx.compose.ui.res.painterResource
+import coil.compose.AsyncImagePainter
 import coil.compose.rememberAsyncImagePainter
+import com.example.hltv.R
+import kotlinx.coroutines.delay
 
 //Used for testing
 val items = (1..20).map { index ->
@@ -50,14 +43,15 @@ data class ListItem(val ranking: Int, val text1: String, val text2: String)
 fun RankingScreen() {
     val R = MaterialTheme
     val viewModel = RankingScreenViewModel()
+    val allPlayerImages = viewModel.allPlayerImages.collectAsState()
     val playerbmap = viewModel.playerImage.collectAsState()
 
     LazyColumn {
 
         items(viewModel.teamNames.size) { index ->
-
-            teamCard(modifier = Modifier, R = R, text1 = viewModel.teamNames[index], text2 = "Unused", playerbmap) //ugly hardcoding, but we ball
-            if (index < items.size-1){
+            //I dont think the !! is particularly good coding practice?
+            teamCard(modifier = Modifier, materialTheme = R, text1 = viewModel.teamNames[index], text2 = "Unused", playerbmap, allPlayerImages.value.allTeamImages?.get(index)) //ugly hardcoding, but we ball
+            if (index < viewModel.teamNames.size-1){
                 Spacer(modifier = Modifier.height(1.dp))
             }
         }
@@ -84,11 +78,12 @@ fun RankingScreen() {
 @Composable
 fun teamCard(
     modifier: Modifier,
-    R: MaterialTheme,
+    materialTheme: MaterialTheme,
     text1: String = " ",
     text2: String,
-    playerbmap: State<img>
-) =
+    singleImgState: State<img>,
+    teamPlayerImages: TeamPlayerImages?
+    ) =
 
     Card (
         modifier = modifier
@@ -103,8 +98,8 @@ fun teamCard(
         ) {
             Text(
                 text = text1,
-                fontSize = R.typography.bodyLarge.fontSize,
-                color = R.colorScheme.primary,
+                fontSize = materialTheme.typography.bodyLarge.fontSize,
+                color = materialTheme.colorScheme.primary,
                 modifier = Modifier
                     .align(Alignment.CenterStart)
                     .padding(start = 10.dp)
@@ -114,12 +109,30 @@ fun teamCard(
         Row (modifier = Modifier.padding(start = 10.dp)) {
 
             for (i in 1..5){
+                var bitmap: Bitmap? = null
+
+                if (teamPlayerImages != null){
+                    if (teamPlayerImages.teamImages?.size == 0){
+                        Log.w("RankingScreen", "TeamImages is of size 0. Sleeping 100ms and hoping for the best")
+                        sleep(100)
+                    }
+                    if (teamPlayerImages.teamImages?.size!=0){
+                        bitmap = teamPlayerImages.teamImages?.get(i-1)
+                    }
+
+                }
+
+                val painter: AsyncImagePainter = if (bitmap == null){
+                    rememberAsyncImagePainter(R.drawable.playersilouhette)
+                } else{
+                    rememberAsyncImagePainter(bitmap)
+                }
                 Column (modifier = Modifier
                     .fillMaxSize()
                     .weight(1f)){
                     Image(
-                        //painter = painterResource(id = com.example.hltv.R.drawable.astralis_logo),
-                        painter = rememberAsyncImagePainter(playerbmap.value.bitMap),
+
+                        painter = painter,
                         contentDescription = null, //TODO
                         alignment = Alignment.TopStart,
                         modifier = Modifier
@@ -138,8 +151,8 @@ fun teamCard(
                         ) {
                             Text(
                                 text = "Name",
-                                fontSize = R.typography.bodySmall.fontSize,
-                                color = R.colorScheme.primary,
+                                fontSize = materialTheme.typography.bodySmall.fontSize,
+                                color = materialTheme.colorScheme.primary,
                                 modifier = Modifier
                                     .align(Alignment.Center)
                                     .offset(y = (-0.5).dp) //Makes text look more centered, I think?
@@ -152,37 +165,6 @@ fun teamCard(
         }
     }
 
-@Composable
-fun RankingScreenb() {
-    var isLoading by remember { mutableStateOf(false) }
-    var data by remember { mutableStateOf("") }
-
-    Column {
-        if (isLoading) {
-            // Show a progress indicator while loading data
-            CircularProgressIndicator()
-        } else {
-            // Show the loaded data
-            Text(data)
-        }
-
-        Button(onClick = {
-            isLoading = true
-            CoroutineScope(Dispatchers.IO).launch {
-                // Simulate loading data
-                delay(2000)
-
-                // Update data on the main thread
-                withContext(Dispatchers.Main) {
-                    data = "Loaded data"
-                    isLoading = false
-                }
-            }
-        }) {
-            Text("Load Data")
-        }
-    }
-}
 @Preview(showBackground = true)
 @Composable
 fun RankingPreview() {
