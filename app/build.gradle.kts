@@ -7,8 +7,6 @@ android {
     namespace = "com.example.hltv"
     compileSdk = 34
 
-
-
     defaultConfig {
         applicationId = "com.example.hltv"
         minSdk = 28
@@ -20,7 +18,6 @@ android {
         vectorDrawables {
             useSupportLibrary = true
         }
-
     }
 
     buildTypes {
@@ -50,13 +47,17 @@ android {
             excludes += "/META-INF/{AL2.0,LGPL2.1}"
         }
     }
-
-
 }
 
 dependencies {
 
     implementation("androidx.core:core-ktx:1.12.0")
+    // https://mvnrepository.com/artifact/com.google.code.gson/gson
+    implementation("com.google.code.gson:gson:2.10.1")
+    //Importing coil makes my thing die for some reason. Not sure why
+    implementation("io.coil-kt:coil-compose:2.5.0")
+    implementation ("com.squareup.okhttp3:okhttp:4.12.0") // Replace 4.9.1 with the latest version
+    implementation("androidx.core:core-ktx:1.9.0")
     implementation("androidx.lifecycle:lifecycle-runtime-ktx:2.6.2")
     implementation("androidx.activity:activity-compose:1.8.0")
     implementation(platform("androidx.compose:compose-bom:2023.03.00"))
@@ -65,6 +66,9 @@ dependencies {
     implementation("androidx.compose.ui:ui-tooling-preview")
     implementation("androidx.compose.material3:material3")
     implementation("androidx.navigation:navigation-compose:2.7.5")
+    implementation("androidx.navigation:navigation-compose:2.7.0")
+    implementation ("com.squareup.retrofit2:retrofit:2.9.0")
+    implementation ("com.squareup.retrofit2:converter-gson:2.9.0")
     testImplementation("junit:junit:4.13.2")
 
     // Cucumber

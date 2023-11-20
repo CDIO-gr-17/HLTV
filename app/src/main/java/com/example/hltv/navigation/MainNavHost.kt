@@ -18,6 +18,7 @@ import com.example.hltv.ui.screens.matchesScreen.MatchesScreen
 import com.example.hltv.ui.screens.newsScreen.NewsScreen
 import com.example.hltv.ui.screens.teamsScreen.RankingScreen
 import com.example.hltv.ui.screens.settingsScreen.SettingsScreen
+import com.example.hltv.ui.screens.teamsScreen.RankingScreenViewModel
 
 @Composable
 fun MainNavHost(navController: NavHostController, modifier: Modifier) {
