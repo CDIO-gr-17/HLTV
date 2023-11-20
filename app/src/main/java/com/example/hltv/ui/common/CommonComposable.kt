@@ -88,6 +88,20 @@ fun CommonComposable() {
                     }
                 }
             )
+            CommonCard (
+                modifier = Modifier.fillMaxWidth(),
+                bottomBox = {
+                    Box{
+                        Text(
+                            text = "bottomBox information",
+                            fontSize = MaterialTheme.typography.bodyLarge.fontSize,
+                            color = MaterialTheme.colorScheme.onSecondaryContainer,
+                            modifier = Modifier
+                                .align(Alignment.CenterStart)
+                        )
+                    }
+                }
+            )
         }
     }
 }
@@ -108,58 +122,58 @@ fun CommonCard(
             .padding(customOuterPadding ?: 8.dp)
             .height(IntrinsicSize.Max)
     ) {
-        Box(
-            modifier = Modifier
-                .background(color = MaterialTheme.colorScheme.primaryContainer)
-                .fillMaxWidth()
-                .padding(customInnerPadding ?: 8.dp)
-        ) {
-            if (topBox != null) {
-                Box {
+        if (topBox != null || headText != null || subText != null || image != null)
+            Box(
+                modifier = Modifier
+                    .background(color = MaterialTheme.colorScheme.primaryContainer)
+                    .fillMaxWidth()
+                    .padding(customInnerPadding ?: 8.dp)
+            ) {
+                if(topBox != null)
                     topBox()
-                }
-            } else
-                Row (
-                    modifier = Modifier
-                        .fillMaxWidth(),
-                    verticalAlignment = Alignment.CenterVertically
-                ){
+                else {
+                    Row(
+                        modifier = Modifier
+                            .fillMaxWidth(),
+                        verticalAlignment = Alignment.CenterVertically
+                    ) {
 
-                    Column (
-                        modifier = Modifier.weight(1f)
-                    ){
-                        headText?.let {
-                            Text(
-                                text = it,
-                                fontSize = MaterialTheme.typography.bodyLarge.fontSize,
-                                color = MaterialTheme.colorScheme.onPrimaryContainer,
+                        Column(
+                            modifier = Modifier.weight(1f)
+                        ) {
+                            headText?.let {
+                                Text(
+                                    text = it,
+                                    fontSize = MaterialTheme.typography.bodyLarge.fontSize,
+                                    color = MaterialTheme.colorScheme.onPrimaryContainer,
+                                )
+                            }
+                            subText?.let {
+                                Text(
+                                    text = it,
+                                    fontSize = MaterialTheme.typography.bodyMedium.fontSize,
+                                    color = MaterialTheme.colorScheme.onPrimaryContainer,
+                                )
+                            }
+                        }
+                        image?.let {
+                            Image(
+                                painter = image,
+                                contentDescription = null,
+                                alignment = Alignment.CenterEnd,
+                                modifier = Modifier
+                                    .size(40.dp)
                             )
                         }
-                        subText?.let {
-                            Text(
-                                text = it,
-                                fontSize = MaterialTheme.typography.bodyMedium.fontSize,
-                                color = MaterialTheme.colorScheme.onPrimaryContainer,
-                            )
-                        }
-                    }
-                    image?.let {
-                        Image(
-                            painter = image,
-                            contentDescription = null,
-                            alignment = Alignment.CenterEnd,
-                            modifier = Modifier
-                                .size(40.dp)
-                        )
                     }
                 }
         }
         bottomBox?.let { bottomBox ->
             Box(
                 modifier = Modifier
-                    .padding(8.dp)
-                    .height(IntrinsicSize.Max)
                     .background(color = MaterialTheme.colorScheme.secondaryContainer)
+                    .fillMaxWidth()
+                    .padding(customInnerPadding ?: 8.dp)
             ) {
                 bottomBox()
             }
