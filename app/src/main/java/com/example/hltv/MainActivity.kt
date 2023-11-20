@@ -84,7 +84,7 @@ fun HLTVApp() {
                 )
             },
             bottomBar = {
-                NavigationBar (containerColor = MaterialTheme.colorScheme.surface) {
+                NavigationBar () {
                     bottomAppBarScreens.forEach() { item ->
                         NavigationBarItem(
                             selected = currentScreen == item,
@@ -101,30 +101,6 @@ fun HLTVApp() {
                     }
 
                 }
-
-/* OLD BOTTOM APP BAR
-                BottomAppBar() {
-                    Row(
-                        horizontalArrangement = Arrangement.SpaceAround,
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .padding(16.dp)
-                    ) {
-                        for (screen in bottomAppBarScreens) {
-
-                            IconButton(onClick = { navController.navigate(screen.route) }) {
-                                Icon(
-                                    screen.icon,
-                                    contentDescription = screen.route + "Icon",
-                                    tint = Color.Green,
-                                    modifier = Modifier
-                                        .weight(1f)
-                                )
-
-                            }
-                        }
-                    }
-                }*/
             }
         ) {
             MainNavHost(
@@ -133,7 +109,4 @@ fun HLTVApp() {
             )
         }
     }
-}
-private fun CreateTopBar(){
-
 }

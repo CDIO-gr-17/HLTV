@@ -11,11 +11,10 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.AccountBox
-import androidx.compose.material.icons.filled.Check
-import androidx.compose.material.icons.filled.CheckCircle
 import androidx.compose.material.icons.filled.Delete
 import androidx.compose.material3.Card
 import androidx.compose.material3.Divider
@@ -26,23 +25,26 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
+import com.example.hltv.R
 import com.example.hltv.ui.common.CommonCard
 
+val M = MaterialTheme
 
 @Composable
 fun HomeScreen () {
-    val R = MaterialTheme
+
 
     Column (
         horizontalAlignment = Alignment.CenterHorizontally,
         modifier = Modifier
             .fillMaxSize()
-            .background(color = R.colorScheme.background)
     ) {
+
         CommonCard(
             modifier = Modifier,
             headText = "Tester lige overskriften",
@@ -52,84 +54,19 @@ fun HomeScreen () {
             
         }
 
+        LiveMatchCard(
+            modifier = Modifier,
+            teamOneName = "Astralis",
+            teamOneIcon = Icons.Default.AccountBox,
+            teamOneScore = 16,
+            teamTwoName = "Navi",
+            teamTwoIcon = Icons.Default.AccountBox,
+            teamTwoScore = 14,
+        )
 
-        Card (
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(8.dp)
-                .height(200.dp)
 
 
-        ){
-            Box(modifier = Modifier
-                .background(color = R.colorScheme.primaryContainer)
-                .fillMaxWidth()
-                .height(50.dp)
-            ) {
-                Row {
-                    Text(
-                        text = "Your match is live!",
-                        modifier = Modifier
-                            .padding(12.dp)
-                            .fillMaxHeight()
-                            .weight(1f),
-                        fontSize = R.typography.bodyLarge.fontSize,
-                        color = R.colorScheme.onPrimaryContainer,
-                        )
-
-                    Icon(
-                        imageVector = Icons.Default.CheckCircle,
-                        contentDescription = "Live Icon",
-                        modifier = Modifier
-                            .padding(12.dp)
-                        )
-
-                }
-            }
-            Row (modifier = Modifier.background(color = R.colorScheme.secondaryContainer)) {
-                Column (horizontalAlignment = Alignment.CenterHorizontally,
-                    modifier = Modifier.fillMaxWidth(0.5f)){
-                    Text(text = "Astralis",
-                        modifier = Modifier
-                            .padding(8.dp),
-                        fontSize = 14.sp,
-                        color = R.colorScheme.onSecondaryContainer,
-                        textAlign = TextAlign.Center,
-                        )
-                    Icon(imageVector = Icons.Default.Check,
-                        contentDescription = null,
-                        modifier = Modifier
-                            .padding(12.dp)
-                        )
-                    Text(text = "10",
-                        fontSize = 40.sp)
-                }
-                Divider(modifier = Modifier
-                    .fillMaxHeight()
-                    .width(1.dp)
-                    .padding(vertical = 4.dp),
-                    color = R.colorScheme.onBackground
-                )
-                Column (horizontalAlignment = Alignment.CenterHorizontally,
-                    modifier = Modifier.fillMaxWidth()){
-                    Text(text = "Astralis",
-                        modifier = Modifier
-                            .padding(8.dp),
-                        fontSize = 14.sp,
-                        color = R.colorScheme.onSecondaryContainer,
-                        textAlign = TextAlign.Center,
-                    )
-                    Icon(imageVector = Icons.Default.Check,
-                        contentDescription = null,
-                        modifier = Modifier
-                            .padding(12.dp)
-                    )
-                    Text(text = "10",
-                        fontSize = 40.sp)
-                }
-            }
-        }
-        Divider(modifier = Modifier.padding(horizontal = 8.dp), color = R.colorScheme.onBackground)
+        Divider(modifier = Modifier.padding(horizontal = 8.dp), color = M.colorScheme.onBackground)
         Card (
 
             modifier = Modifier
@@ -140,7 +77,7 @@ fun HomeScreen () {
 
         ){
             Box(modifier = Modifier
-                .background(color = R.colorScheme.primaryContainer)
+                .background(color = M.colorScheme.primaryContainer)
                 .fillMaxWidth()
                 .fillMaxHeight(0.5f)
             ) {
@@ -153,8 +90,8 @@ fun HomeScreen () {
                                 .fillMaxHeight()
                                 .weight(1f)
                             ,
-                            fontSize = R.typography.bodyLarge.fontSize,
-                            color = R.colorScheme.onPrimaryContainer,
+                            fontSize = M.typography.bodyLarge.fontSize,
+                            color = M.colorScheme.onPrimaryContainer,
 
                         )
                         Text(
@@ -164,8 +101,8 @@ fun HomeScreen () {
                                 .padding(start = 4.dp)
                                 .fillMaxHeight()
                                 .weight(1f),
-                            fontSize = R.typography.bodyMedium.fontSize,
-                            color = R.colorScheme.onPrimaryContainer,
+                            fontSize = M.typography.bodyMedium.fontSize,
+                            color = M.colorScheme.onPrimaryContainer,
                         )
                     }
 
@@ -181,22 +118,22 @@ fun HomeScreen () {
                 }
 
             }
-            Row (modifier = Modifier.background(color = R.colorScheme.secondaryContainer)) {
+            Row (modifier = Modifier.background(color = M.colorScheme.secondaryContainer)) {
                 Column(
                     modifier = Modifier.weight(0.5f)
                 ) {
                     Text(
                         text = "Location",
-                        color = R.colorScheme.onSecondaryContainer,
-                        fontSize = R.typography.bodyMedium.fontSize,
+                        color = M.colorScheme.onSecondaryContainer,
+                        fontSize = M.typography.bodyMedium.fontSize,
                         modifier = Modifier
                             .padding(all = 8.dp)
                             .padding(start = 8.dp)
                     )
                     Text(
                         text = "Prize pool",
-                        color = R.colorScheme.onSecondaryContainer,
-                        fontSize = R.typography.bodyMedium.fontSize,
+                        color = M.colorScheme.onSecondaryContainer,
+                        fontSize = M.typography.bodyMedium.fontSize,
                         modifier = Modifier
                             .padding(all = 8.dp)
                             .padding(start = 8.dp)
@@ -209,8 +146,8 @@ fun HomeScreen () {
                     Row {
                         Text(
                             text = "Abu Dhabi",
-                            color = R.colorScheme.onSecondaryContainer,
-                            fontSize = R.typography.bodyMedium.fontSize,
+                            color = M.colorScheme.onSecondaryContainer,
+                            fontSize = M.typography.bodyMedium.fontSize,
                             textAlign = TextAlign.End,
                             modifier = Modifier
                                 .padding(8.dp)
@@ -226,8 +163,8 @@ fun HomeScreen () {
 
                     Text(
                         text = "$1,000,000",
-                        color = R.colorScheme.onSecondaryContainer,
-                        fontSize = R.typography.bodyMedium.fontSize,
+                        color = M.colorScheme.onSecondaryContainer,
+                        fontSize = M.typography.bodyMedium.fontSize,
                         modifier = Modifier
                             .padding(all = 8.dp)
                             .padding(end = 8.dp)
@@ -238,16 +175,126 @@ fun HomeScreen () {
             }
 
         }
-        Divider(modifier = Modifier.padding(horizontal = 8.dp), color = R.colorScheme.onBackground)
+        Divider(modifier = Modifier.padding(horizontal = 8.dp), color = M.colorScheme.onBackground)
 
         Text(
             text = "News",
-            color = R.colorScheme.primary,
+            color = M.colorScheme.primary,
             textAlign = TextAlign.Start
             
             )
 
     }
+}
+
+@Composable
+fun LiveMatchCard (
+    modifier: Modifier = Modifier,
+    teamOneName : String,
+    teamOneIcon : ImageVector,
+    teamOneScore : Int,
+    teamTwoName : String,
+    teamTwoIcon : ImageVector,
+    teamTwoScore : Int,
+
+) {
+    CommonCard(
+        modifier = modifier,
+        headText = "Your match is live!",
+        image = painterResource(id = R.drawable.pngtree_icon_live_streaming_vector_png_image_4643886),
+        bottomBox = {
+
+            Row () {
+                Column (horizontalAlignment = Alignment.CenterHorizontally,
+                    modifier = Modifier.fillMaxWidth(0.5f)){
+                    Text(text = teamOneName,
+                        modifier = Modifier
+                            .padding(8.dp),
+                        fontSize = M.typography.bodyLarge.fontSize,
+                        color = M.colorScheme.onSecondaryContainer,
+                        textAlign = TextAlign.Center,
+                    )
+                    Icon(imageVector = teamOneIcon,
+                        contentDescription = "teamOneIcon",
+                        modifier = Modifier
+                            .padding(4.dp)
+                            .size(50.dp,50.dp),
+
+
+                    )
+                    Text(text = teamOneScore.toString(),
+                        fontSize = M.typography.displayLarge.fontSize)
+                }
+
+                Divider(modifier = Modifier
+                    .fillMaxHeight()
+                    .width(1.dp)
+                    .padding(vertical = 4.dp),
+                    color = M.colorScheme.onBackground
+                )
+
+                Column (horizontalAlignment = Alignment.CenterHorizontally,
+                    modifier = Modifier.fillMaxWidth()) {
+                    Text(text = teamTwoName,
+                        modifier = Modifier
+                            .padding(8.dp),
+                        fontSize = M.typography.bodyLarge.fontSize,
+                        color = M.colorScheme.onSecondaryContainer,
+                        textAlign = TextAlign.Center,
+                    )
+                    Icon(imageVector = teamTwoIcon,
+                        contentDescription = "teamOneIcon",
+                        modifier = Modifier
+                            .padding(4.dp)
+                            .size(50.dp,50.dp),
+                    )
+                    Text(text = teamTwoScore.toString(),
+                        fontSize = M.typography.displayLarge.fontSize)
+                }
+            }
+
+        }
+
+    )
+/*
+    Card (
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(8.dp)
+            .height(200.dp)
+
+    ){
+        Box(modifier = Modifier
+            .background(color = M.colorScheme.primaryContainer)
+            .fillMaxWidth()
+            .height(50.dp)
+        ) {
+            Row {
+                Text(
+                    text = "Your match is live!",
+                    modifier = Modifier
+                        .padding(12.dp)
+                        .fillMaxHeight()
+                        .weight(1f),
+                    fontSize = M.typography.bodyLarge.fontSize,
+                    color = M.colorScheme.onPrimaryContainer,
+                )
+
+                Icon(
+                    imageVector = Icons.Default.CheckCircle,
+                    contentDescription = "Live Icon",
+                    modifier = Modifier
+                        .padding(12.dp)
+                )
+
+            }
+        }
+
+    }
+    */
+
+
+
 }
 
 @Preview

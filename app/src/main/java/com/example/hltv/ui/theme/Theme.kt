@@ -84,7 +84,7 @@ fun HLTVTheme(
   }
 
   MaterialTheme(
-    colorScheme = colors,
+    colorScheme = DarkColors,
     content = content
   )
 }
