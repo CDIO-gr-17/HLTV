@@ -7,6 +7,7 @@ import com.example.hltv.ui.screens.homeScreen.HomeScreen
 import com.example.hltv.ui.screens.matchesScreen.MatchesScreen
 import com.example.hltv.ui.screens.newsScreen.NewsScreen
 import com.example.hltv.ui.screens.settingsScreen.SettingsScreen
+import com.example.hltv.ui.screens.singleMatch.SingleMatchScreen
 import com.example.hltv.ui.screens.teamsScreen.RankingScreen
 import com.example.hltv.ui.screens.teamsScreen.RankingScreenViewModel
 
@@ -29,7 +30,7 @@ object Events : Destination {
 object Matches : Destination {
     override val icon: Int = R.drawable.sports_esports_24px
     override val route: String = "Matches"
-    override val screen: @Composable () -> Unit = { MatchesScreen() }
+    override val screen: @Composable () -> Unit = { SingleMatchScreen() }
 }
 object News : Destination {
     override val icon: Int = R.drawable.newspaper_24px
@@ -41,6 +42,13 @@ object Ranking : Destination {
     override val route: String = "Ranking"
     override val screen: @Composable () -> Unit = { RankingScreen() }
 }
+/*object Matchhistory : Destination {
+    override val icon: Int = R.drawable.astralis_logo
+    override val route: String = "Match history"
+    override val screen: @Composable () -> Unit = { SingleMatchScreen()}
+}
+*/
+
 object Settings : Destination {
     override val icon: Int = R.drawable.settings_24px
     override val route: String = "Settings"
