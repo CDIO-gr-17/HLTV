@@ -31,7 +31,7 @@ class PlayerScreenViewModel(){
     init{
         val deferredPlayer = CompletableDeferred<Player>()
         CoroutineScope(Dispatchers.IO).launch {
-            //deferredPlayer.complete(get)
+            //deferredPlayer.complete(getPlayer("PlaceholderID"))
         }
         CoroutineScope(Dispatchers.IO).launch {
             _singlePlayerData.value.playerImage = getPlayerImage(deferredPlayer.await().id)

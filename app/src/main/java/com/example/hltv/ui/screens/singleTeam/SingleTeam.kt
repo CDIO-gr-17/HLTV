@@ -1,6 +1,7 @@
 package com.example.hltv.ui.screens.singleTeam
 
 import androidx.compose.foundation.Image
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -25,6 +26,8 @@ import com.example.hltv.R
 import com.example.hltv.ui.common.CommonCard
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
+import androidx.navigation.compose.rememberNavController
+import com.example.hltv.navigation.SinglePlayer
 
 data class Player(val name: String ?= null, val image: Painter ?= null)
 @Composable
@@ -87,9 +90,11 @@ fun overviewPlayers(players: List<Player>) {
 fun overviewPlayer(
     player: Player
 ){
+    val navController = rememberNavController()
     Row {
         Column(
-            horizontalAlignment = Alignment.CenterHorizontally
+            horizontalAlignment = Alignment.CenterHorizontally,
+            modifier = Modifier.clickable { navController.navigate(SinglePlayer.route + "1078255") } //TODO: Hardcoded. yikes
         ){
             Image(
                 painter = player.image ?: painterResource(id = R.drawable.person_24px),
