@@ -45,14 +45,6 @@ fun HomeScreen () {
             .fillMaxSize()
     ) {
 
-        CommonCard(
-            modifier = Modifier,
-            headText = "Tester lige overskriften",
-            subText = "Hele tiden tester jeg"
-            ) {
-            Text(text ="Bottombox")
-            
-        }
 
         LiveMatchCard(
             modifier = Modifier,
@@ -203,7 +195,6 @@ fun LiveMatchCard (
         headText = "Your match is live!",
         image = painterResource(id = R.drawable.pngtree_icon_live_streaming_vector_png_image_4643886),
         bottomBox = {
-
             Row () {
                 Column (horizontalAlignment = Alignment.CenterHorizontally,
                     modifier = Modifier.fillMaxWidth(0.5f)){
@@ -256,44 +247,6 @@ fun LiveMatchCard (
         }
 
     )
-/*
-    Card (
-        modifier = Modifier
-            .fillMaxWidth()
-            .padding(8.dp)
-            .height(200.dp)
-
-    ){
-        Box(modifier = Modifier
-            .background(color = M.colorScheme.primaryContainer)
-            .fillMaxWidth()
-            .height(50.dp)
-        ) {
-            Row {
-                Text(
-                    text = "Your match is live!",
-                    modifier = Modifier
-                        .padding(12.dp)
-                        .fillMaxHeight()
-                        .weight(1f),
-                    fontSize = M.typography.bodyLarge.fontSize,
-                    color = M.colorScheme.onPrimaryContainer,
-                )
-
-                Icon(
-                    imageVector = Icons.Default.CheckCircle,
-                    contentDescription = "Live Icon",
-                    modifier = Modifier
-                        .padding(12.dp)
-                )
-
-            }
-        }
-
-    }
-    */
-
-
 
 }
 
