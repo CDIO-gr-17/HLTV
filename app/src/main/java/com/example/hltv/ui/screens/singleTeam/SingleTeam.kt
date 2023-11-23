@@ -25,10 +25,17 @@ import com.example.hltv.R
 import com.example.hltv.ui.common.CommonCard
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
+import com.example.hltv.data.remote.getTeamImage
 
 data class Player(val name: String ?= null, val image: Painter ?= null)
 @Composable
 fun SingleTeam(){
+    val viewModel = SingleTeamViewModel()
+    val recentMatches = viewModel.recentMatches
+    val recentMatch = RecentMatch(
+        bestOf = 99,
+    )
+    recentMatches.add(recentMatch)
     LazyColumn {
         item {
             CommonCard(modifier = Modifier, bottomBox = {
@@ -47,14 +54,19 @@ fun SingleTeam(){
                         countryImage = painterResource(id = R.drawable.dk_flag),
                         worldRank = "5"
                     )
-                    recentMatches(
-                        team1 = "Astralis",
-                        team2 = "Astralis",
-                        imageTeam1 = painterResource(id = R.drawable.astralis_logo),
-                        imageTeam2 = painterResource(id = R.drawable.astralis_logo),
-                        score = "16-10",
-                        date = "10 October"
-                    )
+                }
+                LazyColumn {
+                    items(recentMatches.size) {
+                        recentMatches(
+                            team1 = null,//recentMatch[0].bestOf.toString(),
+                            team2 = "Astralis",
+                            imageTeam1 = painterResource(id = R.drawable.astralis_logo),
+                            imageTeam2 = painterResource(id = R.drawable.astralis_logo),
+                            score = "16-10",
+                            date = "10 October"
+                        )
+                    }
+                }
                     stats(
                         coach = "Peter 'Castle' Ardenskjold",
                         points = "1000",
@@ -63,11 +75,10 @@ fun SingleTeam(){
                         averagePlayerAge = "25",
                         imageNat = painterResource(R.drawable.dk_flag)
                     )
-                }
-            })
+                })
+            }
         }
     }
-}
 
 
 // Lige nu er der 'gap' mellem hver spiller. Det skal fjernes. Evt. Equal Weight i stedet for SpaceEvenly?
@@ -163,7 +174,7 @@ fun overviewInfo(
 
 @Composable
 fun recentMatches(
-    team1: String,
+    team1: String ?= null,
     team2: String,
     imageTeam1: Painter,
     imageTeam2: Painter,
@@ -195,7 +206,7 @@ fun recentMatches(
                                 .size(40.dp)
                         )
                         Text(
-                            text = team1,
+                            text = team1 ?: "",
                             fontSize = MaterialTheme.typography.bodyLarge.fontSize,
                             color = MaterialTheme.colorScheme.onPrimaryContainer
                         )
