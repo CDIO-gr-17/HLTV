@@ -6,20 +6,12 @@ import androidx.compose.ui.Modifier
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
-import com.example.hltv.navigation.Events
-import com.example.hltv.navigation.Home
-import com.example.hltv.navigation.Matches
-import com.example.hltv.navigation.News
-import com.example.hltv.navigation.Ranking
-import com.example.hltv.navigation.Settings
 import com.example.hltv.ui.screens.eventsScreen.EventsScreen
 import com.example.hltv.ui.screens.homeScreen.HomeScreen
-import com.example.hltv.ui.screens.matchesScreen.MatchesScreen
 import com.example.hltv.ui.screens.newsScreen.NewsScreen
 import com.example.hltv.ui.screens.teamsScreen.RankingScreen
 import com.example.hltv.ui.screens.settingsScreen.SettingsScreen
 import com.example.hltv.ui.screens.singleMatch.SingleMatchScreen
-import com.example.hltv.ui.screens.teamsScreen.RankingScreenViewModel
 
 @Composable
 fun MainNavHost(navController: NavHostController, modifier: Modifier) {

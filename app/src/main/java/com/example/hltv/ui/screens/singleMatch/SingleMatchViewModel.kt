@@ -38,8 +38,8 @@ class SingleMatchViewModel: ViewModel() {
          if (prevMatches != null) {
              Log.i("Singlematchscreen", "This teams: 364425 " + prevMatches.events.size.toString())
              for ((index, event) in prevMatches.events.withIndex()) {
-                 Log.i("Sinlgematchscreen","Adding string with event" + index.toString() + ". Name is: "+ " VS " + event.homeScore)
-                 matchResult.add(event.homeTeam.name + " VS " + event.awayTeam.name + event.homeScore)
+                 Log.i("Sinlgematchscreen","Adding string with event" + index.toString() + ". Name is: "+event.homeTeam.name+ "VS"+event.awayTeam.name + " homscore: " + event.homeScore.toString())
+                 matchResult.add(event.homeTeam.name + " VS " + event.awayTeam.name + event.homeScore.toString())
              }
 
          }
