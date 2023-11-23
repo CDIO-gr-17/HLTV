@@ -11,6 +11,7 @@ import com.example.hltv.data.remote.PlayerGroup
 import com.example.hltv.data.remote.Player_orsub
 import com.example.hltv.data.remote.Score
 import com.example.hltv.data.remote.Team
+import com.example.hltv.data.remote.getPlayerImage
 import com.example.hltv.data.remote.getPlayersFromEvent
 import com.example.hltv.data.remote.getPreviousMatches
 import com.example.hltv.data.remote.getTeamImage
@@ -39,16 +40,18 @@ data class RecentMatch(
 )
 data class Player(
     val name: String ?= null,
-    val image: Painter ?= null,
+    val image: Bitmap ?= null,
     val playerId: Int ?= null,
-)
-data class PlayerOverview(
-    val players : ArrayList<Player> ?= null,
 )
 class SingleTeamViewModel: ViewModel() {
     val teamID = 364378
     val recentMatches = mutableStateListOf<RecentMatch>()
     val playerOverview = mutableStateListOf<Player>()
+    lateinit var team1 : Team
+    lateinit var team2 : Team
+    var team1score : Score ?= null
+    var team2score : Score ?= null
+
 
     init {
         val completedMatchesDeferred = CompletableDeferred<APIResponse.EventsWrapper>()
@@ -58,21 +61,34 @@ class SingleTeamViewModel: ViewModel() {
             Log.w(this.toString(), "Got previous matches of team with id: $teamID")
         }
         CoroutineScope(Dispatchers.IO).launch {
-            val lineup = getPlayersFromEvent()
+            var lineup = getPlayersFromEvent()
             val completedMatches = completedMatchesDeferred.await()
             playerOverview.clear()
             recentMatches.clear()
             for ((index, event) in completedMatches.events.reversed().withIndex().take(6)) {
+                if(teamID == event.homeTeam.id){
+                    team1 = event.homeTeam
+                    team2 = event.awayTeam
+                    team1score = event.homeScore
+                    team2score = event.awayScore
+                }
+                if(teamID != event.homeTeam.id){
+                    team1 = event.awayTeam
+                    team2 = event.homeTeam
+                    team1score = event.awayScore
+                    team2score = event.homeScore
+                }
+                lineup = getPlayersFromEvent(event.id)
                 val date = Date(event.startTimestamp?.toLong()?.times(1000) ?: 0)
                 val dateFormat = SimpleDateFormat("dd MMM.")
                 val formattedDate = dateFormat.format(date)
                 val recentMatch = RecentMatch(
-                    homeTeam = event.homeTeam,
-                    awayTeam = event.awayTeam,
-                    homeTeamImage = getTeamImage(event.homeTeam.id),
-                    awayTeamImage = getTeamImage(event.awayTeam.id),
-                    homeScore = event.homeScore,
-                    awayScore = event.awayScore,
+                    homeTeam = team1,
+                    awayTeam = team2,
+                    homeTeamImage = getTeamImage(team1.id),
+                    awayTeamImage = getTeamImage(team2.id),
+                    homeScore = team1score,
+                    awayScore = team2score,
                     startTimestamp = formattedDate,
                     bestOf = event.bestOf,
                 )
@@ -84,6 +100,7 @@ class SingleTeamViewModel: ViewModel() {
                 for (playerorsub in lineup.home!!.players) {
                     val player = Player(
                         name = playerorsub.player?.name,
+                        image = getPlayerImage(playerorsub.player?.id,),
                         playerId = playerorsub.player?.id,
                     )
                     playerOverview.add(player)

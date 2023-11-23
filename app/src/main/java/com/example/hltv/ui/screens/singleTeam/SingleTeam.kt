@@ -107,7 +107,7 @@ fun overviewPlayer(
             horizontalAlignment = Alignment.CenterHorizontally
         ){
             Image(
-                painter = player.image ?: painterResource(R.drawable.dk_flag),
+                painter = rememberAsyncImagePainter(player.image),
                 contentDescription = null,
                 alignment = Alignment.CenterStart,
                 modifier = Modifier
