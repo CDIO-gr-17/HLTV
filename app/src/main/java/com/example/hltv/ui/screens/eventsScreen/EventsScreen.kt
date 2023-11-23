@@ -23,14 +23,16 @@ import com.example.hltv.ui.common.CommonCard
 fun EventsScreen() {
     val viewModel = EventsScreenViewModel()
     Column {
-        SingleEventCard(
-            eventTitle = viewModel.test.toString(),
-            eventDate = "Oct. 13 - Nov. 13",
-            eventLogo = painterResource(id = com.example.hltv.R.drawable.astralis_logo),
-            location = "Copenhagen, Denmark",
-            prizePool = "$1,000,000",
-            flagIcon = painterResource(id = R.drawable.dk_flag)
-        )
+        for (tournament in viewModel.test) {
+            SingleEventCard(
+                eventTitle = tournament.toString(),
+                eventDate = "Oct. 13 - Nov. 13",
+                eventLogo = painterResource(id = com.example.hltv.R.drawable.astralis_logo),
+                location = "Copenhagen, Denmark",
+                prizePool = "$1,000,000",
+                flagIcon = painterResource(id = R.drawable.dk_flag)
+            )
+        }
     }
 
 }

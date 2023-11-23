@@ -54,19 +54,56 @@ suspend fun waitForAPI(){
 /**
  *
  */
-suspend fun getCSCategory() : Int {
-    val categoryWrapper = getAPIResponse("tournament/categories", APIKEY, APIResponse.CategoryWrapper::class.java) as APIResponse.CategoryWrapper
-    var categories : Int = 0
-    //categories = categoryWrapper.id!!
-
-    for (category in categoryWrapper.categories){
-        if (category.slug.equals("csgo")){
+suspend fun getCSCategory(): Int {
+    val categoryWrapper = getAPIResponse(
+        "tournament/categories",
+        APIKEY,
+        APIResponse.CategoryWrapper::class.java
+    ) as APIResponse.CategoryWrapper
+    var categories: Int = 0
+    for (category in categoryWrapper.categories) {
+        if (category.slug.equals("csgo")) {
             categories = category.id!!
         }
     }
-
     return categories
 }
+
+suspend fun getCSTournamentsID(catID: Int): List<Int> {
+    val tournamentWrapper = getAPIResponse(
+        "tournament/all/category/$catID",
+        APIKEY,
+        APIResponse.TournamentWrapper::class.java
+    ) as APIResponse.TournamentWrapper
+    var tournamentIDs: MutableList<Int> = mutableListOf()
+    var i: Int = 0
+    for (tournament in tournamentWrapper.uniqueTournament[0].wrapper) {
+        if (tournament.userCount!! > 1000) {
+            tournamentIDs.add(tournament.id!!)
+            i++
+        }
+    }
+    Log.d("Number of Tournaments gone through", i.toString())
+    return tournamentIDs
+}
+
+suspend fun getTournamentInfo(tournamentID: Int): APIResponse.ThirdTournamentWrapper {
+    return getAPIResponse(
+        "tournament/$tournamentID",
+        APIKEY,
+        APIResponse.ThirdTournamentWrapper::class.java
+    ) as APIResponse.ThirdTournamentWrapper
+}
+
+suspend fun getRelevantTournaments(): List<ThirdUniqueTournament> {
+    val tournamentDetailList : MutableList<ThirdUniqueTournament> = mutableListOf()
+    for (tournamentID in getCSTournamentsID(getCSCategory())) {
+    tournamentDetailList.add(getTournamentInfo(tournamentID).tournamentDetails.get(0))
+    }
+    tournamentDetailList.sortBy { it.startDateTimestamp }
+    return tournamentDetailList
+}
+
 
 /**
  * Returns live matches

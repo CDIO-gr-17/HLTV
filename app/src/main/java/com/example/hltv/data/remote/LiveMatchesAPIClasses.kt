@@ -28,9 +28,7 @@ sealed class APIResponse{
     )
 
     data class TournamentWrapper (
-
-        @SerializedName("UniqueTournament") var uniqueTournament: List<UniqueTournament>
-
+        @SerializedName("groups") var uniqueTournament: List<ExtraWrapper>
     ) : APIResponse()
 
     data class CategoryWrapper (
@@ -38,6 +36,10 @@ sealed class APIResponse{
         @SerializedName("categories" ) var categories : ArrayList<Category> = arrayListOf()
 
     ) :APIResponse()
+
+    data class ThirdTournamentWrapper (
+        @SerializedName("uniqueTournament") var tournamentDetails : List<ThirdUniqueTournament>
+    )
 }
 
 
@@ -63,11 +65,62 @@ data class Category (
 
     )
 
+data class ExtraWrapper (
+
+    @SerializedName("uniqueTournaments") var wrapper: List<SecondUniqueTournament>
+
+)
 
 data class Country (
 
     @SerializedName("alpha2" ) var alpha2 : String? = null,
     @SerializedName("name"   ) var name   : String? = null
+
+)
+data class ThirdUniqueTournament (
+
+    @SerializedName("name"                        ) var name                        : String?           = null,
+    @SerializedName("slug"                        ) var slug                        : String?           = null,
+    @SerializedName("logo"                        ) var logo                        : Logo?             = Logo(),
+    @SerializedName("category"                    ) var category                    : Category?         = Category(),
+    @SerializedName("userCount"                   ) var userCount                   : Int?              = null,
+    @SerializedName("mostTitles"                  ) var mostTitles                  : Int?              = null,
+    @SerializedName("mostTitlesTeams"             ) var mostTitlesTeams             : ArrayList<String> = arrayListOf(),
+    @SerializedName("linkedUniqueTournaments"     ) var linkedUniqueTournaments     : ArrayList<String> = arrayListOf(),
+    @SerializedName("hasStandingsGroups"          ) var hasStandingsGroups          : Boolean?          = null,
+    @SerializedName("hasRounds"                   ) var hasRounds                   : Boolean?          = null,
+    @SerializedName("hasPlayoffSeries"            ) var hasPlayoffSeries            : Boolean?          = null,
+    @SerializedName("upperDivisions"              ) var upperDivisions              : ArrayList<String> = arrayListOf(),
+    @SerializedName("lowerDivisions"              ) var lowerDivisions              : ArrayList<String> = arrayListOf(),
+    @SerializedName("crowdsourcingEnabled"        ) var crowdsourcingEnabled        : Boolean?          = null,
+    @SerializedName("hasPerformanceGraphFeature"  ) var hasPerformanceGraphFeature  : Boolean?          = null,
+    //@SerializedName("periodLength"                ) var periodLength                : PeriodLength?     = PeriodLength(),
+    @SerializedName("id"                          ) var id                          : Int?              = null,
+    @SerializedName("country"                     ) var country                     : Country?          = Country(),
+    @SerializedName("startDateTimestamp"          ) var startDateTimestamp          : Int?              = null,
+    @SerializedName("endDateTimestamp"            ) var endDateTimestamp            : Int?              = null,
+    @SerializedName("displayInverseHomeAwayTeams" ) var displayInverseHomeAwayTeams : Boolean?          = null
+
+)
+data class Logo (
+
+    @SerializedName("md5" ) var md5 : String? = null,
+    @SerializedName("id"  ) var id  : Int?    = null
+
+)
+/*
+data class PeriodLength (
+
+)
+*/
+data class SecondUniqueTournament (
+
+    @SerializedName("name"                        ) var name                        : String?   = null,
+    @SerializedName("slug"                        ) var slug                        : String?   = null,
+    @SerializedName("category"                    ) var category                    : Category? = Category(),
+    @SerializedName("userCount"                   ) var userCount                   : Int?      = null,
+    @SerializedName("id"                          ) var id                          : Int?      = null,
+    @SerializedName("displayInverseHomeAwayTeams" ) var displayInverseHomeAwayTeams : Boolean?  = null
 
 )
 data class UniqueTournament (

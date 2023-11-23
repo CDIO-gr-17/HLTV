@@ -2,7 +2,7 @@ package com.example.hltv.ui.screens.eventsScreen
 
 import android.util.Log
 import androidx.lifecycle.ViewModel
-import com.example.hltv.data.remote.getCSCategory
+import com.example.hltv.data.remote.getCSTournamentsID
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -10,19 +10,21 @@ import kotlinx.coroutines.launch
 
 
 
-suspend fun CatID(): Int {
-    val catID = getCSCategory()
+suspend fun TournamentID(): List<Int> {
+    val catID = getCSTournamentsID(1572)
     return catID
 }
 
 class EventsScreenViewModel : ViewModel() {
-    var test : Int? = null
+    var test = mutableListOf<Int>(2,3,4)
 
     init {
         CoroutineScope(Dispatchers.IO).launch {
-            //Log.d("Test","test "+test.toString())
-            test = CatID()
-            Log.d("Test","test "+test.toString())
+
+            for (i in TournamentID()) {
+                Log.d("Test", "test " + i.toString())
+                test.add(i)
+            }
 
         }
     }
