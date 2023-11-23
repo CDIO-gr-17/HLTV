@@ -1,5 +1,6 @@
 package com.example.hltv.navigation
 
+import android.util.Log
 import androidx.compose.foundation.layout.padding
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
@@ -40,7 +41,7 @@ fun MainNavHost(navController: NavHostController, modifier: Modifier) {
             MatchesScreen()
         }
         composable(route = News.route) {
-            NewsScreen()
+            NewsScreen { navController.navigate(SinglePlayer.route + it) } //How it work? It just no. Ninjutsu
         }
         composable(route = Ranking.route) {
             RankingScreen()
@@ -49,9 +50,10 @@ fun MainNavHost(navController: NavHostController, modifier: Modifier) {
             SettingsScreen()
         }
         composable(route = SinglePlayer.route,
-            arguments = listOf(navArgument("playerID") {type = NavType.StringType}))
-        {
-            PlayerScreen()
+            arguments = listOf(navArgument("playerID") { type = NavType.StringType }))
+        { backStackEntry ->
+            Log.i("MainNavHost", backStackEntry.toString())
+            PlayerScreen(backStackEntry.arguments?.getString("playerID"))
         }
     }
 }

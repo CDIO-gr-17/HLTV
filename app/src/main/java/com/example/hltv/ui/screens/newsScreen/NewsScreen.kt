@@ -5,6 +5,6 @@ import androidx.compose.runtime.Composable
 import com.example.hltv.ui.screens.singleTeam.SingleTeam
 
 @Composable
-fun NewsScreen() {
-    SingleTeam()
+fun NewsScreen(onClickSinglePlayer: (playerID: String?) -> Unit) {
+    SingleTeam(onClickSinglePlayer)
 }

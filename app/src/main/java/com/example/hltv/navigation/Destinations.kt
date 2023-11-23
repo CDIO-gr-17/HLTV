@@ -34,7 +34,7 @@ object Matches : Destination {
 object News : Destination {
     override val icon: Int = R.drawable.newspaper_24px
     override val route: String = "News"
-    override val screen: @Composable () -> Unit = { NewsScreen() }
+    override val screen: @Composable () -> Unit = { /*NewsScreen()*/ }
 }
 object Ranking : Destination {
     override val icon: Int = R.drawable.numbered_list
@@ -49,7 +49,7 @@ object Settings : Destination {
 
 object SinglePlayer : Destination {
     override val icon: Int = R.drawable.settings_24px
-    override val route: String = "Player"
+    override val route: String = "Player/{playerID}"
     override val screen: @Composable () -> Unit = { SettingsScreen() }
 }
 
