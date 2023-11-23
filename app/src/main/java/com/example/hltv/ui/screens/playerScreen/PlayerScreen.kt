@@ -26,7 +26,9 @@ import com.example.hltv.ui.common.CommonCard
 
 
 @Composable
-fun PlayerScreen(){
+fun PlayerScreen(
+    playerID: String?
+){
     Column (
         horizontalAlignment = Alignment.CenterHorizontally,
         modifier = Modifier
@@ -42,7 +44,7 @@ fun PlayerScreen(){
                     .weight(1f)
             ){
                 TeamBox(
-                    team = "Astralis",
+                    team = ("Player: " + playerID),
                     teamWorldRank = "5",
                     teamNationality = "Denmark",
                 )
@@ -121,5 +123,5 @@ fun StatsBox(
 @Preview
 @Composable
 fun PlayerScreenPreview(){
-    PlayerScreen()
+    PlayerScreen("OBAMNA")
 }
