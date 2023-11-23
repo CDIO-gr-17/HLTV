@@ -21,9 +21,10 @@ import com.example.hltv.ui.common.CommonCard
 
 @Composable
 fun EventsScreen() {
+    val viewModel = EventsScreenViewModel()
     Column {
         SingleEventCard(
-            eventTitle = "Blast Premier world final 2023",
+            eventTitle = viewModel.test.toString(),
             eventDate = "Oct. 13 - Nov. 13",
             eventLogo = painterResource(id = com.example.hltv.R.drawable.astralis_logo),
             location = "Copenhagen, Denmark",

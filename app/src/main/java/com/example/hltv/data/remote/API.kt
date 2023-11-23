@@ -50,6 +50,23 @@ suspend fun waitForAPI(){
 
  */
 }
+
+/**
+ *
+ */
+suspend fun getCSCategory() : Int {
+    val categoryWrapper = getAPIResponse("tournament/categories", APIKEY, APIResponse.CategoryWrapper::class.java) as APIResponse.CategoryWrapper
+    var categories : Int = 0
+    categories = categoryWrapper.id!!
+    /*for (category in categoryWrapper){
+        if (category.slug.equals("csgo")){
+            categories = category.id!!
+        }
+    }*/
+
+    return categories
+}
+
 /**
  * Returns live matches
  */

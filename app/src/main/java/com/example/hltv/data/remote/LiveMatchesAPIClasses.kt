@@ -26,6 +26,21 @@ sealed class APIResponse{
     data class Player (
         @SerializedName(  "player" ) var player: List<Player_orsub>
     )
+
+    data class TournamentWrapper (
+
+        @SerializedName("UniqueTournament") var uniqueTournament: List<UniqueTournament>
+
+    ) : APIResponse()
+
+    data class CategoryWrapper (
+
+        @SerializedName("name"  ) var name : String? = null,
+        @SerializedName("slug"  ) var slug  : String? = null,
+        @SerializedName("sport" ) var sport : Sport?  = Sport(),
+        @SerializedName("id"    ) var id    : Int?    = null,
+        @SerializedName("flag"  ) var flag  : String? = null
+    ) :APIResponse()
 }
 
 
