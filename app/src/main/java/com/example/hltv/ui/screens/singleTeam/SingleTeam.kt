@@ -25,28 +25,28 @@ import com.example.hltv.R
 import com.example.hltv.ui.common.CommonCard
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
+import coil.compose.rememberAsyncImagePainter
 import com.example.hltv.data.remote.getTeamImage
+import java.text.SimpleDateFormat
+import java.util.Date
 
-data class Player(val name: String ?= null, val image: Painter ?= null)
+
+
 @Composable
 fun SingleTeam(){
     val viewModel = SingleTeamViewModel()
     val recentMatches = viewModel.recentMatches
-    val recentMatch = RecentMatch(
-        bestOf = 99,
-    )
-    recentMatches.add(recentMatch)
     LazyColumn {
         item {
             CommonCard(modifier = Modifier, bottomBox = {
                 Column {
                     overviewPlayers(
                         players = listOf(
-                            Player(name = null, image = null),
-                            Player("b0RUP", image = null),
-                            Player("blameF", image = null),
-                            Player("Staehr", image = null),
-                            Player("Buzz", image = null)
+                            Player(name = null, image = painterResource(R.drawable.dk_flag)),
+                            Player("b0RUP", image = painterResource(R.drawable.dk_flag)),
+                            Player("blameF", image = painterResource(R.drawable.dk_flag)),
+                            Player("Staehr", image = painterResource(R.drawable.dk_flag)),
+                            Player("Buzz", image = painterResource(R.drawable.dk_flag))
                         )
                     )
                     overviewInfo(
@@ -54,19 +54,6 @@ fun SingleTeam(){
                         countryImage = painterResource(id = R.drawable.dk_flag),
                         worldRank = "5"
                     )
-                }
-                LazyColumn {
-                    items(recentMatches.size) {
-                        recentMatches(
-                            team1 = null,//recentMatch[0].bestOf.toString(),
-                            team2 = "Astralis",
-                            imageTeam1 = painterResource(id = R.drawable.astralis_logo),
-                            imageTeam2 = painterResource(id = R.drawable.astralis_logo),
-                            score = "16-10",
-                            date = "10 October"
-                        )
-                    }
-                }
                     stats(
                         coach = "Peter 'Castle' Ardenskjold",
                         points = "1000",
@@ -75,9 +62,26 @@ fun SingleTeam(){
                         averagePlayerAge = "25",
                         imageNat = painterResource(R.drawable.dk_flag)
                     )
-                })
+                }
+            })
             }
         }
+    Text(text = "Recent Matches",
+        fontWeight = FontWeight.Bold,
+        color = MaterialTheme.colorScheme.onPrimaryContainer
+    )
+    LazyColumn {
+        items(recentMatches.size) { index ->
+            recentMatches(
+                team1 = recentMatches[index].homeTeam?.name,
+                team2 = recentMatches[index].awayTeam?.name,
+                imageTeam1 = rememberAsyncImagePainter(recentMatches[index].homeTeamImage),
+                imageTeam2 = rememberAsyncImagePainter(recentMatches[index].awayTeamImage),
+                score = recentMatches[index].homeScore?.display.toString() + " - " + recentMatches[index].awayScore?.display.toString(),
+                date = recentMatches[index].startTimestamp.toString()
+            )
+        }
+    }
     }
 
 
@@ -103,7 +107,7 @@ fun overviewPlayer(
             horizontalAlignment = Alignment.CenterHorizontally
         ){
             Image(
-                painter = player.image ?: painterResource(id = R.drawable.person_24px),
+                painter = player.image,
                 contentDescription = null,
                 alignment = Alignment.CenterStart,
                 modifier = Modifier
@@ -175,28 +179,24 @@ fun overviewInfo(
 @Composable
 fun recentMatches(
     team1: String ?= null,
-    team2: String,
+    team2: String ?= null,
     imageTeam1: Painter,
     imageTeam2: Painter,
-    score: String,
-    date: String,
+    score: String ?= null,
+    date: String ?= null,
 
 ){
-    Text(text = "Recent Matches",
-        fontWeight = FontWeight.Bold,
-        color = MaterialTheme.colorScheme.onPrimaryContainer
-    )
     CommonCard(
         modifier = Modifier.fillMaxWidth(),
         topBox = {
             Box {
                 Row (
                     modifier = Modifier
-                        .fillMaxWidth(),
-                    horizontalArrangement = Arrangement.SpaceBetween
+                        .fillMaxWidth()
                 ){
                     Row (
-                        verticalAlignment = Alignment.CenterVertically
+                        verticalAlignment = Alignment.CenterVertically,
+                        modifier = Modifier.weight(0.4f)
                     ){
                         Image(
                             painter = imageTeam1,
@@ -204,33 +204,37 @@ fun recentMatches(
                             alignment = Alignment.CenterStart,
                             modifier = Modifier
                                 .size(40.dp)
+                                .padding(end = 4.dp)
                         )
                         Text(
-                            text = team1 ?: "",
+                            text = team1 ?: "Team 1",
                             fontSize = MaterialTheme.typography.bodyLarge.fontSize,
                             color = MaterialTheme.colorScheme.onPrimaryContainer
                         )
                     }
                     Column (
-                        horizontalAlignment = Alignment.CenterHorizontally
+                        horizontalAlignment = Alignment.CenterHorizontally,
+                        modifier = Modifier.weight(0.2f)
                     ){
                         Text(
-                            text = score,
+                            text = score ?: "/",
                             fontSize = MaterialTheme.typography.bodyLarge.fontSize,
                             color = MaterialTheme.colorScheme.onPrimaryContainer,
                             fontWeight = FontWeight.Bold
                         )
                         Text(
-                            text = date,
+                            text = date ?: "-",
                             fontSize = MaterialTheme.typography.bodyMedium.fontSize,
                             color = MaterialTheme.colorScheme.onPrimaryContainer
                         )
                     }
                     Row (
-                        verticalAlignment = Alignment.CenterVertically
+                        verticalAlignment = Alignment.CenterVertically,
+                        horizontalArrangement = Arrangement.End,
+                        modifier = Modifier.weight(0.4f)
                     ){
                         Text(
-                            text = team2,
+                            text = team2 ?: "Team 2",
                             fontSize = MaterialTheme.typography.bodyLarge.fontSize,
                             color = MaterialTheme.colorScheme.onPrimaryContainer
                         )
@@ -240,6 +244,7 @@ fun recentMatches(
                             alignment = Alignment.CenterEnd,
                             modifier = Modifier
                                 .size(40.dp)
+                                .padding(start = 4.dp)
                         )
                     }
                 }

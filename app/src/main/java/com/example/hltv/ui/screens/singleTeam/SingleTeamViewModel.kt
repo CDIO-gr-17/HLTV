@@ -3,78 +3,81 @@ package com.example.hltv.ui.screens.singleTeam
 import android.graphics.Bitmap
 import android.util.Log
 import androidx.compose.runtime.mutableStateListOf
+import androidx.compose.ui.graphics.painter.Painter
 import androidx.lifecycle.ViewModel
 import com.example.hltv.data.remote.APIResponse
 import com.example.hltv.data.remote.Country
-import com.example.hltv.data.remote.PlayerGroup
-import com.example.hltv.data.remote.Player_orsub
 import com.example.hltv.data.remote.Score
 import com.example.hltv.data.remote.Team
-import com.example.hltv.data.remote.Time
-import com.example.hltv.data.remote.getLiveMatches
+import com.example.hltv.data.remote.getPlayersFromEvent
 import com.example.hltv.data.remote.getPreviousMatches
 import com.example.hltv.data.remote.getTeamImage
-import com.example.hltv.ui.screens.teamsScreen.getAllPlayerImages
+import com.example.hltv.ui.screens.teamsScreen.getPlayerGroups
 import kotlinx.coroutines.CompletableDeferred
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
+import java.text.SimpleDateFormat
+import java.util.Date
 
 data class SingleTeam(
     val eventsWrapper: APIResponse.EventsWrapper,
-    val players : ArrayList<Player> ?= null,
-    val playerImage: Bitmap?= null,
     val country: Country ?= null,
     val dateOfBirthTimestamp : Int ?= null,
     )
 data class RecentMatch(
-    val homeTeam: Team ?= null,
-    val awayTeam: Team ?= null,
-    val homeTeamImage: Bitmap ?= null,
-    val awayTeamImage: Bitmap ?= null,
-    val homeScore: Score?= null,
-    val awayScore: Score ?= null,
-    val time: Time ?= null,
-    val bestOf: Int ?= null,
+    val homeTeam: Team? = null,
+    val awayTeam: Team? = null,
+    val homeTeamImage: Bitmap? = null,
+    val awayTeamImage: Bitmap? = null,
+    val homeScore: Score? = null,
+    val awayScore: Score? = null,
+    val startTimestamp: String? = null,
+    val bestOf: Int? = null,
+)
+data class Player(
+    val name: String ?= null,
+    val image: Painter,
+    val playerId: Int ?= null,
+)
+data class PlayerOverview(
+    val players : ArrayList<Player> ?= null,
 )
 class SingleTeamViewModel: ViewModel() {
+    val teamID = 363904
     val recentMatches = mutableStateListOf<RecentMatch>()
-    val team = 364425
+    val playerOverview = mutableStateListOf<PlayerOverview>()
 
     init {
-        var completedMatchesDeferred = CompletableDeferred<APIResponse.EventsWrapper>();
+
+        //recentMatchesViewModel
+        val completedMatchesDeferred = CompletableDeferred<APIResponse.EventsWrapper>()
 
         CoroutineScope(Dispatchers.IO).launch {
-            completedMatchesDeferred.complete(getPreviousMatches(team))
-            Log.w(this.toString(), "Got previous matches of team with id: $team")
+            completedMatchesDeferred.complete(getPreviousMatches(teamID, 0))
+            Log.w(this.toString(), "Got previous matches of team with id: $teamID")
         }
         CoroutineScope(Dispatchers.IO).launch {
             val completedMatches = completedMatchesDeferred.await()
+            playerOverview.clear()
             recentMatches.clear()
-            if(recentMatches != null) {
-                for ((index, event) in completedMatches.events.withIndex().take(6)) {
-                    val recentMatch = RecentMatch(
-                        homeTeam = event.homeTeam,
-                        awayTeam = event.awayTeam,
-                        homeTeamImage = getTeamImage(event.homeTeam.id),
-                        awayTeamImage = getTeamImage(event.awayTeam.id),
-                        homeScore = event.homeScore,
-                        awayScore = event.awayScore,
-                        time = event.time,
-                        bestOf = event.bestOf,
-                    )
-                    recentMatches.add(recentMatch)
-                    Log.w(this.toString(), "Added recent match with homeTeam ${event.homeTeam.name}, ${event.homeScore}, ${event.bestOf}")
-                }
-            }
-            else{
+            for ((index, event) in completedMatches.events.reversed().withIndex().take(6)) {
+                val lineup = getPlayersFromEvent(event.id).home
+                val date = Date(event.startTimestamp?.toLong()?.times(1000) ?: 0)
+                val dateFormat = SimpleDateFormat("dd MMM.")
+                val formattedDate = dateFormat.format(date)
                 val recentMatch = RecentMatch(
-                    bestOf = 0
+                    homeTeam = event.homeTeam,
+                    awayTeam = event.awayTeam,
+                    homeTeamImage = getTeamImage(event.homeTeam.id),
+                    awayTeamImage = getTeamImage(event.awayTeam.id),
+                    homeScore = event.homeScore,
+                    awayScore = event.awayScore,
+                    startTimestamp = formattedDate,
+                    bestOf = event.bestOf,
                 )
                 recentMatches.add(recentMatch)
-                Log.w(this.toString(),"There were no recent matches")
+                Log.w(this.toString(), "Added recent match with homeTeam ${event.homeTeam.name}, ${event.homeScore}, ${event.bestOf}")
             }
 
         }
