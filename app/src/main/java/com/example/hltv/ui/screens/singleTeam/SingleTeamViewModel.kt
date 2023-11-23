@@ -7,6 +7,8 @@ import androidx.compose.ui.graphics.painter.Painter
 import androidx.lifecycle.ViewModel
 import com.example.hltv.data.remote.APIResponse
 import com.example.hltv.data.remote.Country
+import com.example.hltv.data.remote.PlayerGroup
+import com.example.hltv.data.remote.Player_orsub
 import com.example.hltv.data.remote.Score
 import com.example.hltv.data.remote.Team
 import com.example.hltv.data.remote.getPlayersFromEvent
@@ -37,20 +39,18 @@ data class RecentMatch(
 )
 data class Player(
     val name: String ?= null,
-    val image: Painter,
+    val image: Painter ?= null,
     val playerId: Int ?= null,
 )
 data class PlayerOverview(
     val players : ArrayList<Player> ?= null,
 )
 class SingleTeamViewModel: ViewModel() {
-    val teamID = 363904
+    val teamID = 364378
     val recentMatches = mutableStateListOf<RecentMatch>()
-    val playerOverview = mutableStateListOf<PlayerOverview>()
+    val playerOverview = mutableStateListOf<Player>()
 
     init {
-
-        //recentMatchesViewModel
         val completedMatchesDeferred = CompletableDeferred<APIResponse.EventsWrapper>()
 
         CoroutineScope(Dispatchers.IO).launch {
@@ -58,11 +58,11 @@ class SingleTeamViewModel: ViewModel() {
             Log.w(this.toString(), "Got previous matches of team with id: $teamID")
         }
         CoroutineScope(Dispatchers.IO).launch {
+            val lineup = getPlayersFromEvent()
             val completedMatches = completedMatchesDeferred.await()
             playerOverview.clear()
             recentMatches.clear()
             for ((index, event) in completedMatches.events.reversed().withIndex().take(6)) {
-                val lineup = getPlayersFromEvent(event.id).home
                 val date = Date(event.startTimestamp?.toLong()?.times(1000) ?: 0)
                 val dateFormat = SimpleDateFormat("dd MMM.")
                 val formattedDate = dateFormat.format(date)
@@ -79,7 +79,16 @@ class SingleTeamViewModel: ViewModel() {
                 recentMatches.add(recentMatch)
                 Log.w(this.toString(), "Added recent match with homeTeam ${event.homeTeam.name}, ${event.homeScore}, ${event.bestOf}")
             }
-
+            Log.w(this.toString(), "Loaded lineup ${lineup}" )
+            if(lineup.home!=null) {
+                for (playerorsub in lineup.home!!.players) {
+                    val player = Player(
+                        name = playerorsub.player?.name,
+                        playerId = playerorsub.player?.id,
+                    )
+                    playerOverview.add(player)
+                }
+            }
         }
 
     }

@@ -12,6 +12,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -36,19 +37,11 @@ import java.util.Date
 fun SingleTeam(){
     val viewModel = SingleTeamViewModel()
     val recentMatches = viewModel.recentMatches
+    val playerOverview = viewModel.playerOverview
     LazyColumn {
         item {
             CommonCard(modifier = Modifier, bottomBox = {
                 Column {
-                    overviewPlayers(
-                        players = listOf(
-                            Player(name = null, image = painterResource(R.drawable.dk_flag)),
-                            Player("b0RUP", image = painterResource(R.drawable.dk_flag)),
-                            Player("blameF", image = painterResource(R.drawable.dk_flag)),
-                            Player("Staehr", image = painterResource(R.drawable.dk_flag)),
-                            Player("Buzz", image = painterResource(R.drawable.dk_flag))
-                        )
-                    )
                     overviewInfo(
                         country = "Denmark",
                         countryImage = painterResource(id = R.drawable.dk_flag),
@@ -66,6 +59,13 @@ fun SingleTeam(){
             })
             }
         }
+    LazyRow{
+        items(playerOverview.size){ index ->
+            overviewPlayer(
+                player = playerOverview[index]
+            )
+        }
+    }
     Text(text = "Recent Matches",
         fontWeight = FontWeight.Bold,
         color = MaterialTheme.colorScheme.onPrimaryContainer
@@ -107,7 +107,7 @@ fun overviewPlayer(
             horizontalAlignment = Alignment.CenterHorizontally
         ){
             Image(
-                painter = player.image,
+                painter = player.image ?: painterResource(R.drawable.dk_flag),
                 contentDescription = null,
                 alignment = Alignment.CenterStart,
                 modifier = Modifier
