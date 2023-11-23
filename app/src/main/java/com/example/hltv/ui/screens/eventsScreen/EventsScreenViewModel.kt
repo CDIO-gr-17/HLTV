@@ -20,8 +20,9 @@ class EventsScreenViewModel : ViewModel() {
 
     init {
         CoroutineScope(Dispatchers.IO).launch {
-            Log.d("Test","test "+test.toString())
+            //Log.d("Test","test "+test.toString())
             test = CatID()
+            Log.d("Test","test "+test.toString())
 
         }
     }

@@ -35,11 +35,8 @@ sealed class APIResponse{
 
     data class CategoryWrapper (
 
-        @SerializedName("name"  ) var name : String? = null,
-        @SerializedName("slug"  ) var slug  : String? = null,
-        @SerializedName("sport" ) var sport : Sport?  = Sport(),
-        @SerializedName("id"    ) var id    : Int?    = null,
-        @SerializedName("flag"  ) var flag  : String? = null
+        @SerializedName("categories" ) var categories : ArrayList<Category> = arrayListOf()
+
     ) :APIResponse()
 }
 
@@ -60,6 +57,7 @@ data class Category (
     @SerializedName("name"  ) var name : String? = null,
     @SerializedName("slug"  ) var slug  : String? = null,
     @SerializedName("sport" ) var sport : Sport?  = Sport(),
+    @SerializedName("priority" ) var priority : Int?    = null,
     @SerializedName("id"    ) var id    : Int?    = null,
     @SerializedName("flag"  ) var flag  : String? = null
 

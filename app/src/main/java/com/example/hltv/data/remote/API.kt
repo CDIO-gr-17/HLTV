@@ -57,12 +57,13 @@ suspend fun waitForAPI(){
 suspend fun getCSCategory() : Int {
     val categoryWrapper = getAPIResponse("tournament/categories", APIKEY, APIResponse.CategoryWrapper::class.java) as APIResponse.CategoryWrapper
     var categories : Int = 0
-    categories = categoryWrapper.id!!
-    /*for (category in categoryWrapper){
+    //categories = categoryWrapper.id!!
+
+    for (category in categoryWrapper.categories){
         if (category.slug.equals("csgo")){
             categories = category.id!!
         }
-    }*/
+    }
 
     return categories
 }
@@ -189,6 +190,8 @@ private suspend fun getAPIResponse(apiURL: String, apiKEY: String, desiredClass:
     if (jsonString?.compareTo("") == 0){
         Log.e("getAPIResponse", "jsonString is repeatedly null", IOException("STRING IS NULL"))
     }
+
+    Log.i("getAPIResponse", "JSON IS: " + jsonString)
 
 
     //Initiating as late as possible for performance reasons. Don't think it makes much of a difference
