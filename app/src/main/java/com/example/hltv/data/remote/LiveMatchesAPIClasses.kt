@@ -38,8 +38,8 @@ sealed class APIResponse{
     ) :APIResponse()
 
     data class ThirdTournamentWrapper (
-        @SerializedName("uniqueTournament") var tournamentDetails : List<ThirdUniqueTournament>
-    )
+        @SerializedName("uniqueTournament") var tournamentDetails : ThirdUniqueTournament
+    ) : APIResponse()
 }
 
 
@@ -109,10 +109,11 @@ data class Logo (
 
 )
 /*
-data class PeriodLength (
+data class PeriodLength(
 
-)
-*/
+
+)*/
+
 data class SecondUniqueTournament (
 
     @SerializedName("name"                        ) var name                        : String?   = null,

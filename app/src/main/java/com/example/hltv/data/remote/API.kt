@@ -52,7 +52,7 @@ suspend fun waitForAPI(){
 }
 
 /**
- *
+ * @return The API's ID of Counter-Strike
  */
 suspend fun getCSCategory(): Int {
     val categoryWrapper = getAPIResponse(
@@ -60,7 +60,7 @@ suspend fun getCSCategory(): Int {
         APIKEY,
         APIResponse.CategoryWrapper::class.java
     ) as APIResponse.CategoryWrapper
-    var categories: Int = 0
+    var categories = 0
     for (category in categoryWrapper.categories) {
         if (category.slug.equals("csgo")) {
             categories = category.id!!
@@ -69,14 +69,18 @@ suspend fun getCSCategory(): Int {
     return categories
 }
 
+/**
+ * @param catID The API's ID of Counter-Strike
+ * @return A list of relevant tournament IDs (above 1000 users)
+ */
 suspend fun getCSTournamentsID(catID: Int): List<Int> {
     val tournamentWrapper = getAPIResponse(
         "tournament/all/category/$catID",
         APIKEY,
         APIResponse.TournamentWrapper::class.java
     ) as APIResponse.TournamentWrapper
-    var tournamentIDs: MutableList<Int> = mutableListOf()
-    var i: Int = 0
+    val tournamentIDs: MutableList<Int> = mutableListOf()
+    var i  = 0
     for (tournament in tournamentWrapper.uniqueTournament[0].wrapper) {
         if (tournament.userCount!! > 1000) {
             tournamentIDs.add(tournament.id!!)
@@ -87,6 +91,10 @@ suspend fun getCSTournamentsID(catID: Int): List<Int> {
     return tournamentIDs
 }
 
+/**
+ * @param tournamentID The ID of the tournament to get info from
+ * @return A wrapper class containing the tournament details
+ */
 suspend fun getTournamentInfo(tournamentID: Int): APIResponse.ThirdTournamentWrapper {
     return getAPIResponse(
         "tournament/$tournamentID",
@@ -95,10 +103,15 @@ suspend fun getTournamentInfo(tournamentID: Int): APIResponse.ThirdTournamentWra
     ) as APIResponse.ThirdTournamentWrapper
 }
 
+/**
+ * @return A list of tournaments that has a user count of over 1000
+ * Dont know what user count means. Can be adjusted in @getCSTournamentsID
+ */
 suspend fun getRelevantTournaments(): List<ThirdUniqueTournament> {
-    val tournamentDetailList : MutableList<ThirdUniqueTournament> = mutableListOf()
+    val tournamentDetailList: MutableList<ThirdUniqueTournament> = mutableListOf()
     for (tournamentID in getCSTournamentsID(getCSCategory())) {
-    tournamentDetailList.add(getTournamentInfo(tournamentID).tournamentDetails.get(0))
+        tournamentDetailList.add(getTournamentInfo(tournamentID).tournamentDetails)
+        waitForAPI()
     }
     tournamentDetailList.sortBy { it.startDateTimestamp }
     return tournamentDetailList

@@ -4,6 +4,8 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.items
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Email
 import androidx.compose.material3.Icon
@@ -18,29 +20,31 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import com.example.hltv.R
 import com.example.hltv.ui.common.CommonCard
+import java.util.Date
+
+
 
 @Composable
 fun EventsScreen() {
     val viewModel = EventsScreenViewModel()
-    Column {
-        for (tournament in viewModel.test) {
+    LazyColumn {
+        items(viewModel.tournaments){ item ->
             SingleEventCard(
-                eventTitle = tournament.toString(),
-                eventDate = "Oct. 13 - Nov. 13",
-                eventLogo = painterResource(id = com.example.hltv.R.drawable.astralis_logo),
-                location = "Copenhagen, Denmark",
+                eventTitle = item.name.toString(),
+                eventDate = Date(item.startDateTimestamp.toString()),
+                eventLogo = painterResource(id = R.drawable.astralis_logo),
+                location = item.country?.name.toString(),
                 prizePool = "$1,000,000",
                 flagIcon = painterResource(id = R.drawable.dk_flag)
             )
         }
     }
-
 }
 
 @Composable
 fun SingleEventCard(
     eventTitle : String,
-    eventDate : String,
+    eventDate : Date,
     eventLogo : Painter,
     location : String,
     prizePool : String,
@@ -50,10 +54,10 @@ fun SingleEventCard(
     CommonCard(
         modifier = Modifier,
         headText = eventTitle,
-        subText = eventDate,
+        subText = eventDate.toString(),
         image = eventLogo,
         bottomBox = {
-            Row() {
+            Row {
                 Column(
                     modifier = Modifier
                         .weight(0.3f)
