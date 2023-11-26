@@ -159,7 +159,7 @@ suspend fun getCSCategory(): Int {
  * @return A list of relevant tournament IDs (above 1000 users)
  */
 suspend fun getCSTournamentsID(catID: Int): List<Int> {
-    val acceptableUserCount = 500
+    val acceptableUserCount = 200
     val tournamentWrapper = getAPIResponse(
         "tournament/all/category/$catID",
         APIKEY,
@@ -203,7 +203,6 @@ suspend fun getRelevantTournaments(): List<ThirdUniqueTournament> {
             continue
         }*/
         finalTournamentDetailList.add(getTournamentInfo(tournamentID).tournamentDetails)
-        waitForAPI()
     }
     finalTournamentDetailList.sortBy { it.startDateTimestamp }
     return finalTournamentDetailList
