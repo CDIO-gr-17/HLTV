@@ -9,9 +9,9 @@ import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.navArgument
-import com.example.hltv.ui.screens.MatchesScreen.MatchesScreen
 import com.example.hltv.ui.screens.eventsScreen.EventsScreen
 import com.example.hltv.ui.screens.homeScreen.HomeScreen
+import com.example.hltv.ui.screens.matchesScreen.MatchesScreen
 import com.example.hltv.ui.screens.newsScreen.NewsScreen
 import com.example.hltv.ui.screens.playerScreen.PlayerScreen
 import com.example.hltv.ui.screens.settingsScreen.SettingsScreen
@@ -25,14 +25,16 @@ fun MainNavHost(navController: NavHostController, modifier: Modifier) {
         startDestination = Home.route,
         modifier = modifier.padding()
     ) {
-        composable(route = Home.route){
+        composable(route = Home.route) {
             HomeScreen()
         }
         composable(route = Events.route) {
             EventsScreen()
         }
         composable(route = Matches.route) {
-            MatchesScreen {navController.navigate(SingleTeam.route + it)}
+            MatchesScreen {
+                Log.d("MainNavHost", "Fat noget")
+                navController.navigate(SingleTeam.route) }
         }
         composable(route = News.route) {
             NewsScreen { navController.navigate(SinglePlayer.route + it) } //How it work? It just no. Ninjutsu
@@ -44,18 +46,20 @@ fun MainNavHost(navController: NavHostController, modifier: Modifier) {
             SettingsScreen()
         }
         composable(route = SingleTeam.route,
-            arguments = listOf(navArgument("teamID") { type = NavType.StringType }))
+            arguments = listOf(navArgument("teamID") { type = NavType.StringType })
+        )
         { backStackEntry ->
             Log.i("MainNavHost", backStackEntry.toString())
-            SingleTeamScreen(teamID = backStackEntry.arguments?.getString("teamID")){
-                navController.navigate(SinglePlayer.route)
+            SingleTeamScreen(teamID = backStackEntry.arguments?.getString("teamID")) {
+                print("Hello")
             }
         }
 
 
 
         composable(route = SinglePlayer.route,
-            arguments = listOf(navArgument("playerID") { type = NavType.StringType }))
+            arguments = listOf(navArgument("playerID") { type = NavType.StringType })
+        )
         { backStackEntry ->
             Log.i("MainNavHost", backStackEntry.toString())
             PlayerScreen(backStackEntry.arguments?.getString("playerID"))

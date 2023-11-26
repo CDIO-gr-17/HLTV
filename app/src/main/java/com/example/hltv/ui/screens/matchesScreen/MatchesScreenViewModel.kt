@@ -56,8 +56,8 @@ data class img(
 )
 
 class MatchesScreenViewModel: ViewModel() {
-    val teamNames = mutableStateListOf("1", "2", "3", "4", "5")
     val teamValues = mutableStateListOf<Event>()
+
     private var _allPlayerImages = MutableStateFlow<AllPlayerImages>(AllPlayerImages(null))
     var allPlayerImages = _allPlayerImages.asStateFlow()
     private val _playerImage = MutableStateFlow<img>(img(null))
@@ -76,19 +76,15 @@ class MatchesScreenViewModel: ViewModel() {
         }
         CoroutineScope(Dispatchers.Default).launch {
             val liveMatches = liveMatchesDeferred.await()
-            teamNames.clear()
-            teamValues.clear()
+
             if (liveMatches != null && liveMatches.events!=null) { //Despite what Android studio says, this seems to make a difference
-                for ((index, event) in liveMatches.events.withIndex()) {
-                    //Log.i("RankingScreen","Adding string with event " + index.toString() + ". Name is: " + event.homeTeam.name + " VS " + event.awayTeam.name)
-                    //teamNames.add(event.homeTeam.name + " VS " + event.awayTeam.name)
+                for (event in liveMatches.events){
                     teamValues.add(event)
                 }
                 //I dont think this should be called here, but it is going to wait for getLiveMatches() anyway
-                //_allPlayerImages.value = getAllPlayerImages(liveMatches)
+                _allPlayerImages.value = getAllPlayerImages(liveMatches)
 
             }else{
-                teamNames.add("No current teams playing")
                 Log.w(this.toString(),"There were no live matches?")
             }
         }

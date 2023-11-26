@@ -2,7 +2,9 @@
 
 package com.example.hltv.ui.screens.homeScreen
 
+import android.graphics.Bitmap
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -36,16 +38,16 @@ import com.example.hltv.ui.common.CommonCard
 val M = MaterialTheme
 
 @Composable
-fun HomeScreen () {
+fun HomeScreen() {
 
 
-    Column (
+    Column(
         horizontalAlignment = Alignment.CenterHorizontally,
         modifier = Modifier
             .fillMaxSize()
     ) {
 
-
+/*
         LiveMatchCard(
             modifier = Modifier,
             teamOneName = "Astralis",
@@ -55,11 +57,11 @@ fun HomeScreen () {
             teamTwoIcon = Icons.Default.AccountBox,
             teamTwoScore = 14,
         )
-
+*/
 
 
         Divider(modifier = Modifier.padding(horizontal = 8.dp), color = M.colorScheme.onBackground)
-        Card (
+        Card(
 
             modifier = Modifier
                 .fillMaxWidth()
@@ -67,11 +69,12 @@ fun HomeScreen () {
                 .height(150.dp)
 
 
-        ){
-            Box(modifier = Modifier
-                .background(color = M.colorScheme.primaryContainer)
-                .fillMaxWidth()
-                .fillMaxHeight(0.5f)
+        ) {
+            Box(
+                modifier = Modifier
+                    .background(color = M.colorScheme.primaryContainer)
+                    .fillMaxWidth()
+                    .fillMaxHeight(0.5f)
             ) {
                 Row {
                     Column {
@@ -80,12 +83,11 @@ fun HomeScreen () {
                             modifier = Modifier
                                 .padding(8.dp)
                                 .fillMaxHeight()
-                                .weight(1f)
-                            ,
+                                .weight(1f),
                             fontSize = M.typography.bodyLarge.fontSize,
                             color = M.colorScheme.onPrimaryContainer,
 
-                        )
+                            )
                         Text(
                             text = "Dec 13-17, 2023",
                             modifier = Modifier
@@ -110,7 +112,7 @@ fun HomeScreen () {
                 }
 
             }
-            Row (modifier = Modifier.background(color = M.colorScheme.secondaryContainer)) {
+            Row(modifier = Modifier.background(color = M.colorScheme.secondaryContainer)) {
                 Column(
                     modifier = Modifier.weight(0.5f)
                 ) {
@@ -173,73 +175,88 @@ fun HomeScreen () {
             text = "News",
             color = M.colorScheme.primary,
             textAlign = TextAlign.Start
-            
-            )
+
+        )
 
     }
 }
 
 @Composable
-fun LiveMatchCard (
+fun LiveMatchCard(
     modifier: Modifier = Modifier,
-    teamOneName : String,
-    teamOneIcon : ImageVector,
-    teamOneScore : Int,
-    teamTwoName : String,
-    teamTwoIcon : ImageVector,
-    teamTwoScore : Int,
+    teamOneName: String,
+    teamOneIcon: Bitmap,
+    teamOneScore: Int,
+    teamOneOnClick: () -> Unit,
+    teamTwoName: String,
+    teamTwoIcon: Bitmap,
+    teamTwoScore: Int,
+    teamTwoOnClick: () -> Unit,
 
-) {
+    ) {
     CommonCard(
         modifier = modifier,
         headText = "Your match is live!",
         image = painterResource(id = R.drawable.pngtree_icon_live_streaming_vector_png_image_4643886),
         bottomBox = {
-            Row () {
-                Column (horizontalAlignment = Alignment.CenterHorizontally,
-                    modifier = Modifier.fillMaxWidth(0.5f)){
-                    Text(text = teamOneName,
-                        modifier = Modifier
+            Row() {
+                Column(horizontalAlignment = Alignment.CenterHorizontally,
+                    modifier = modifier
+                        .fillMaxWidth(0.5f)
+                        .clickable { teamOneOnClick }) {
+                    Text(
+                        text = teamOneName,
+                        modifier = modifier
                             .padding(8.dp),
                         fontSize = M.typography.bodyLarge.fontSize,
                         color = M.colorScheme.onSecondaryContainer,
                         textAlign = TextAlign.Center,
                     )
-                    Icon(imageVector = teamOneIcon,
+                    Icon(
+                        imageVector = teamOneIcon,
                         contentDescription = "teamOneIcon",
                         modifier = Modifier
                             .padding(4.dp)
-                            .size(50.dp,50.dp),
+                            .size(50.dp, 50.dp),
 
 
+                        )
+                    Text(
+                        text = teamOneScore.toString(),
+                        fontSize = M.typography.displayLarge.fontSize
                     )
-                    Text(text = teamOneScore.toString(),
-                        fontSize = M.typography.displayLarge.fontSize)
                 }
 
-                Divider(modifier = Modifier
-                    .width(1.dp)
-                    .padding(vertical = 4.dp),
+                Divider(
+                    modifier = Modifier
+                        .width(1.dp)
+                        .padding(vertical = 4.dp),
                     color = M.colorScheme.onBackground
                 )
 
-                Column (horizontalAlignment = Alignment.CenterHorizontally,
-                    modifier = Modifier.fillMaxWidth()) {
-                    Text(text = teamTwoName,
+                Column(horizontalAlignment = Alignment.CenterHorizontally,
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .clickable { teamTwoOnClick }) {
+                    Text(
+                        text = teamTwoName,
                         modifier = Modifier
                             .padding(8.dp),
                         fontSize = M.typography.bodyLarge.fontSize,
                         color = M.colorScheme.onSecondaryContainer,
                         textAlign = TextAlign.Center,
                     )
-                    Icon(imageVector = teamTwoIcon,
+                    Icon(
+                        imageVector = teamTwoIcon,
                         contentDescription = "teamOneIcon",
                         modifier = Modifier
                             .padding(4.dp)
-                            .size(50.dp,50.dp),
+                            .size(50.dp, 50.dp),
                     )
-                    Text(text = teamTwoScore.toString(),
-                        fontSize = M.typography.displayLarge.fontSize)
+                    Text(
+                        text = teamTwoScore.toString(),
+                        fontSize = M.typography.displayLarge.fontSize
+                    )
                 }
             }
 
