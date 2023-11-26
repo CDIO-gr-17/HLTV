@@ -47,7 +47,13 @@ fun MainNavHost(navController: NavHostController, modifier: Modifier) {
             arguments = listOf(navArgument("teamID") { type = NavType.StringType }))
         { backStackEntry ->
             Log.i("MainNavHost", backStackEntry.toString())
-            SingleTeamScreen(onClickSinglePlayer = navController.navigate(SinglePlayer.route), teamID = backStackEntry.arguments?.getString("teamID")
+            SingleTeamScreen(teamID = backStackEntry.arguments?.getString("teamID")){
+                navController.navigate(SinglePlayer.route)
+            }
+        }
+
+
+
         composable(route = SinglePlayer.route,
             arguments = listOf(navArgument("playerID") { type = NavType.StringType }))
         { backStackEntry ->

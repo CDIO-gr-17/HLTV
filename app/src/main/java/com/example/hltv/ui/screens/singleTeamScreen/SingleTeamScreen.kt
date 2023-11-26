@@ -29,7 +29,7 @@ import com.example.hltv.ui.common.CommonCard
 
 
 @Composable
-fun SingleTeamScreen(onClickSinglePlayer: (String?) -> Unit, teamID : String){
+fun SingleTeamScreen(teamID : String?, onClickSinglePlayer: (String?) -> Unit){
     val viewModel = SingleTeamViewModel()
     val recentMatches = viewModel.recentMatches
     val playerOverview = viewModel.playerOverview
