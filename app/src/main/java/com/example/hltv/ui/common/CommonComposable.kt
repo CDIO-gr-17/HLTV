@@ -120,7 +120,6 @@ fun CommonCard(
     Card (
         modifier = modifier
             .padding(customOuterPadding ?: 8.dp)
-            .height(IntrinsicSize.Max)
     ) {
         if (topBox != null || headText != null || subText != null || image != null)
             Box(
