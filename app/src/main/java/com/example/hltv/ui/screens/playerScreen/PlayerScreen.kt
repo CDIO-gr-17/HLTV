@@ -1,5 +1,6 @@
 package com.example.hltv.ui.screens.playerScreen
 
+import android.util.Log
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -29,6 +30,7 @@ import com.example.hltv.ui.common.CommonCard
 fun PlayerScreen(
     playerID: String?
 ){
+    Log.i("", "Transferred player \"ID\": " + playerID)
     Column (
         horizontalAlignment = Alignment.CenterHorizontally,
         modifier = Modifier

@@ -1,6 +1,7 @@
 package com.example.hltv.ui.screens.singleTeam
 
 import androidx.compose.foundation.Image
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -346,5 +347,5 @@ fun stats(
 @Composable
 @Preview
 fun SingleTeamPreview(){
-    SingleTeam()
+    //SingleTeam()
 }
