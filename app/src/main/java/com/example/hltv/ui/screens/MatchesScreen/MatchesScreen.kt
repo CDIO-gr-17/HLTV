@@ -1,9 +1,10 @@
-package com.example.hltv.ui.screens.teamsScreen
+package com.example.hltv.ui.screens.MatchesScreen
 import android.graphics.Bitmap
 import android.os.SystemClock.sleep
 import android.util.Log
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -21,17 +22,15 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.State
+import androidx.compose.runtime.collectAsState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import androidx.compose.runtime.collectAsState
-import androidx.compose.ui.res.painterResource
 import coil.compose.AsyncImagePainter
 import coil.compose.rememberAsyncImagePainter
 import com.example.hltv.R
-import kotlinx.coroutines.delay
 
 //Used for testing
 val items = (1..20).map { index ->
@@ -40,9 +39,9 @@ val items = (1..20).map { index ->
 data class ListItem(val ranking: Int, val text1: String, val text2: String)
 
 @Composable
-fun RankingScreen() {
+fun MatchesScreen(onClickSingleTeam : (String?) -> Unit) {
     val R = MaterialTheme
-    val viewModel = RankingScreenViewModel()
+    val viewModel = MatchesScreenViewModel()
     val allPlayerImages = viewModel.allPlayerImages.collectAsState()
     val playerbmap = viewModel.playerImage.collectAsState()
 
@@ -51,7 +50,7 @@ fun RankingScreen() {
         items(viewModel.teamNames.size) { index ->
             //I dont think the !! is particularly good coding practice?
             teamCard(
-                modifier = Modifier,
+                modifier = Modifier.clickable { onClickSingleTeam (viewModel.teamNames[index]) },
                 materialTheme = R,
                 text1 = viewModel.teamNames[index],
                 text2 = "Unused",

@@ -1,21 +1,18 @@
-package com.example.hltv.ui.screens.singleTeam
+package com.example.hltv.ui.screens.singleTeamScreen
 
 import android.graphics.Bitmap
 import android.util.Log
 import androidx.compose.runtime.mutableStateListOf
-import androidx.compose.ui.graphics.painter.Painter
 import androidx.lifecycle.ViewModel
 import com.example.hltv.data.remote.APIResponse
 import com.example.hltv.data.remote.Country
 import com.example.hltv.data.remote.PlayerGroup
-import com.example.hltv.data.remote.Player_orsub
 import com.example.hltv.data.remote.Score
 import com.example.hltv.data.remote.Team
 import com.example.hltv.data.remote.getPlayerImage
 import com.example.hltv.data.remote.getPlayersFromEvent
 import com.example.hltv.data.remote.getPreviousMatches
 import com.example.hltv.data.remote.getTeamImage
-import com.example.hltv.ui.screens.teamsScreen.getPlayerGroups
 import kotlinx.coroutines.CompletableDeferred
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers

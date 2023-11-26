@@ -218,7 +218,6 @@ fun LiveMatchCard (
                 }
 
                 Divider(modifier = Modifier
-                    .fillMaxHeight()
                     .width(1.dp)
                     .padding(vertical = 4.dp),
                     color = M.colorScheme.onBackground

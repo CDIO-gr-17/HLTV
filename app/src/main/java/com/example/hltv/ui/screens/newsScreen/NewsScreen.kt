@@ -1,10 +1,9 @@
 package com.example.hltv.ui.screens.newsScreen
 
-import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import com.example.hltv.ui.screens.singleTeam.SingleTeam
+import com.example.hltv.ui.screens.singleTeamScreen.SingleTeamScreen
 
 @Composable
 fun NewsScreen(onClickSinglePlayer: (playerID: String?) -> Unit) {
-    SingleTeam(onClickSinglePlayer)
+    SingleTeamScreen(onClickSinglePlayer)
 }

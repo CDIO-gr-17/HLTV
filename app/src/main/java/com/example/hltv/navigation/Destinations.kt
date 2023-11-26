@@ -4,11 +4,7 @@ import androidx.compose.runtime.Composable
 import com.example.hltv.R
 import com.example.hltv.ui.screens.eventsScreen.EventsScreen
 import com.example.hltv.ui.screens.homeScreen.HomeScreen
-import com.example.hltv.ui.screens.matchesScreen.MatchesScreen
-import com.example.hltv.ui.screens.newsScreen.NewsScreen
 import com.example.hltv.ui.screens.settingsScreen.SettingsScreen
-import com.example.hltv.ui.screens.teamsScreen.RankingScreen
-import com.example.hltv.ui.screens.teamsScreen.RankingScreenViewModel
 
 interface Destination {
     val icon : Int
@@ -29,7 +25,7 @@ object Events : Destination {
 object Matches : Destination {
     override val icon: Int = R.drawable.sports_esports_24px
     override val route: String = "Matches"
-    override val screen: @Composable () -> Unit = { MatchesScreen() }
+    override val screen: @Composable () -> Unit = { /*MatchesScreen()*/ }
 }
 object News : Destination {
     override val icon: Int = R.drawable.newspaper_24px
@@ -39,7 +35,7 @@ object News : Destination {
 object Ranking : Destination {
     override val icon: Int = R.drawable.numbered_list
     override val route: String = "Ranking"
-    override val screen: @Composable () -> Unit = { RankingScreen() }
+    override val screen: @Composable () -> Unit = {/* MatchesScreen()*/ }
 }
 object Settings : Destination {
     override val icon: Int = R.drawable.settings_24px
@@ -52,5 +48,10 @@ object SinglePlayer : Destination {
     override val route: String = "Player/{playerID}"
     override val screen: @Composable () -> Unit = { SettingsScreen() }
 }
+object SingleTeam : Destination {
+    override val icon: Int = R.drawable.settings_24px
+    override val route: String = "Team/{teamID}"
+    override val screen: @Composable () -> Unit = { SettingsScreen() }
+}
 
-val bottomAppBarScreens = listOf(News, Events, Home, Ranking, Matches)
+    val bottomAppBarScreens = listOf(News, Events, Home, Ranking, Matches)

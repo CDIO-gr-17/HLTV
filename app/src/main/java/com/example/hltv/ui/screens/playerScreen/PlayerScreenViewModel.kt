@@ -2,11 +2,8 @@ package com.example.hltv.ui.screens.playerScreen
 
 import android.graphics.Bitmap
 import com.example.hltv.data.remote.Player
-import com.example.hltv.data.remote.PlayerGroup
 import com.example.hltv.data.remote.Team
-import com.example.hltv.data.remote.getLiveMatches
 import com.example.hltv.data.remote.getPlayerImage
-import com.example.hltv.ui.screens.teamsScreen.img
 import kotlinx.coroutines.CompletableDeferred
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers

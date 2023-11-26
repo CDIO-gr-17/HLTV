@@ -1,4 +1,4 @@
-package com.example.hltv.ui.screens.teamsScreen
+package com.example.hltv.ui.screens.MatchesScreen
 
 import android.graphics.Bitmap
 import android.util.Log
@@ -54,7 +54,7 @@ data class img(
     val bitMap: Bitmap?
 )
 
-class RankingScreenViewModel: ViewModel() {
+class MatchesScreenViewModel: ViewModel() {
     val teamNames = mutableStateListOf("1", "2", "3", "4", "5")
     private var _allPlayerImages = MutableStateFlow<AllPlayerImages>(AllPlayerImages(null))
     var allPlayerImages = _allPlayerImages.asStateFlow()
