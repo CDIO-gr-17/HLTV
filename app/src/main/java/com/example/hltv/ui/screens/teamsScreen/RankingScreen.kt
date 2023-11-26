@@ -50,8 +50,15 @@ fun RankingScreen() {
 
         items(viewModel.teamNames.size) { index ->
             //I dont think the !! is particularly good coding practice?
-            teamCard(modifier = Modifier, materialTheme = R, text1 = viewModel.teamNames[index], text2 = "Unused", playerbmap, allPlayerImages.value.allTeamImages?.get(index)) //ugly hardcoding, but we ball
-            if (index < viewModel.teamNames.size-1){
+            teamCard(
+                modifier = Modifier,
+                materialTheme = R,
+                text1 = viewModel.teamNames[index],
+                text2 = "Unused",
+                playerbmap,
+                allPlayerImages.value.allTeamImages?.get(index)
+            ) //ugly hardcoding, but we ball
+            if (index < viewModel.teamNames.size - 1) {
                 Spacer(modifier = Modifier.height(1.dp))
             }
         }
@@ -108,16 +115,19 @@ fun teamCard(
         }
         Row (modifier = Modifier.padding(start = 10.dp)) {
 
-            for (i in 1..5){
+            for (i in 1..5) {
                 var bitmap: Bitmap? = null
 
-                if (teamPlayerImages != null){
-                    if (teamPlayerImages.teamImages?.size == 0){
-                        Log.w("RankingScreen", "TeamImages is of size 0. Sleeping 100ms and hoping for the best")
+                if (teamPlayerImages != null) {
+                    if (teamPlayerImages.teamImages?.size == 0) {
+                        Log.w(
+                            "RankingScreen",
+                            "TeamImages is of size 0. Sleeping 100ms and hoping for the best"
+                        )
                         sleep(100)
                     }
-                    if (teamPlayerImages.teamImages?.size!=0){
-                        bitmap = teamPlayerImages.teamImages?.get(i-1)
+                    if (teamPlayerImages.teamImages?.size != 0) {
+                        bitmap = teamPlayerImages.teamImages?.get(i - 1)
                     }
 
                 }

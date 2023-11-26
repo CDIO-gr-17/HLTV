@@ -50,6 +50,74 @@ suspend fun waitForAPI(){
 
  */
 }
+
+/**
+ * @return The API's ID of Counter-Strike
+ */
+suspend fun getCSCategory(): Int {
+    val categoryWrapper = getAPIResponse(
+        "tournament/categories",
+        APIKEY,
+        APIResponse.CategoryWrapper::class.java
+    ) as APIResponse.CategoryWrapper
+    var categories = 0
+    for (category in categoryWrapper.categories) {
+        if (category.slug.equals("csgo")) {
+            categories = category.id!!
+        }
+    }
+    return categories
+}
+
+/**
+ * @param catID The API's ID of Counter-Strike
+ * @return A list of relevant tournament IDs (above 1000 users)
+ */
+suspend fun getCSTournamentsID(catID: Int): List<Int> {
+    val tournamentWrapper = getAPIResponse(
+        "tournament/all/category/$catID",
+        APIKEY,
+        APIResponse.TournamentWrapper::class.java
+    ) as APIResponse.TournamentWrapper
+    val tournamentIDs: MutableList<Int> = mutableListOf()
+    var i  = 0
+    for (tournament in tournamentWrapper.uniqueTournament[0].wrapper) {
+        if (tournament.userCount!! > 1000) {
+            tournamentIDs.add(tournament.id!!)
+            i++
+        }
+    }
+    Log.d("Number of Tournaments gone through", i.toString())
+    return tournamentIDs
+}
+
+/**
+ * @param tournamentID The ID of the tournament to get info from
+ * @return A wrapper class containing the tournament details
+ */
+suspend fun getTournamentInfo(tournamentID: Int): APIResponse.ThirdTournamentWrapper {
+    return getAPIResponse(
+        "tournament/$tournamentID",
+        APIKEY,
+        APIResponse.ThirdTournamentWrapper::class.java
+    ) as APIResponse.ThirdTournamentWrapper
+}
+
+/**
+ * @return A list of tournaments that has a user count of over 1000
+ * Dont know what user count means. Can be adjusted in @getCSTournamentsID
+ */
+suspend fun getRelevantTournaments(): List<ThirdUniqueTournament> {
+    val tournamentDetailList: MutableList<ThirdUniqueTournament> = mutableListOf()
+    for (tournamentID in getCSTournamentsID(getCSCategory())) {
+        tournamentDetailList.add(getTournamentInfo(tournamentID).tournamentDetails)
+        waitForAPI()
+    }
+    tournamentDetailList.sortBy { it.startDateTimestamp }
+    return tournamentDetailList
+}
+
+
 /**
  * Returns live matches
  */
@@ -172,6 +240,8 @@ private suspend fun getAPIResponse(apiURL: String, apiKEY: String, desiredClass:
     if (jsonString?.compareTo("") == 0){
         Log.e("getAPIResponse", "jsonString is repeatedly null", IOException("STRING IS NULL"))
     }
+
+    Log.i("getAPIResponse", "JSON IS: " + jsonString)
 
 
     //Initiating as late as possible for performance reasons. Don't think it makes much of a difference
