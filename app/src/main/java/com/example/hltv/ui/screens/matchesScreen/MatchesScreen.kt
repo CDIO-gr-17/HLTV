@@ -1,4 +1,4 @@
-package com.example.hltv.ui.screens.MatchesScreen
+package com.example.hltv.ui.screens.matchesScreen
 import android.graphics.Bitmap
 import android.os.SystemClock.sleep
 import android.util.Log
@@ -17,6 +17,8 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.wrapContentSize
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.AccountBox
 import androidx.compose.material3.Card
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
@@ -31,6 +33,8 @@ import androidx.compose.ui.unit.dp
 import coil.compose.AsyncImagePainter
 import coil.compose.rememberAsyncImagePainter
 import com.example.hltv.R
+import com.example.hltv.ui.screens.homeScreen.LiveMatchCard
+import com.example.hltv.ui.screens.singleTeamScreen.SingleTeamViewModel
 
 //Used for testing
 val items = (1..20).map { index ->
@@ -40,8 +44,10 @@ data class ListItem(val ranking: Int, val text1: String, val text2: String)
 
 @Composable
 fun MatchesScreen(onClickSingleTeam : (String?) -> Unit) {
-    val R = MaterialTheme
     val viewModel = MatchesScreenViewModel()
+    val teamValues = viewModel.teamValues
+
+
     val allPlayerImages = viewModel.allPlayerImages.collectAsState()
     val playerbmap = viewModel.playerImage.collectAsState()
 
@@ -49,18 +55,20 @@ fun MatchesScreen(onClickSingleTeam : (String?) -> Unit) {
 
         items(viewModel.teamNames.size) { index ->
             //I dont think the !! is particularly good coding practice?
-            teamCard(
-                modifier = Modifier.clickable { onClickSingleTeam (viewModel.teamNames[index]) },
-                materialTheme = R,
-                text1 = viewModel.teamNames[index],
-                text2 = "Unused",
-                playerbmap,
-                allPlayerImages.value.allTeamImages?.get(index)
-            ) //ugly hardcoding, but we ball
-            if (index < viewModel.teamNames.size - 1) {
-                Spacer(modifier = Modifier.height(1.dp))
+            teamValues[index].homeTeam.name?.let {
+                LiveMatchCard(
+                    modifier = Modifier,
+                    teamOneName = it,
+                    teamOneIcon = Icons.Default.AccountBox,
+                    teamOneScore = 16,
+                    teamTwoName = "",
+                    teamTwoIcon = Icons.Default.AccountBox,
+                    teamTwoScore = 14,
+                )
             }
-        }
+            }
+           /* if (index < viewModel.teamNames.size - 1) {
+                Spacer(modifier = Modifier.height(1.dp))*/        }
         /*
         CoroutineScope(Dispatchers.IO).launch {
             // Simulate loading data
@@ -79,7 +87,7 @@ fun MatchesScreen(onClickSingleTeam : (String?) -> Unit) {
         }
          */
     }
-}
+
 
 @Composable
 fun teamCard(
@@ -176,7 +184,6 @@ fun teamCard(
 
 @Preview(showBackground = true)
 @Composable
-fun RankingPreview() {
-    //MyScreen()
-    //RankingScreen()
+fun MatchesScreenPreview() {
+   // MatchesScreen(onClickSingleTeam = print(""))
 }
