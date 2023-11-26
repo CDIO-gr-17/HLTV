@@ -54,9 +54,9 @@ fun MatchesScreen(onClickSingleTeam : (String?) -> Unit) {
                 LiveMatchCard(
                     modifier = Modifier,
                     teamOneName = item.homeTeam.name.toString(),
-                    teamOneIcon = getTeamImage(item.homeTeam.id),
+                    teamOneIcon = Icons.Default.Delete,
                     teamOneScore = item.homeScore!!.display!!.toInt(),
-                    teamOneOnClick = { onClickSingleTeam(item.homeTeam.id.toString())},
+                    teamOneOnClick = {onClickSingleTeam(item.homeTeam.id.toString())},
                     teamTwoName = item.awayTeam.name.toString(),
                     teamTwoIcon = Icons.Default.Delete,
                     teamTwoScore =item.awayScore!!.current!!.toInt(),

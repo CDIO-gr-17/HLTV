@@ -43,8 +43,8 @@ data class Stats(
     val country: Country ?= null,
     val dateOfBirthTimestamp : Int ?= null,
 )
-class SingleTeamViewModel: ViewModel() {
-    val teamID = 364378
+class SingleTeamViewModel(teamIDString : String = "364378"): ViewModel() {
+    val teamID = teamIDString.toInt()
     val recentMatches = mutableStateListOf<RecentMatch>()
     val playerOverview = mutableStateListOf<Player>()
     var lineup : PlayerGroup ?= null

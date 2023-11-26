@@ -185,11 +185,11 @@ fun HomeScreen() {
 fun LiveMatchCard(
     modifier: Modifier = Modifier,
     teamOneName: String,
-    teamOneIcon: Bitmap,
+    teamOneIcon: ImageVector,
     teamOneScore: Int,
     teamOneOnClick: () -> Unit,
     teamTwoName: String,
-    teamTwoIcon: Bitmap,
+    teamTwoIcon: ImageVector,
     teamTwoScore: Int,
     teamTwoOnClick: () -> Unit,
 

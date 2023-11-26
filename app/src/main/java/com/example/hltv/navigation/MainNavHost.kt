@@ -32,9 +32,7 @@ fun MainNavHost(navController: NavHostController, modifier: Modifier) {
             EventsScreen()
         }
         composable(route = Matches.route) {
-            MatchesScreen {
-                Log.d("MainNavHost", "Fat noget")
-                navController.navigate(SingleTeam.route) }
+            MatchesScreen { navController.navigate(SingleTeam.route + it) }
         }
         composable(route = News.route) {
             NewsScreen { navController.navigate(SinglePlayer.route + it) } //How it work? It just no. Ninjutsu
@@ -50,8 +48,8 @@ fun MainNavHost(navController: NavHostController, modifier: Modifier) {
         )
         { backStackEntry ->
             Log.i("MainNavHost", backStackEntry.toString())
-            SingleTeamScreen(teamID = backStackEntry.arguments?.getString("teamID")) {
-                print("Hello")
+            SingleTeamScreen(backStackEntry.arguments?.getString("teamID")){
+                navController.navigate(SinglePlayer.route + it)
             }
         }
 
