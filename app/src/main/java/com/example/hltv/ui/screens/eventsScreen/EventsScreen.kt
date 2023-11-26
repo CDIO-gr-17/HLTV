@@ -35,7 +35,7 @@ fun EventsScreen() {
                 eventDate = convertTimestampToDate(item.startDateTimestamp),
                 eventLogo = painterResource(id = R.drawable.astralis_logo),
                 location = item.country?.name.toString(),
-                prizePool = "$1,000,000",
+                prizePool = "Unknown",
                 flagIcon = painterResource(id = R.drawable.dk_flag)
             )
         }
