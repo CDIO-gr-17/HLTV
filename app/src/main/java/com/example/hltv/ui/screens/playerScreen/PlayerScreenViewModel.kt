@@ -23,18 +23,21 @@ data class SinglePlayerData(
     //TODO: add stats?
 )
 
-class PlayerScreenViewModel(){
+class PlayerScreenViewModel(playerID: String){
 
     private val _singlePlayerData = MutableStateFlow<SinglePlayerData>(SinglePlayerData())
     val singlePlayerData = _singlePlayerData.asStateFlow()
 
     init{
-        val deferredPlayer = CompletableDeferred<Player>()
+        val deferredPlayer = CompletableDeferred<SinglePlayerData>()
         CoroutineScope(Dispatchers.IO).launch {
-            //deferredPlayer.complete(getPlayer("PlaceholderID"))
+            //TODO: deferredPlayer.complete(getPlayerData())
+            deferredPlayer.complete(SinglePlayerData(player = Player(name = "PlaceholderName", id = playerID.toInt())))
+            _singlePlayerData.value.player = deferredPlayer.await().player;
         }
+
         CoroutineScope(Dispatchers.IO).launch {
-            _singlePlayerData.value.playerImage = getPlayerImage(deferredPlayer.await().id)
+            _singlePlayerData.value.playerImage = getPlayerImage(playerID.toInt())
         }
 
 
