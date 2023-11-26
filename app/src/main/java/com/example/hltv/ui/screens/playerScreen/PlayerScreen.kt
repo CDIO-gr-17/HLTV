@@ -22,21 +22,24 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import coil.compose.AsyncImagePainter
 import com.example.hltv.R
 import com.example.hltv.ui.common.CommonCard
+import coil.compose.rememberAsyncImagePainter
 
 
 @Composable
 fun PlayerScreen(
     playerID: String?
 ){
+    val viewModel = PlayerScreenViewModel(playerID);
     Log.i("", "Transferred player \"ID\": " + playerID)
     Column (
         horizontalAlignment = Alignment.CenterHorizontally,
         modifier = Modifier
             .fillMaxHeight()
     ){
-        PlayerImage(image = null)
+        PlayerImage(image = AsyncImagePainter(viewModel.singlePlayerData.value.playerImage))
         Row(
             modifier = Modifier,
             horizontalArrangement = Arrangement.SpaceEvenly
