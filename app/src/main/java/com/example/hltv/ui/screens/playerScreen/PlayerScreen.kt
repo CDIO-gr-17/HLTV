@@ -15,6 +15,7 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.layout.wrapContentSize
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.painter.Painter
@@ -22,10 +23,9 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import coil.compose.AsyncImagePainter
+import coil.compose.rememberAsyncImagePainter
 import com.example.hltv.R
 import com.example.hltv.ui.common.CommonCard
-import coil.compose.rememberAsyncImagePainter
 
 
 @Composable
@@ -39,7 +39,7 @@ fun PlayerScreen(
         modifier = Modifier
             .fillMaxHeight()
     ){
-        PlayerImage(image = AsyncImagePainter(viewModel.singlePlayerData.value.playerImage))
+        PlayerImage(image = rememberAsyncImagePainter(viewModel.singlePlayerData.collectAsState().value.playerImage))
         Row(
             modifier = Modifier,
             horizontalArrangement = Arrangement.SpaceEvenly
