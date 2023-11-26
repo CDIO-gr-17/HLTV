@@ -50,6 +50,7 @@ class SingleTeamViewModel: ViewModel() {
     val teamID = 364378
     val recentMatches = mutableStateListOf<RecentMatch>()
     val playerOverview = mutableStateListOf<Player>()
+    var lineup : PlayerGroup ?= null
     var statisticsOverview : Stats ?= null
     var team1 : Team ?= null
     var team2 : Team ?= null
@@ -66,7 +67,6 @@ class SingleTeamViewModel: ViewModel() {
             Log.w(this.toString(), "Got previous matches of team with id: $teamID")
         }
         CoroutineScope(Dispatchers.IO).launch {
-            var lineup = getPlayersFromEvent()
             val completedMatches = completedMatchesDeferred.await()
             playerOverview.clear()
             recentMatches.clear()
@@ -76,16 +76,17 @@ class SingleTeamViewModel: ViewModel() {
                 if(teamID == event.homeTeam.id){
                     team1 = event.homeTeam
                     team2 = event.awayTeam
+                    lineup = getPlayersFromEvent(event.id).home
                     team1score = event.homeScore
                     team2score = event.awayScore
                 }
                 if(teamID != event.homeTeam.id){
                     team1 = event.awayTeam
                     team2 = event.homeTeam
+                    lineup = getPlayersFromEvent(event.id).away
                     team1score = event.awayScore
                     team2score = event.homeScore
                 }
-                lineup = getPlayersFromEvent(event.id)
                 val date = Date(event.startTimestamp?.toLong()?.times(1000) ?: 0)
                 val dateFormat = SimpleDateFormat("dd MMM.")
                 val formattedDate = dateFormat.format(date)
@@ -104,8 +105,8 @@ class SingleTeamViewModel: ViewModel() {
             }
             // Lineup
             Log.w(this.toString(), "Loaded lineup ${lineup}" )
-            if(lineup.home!=null) {
-                for (playerorsub in lineup.home!!.players) {
+            if(lineup!=null) {
+                for (playerorsub in lineup!!.players) {
                     val player = Player(
                         name = playerorsub.player?.name,
                         image = getPlayerImage(playerorsub.player?.id,),
