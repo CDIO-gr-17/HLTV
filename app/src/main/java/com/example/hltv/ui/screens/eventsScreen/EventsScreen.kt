@@ -4,6 +4,8 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.items
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Email
 import androidx.compose.material3.Icon
@@ -18,39 +20,51 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import com.example.hltv.R
 import com.example.hltv.ui.common.CommonCard
+import java.text.DateFormat.getDateInstance
+import java.util.Date
+
+
 
 @Composable
 fun EventsScreen() {
-    Column {
-        SingleEventCard(
-            eventTitle = "Blast Premier world final 2023",
-            eventDate = "Oct. 13 - Nov. 13",
-            eventLogo = painterResource(id = com.example.hltv.R.drawable.astralis_logo),
-            location = "Copenhagen, Denmark",
-            prizePool = "$1,000,000",
-            flagIcon = painterResource(id = R.drawable.dk_flag)
-        )
+    val viewModel = EventsScreenViewModel()
+    LazyColumn {
+        items(viewModel.tournaments){ item ->
+            SingleEventCard(
+                eventTitle = item.name.toString(),
+                eventDate = convertTimestampToDate(item.startDateTimestamp),
+                eventLogo = painterResource(id = R.drawable.astralis_logo),
+                location = item.country?.name.toString(),
+                prizePool = "$1,000,000",
+                flagIcon = painterResource(id = R.drawable.dk_flag)
+            )
+        }
     }
+}
 
+private fun convertTimestampToDate(timestamp: Int?): String {
+    val dateFormat = getDateInstance()
+    val date = Date((timestamp?.toLong() ?: System.nanoTime()) * 1000) // Assuming the timestamp is in seconds, multiply by 1000 for milliseconds
+    return dateFormat.format(date)
 }
 
 @Composable
 fun SingleEventCard(
-    eventTitle : String,
-    eventDate : String,
-    eventLogo : Painter,
-    location : String,
-    prizePool : String,
+    eventTitle : String = "Unknown title",
+    eventDate : String = "Unknown date",
+    eventLogo : Painter = painterResource(id = R.drawable.astralis_logo), //TODO: Change
+    location : String = "Unknown location",
+    prizePool : String = "Unknown prize pool",
     flagIcon: Painter
 
 ) {
     CommonCard(
         modifier = Modifier,
         headText = eventTitle,
-        subText = eventDate,
+        subText = eventDate.toString(),
         image = eventLogo,
         bottomBox = {
-            Row() {
+            Row {
                 Column(
                     modifier = Modifier
                         .weight(0.3f)

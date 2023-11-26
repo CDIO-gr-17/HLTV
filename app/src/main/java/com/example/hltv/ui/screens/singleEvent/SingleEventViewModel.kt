@@ -1,17 +1,10 @@
 package com.example.hltv.ui.screens.singleEvent
 
-import androidx.lifecycle.ViewModel
-import com.example.hltv.data.remote.Team
-
-data class SingleEvent(
+data class SingleEventViewModel(
     val title : String,
     val date : String,
     val location : String,
     val prizePool : String,
-    val attendingTeams : List<Team>,
-
+    val attendingTeams : List<String>,
+    val ongoing : Boolean
     )
-
-class SingleEventViewModel : ViewModel(){
-
-}
