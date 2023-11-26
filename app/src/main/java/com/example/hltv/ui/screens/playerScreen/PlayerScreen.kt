@@ -15,7 +15,6 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.layout.wrapContentSize
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.collectAsState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.painter.Painter
@@ -23,7 +22,6 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import coil.compose.rememberAsyncImagePainter
 import com.example.hltv.R
 import com.example.hltv.ui.common.CommonCard
 
@@ -32,14 +30,13 @@ import com.example.hltv.ui.common.CommonCard
 fun PlayerScreen(
     playerID: String?
 ){
-    val viewModel = PlayerScreenViewModel(playerID);
     Log.i("", "Transferred player \"ID\": " + playerID)
     Column (
         horizontalAlignment = Alignment.CenterHorizontally,
         modifier = Modifier
             .fillMaxHeight()
     ){
-        PlayerImage(image = rememberAsyncImagePainter(viewModel.singlePlayerData.collectAsState().value.playerImage))
+        PlayerImage(image = null)
         Row(
             modifier = Modifier,
             horizontalArrangement = Arrangement.SpaceEvenly

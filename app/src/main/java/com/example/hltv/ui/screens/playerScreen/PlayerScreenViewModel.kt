@@ -28,20 +28,17 @@ class PlayerScreenViewModel(var playerID: String?){
 
     private val _singlePlayerData = MutableStateFlow<SinglePlayerData>(SinglePlayerData())
     val singlePlayerData = _singlePlayerData.asStateFlow()
+    var initted = false
 
     init{
-        val placeholderPlayerID = 1078255
-        playerID = placeholderPlayerID.toString()
-        val deferredPlayer = CompletableDeferred<SinglePlayerData>()
-        CoroutineScope(Dispatchers.IO).launch {
-            //TODO: deferredPlayer.complete(getPlayerData())
-            deferredPlayer.complete(SinglePlayerData(player = Player(name = "PlaceholderName", id = playerID!!.toInt())))
-            _singlePlayerData.value.player = deferredPlayer.await().player;
+        if (!initted){
+            initted = true;
+            playerID = "1078255"
+            CoroutineScope(Dispatchers.IO).launch {
+                _singlePlayerData.value.playerImage = getPlayerImage(playerID!!.toInt())
+            }
         }
 
-        CoroutineScope(Dispatchers.IO).launch {
-            _singlePlayerData.value.playerImage = getPlayerImage(playerID!!.toInt())
-        }
 
 
     }
