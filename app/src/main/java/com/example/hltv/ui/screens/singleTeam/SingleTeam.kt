@@ -49,7 +49,8 @@ fun SingleTeam(onClickSinglePlayer: (String?) -> Unit){
                     LazyRow{
                         items(playerOverview.size){ index ->
                             overviewPlayer(
-                                player = playerOverview[index]
+                                player = playerOverview[index],
+                                onClickSinglePlayer
                             )
                         }
                     }
