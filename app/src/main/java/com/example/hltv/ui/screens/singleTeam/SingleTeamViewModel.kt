@@ -24,9 +24,7 @@ import java.text.SimpleDateFormat
 import java.util.Date
 
 data class SingleTeam(
-    val eventsWrapper: APIResponse.EventsWrapper,
-    val country: Country ?= null,
-    val dateOfBirthTimestamp : Int ?= null,
+    val eventsWrapper: APIResponse.EventsWrapper
     )
 data class RecentMatch(
     val homeTeam: Team? = null,
@@ -42,15 +40,22 @@ data class Player(
     val name: String ?= null,
     val image: Bitmap ?= null,
     val playerId: Int ?= null,
+    var dateOfBirthTimestamp: Int ?= null
+)
+data class Stats(
+    val country: Country ?= null,
+    val dateOfBirthTimestamp : Int ?= null,
 )
 class SingleTeamViewModel: ViewModel() {
     val teamID = 364378
     val recentMatches = mutableStateListOf<RecentMatch>()
     val playerOverview = mutableStateListOf<Player>()
-    lateinit var team1 : Team
-    lateinit var team2 : Team
+    var statisticsOverview : Stats ?= null
+    var team1 : Team ?= null
+    var team2 : Team ?= null
     var team1score : Score ?= null
     var team2score : Score ?= null
+    var avgDateOfBirth : Int ?= null
 
 
     init {
@@ -65,6 +70,8 @@ class SingleTeamViewModel: ViewModel() {
             val completedMatches = completedMatchesDeferred.await()
             playerOverview.clear()
             recentMatches.clear()
+            //recentMatches
+            team1 = null
             for ((index, event) in completedMatches.events.reversed().withIndex().take(6)) {
                 if(teamID == event.homeTeam.id){
                     team1 = event.homeTeam
@@ -85,8 +92,8 @@ class SingleTeamViewModel: ViewModel() {
                 val recentMatch = RecentMatch(
                     homeTeam = team1,
                     awayTeam = team2,
-                    homeTeamImage = getTeamImage(team1.id),
-                    awayTeamImage = getTeamImage(team2.id),
+                    homeTeamImage = getTeamImage(team1?.id),
+                    awayTeamImage = getTeamImage(team2?.id),
                     homeScore = team1score,
                     awayScore = team2score,
                     startTimestamp = formattedDate,
@@ -95,6 +102,7 @@ class SingleTeamViewModel: ViewModel() {
                 recentMatches.add(recentMatch)
                 Log.w(this.toString(), "Added recent match with homeTeam ${event.homeTeam.name}, ${event.homeScore}, ${event.bestOf}")
             }
+            // Lineup
             Log.w(this.toString(), "Loaded lineup ${lineup}" )
             if(lineup.home!=null) {
                 for (playerorsub in lineup.home!!.players) {
@@ -104,9 +112,11 @@ class SingleTeamViewModel: ViewModel() {
                         playerId = playerorsub.player?.id,
                     )
                     playerOverview.add(player)
+                    }
                 }
             }
+            statisticsOverview = Stats(
+                country = team1?.country
+            )
         }
-
     }
-}

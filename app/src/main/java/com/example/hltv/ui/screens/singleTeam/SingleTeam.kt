@@ -6,11 +6,15 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.IntrinsicSize
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.requiredHeight
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.material3.MaterialTheme
@@ -27,10 +31,6 @@ import com.example.hltv.ui.common.CommonCard
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import coil.compose.rememberAsyncImagePainter
-import com.example.hltv.data.remote.getTeamImage
-import java.text.SimpleDateFormat
-import java.util.Date
-
 
 
 @Composable
@@ -38,10 +38,18 @@ fun SingleTeam(){
     val viewModel = SingleTeamViewModel()
     val recentMatches = viewModel.recentMatches
     val playerOverview = viewModel.playerOverview
+    val statsOverview = viewModel.statisticsOverview
     LazyColumn {
         item {
             CommonCard(modifier = Modifier, bottomBox = {
                 Column {
+                    LazyRow{
+                        items(playerOverview.size){ index ->
+                            overviewPlayer(
+                                player = playerOverview[index]
+                            )
+                        }
+                    }
                     overviewInfo(
                         country = "Denmark",
                         countryImage = painterResource(id = R.drawable.dk_flag),
@@ -52,36 +60,31 @@ fun SingleTeam(){
                         points = "1000",
                         winRate = "61%",
                         bestMap = "Overpass",
-                        averagePlayerAge = "25",
+                        averagePlayerAge = "",
                         imageNat = painterResource(R.drawable.dk_flag)
                     )
+                    Text(text = "Recent Matches",
+                        fontWeight = FontWeight.Bold,
+                        color = MaterialTheme.colorScheme.onPrimaryContainer
+                    )
+                    LazyColumn (Modifier.fillParentMaxHeight()) {
+                        items(recentMatches.size) { index ->
+                            recentMatches(
+                                team1 = recentMatches[index].homeTeam?.name,
+                                team2 = recentMatches[index].awayTeam?.name,
+                                imageTeam1 = rememberAsyncImagePainter(recentMatches[index].homeTeamImage),
+                                imageTeam2 = rememberAsyncImagePainter(recentMatches[index].awayTeamImage),
+                                score = recentMatches[index].homeScore?.display.toString() + " - " + recentMatches[index].awayScore?.display.toString(),
+                                date = recentMatches[index].startTimestamp.toString()
+                            )
+                        }
+                    }
                 }
             })
             }
         }
-    LazyRow{
-        items(playerOverview.size){ index ->
-            overviewPlayer(
-                player = playerOverview[index]
-            )
-        }
-    }
-    Text(text = "Recent Matches",
-        fontWeight = FontWeight.Bold,
-        color = MaterialTheme.colorScheme.onPrimaryContainer
-    )
-    LazyColumn {
-        items(recentMatches.size) { index ->
-            recentMatches(
-                team1 = recentMatches[index].homeTeam?.name,
-                team2 = recentMatches[index].awayTeam?.name,
-                imageTeam1 = rememberAsyncImagePainter(recentMatches[index].homeTeamImage),
-                imageTeam2 = rememberAsyncImagePainter(recentMatches[index].awayTeamImage),
-                score = recentMatches[index].homeScore?.display.toString() + " - " + recentMatches[index].awayScore?.display.toString(),
-                date = recentMatches[index].startTimestamp.toString()
-            )
-        }
-    }
+
+
     }
 
 
@@ -114,7 +117,7 @@ fun overviewPlayer(
                     .size(70.dp)
                     .offset(y = 20.dp)
             )
-            CommonCard (modifier = Modifier.width(IntrinsicSize.Min),
+            CommonCard (modifier = Modifier,
                 customOuterPadding = 0.dp,
                 topBox = {
                     Text(
@@ -255,12 +258,13 @@ fun recentMatches(
 
 
 @Composable
-fun stats(coach: String,
-          points: String,
-          winRate: String,
-          bestMap: String,
-          averagePlayerAge: String,
-          imageNat: Painter){
+fun stats(
+    coach: String,
+    points: String,
+    winRate: String,
+    bestMap: String,
+    averagePlayerAge: String?,
+    imageNat: Painter){
 
             Box{
                 Row(
@@ -324,7 +328,7 @@ fun stats(coach: String,
                             text = bestMap,
                             color = MaterialTheme.colorScheme.onPrimaryContainer)
                         Text(
-                            text = averagePlayerAge,
+                            text = averagePlayerAge ?: "0",
                             color = MaterialTheme.colorScheme.onPrimaryContainer)
                     }
                 }
