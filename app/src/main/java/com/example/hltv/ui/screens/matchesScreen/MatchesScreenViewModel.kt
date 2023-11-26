@@ -1,4 +1,4 @@
-package com.example.hltv.ui.screens.MatchesScreen
+package com.example.hltv.ui.screens.matchesScreen
 
 import android.graphics.Bitmap
 import android.util.Log
