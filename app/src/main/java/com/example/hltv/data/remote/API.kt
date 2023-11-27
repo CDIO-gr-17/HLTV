@@ -217,10 +217,12 @@ private fun checkIfTournamentIsPast(timeStamp: TimeStamp): Boolean{
 /**
  * @param desiredClass The class to pass to gson. This is the same as your return class, e.g. APIResponse.Lineup::class.java
  */
+
 private suspend fun getAPIResponse(apiURL: String, apiKEY: String, desiredClass:Class<*>): APIResponse {
 
     var jsonString : String?
     var tries = 3
+    var apiInUse = false
     do{
         val request = Request.Builder()
             .url("https://allsportsapi2.p.rapidapi.com/api/esport/$apiURL")
@@ -239,14 +241,15 @@ private suspend fun getAPIResponse(apiURL: String, apiKEY: String, desiredClass:
         if (jsonString != null) {
             if (jsonString.contains("You have exceeded the rate limit per second for your plan")){
                 Log.e("getAPIResponse", "You have exceeded the rate limit per second for your plan")
+                apiInUse = true
             }else {
-                Log.i("getAPIResponse", "Got json: "/* + jsonString*/)
+                Log.i("getAPIResponse", "Got json: " + jsonString)
             }
         }else {
             Log.i("getAPIResponse", "jsonString is null")
         }
         tries--
-    }while (jsonString?.compareTo("") == 0 && tries > 0)
+    }while (jsonString?.compareTo("") == 0 && tries > 0 && !apiInUse)
 
     if (jsonString?.compareTo("") == 0){
         Log.e("getAPIResponse", "jsonString is repeatedly null", IOException("STRING IS NULL"))
