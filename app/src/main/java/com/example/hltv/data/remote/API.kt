@@ -20,7 +20,7 @@ val mutexForAPI = Mutex()
 
 suspend fun waitForAPI(){
 
-    //TODO: This needs to be optimized because it assumes that all other operations take 0 time
+    //TODO: This needs to be optimized because it assumes that all other operations take 0 time. Set to 200 because 166 sometimes gives errors
     mutexForAPI.withLock {
 
         delay(200)
