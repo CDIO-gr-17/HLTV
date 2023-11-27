@@ -73,16 +73,18 @@ class SingleTeamViewModel(teamIDString : String = "364378"): ViewModel() {
                 if(teamID == event.homeTeam.id){
                     team1 = event.homeTeam
                     team2 = event.awayTeam
-                    lineup = getPlayersFromEvent(event.id).home
                     team1score = event.homeScore
                     team2score = event.awayScore
+                    if (index == 5)
+                        lineup = getPlayersFromEvent(event.id).home
                 }
                 if(teamID != event.homeTeam.id){
                     team1 = event.awayTeam
                     team2 = event.homeTeam
-                    lineup = getPlayersFromEvent(event.id).away
                     team1score = event.awayScore
                     team2score = event.homeScore
+                    if (index == 5)
+                        lineup = getPlayersFromEvent(event.id).away
                 }
                 val date = Date(event.startTimestamp?.toLong()?.times(1000) ?: 0)
                 val dateFormat = SimpleDateFormat("dd MMM.")
