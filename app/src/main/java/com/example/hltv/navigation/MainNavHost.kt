@@ -25,14 +25,14 @@ fun MainNavHost(navController: NavHostController, modifier: Modifier) {
         startDestination = Home.route,
         modifier = modifier.padding()
     ) {
-        composable(route = Home.route){
+        composable(route = Home.route) {
             HomeScreen()
         }
         composable(route = Events.route) {
             EventsScreen()
         }
         composable(route = Matches.route) {
-            MatchesScreen {navController.navigate(SingleTeam.route + it)}
+            MatchesScreen { navController.navigate(SingleTeam.route + it) }
         }
         composable(route = News.route) {
             NewsScreen { navController.navigate(SinglePlayer.route + it) } //How it work? It just no. Ninjutsu
@@ -47,15 +47,16 @@ fun MainNavHost(navController: NavHostController, modifier: Modifier) {
             arguments = listOf(navArgument("teamID") { type = NavType.StringType }))
         { backStackEntry ->
             Log.i("MainNavHost", backStackEntry.toString())
-            SingleTeamScreen(teamID = backStackEntry.arguments?.getString("teamID")){
-                navController.navigate(SinglePlayer.route)
+            SingleTeamScreen(backStackEntry.arguments?.getString("teamID")){
+                navController.navigate(SinglePlayer.route + it)
             }
         }
 
 
 
         composable(route = SinglePlayer.route,
-            arguments = listOf(navArgument("playerID") { type = NavType.StringType }))
+            arguments = listOf(navArgument("playerID") { type = NavType.StringType })
+        )
         { backStackEntry ->
             Log.i("MainNavHost", backStackEntry.toString())
             PlayerScreen(backStackEntry.arguments?.getString("playerID"))

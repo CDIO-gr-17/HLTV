@@ -4,11 +4,9 @@ import android.os.SystemClock.sleep
 import android.util.Log
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
-import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
@@ -17,12 +15,12 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.wrapContentSize
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.items
 import androidx.compose.material3.Card
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.State
-import androidx.compose.runtime.collectAsState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -31,6 +29,7 @@ import androidx.compose.ui.unit.dp
 import coil.compose.AsyncImagePainter
 import coil.compose.rememberAsyncImagePainter
 import com.example.hltv.R
+import com.example.hltv.ui.screens.homeScreen.LiveMatchCard
 
 //Used for testing
 val items = (1..20).map { index ->
@@ -40,27 +39,38 @@ data class ListItem(val ranking: Int, val text1: String, val text2: String)
 
 @Composable
 fun MatchesScreen(onClickSingleTeam : (String?) -> Unit) {
-    val R = MaterialTheme
     val viewModel = MatchesScreenViewModel()
+    val teamValues = viewModel.teamValues
+
+/*
     val allPlayerImages = viewModel.allPlayerImages.collectAsState()
-    val playerbmap = viewModel.playerImage.collectAsState()
+    val playerbmap = viewModel.playerImage.collectAsState()*/
 
     LazyColumn {
+        items(teamValues) { item  ->
+            LiveMatchCard(
+                modifier = Modifier,
+                teamOneName = item.homeTeam.name.toString(),
+                teamOneIcon =  rememberAsyncImagePainter(viewModel.homeTeamIcons[teamValues.indexOf(item)]),             //TODO: Needs TeamLogo
+                teamOneScore = item.homeScore!!.display!!.toInt(),
+                teamOneOnClick = { onClickSingleTeam(item.homeTeam.id.toString()) },
+                teamTwoName = item.awayTeam.name.toString(),
+                teamTwoIcon = rememberAsyncImagePainter(viewModel.awayTeamIcons[teamValues.indexOf(item)]),             //TODO: Needs TeamLogo
+                teamTwoScore = item.awayScore!!.current!!.toInt(),
+                teamTwoOnClick = { onClickSingleTeam(item.awayTeam.id.toString()) },
+            )
 
-        items(viewModel.teamNames.size) { index ->
-            //I dont think the !! is particularly good coding practice?
-            teamCard(
-                modifier = Modifier.clickable { onClickSingleTeam (viewModel.teamNames[index]) },
-                materialTheme = R,
-                text1 = viewModel.teamNames[index],
-                text2 = "Unused",
-                playerbmap,
-                allPlayerImages.value.allTeamImages?.get(index)
-            ) //ugly hardcoding, but we ball
-            if (index < viewModel.teamNames.size - 1) {
-                Spacer(modifier = Modifier.height(1.dp))
-            }
         }
+    }
+
+
+
+
+
+
+            }
+           /* if (index < viewModel.teamNames.size - 1) {
+                Spacer(modifier = Modifier.height(1.dp))*/
         /*
         CoroutineScope(Dispatchers.IO).launch {
             // Simulate loading data
@@ -78,8 +88,8 @@ fun MatchesScreen(onClickSingleTeam : (String?) -> Unit) {
 
         }
          */
-    }
-}
+
+
 
 @Composable
 fun teamCard(
@@ -176,7 +186,6 @@ fun teamCard(
 
 @Preview(showBackground = true)
 @Composable
-fun RankingPreview() {
-    //MyScreen()
-    //RankingScreen()
+fun MatchesScreenPreview() {
+   // MatchesScreen(onClickSingleTeam = print(""))
 }

@@ -5,9 +5,11 @@ import android.util.Log
 import androidx.compose.runtime.mutableStateListOf
 import androidx.lifecycle.ViewModel
 import com.example.hltv.data.remote.APIResponse
+import com.example.hltv.data.remote.Event
 import com.example.hltv.data.remote.getLiveMatches
 import com.example.hltv.data.remote.getPlayerImage
 import com.example.hltv.data.remote.getPlayersFromEvent
+import com.example.hltv.data.remote.getTeamImage
 import kotlinx.coroutines.CompletableDeferred
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Deferred
@@ -26,6 +28,7 @@ data class TeamPlayerImages(
 data class AllPlayerImages(
     var allTeamImages: MutableList<TeamPlayerImages>?
 )
+
 suspend fun getPlayerGroups(eventID : Int?): Deferred<APIResponse.Lineup> = coroutineScope{
     return@coroutineScope async {
         return@async getPlayersFromEvent(eventID)
@@ -55,11 +58,14 @@ data class img(
 )
 
 class MatchesScreenViewModel: ViewModel() {
-    val teamNames = mutableStateListOf("1", "2", "3", "4", "5")
+    val teamValues = mutableStateListOf<Event>()
+
     private var _allPlayerImages = MutableStateFlow<AllPlayerImages>(AllPlayerImages(null))
     var allPlayerImages = _allPlayerImages.asStateFlow()
     private val _playerImage = MutableStateFlow<img>(img(null))
     val playerImage = _playerImage.asStateFlow()
+    val awayTeamIcons = MutableList<Bitmap?>(20){null}
+    val homeTeamIcons = MutableList<Bitmap?>(20){null}
 
     init{
 
@@ -72,19 +78,21 @@ class MatchesScreenViewModel: ViewModel() {
         CoroutineScope(Dispatchers.IO).launch {
             liveMatchesDeferred.complete(getLiveMatches())
         }
-        CoroutineScope(Dispatchers.Default).launch {
+        CoroutineScope(Dispatchers.IO).launch {
             val liveMatches = liveMatchesDeferred.await()
-            teamNames.clear()
-            if (liveMatches != null && liveMatches.events!=null) { //Despite what Android studio says, this seems to make a difference
+
+
+            if (liveMatches != null && liveMatches.events.isNotEmpty()) { //Despite what Android studio says, this seems to make a difference
                 for ((index, event) in liveMatches.events.withIndex()) {
-                    //Log.i("RankingScreen","Adding string with event " + index.toString() + ". Name is: " + event.homeTeam.name + " VS " + event.awayTeam.name)
-                    teamNames.add(event.homeTeam.name + " VS " + event.awayTeam.name)
+                    teamValues.add(event)
+                    homeTeamIcons[index] = (getTeamImage(event.homeTeam.id))
+                    awayTeamIcons[index] = (getTeamImage(event.awayTeam.id))
+
                 }
                 //I dont think this should be called here, but it is going to wait for getLiveMatches() anyway
-                //_allPlayerImages.value = getAllPlayerImages(liveMatches)
+                _allPlayerImages.value = getAllPlayerImages(liveMatches)
 
             }else{
-                teamNames.add("No current teams playing")
                 Log.w(this.toString(),"There were no live matches?")
             }
         }
