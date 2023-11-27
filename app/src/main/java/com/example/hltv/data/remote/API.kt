@@ -23,7 +23,7 @@ suspend fun waitForAPI(){
     //TODO: This needs to be optimized because it assumes that all other operations take 0 time
     mutexForAPI.withLock {
 
-        delay(166)
+        delay(200)
     }
 
     /*

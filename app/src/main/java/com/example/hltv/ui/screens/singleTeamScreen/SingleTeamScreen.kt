@@ -47,7 +47,7 @@ fun SingleTeamScreen(teamID : String?, onClickSinglePlayer: (String?) -> Unit){
                         }
                     }
                     overviewInfo(
-                        country = "Denmark",
+                        country = teamID ?: "Denmark",
                         countryImage = painterResource(id = R.drawable.dk_flag),
                         worldRank = "5"
                     )
