@@ -223,6 +223,9 @@ private suspend fun getAPIResponse(apiURL: String, apiKEY: String, desiredClass:
     var jsonString : String?
     var tries = 3
     var apiInUse = false
+    Log.i("getAPIResponse",
+        "Attempting to get: https://allsportsapi2.p.rapidapi.com/api/esport/$apiURL"
+    )
     do{
         val request = Request.Builder()
             .url("https://allsportsapi2.p.rapidapi.com/api/esport/$apiURL")
