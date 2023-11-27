@@ -11,7 +11,7 @@ import kotlinx.coroutines.launch
 
 
 class EventsScreenViewModel : ViewModel() {
-    val tournaments = mutableStateListOf<ThirdUniqueTournament>()
+    val tournaments = mutableStateListOf<ThirdUniqueTournament>(ThirdUniqueTournament("Loading Tournaments"))
     //private var _tournaments = MutableStateFlow<ThirdUniqueTournament>(ThirdUniqueTournament())
     //var tournaments = _tournaments.asStateFlow()
 
@@ -22,10 +22,10 @@ class EventsScreenViewModel : ViewModel() {
         }
         CoroutineScope(Dispatchers.Default).launch {
             val tournamentsList = tournamentsDefered.await()
+            tournaments.clear()
             for (tournament in tournamentsList) {
                 tournaments.add(tournament)
             }
         }
     }
-
 }

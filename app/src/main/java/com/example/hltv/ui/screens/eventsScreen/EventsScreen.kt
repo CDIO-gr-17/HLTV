@@ -35,7 +35,7 @@ fun EventsScreen() {
                 eventDate = convertTimestampToDate(item.startDateTimestamp),
                 eventLogo = painterResource(id = R.drawable.astralis_logo),
                 location = item.country?.name.toString(),
-                prizePool = "$1,000,000",
+                prizePool = "Unknown",
                 flagIcon = painterResource(id = R.drawable.dk_flag)
             )
         }
@@ -44,8 +44,12 @@ fun EventsScreen() {
 
 private fun convertTimestampToDate(timestamp: Int?): String {
     val dateFormat = getDateInstance()
-    val date = Date((timestamp?.toLong() ?: System.nanoTime()) * 1000) // Assuming the timestamp is in seconds, multiply by 1000 for milliseconds
-    return dateFormat.format(date)
+    if(timestamp != null) {
+        val date = Date(timestamp.toLong()*1000)// Assuming the timestamp is in seconds, multiply by 1000 for milliseconds
+        return dateFormat.format(date)
+    } else {
+        return "Unknown date"
+    }
 }
 
 @Composable
