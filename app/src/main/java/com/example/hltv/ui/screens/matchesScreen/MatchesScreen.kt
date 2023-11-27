@@ -31,10 +31,6 @@ import coil.compose.rememberAsyncImagePainter
 import com.example.hltv.R
 import com.example.hltv.ui.screens.homeScreen.LiveMatchCard
 
-//Used for testing
-val items = (1..20).map { index ->
-    ListItem(index, "Item $index Text 1", "Item $index Text 2")
-}
 data class ListItem(val ranking: Int, val text1: String, val text2: String)
 
 @Composable
@@ -62,10 +58,6 @@ fun MatchesScreen(onClickSingleTeam : (String?) -> Unit) {
 
         }
     }
-
-
-
-
 
 
             }

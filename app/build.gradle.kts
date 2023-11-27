@@ -74,6 +74,11 @@ dependencies {
     // Cucumber
     implementation("io.cucumber:cucumber-android:7.14.0")
     implementation("io.cucumber:cucumber-junit:7.14.0")
+    testImplementation("org.junit.jupiter:junit-jupiter:5.8.1")
+
+    // TestNavController
+    val nav_version = "2.7.5"
+    androidTestImplementation("androidx.navigation:navigation-testing:$nav_version")
 
     androidTestImplementation("androidx.test.ext:junit:1.1.5")
     androidTestImplementation("androidx.test.espresso:espresso-core:3.5.1")
