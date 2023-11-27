@@ -17,7 +17,7 @@ import androidx.compose.foundation.layout.wrapContentSize
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Delete
+import androidx.compose.material.icons.filled.AccountBox
 import androidx.compose.material3.Card
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
@@ -31,7 +31,6 @@ import androidx.compose.ui.unit.dp
 import coil.compose.AsyncImagePainter
 import coil.compose.rememberAsyncImagePainter
 import com.example.hltv.R
-import com.example.hltv.data.remote.getTeamImage
 import com.example.hltv.ui.screens.homeScreen.LiveMatchCard
 
 //Used for testing
@@ -50,20 +49,22 @@ fun MatchesScreen(onClickSingleTeam : (String?) -> Unit) {
     val playerbmap = viewModel.playerImage.collectAsState()*/
 
     LazyColumn {
-        items(teamValues){ item ->
-                LiveMatchCard(
-                    modifier = Modifier,
-                    teamOneName = item.homeTeam.name.toString(),
-                    teamOneIcon = Icons.Default.Delete,
-                    teamOneScore = item.homeScore!!.display!!.toInt(),
-                    teamOneOnClick = {onClickSingleTeam(item.homeTeam.id.toString())},
-                    teamTwoName = item.awayTeam.name.toString(),
-                    teamTwoIcon = Icons.Default.Delete,
-                    teamTwoScore =item.awayScore!!.current!!.toInt(),
-                    teamTwoOnClick = { onClickSingleTeam(item.awayTeam.id.toString())},
-                )
-            }
+        items(teamValues) { item ->
+            var i = 0
+            LiveMatchCard(
+                modifier = Modifier,
+                teamOneName = item.homeTeam.name.toString(),
+                teamOneIcon = Icons.Default.AccountBox,
+                teamOneScore = item.homeScore!!.display!!.toInt(),
+                teamOneOnClick = { onClickSingleTeam(item.homeTeam.id.toString()) },
+                teamTwoName = item.awayTeam.name.toString(),
+                teamTwoIcon = Icons.Default.AccountBox,
+                teamTwoScore = item.awayScore!!.current!!.toInt(),
+                teamTwoOnClick = { onClickSingleTeam(item.awayTeam.id.toString()) },
+            )
+            i++
         }
+    }
 
 
 

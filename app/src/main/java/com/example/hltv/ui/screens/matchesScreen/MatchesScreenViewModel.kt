@@ -62,6 +62,8 @@ class MatchesScreenViewModel: ViewModel() {
     var allPlayerImages = _allPlayerImages.asStateFlow()
     private val _playerImage = MutableStateFlow<img>(img(null))
     val playerImage = _playerImage.asStateFlow()
+    val awayTeamIcons = mutableStateListOf<Bitmap>()
+    val homeTeamIcons = mutableStateListOf<Bitmap>()
 
     init{
 
@@ -77,9 +79,11 @@ class MatchesScreenViewModel: ViewModel() {
         CoroutineScope(Dispatchers.Default).launch {
             val liveMatches = liveMatchesDeferred.await()
 
-            if (liveMatches != null && liveMatches.events!=null) { //Despite what Android studio says, this seems to make a difference
+            if (liveMatches != null && liveMatches.events.isNotEmpty()) { //Despite what Android studio says, this seems to make a difference
                 for (event in liveMatches.events){
                     teamValues.add(event)
+                    //homeTeamIcons.add(getTeamImage(event.homeTeam.id)!!)
+                    //awayTeamIcons.add(getTeamImage(event.awayTeam.id)!!)
                 }
                 //I dont think this should be called here, but it is going to wait for getLiveMatches() anyway
                 _allPlayerImages.value = getAllPlayerImages(liveMatches)
