@@ -2,6 +2,8 @@ package com.example.hltv.ui.screens.eventsScreen
 
 import androidx.compose.runtime.mutableStateListOf
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
+import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.hltv.data.remote.ThirdUniqueTournament
 import com.example.hltv.data.remote.getRelevantTournaments
 import kotlinx.coroutines.CompletableDeferred
@@ -15,16 +17,15 @@ class EventsScreenViewModel : ViewModel() {
     //private var _tournaments = MutableStateFlow<ThirdUniqueTournament>(ThirdUniqueTournament())
     //var tournaments = _tournaments.asStateFlow()
 
-    init {
-        val tournamentsDefered = CompletableDeferred<List<ThirdUniqueTournament>>()
-        CoroutineScope(Dispatchers.IO).launch {
-            tournamentsDefered.complete(getRelevantTournaments())
-        }
-        CoroutineScope(Dispatchers.Default).launch {
-            val tournamentsList = tournamentsDefered.await()
-            tournaments.clear()
-            for (tournament in tournamentsList) {
-                tournaments.add(tournament)
+
+    fun loadData(){
+        viewModelScope.launch{
+            CoroutineScope(Dispatchers.IO).launch {
+                val tournamentsList = getRelevantTournaments()
+                tournaments.clear()
+                for (tournament in tournamentsList) {
+                    tournaments.add(tournament)
+                }
             }
         }
     }

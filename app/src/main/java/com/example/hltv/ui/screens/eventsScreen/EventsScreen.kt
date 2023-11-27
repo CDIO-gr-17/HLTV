@@ -11,6 +11,7 @@ import androidx.compose.material.icons.filled.Email
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -18,6 +19,7 @@ import androidx.compose.ui.graphics.painter.Painter
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
+import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.hltv.R
 import com.example.hltv.ui.common.CommonCard
 import java.text.DateFormat.getDateInstance
@@ -27,7 +29,10 @@ import java.util.Date
 
 @Composable
 fun EventsScreen() {
-    val viewModel = EventsScreenViewModel()
+    val viewModel : EventsScreenViewModel = viewModel()
+    LaunchedEffect(Unit){
+        viewModel.loadData()
+    }
     LazyColumn {
         items(viewModel.tournaments){ item ->
             SingleEventCard(
