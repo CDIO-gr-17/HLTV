@@ -1,8 +1,11 @@
 package com.example.hltv.ui.screens.singleTeamScreen
 
 import android.graphics.Bitmap
+import android.text.format.DateUtils
 import android.util.Log
 import androidx.compose.runtime.mutableStateListOf
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.ui.platform.LocalContext
 import androidx.lifecycle.ViewModel
 import com.example.hltv.data.remote.APIResponse
 import com.example.hltv.data.remote.Country
@@ -18,7 +21,10 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import java.text.SimpleDateFormat
+import java.time.LocalDate
+import java.time.Period
 import java.util.Date
+import java.util.concurrent.TimeUnit
 
 data class SingleTeam(
     val eventsWrapper: APIResponse.EventsWrapper
@@ -41,19 +47,21 @@ data class Player(
 )
 data class Stats(
     val country: Country ?= null,
-    val dateOfBirthTimestamp : Int ?= null,
+    val avgAgeofPlayers : String ?= null,
 )
 class SingleTeamViewModel(teamIDString : String): ViewModel() {
     val teamID = teamIDString.removePrefix("{teamID}").toInt()
     val recentMatches = mutableStateListOf<RecentMatch>()
     val playerOverview = mutableStateListOf<Player>()
-    var lineup : PlayerGroup ?= null
-    var statisticsOverview : Stats ?= null
-    var team1 : Team ?= null
-    var team2 : Team ?= null
-    var team1score : Score ?= null
-    var team2score : Score ?= null
-    var avgDateOfBirth : Int ?= null
+    var lineup: PlayerGroup? = null
+    var statisticsOverview = mutableStateOf<Stats>(Stats())
+    var team1: Team? = null
+    var team2: Team? = null
+    var team1score: Score? = null
+    var team2score: Score? = null
+    var avgAgeofPlayers: Long = 0
+    var avgAgeofPlayersString = ""
+    var playersWithAge : Int = 0
 
 
     init {
@@ -70,7 +78,7 @@ class SingleTeamViewModel(teamIDString : String): ViewModel() {
             //recentMatches
             team1 = null
             for ((index, event) in completedMatches.events.reversed().withIndex().take(6)) {
-                if(teamID == event.homeTeam.id){
+                if (teamID == event.homeTeam.id) {
                     team1 = event.homeTeam
                     team2 = event.awayTeam
                     team1score = event.homeScore
@@ -78,7 +86,7 @@ class SingleTeamViewModel(teamIDString : String): ViewModel() {
                     if (index == 5)
                         lineup = getPlayersFromEvent(event.id).home
                 }
-                if(teamID != event.homeTeam.id){
+                if (teamID != event.homeTeam.id) {
                     team1 = event.awayTeam
                     team2 = event.homeTeam
                     team1score = event.awayScore
@@ -100,11 +108,14 @@ class SingleTeamViewModel(teamIDString : String): ViewModel() {
                     bestOf = event.bestOf,
                 )
                 recentMatches.add(recentMatch)
-                Log.w(this.toString(), "Added recent match with homeTeam ${event.homeTeam.name}, ${event.homeScore}, ${event.bestOf}")
+                Log.w(
+                    this.toString(),
+                    "Added recent match with homeTeam ${event.homeTeam.name}, ${event.homeScore}, ${event.bestOf}"
+                )
             }
             // Lineup
-            Log.w(this.toString(), "Loaded lineup ${lineup}" )
-            if(lineup!=null) {
+            Log.w(this.toString(), "Loaded lineup ${lineup}")
+            if (lineup != null) {
                 for (playerorsub in lineup!!.players) {
                     val player = Player(
                         name = playerorsub.player?.name,
@@ -112,11 +123,22 @@ class SingleTeamViewModel(teamIDString : String): ViewModel() {
                         playerId = playerorsub.player?.id,
                     )
                     playerOverview.add(player)
+                    if(playerorsub.player?.dateOfBirthTimestamp!=null) { // Checks if the player has a dateOfBirthTimeStimp
+                        avgAgeofPlayers += ((System.currentTimeMillis() // Subtracts the current time in milliseconds from the players date of birth in milliseconds
+                                - (playerorsub.player?.dateOfBirthTimestamp!!.toLong() * 1000)))
+                        playersWithAge++
                     }
                 }
+                if (playersWithAge!=0) {
+                    avgAgeofPlayers /= playersWithAge // Gives the avg. player age in milliseconds (of players with an age)
+                    avgAgeofPlayersString =
+                        String.format("%.1f",TimeUnit.MILLISECONDS.toDays(avgAgeofPlayers) / 365.25) //Sets it to days and divides by the avg. days in a year, and displays with a decimalpoint
+                }
+                statisticsOverview.value = Stats(
+                    avgAgeofPlayers = avgAgeofPlayersString
+                )
             }
-            statisticsOverview = Stats(
-                country = team1?.country
-            )
+
         }
     }
+}

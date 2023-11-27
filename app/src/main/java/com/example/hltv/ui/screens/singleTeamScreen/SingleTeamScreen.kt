@@ -56,7 +56,7 @@ fun SingleTeamScreen(teamID : String? = "364378", onClickSinglePlayer: (String?)
                         points = "1000",
                         winRate = "61%",
                         bestMap = "Overpass",
-                        averagePlayerAge = "",
+                        averagePlayerAge = statsOverview.value.avgAgeofPlayers,
                         imageNat = painterResource(R.drawable.dk_flag)
                     )
                     Text(text = "Recent Matches",
