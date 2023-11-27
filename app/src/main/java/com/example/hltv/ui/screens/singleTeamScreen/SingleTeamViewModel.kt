@@ -56,7 +56,7 @@ class SingleTeamViewModel(): ViewModel() {
 
     val recentMatches = mutableStateListOf<RecentMatch>()
     val playerOverview = mutableStateListOf<Player>()
-    var lineup: PlayerGroup? = null
+    //var lineup: PlayerGroup? = null
     var statisticsOverview = mutableStateOf<Stats>(Stats())
     var team1: Team? = null
     var team2: Team? = null
@@ -69,12 +69,11 @@ class SingleTeamViewModel(): ViewModel() {
     fun loadData(teamIDString: String){
         val teamID = teamIDString.removePrefix("{teamID}").toInt()
 
-        //val completedMatchesDeferred = CompletableDeferred<APIResponse.EventsWrapper>()
+        val lineup = CompletableDeferred<PlayerGroup?>()
 
         CoroutineScope(Dispatchers.IO).launch {
             Log.w(this.toString(), "Got previous matches of team with id: $teamID")
             val completedMatches = getPreviousMatches(teamID, 0)
-            playerOverview.clear()
             recentMatches.clear()
             //recentMatches
             team1 = null
@@ -84,16 +83,22 @@ class SingleTeamViewModel(): ViewModel() {
                     team2 = event.awayTeam
                     team1score = event.homeScore
                     team2score = event.awayScore
-                    if (index == 5)
-                        lineup = getPlayersFromEvent(event.id).home
+                    if (index == 0){
+                        Log.i("asdasd", "Also loading here")
+                        lineup.complete(getPlayersFromEvent(event.id).home)
+                    }
+
                 }
                 if (teamID != event.homeTeam.id) {
                     team1 = event.awayTeam
                     team2 = event.homeTeam
                     team1score = event.awayScore
                     team2score = event.homeScore
-                    if (index == 5)
-                        lineup = getPlayersFromEvent(event.id).away
+                    if (index == 0){
+                        Log.i("asdasd", "Loading here")
+                        lineup.complete(getPlayersFromEvent(event.id).away)
+                    }
+
                 }
                 val date = Date(event.startTimestamp?.toLong()?.times(1000) ?: 0)
                 val dateFormat = SimpleDateFormat("dd MMM.")
@@ -114,10 +119,13 @@ class SingleTeamViewModel(): ViewModel() {
                     "Added recent match with homeTeam ${event.homeTeam.name}, ${event.homeScore}, ${event.bestOf}"
                 )
             }
+        }
+        CoroutineScope(Dispatchers.IO).launch {
             // Lineup
             Log.w(this.toString(), "Loaded lineup ${lineup}")
             if (lineup != null) {
-                for (playerorsub in lineup!!.players) {
+                playerOverview.clear() //TODO: Idk if this clear is really needed
+                for (playerorsub in lineup.await()!!.players) {
                     val player = Player(
                         name = playerorsub.player?.name,
                         image = getPlayerImage(playerorsub.player?.id,),
