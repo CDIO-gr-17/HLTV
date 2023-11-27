@@ -4,7 +4,12 @@ import android.graphics.BitmapFactory
 import android.os.ConditionVariable
 import android.util.Base64
 import android.util.Log
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.async
+import kotlinx.coroutines.awaitAll
 import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
 import kotlinx.coroutines.sync.Mutex
 import kotlinx.coroutines.sync.withLock
 import okhttp3.Request
@@ -194,16 +199,17 @@ suspend fun getTournamentInfo(tournamentID: Int): APIResponse.ThirdTournamentWra
  */
 suspend fun getRelevantTournaments(): List<ThirdUniqueTournament> {
     val finalTournamentDetailList: MutableList<ThirdUniqueTournament> = mutableListOf()
-    val tempTournamentDetailList: MutableList<ThirdUniqueTournament> = mutableListOf()
-    for (tournamentID in getCSTournamentsID(getCSCategory())) {
-        tempTournamentDetailList.add(getTournamentInfo(tournamentID).tournamentDetails)
-        /*
-        if (checkIfTournamentIsPast(tournamentID)){
+    //val tempTournamentDetailList: MutableList<ThirdUniqueTournament> = mutableListOf() //TODO This is commented out for performance reasons
 
-            continue
-        }*/
-        finalTournamentDetailList.add(getTournamentInfo(tournamentID).tournamentDetails)
+    //By doing this we make sure that all requests are sent as fast as possible,
+    // rather than sending one, waiting for a reply and then sending another, waiting for a reply...
+    val deferreds = getCSTournamentsID(getCSCategory()).map { tournamentID ->
+        CoroutineScope(Dispatchers.IO).async {
+            getTournamentInfo(tournamentID).tournamentDetails
+        }
     }
+
+    finalTournamentDetailList.addAll(deferreds.awaitAll())
     finalTournamentDetailList.sortBy { it.startDateTimestamp }
     return finalTournamentDetailList
 }
