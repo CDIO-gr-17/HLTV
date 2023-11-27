@@ -52,8 +52,8 @@ data class Stats(
     val country: Country ?= null,
     val avgAgeofPlayers : String ?= null,
 )
-class SingleTeamViewModel(teamIDString : String): ViewModel() {
-    val teamID = teamIDString.removePrefix("{teamID}").toInt()
+class SingleTeamViewModel(): ViewModel() {
+
     val recentMatches = mutableStateListOf<RecentMatch>()
     val playerOverview = mutableStateListOf<Player>()
     var lineup: PlayerGroup? = null
@@ -65,16 +65,15 @@ class SingleTeamViewModel(teamIDString : String): ViewModel() {
     var avgAgeofPlayers: Long = 0
     var avgAgeofPlayersString = ""
     var playersWithAge : Int = 0
+    var teamID = 0
+    fun loadData(teamIDString: String){
+        val teamID = teamIDString.removePrefix("{teamID}").toInt()
 
-
-    init {
         val completedMatchesDeferred = CompletableDeferred<APIResponse.EventsWrapper>()
 
         CoroutineScope(Dispatchers.IO).launch {
             completedMatchesDeferred.complete(getPreviousMatches(teamID, 0))
             Log.w(this.toString(), "Got previous matches of team with id: $teamID")
-        }
-        CoroutineScope(Dispatchers.IO).launch {
             val completedMatches = completedMatchesDeferred.await()
             playerOverview.clear()
             recentMatches.clear()
@@ -141,7 +140,6 @@ class SingleTeamViewModel(teamIDString : String): ViewModel() {
                     avgAgeofPlayers = avgAgeofPlayersString
                 )
             }
-
         }
     }
 }
