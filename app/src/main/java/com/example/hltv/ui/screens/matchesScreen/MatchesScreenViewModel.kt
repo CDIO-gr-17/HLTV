@@ -4,6 +4,7 @@ import android.graphics.Bitmap
 import android.util.Log
 import androidx.compose.runtime.mutableStateListOf
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
 import com.example.hltv.data.remote.APIResponse
 import com.example.hltv.data.remote.Event
 import com.example.hltv.data.remote.getLiveMatches
@@ -54,53 +55,31 @@ suspend fun getAllPlayerImages(eventsWrapper: APIResponse.EventsWrapper): AllPla
 }
 
 data class img(
-    val bitMap: Bitmap?
+    var bitMap: Bitmap?
 )
 
 class MatchesScreenViewModel: ViewModel() {
     val teamValues = mutableStateListOf<Event>()
 
-    private var _allPlayerImages = MutableStateFlow<AllPlayerImages>(AllPlayerImages(null))
-    var allPlayerImages = _allPlayerImages.asStateFlow()
-    private val _playerImage = MutableStateFlow<img>(img(null))
-    val playerImage = _playerImage.asStateFlow()
     val awayTeamIcons = MutableList<Bitmap?>(20){null}
     val homeTeamIcons = MutableList<Bitmap?>(20){null}
 
-    init{
+    fun loadData(){
+        viewModelScope.launch {
 
-        //This shouldn't be a var, as we should be updating the value used in the view
-        //as often as possible, instead of collecting all updates and putting them in
-        //at the very end (which leads to all the info coming at once, instead of dynamically
-        //loading (much preferred)
-        var liveMatchesDeferred = CompletableDeferred<APIResponse.EventsWrapper>();
+            CoroutineScope(Dispatchers.IO).launch {
+                val liveMatches = getLiveMatches()
+                if (liveMatches.events.isNotEmpty()) {
+                    for ((index, event) in liveMatches.events.withIndex()) {
+                        teamValues.add(event)
+                        homeTeamIcons[index] = (getTeamImage(event.homeTeam.id))
+                        awayTeamIcons[index] = (getTeamImage(event.awayTeam.id))
+                    }
 
-        CoroutineScope(Dispatchers.IO).launch {
-            liveMatchesDeferred.complete(getLiveMatches())
-        }
-        CoroutineScope(Dispatchers.IO).launch {
-            val liveMatches = liveMatchesDeferred.await()
-
-
-            if (liveMatches != null && liveMatches.events.isNotEmpty()) { //Despite what Android studio says, this seems to make a difference
-                for ((index, event) in liveMatches.events.withIndex()) {
-                    teamValues.add(event)
-                    homeTeamIcons[index] = (getTeamImage(event.homeTeam.id))
-                    awayTeamIcons[index] = (getTeamImage(event.awayTeam.id))
-
+                } else {
+                    Log.w(this.toString(), "There were no live matches?")
                 }
-                //I dont think this should be called here, but it is going to wait for getLiveMatches() anyway
-                _allPlayerImages.value = getAllPlayerImages(liveMatches)
-
-            }else{
-                Log.w(this.toString(),"There were no live matches?")
             }
-        }
-
-
-
-        CoroutineScope(Dispatchers.IO).launch {
-            _allPlayerImages.value = getAllPlayerImages(liveMatchesDeferred.await())
         }
     }
 }
