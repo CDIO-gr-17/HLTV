@@ -69,12 +69,11 @@ class SingleTeamViewModel(): ViewModel() {
     fun loadData(teamIDString: String){
         val teamID = teamIDString.removePrefix("{teamID}").toInt()
 
-        val completedMatchesDeferred = CompletableDeferred<APIResponse.EventsWrapper>()
+        //val completedMatchesDeferred = CompletableDeferred<APIResponse.EventsWrapper>()
 
         CoroutineScope(Dispatchers.IO).launch {
-            completedMatchesDeferred.complete(getPreviousMatches(teamID, 0))
             Log.w(this.toString(), "Got previous matches of team with id: $teamID")
-            val completedMatches = completedMatchesDeferred.await()
+            val completedMatches = getPreviousMatches(teamID, 0)
             playerOverview.clear()
             recentMatches.clear()
             //recentMatches
