@@ -16,8 +16,6 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.wrapContentSize
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.AccountBox
 import androidx.compose.material3.Card
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
@@ -49,20 +47,19 @@ fun MatchesScreen(onClickSingleTeam : (String?) -> Unit) {
     val playerbmap = viewModel.playerImage.collectAsState()*/
 
     LazyColumn {
-        items(teamValues) { item ->
-            var i = 0
+        items(teamValues) { item  ->
             LiveMatchCard(
                 modifier = Modifier,
                 teamOneName = item.homeTeam.name.toString(),
-                teamOneIcon = Icons.Default.AccountBox,
+                teamOneIcon =  rememberAsyncImagePainter(viewModel.homeTeamIcons[teamValues.indexOf(item)]),             //TODO: Needs TeamLogo
                 teamOneScore = item.homeScore!!.display!!.toInt(),
                 teamOneOnClick = { onClickSingleTeam(item.homeTeam.id.toString()) },
                 teamTwoName = item.awayTeam.name.toString(),
-                teamTwoIcon = Icons.Default.AccountBox,
+                teamTwoIcon = rememberAsyncImagePainter(viewModel.awayTeamIcons[teamValues.indexOf(item)]),             //TODO: Needs TeamLogo
                 teamTwoScore = item.awayScore!!.current!!.toInt(),
                 teamTwoOnClick = { onClickSingleTeam(item.awayTeam.id.toString()) },
             )
-            i++
+
         }
     }
 

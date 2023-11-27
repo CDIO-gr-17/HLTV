@@ -2,6 +2,7 @@
 
 package com.example.hltv.ui.screens.homeScreen
 
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
@@ -26,7 +27,7 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.compose.ui.graphics.painter.Painter
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
@@ -184,11 +185,11 @@ fun HomeScreen() {
 fun LiveMatchCard(
     modifier: Modifier = Modifier,
     teamOneName: String,
-    teamOneIcon: ImageVector,
+    teamOneIcon: Painter,
     teamOneScore: Int,
     teamOneOnClick: () -> Unit,
     teamTwoName: String,
-    teamTwoIcon: ImageVector,
+    teamTwoIcon: Painter,
     teamTwoScore: Int,
     teamTwoOnClick: () -> Unit,
 
@@ -211,8 +212,8 @@ fun LiveMatchCard(
                         color = M.colorScheme.onSecondaryContainer,
                         textAlign = TextAlign.Center,
                     )
-                    Icon(
-                        imageVector = teamOneIcon,
+                    Image(
+                        painter = teamOneIcon,
                         contentDescription = "teamOneIcon",
                         modifier = Modifier
                             .padding(4.dp)
@@ -245,8 +246,8 @@ fun LiveMatchCard(
                         color = M.colorScheme.onSecondaryContainer,
                         textAlign = TextAlign.Center,
                     )
-                    Icon(
-                        imageVector = teamTwoIcon,
+                    Image(
+                        painter = teamTwoIcon,
                         contentDescription = "teamOneIcon",
                         modifier = Modifier
                             .padding(4.dp)

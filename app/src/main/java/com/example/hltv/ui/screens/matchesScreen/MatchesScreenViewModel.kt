@@ -9,6 +9,7 @@ import com.example.hltv.data.remote.Event
 import com.example.hltv.data.remote.getLiveMatches
 import com.example.hltv.data.remote.getPlayerImage
 import com.example.hltv.data.remote.getPlayersFromEvent
+import com.example.hltv.data.remote.getTeamImage
 import kotlinx.coroutines.CompletableDeferred
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Deferred
@@ -27,6 +28,7 @@ data class TeamPlayerImages(
 data class AllPlayerImages(
     var allTeamImages: MutableList<TeamPlayerImages>?
 )
+
 suspend fun getPlayerGroups(eventID : Int?): Deferred<APIResponse.Lineup> = coroutineScope{
     return@coroutineScope async {
         return@async getPlayersFromEvent(eventID)
@@ -62,8 +64,8 @@ class MatchesScreenViewModel: ViewModel() {
     var allPlayerImages = _allPlayerImages.asStateFlow()
     private val _playerImage = MutableStateFlow<img>(img(null))
     val playerImage = _playerImage.asStateFlow()
-    val awayTeamIcons = mutableStateListOf<Bitmap>()
-    val homeTeamIcons = mutableStateListOf<Bitmap>()
+    val awayTeamIcons = MutableList<Bitmap?>(20){null}
+    val homeTeamIcons = MutableList<Bitmap?>(20){null}
 
     init{
 
@@ -76,14 +78,16 @@ class MatchesScreenViewModel: ViewModel() {
         CoroutineScope(Dispatchers.IO).launch {
             liveMatchesDeferred.complete(getLiveMatches())
         }
-        CoroutineScope(Dispatchers.Default).launch {
+        CoroutineScope(Dispatchers.IO).launch {
             val liveMatches = liveMatchesDeferred.await()
 
+
             if (liveMatches != null && liveMatches.events.isNotEmpty()) { //Despite what Android studio says, this seems to make a difference
-                for (event in liveMatches.events){
+                for ((index, event) in liveMatches.events.withIndex()) {
                     teamValues.add(event)
-                    //homeTeamIcons.add(getTeamImage(event.homeTeam.id)!!)
-                    //awayTeamIcons.add(getTeamImage(event.awayTeam.id)!!)
+                    homeTeamIcons[index] = (getTeamImage(event.homeTeam.id))
+                    awayTeamIcons[index] = (getTeamImage(event.awayTeam.id))
+
                 }
                 //I dont think this should be called here, but it is going to wait for getLiveMatches() anyway
                 _allPlayerImages.value = getAllPlayerImages(liveMatches)
