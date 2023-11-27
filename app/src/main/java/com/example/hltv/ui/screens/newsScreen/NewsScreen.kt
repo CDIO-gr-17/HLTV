@@ -5,7 +5,7 @@ import com.example.hltv.ui.screens.singleTeamScreen.SingleTeamScreen
 
 @Composable
 fun NewsScreen(onClickSinglePlayer: (playerID: String?) -> Unit) {
-    SingleTeamScreen(teamID = "PlaceHolderID"){
+    SingleTeamScreen(teamID = "364378"){
         onClickSinglePlayer("PlaceHolderID")
     }
 }
