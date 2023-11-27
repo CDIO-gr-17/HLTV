@@ -1,5 +1,6 @@
 package com.example.hltv
 
+import androidx.compose.ui.test.*
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import androidx.test.platform.app.InstrumentationRegistry
 import org.junit.Assert.*

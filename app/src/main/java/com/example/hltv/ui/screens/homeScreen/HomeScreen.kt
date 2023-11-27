@@ -32,6 +32,7 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import coil.compose.rememberAsyncImagePainter
 import com.example.hltv.R
 import com.example.hltv.ui.common.CommonCard
 
@@ -47,17 +48,19 @@ fun HomeScreen() {
             .fillMaxSize()
     ) {
 
-/*
+
         LiveMatchCard(
             modifier = Modifier,
             teamOneName = "Astralis",
-            teamOneIcon = Icons.Default.AccountBox,
+            teamOneIcon = rememberAsyncImagePainter(model = "https://static.hltv.org/images/team/logo/6665"),
             teamOneScore = 16,
+            teamOneOnClick = {},
             teamTwoName = "Navi",
-            teamTwoIcon = Icons.Default.AccountBox,
+            teamTwoIcon = rememberAsyncImagePainter(model = "https://static.hltv.org/images/team/logo/4608"),
             teamTwoScore = 14,
+            teamTwoOnClick = {},
         )
-*/
+
 
 
         Divider(modifier = Modifier.padding(horizontal = 8.dp), color = M.colorScheme.onBackground)
