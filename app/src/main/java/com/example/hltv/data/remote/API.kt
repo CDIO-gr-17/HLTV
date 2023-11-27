@@ -12,7 +12,7 @@ import java.io.ByteArrayOutputStream
 import java.io.IOException
 
 const val APIKEY = "24b0f292d5mshdf7eb12b4760333p19075ajsncc1561769190"
-const val ONLYCS = false
+const val ONLYCS = true
 var currentRequestCount = 0
 val cond = ConditionVariable()
 var lastAPIPull: Long = 0
