@@ -1,5 +1,6 @@
 package com.example.hltv.ui.screens.singleTeamScreen
 
+import android.util.Log
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
@@ -15,6 +16,7 @@ import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.painter.Painter
@@ -23,6 +25,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.lifecycle.viewmodel.compose.viewModel
 import coil.compose.rememberAsyncImagePainter
 import com.example.hltv.R
 import com.example.hltv.ui.common.CommonCard
@@ -30,7 +33,10 @@ import com.example.hltv.ui.common.CommonCard
 
 @Composable
 fun SingleTeamScreen(teamID : String? = "364378", onClickSinglePlayer: (String?) -> Unit){
-    val viewModel = SingleTeamViewModel(teamID!!)
+    val viewModel : SingleTeamViewModel = viewModel()
+    LaunchedEffect(teamID){
+        viewModel.loadData(teamID!!)
+    }
     val recentMatches = viewModel.recentMatches
     val playerOverview = viewModel.playerOverview
     val statsOverview = viewModel.statisticsOverview
