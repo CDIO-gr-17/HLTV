@@ -7,6 +7,7 @@ import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.ui.platform.LocalContext
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
 import com.example.hltv.data.remote.APIResponse
 import com.example.hltv.data.remote.Country
 import com.example.hltv.data.remote.PlayerGroup
@@ -25,6 +26,8 @@ import java.time.LocalDate
 import java.time.Period
 import java.util.Date
 import java.util.concurrent.TimeUnit
+
+var called = false;
 
 data class SingleTeam(
     val eventsWrapper: APIResponse.EventsWrapper
