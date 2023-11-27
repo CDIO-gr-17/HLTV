@@ -256,7 +256,7 @@ private suspend fun getAPIResponse(apiURL: String, apiKEY: String, desiredClass:
         Log.e("getAPIResponse", "jsonString is repeatedly null", IOException("STRING IS NULL"))
     }
 
-    Log.i("getAPIResponse", "JSON IS: " + jsonString)
+    Log.i("getAPIResponse", "JSON IS: " + jsonString!!.substring(0,100) + "...")
 
 
     //Initiating as late as possible for performance reasons. Don't think it makes much of a difference
