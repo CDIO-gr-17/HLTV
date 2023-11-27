@@ -29,8 +29,8 @@ import com.example.hltv.ui.common.CommonCard
 
 
 @Composable
-fun SingleTeamScreen(teamID : String?, onClickSinglePlayer: (String?) -> Unit){
-    val viewModel = SingleTeamViewModel()
+fun SingleTeamScreen(teamID : String? = "364378", onClickSinglePlayer: (String?) -> Unit){
+    val viewModel = SingleTeamViewModel(teamID!!)
     val recentMatches = viewModel.recentMatches
     val playerOverview = viewModel.playerOverview
     val statsOverview = viewModel.statisticsOverview
@@ -47,9 +47,9 @@ fun SingleTeamScreen(teamID : String?, onClickSinglePlayer: (String?) -> Unit){
                         }
                     }
                     overviewInfo(
-                        country = teamID ?: "Denmark",
+                        country = "Unknown",
                         countryImage = painterResource(id = R.drawable.dk_flag),
-                        worldRank = "5"
+                        worldRank = "#"
                     )
                     stats(
                         coach = "Peter 'Castle' Ardenskjold",
