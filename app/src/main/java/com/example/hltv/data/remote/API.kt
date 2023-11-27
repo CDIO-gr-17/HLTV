@@ -242,8 +242,6 @@ private suspend fun getAPIResponse(apiURL: String, apiKEY: String, desiredClass:
             if (jsonString.contains("You have exceeded the rate limit per second for your plan")){
                 Log.e("getAPIResponse", "You have exceeded the rate limit per second for your plan")
                 apiInUse = true
-            }else {
-                Log.i("getAPIResponse", "Got json: " + jsonString)
             }
         }else {
             Log.i("getAPIResponse", "jsonString is null")
