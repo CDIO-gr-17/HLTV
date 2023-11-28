@@ -17,6 +17,7 @@ object Home : Destination {
     override val route: String = "Home"
     override val screen: @Composable () -> Unit = { HomeScreen() }
 }
+
 object Events : Destination {
     override val icon: Int = R.drawable.calendar_month_24px
     override val route: String = "Events"
