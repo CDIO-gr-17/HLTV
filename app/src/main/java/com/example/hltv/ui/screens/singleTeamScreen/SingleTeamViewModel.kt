@@ -137,6 +137,8 @@ class SingleTeamViewModel(): ViewModel() {
                                 - (playerorsub.player?.dateOfBirthTimestamp!!.toLong() * 1000)))
                         playersWithAge++
                     }
+                    else
+                        Log.i("avgAgeOfPlayers", "Player ${player.name} had dateOfBirthTimeStamp = null. Left out of calculation" )
                 }
                 if (playersWithAge!=0) {
                     avgAgeofPlayers /= playersWithAge // Gives the avg. player age in milliseconds (of players with an age)
