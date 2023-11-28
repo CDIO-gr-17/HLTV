@@ -4,6 +4,7 @@ import android.graphics.BitmapFactory
 import android.os.ConditionVariable
 import android.util.Base64
 import android.util.Log
+import com.example.hltv.data.local.avgStatsOfTeam
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.async
@@ -74,6 +75,60 @@ suspend fun getPlayerStatisticsFromEvent(gameID: Int, playerID: Int): APIRespons
         i++
     }
     return playerStats
+}
+suspend fun getAvgStatsFromTeam(teamID: Int) : avgStatsOfTeam?{
+    Log.i("getAvgStatsFromTeam","Started")
+    var playerStats : ArrayList<APIResponse.PlayerAndStatistics> ?= null
+    var adrList : MutableList<Double> = mutableListOf()
+    var assistsList : MutableList<Int> = mutableListOf()
+    var deathsList : MutableList<Int> = mutableListOf()
+    var firstKillsDiffList : MutableList<Int> = mutableListOf()
+    var flashAssistsList : MutableList<Int> = mutableListOf()
+    var headshotsList : MutableList<Int> = mutableListOf()
+    var kdDiffList : MutableList<Int> = mutableListOf()
+    var kastList : MutableList<Int> = mutableListOf()
+    var killsList : MutableList<Int> = mutableListOf()
+
+    for(events in getPreviousMatches(teamID,0).events){
+        if(events.id!=null && events.homeTeam.id==teamID)
+            playerStats = getMatchStatistics(events.id!!).homeTeamPlayers
+        if (events.id!=null && events.awayTeam.id==teamID)
+            playerStats = getMatchStatistics(events.id!!).awayTeamPlayers
+        Log.i("Stats", "playerStats is $playerStats")
+        if (playerStats!=null)
+            for (player in playerStats){
+                if(player.adr!=null && player.adr!= 0.0)
+                    adrList.add(player.adr!!)
+                Log.i("ADR", "Added adr ${player.adr} of ${player.player?.name}")
+                if(player.assists!=null && player.assists!= 0)
+                    assistsList.add(player.assists!!)
+                if(player.deaths!=null && player.deaths!= 0)
+                    deathsList.add(player.deaths!!)
+                if(player.firstKillsDiff!=null && player.firstKillsDiff!= 0)
+                    firstKillsDiffList.add(player.firstKillsDiff!!)
+                if(player.flashAssists!=null && player.flashAssists!= 0)
+                    flashAssistsList.add(player.flashAssists!!)
+                if(player.headshots!=null && player.headshots!= 0)
+                    headshotsList.add(player.headshots!!)
+                if(player.kdDiff!=null && player.kdDiff!= 0)
+                    kdDiffList.add(player.kdDiff!!)
+                if(player.kast!=null && player.kast!= 0)
+                    kastList.add(player.kast!!)
+                if(player.kills!=null && player.kills!= 0)
+                    killsList.add(player.kills!!)
+            }
+    }
+    return avgStatsOfTeam(
+        avgAdr = if (adrList.isNotEmpty()) adrList.sum() / adrList.size else 0.0,
+        avgAssists = if (assistsList.isNotEmpty()) assistsList.sum() / assistsList.size else 0,
+        avgDeaths = if (deathsList.isNotEmpty()) deathsList.sum() / deathsList.size else 0,
+        avgFirstKillsDiff = if (firstKillsDiffList.isNotEmpty()) firstKillsDiffList.sum() / firstKillsDiffList.size else 0,
+        avgFlashAssists = if (flashAssistsList.isNotEmpty()) flashAssistsList.sum() / flashAssistsList.size else 0,
+        avgHeadshots = if (headshotsList.isNotEmpty()) headshotsList.sum() / headshotsList.size else 0,
+        avgKdDiff = if (kdDiffList.isNotEmpty()) kdDiffList.sum() / kdDiffList.size else 0,
+        avgKast = if (kastList.isNotEmpty()) kastList.sum() / kastList.size else 0,
+        avgKills = if (killsList.isNotEmpty()) killsList.sum() / killsList.size else 0
+    )
 }
 /**
  * Returns live matches

@@ -13,6 +13,7 @@ import com.example.hltv.data.remote.Country
 import com.example.hltv.data.remote.PlayerGroup
 import com.example.hltv.data.remote.Score
 import com.example.hltv.data.remote.Team
+import com.example.hltv.data.remote.getAvgStatsFromTeam
 import com.example.hltv.data.remote.getPlayerImage
 import com.example.hltv.data.remote.getPlayerStatisticsFromEvent
 import com.example.hltv.data.remote.getPlayersFromEvent
@@ -149,11 +150,13 @@ class SingleTeamViewModel(): ViewModel() {
                         String.format("%.1f",TimeUnit.MILLISECONDS.toDays(avgAgeofPlayers) / 365.25) //Sets it to days and divides by the avg. days in a year, and displays with a decimalpoint
                 }
                 kills = getPlayerStatisticsFromEvent(359360,1074085)?.kills
+                Log.i("stats","før stats")
                 statisticsOverview.value = Stats(
                     avgAgeofPlayers = avgAgeofPlayersString,
                     country = team1?.country,
-                    kills = kills.toString()
+                    //kills = getAvgStatsFromTeam(team1?.id!!)?.avgKills.toString()
                 )
+                Log.i("stats","efter stats")
             }
         }
     }
