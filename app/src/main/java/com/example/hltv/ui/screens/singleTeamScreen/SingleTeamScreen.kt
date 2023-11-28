@@ -53,7 +53,7 @@ fun SingleTeamScreen(teamID : String? = "364378", onClickSinglePlayer: (String?)
                         }
                     }
                     overviewInfo(
-                        country = "Unknown",
+                        country = statsOverview.value.country?.name,
                         countryImage = painterResource(id = R.drawable.dk_flag),
                         worldRank = "#"
                     )
@@ -142,7 +142,7 @@ fun overviewPlayer(
 
 @Composable
 fun overviewInfo(
-    country: String,
+    country: String?,
     countryImage: Painter,
     worldRank: String
 ){
@@ -154,7 +154,7 @@ fun overviewInfo(
             horizontalAlignment = Alignment.CenterHorizontally
         ){
             Text(
-                text = country,
+                text = country ?: "Unknown",
                 fontSize = MaterialTheme.typography.bodyLarge.fontSize,
                 color = MaterialTheme.colorScheme.onPrimaryContainer,
                 fontWeight = FontWeight.Bold

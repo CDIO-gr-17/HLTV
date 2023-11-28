@@ -146,7 +146,8 @@ class SingleTeamViewModel(): ViewModel() {
                         String.format("%.1f",TimeUnit.MILLISECONDS.toDays(avgAgeofPlayers) / 365.25) //Sets it to days and divides by the avg. days in a year, and displays with a decimalpoint
                 }
                 statisticsOverview.value = Stats(
-                    avgAgeofPlayers = avgAgeofPlayersString
+                    avgAgeofPlayers = avgAgeofPlayersString,
+                    country = team1?.country
                 )
             }
         }
