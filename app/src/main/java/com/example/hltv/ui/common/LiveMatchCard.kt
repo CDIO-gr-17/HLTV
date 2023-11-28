@@ -44,7 +44,7 @@ fun LiveMatchCard(
                 Column(horizontalAlignment = Alignment.CenterHorizontally,
                     modifier = modifier
                         .fillMaxWidth(0.5f)
-                        .clickable { teamOneOnClick }) {
+                        .clickable { teamOneOnClick() }) {
                     Text(
                         text = teamOneName,
                         modifier = modifier
@@ -78,7 +78,7 @@ fun LiveMatchCard(
                 Column(horizontalAlignment = Alignment.CenterHorizontally,
                     modifier = Modifier
                         .fillMaxWidth()
-                        .clickable { teamTwoOnClick }) {
+                        .clickable { teamTwoOnClick() }) {
                     Text(
                         text = teamTwoName,
                         modifier = Modifier
