@@ -23,9 +23,9 @@ sealed class APIResponse{
 
 
 
-    data class Player (
-        @SerializedName(  "player" ) var player: List<Player_orsub>
-    )
+    data class TeamContainer (
+        @SerializedName("team" ) var team : Team
+    ) : APIResponse()
 
     data class TournamentWrapper (
         @SerializedName("groups") var uniqueTournament: List<ExtraWrapper>

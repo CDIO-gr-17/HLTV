@@ -9,7 +9,6 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.async
 import kotlinx.coroutines.awaitAll
 import kotlinx.coroutines.delay
-import kotlinx.coroutines.launch
 import kotlinx.coroutines.sync.Mutex
 import kotlinx.coroutines.sync.withLock
 import okhttp3.Request
@@ -141,6 +140,16 @@ private suspend fun getAPIImage(apiURL: String, apiKEY: String): Bitmap?{
 
 }
 
+suspend fun getTeamNameFromID(teamID: Int): String? {
+val team = getAPIResponse(
+        "team/$teamID",
+        APIKEY,
+        APIResponse.TeamContainer::class.java
+    ) as APIResponse.TeamContainer
+    val name = team.team.name
+    if (name != null) return team.team.name.toString()
+    else return null
+}
 /**
  * @return The API's ID of Counter-Strike
  */
