@@ -29,6 +29,7 @@ import com.example.compose.HLTVTheme
 import com.example.hltv.navigation.Home
 import com.example.hltv.navigation.MainNavHost
 import com.example.hltv.navigation.Settings
+import com.example.hltv.navigation.allAppScreens
 import com.example.hltv.navigation.bottomAppBarScreens
 
 class MainActivity : ComponentActivity() {
@@ -49,17 +50,13 @@ fun HLTVApp() {
         val currentDestination = currentBackStack?.destination
         val canNavigateBack = !bottomAppBarScreens.any { it.route == currentDestination?.route }
         val currentScreen =
-            bottomAppBarScreens.find { it.route == currentDestination?.route } ?: Home
+            allAppScreens.find { it.route == currentDestination?.route } ?: Home
 
 
         Scaffold(
             topBar = {
                 CenterAlignedTopAppBar(
-                    title = if (currentDestination?.route != Settings.route) {
-                        { Text(text = currentScreen.route, color = MaterialTheme.colorScheme.onSurface) }
-                    } else {
-                        { Text(text = "Settings") }
-                    },
+                    title = {Text(text = currentScreen.name) },
                     navigationIcon = if (canNavigateBack) {
                         {
                             IconButton(onClick = { navController.popBackStack() }) {
@@ -93,7 +90,6 @@ fun HLTVApp() {
                                 Icon(
                                     imageVector = ImageVector.vectorResource(id =item.icon),
                                     contentDescription = item.route + "Icon",
-                                    tint = if (currentScreen == item) MaterialTheme.colorScheme.tertiary else MaterialTheme.colorScheme.onSurface
 
                                 )
                             },
