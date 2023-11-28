@@ -20,12 +20,30 @@ sealed class APIResponse{
 
     ) : APIResponse()
 
+    data class LineupStatistics (
 
+        @SerializedName("homeTeamPlayers" ) var homeTeamPlayers : ArrayList<PlayerAndStatistics> = arrayListOf(),
+        @SerializedName("awayTeamPlayers" ) var awayTeamPlayers : ArrayList<PlayerAndStatistics> = arrayListOf()
 
+    ) : APIResponse()
+    data class PlayerAndStatistics (
 
-    data class Player (
-        @SerializedName(  "player" ) var player: List<Player_orsub>
+        @SerializedName("adr"            ) var adr            : Double? = null,
+        @SerializedName("assists"        ) var assists        : Int?    = null,
+        @SerializedName("deaths"         ) var deaths         : Int?    = null,
+        @SerializedName("firstKillsDiff" ) var firstKillsDiff : Int?    = null,
+        @SerializedName("flashAssists"   ) var flashAssists   : Int?    = null,
+        @SerializedName("headshots"      ) var headshots      : Int?    = null,
+        @SerializedName("kdDiff"         ) var kdDiff         : Int?    = null,
+        @SerializedName("kast"           ) var kast           : Int?    = null,
+        @SerializedName("kills"          ) var kills          : Int?    = null,
+        @SerializedName("player"         ) var player         : Player? = null,
+
     )
+
+
+
+
 
     data class TournamentWrapper (
         @SerializedName("groups") var uniqueTournament: List<ExtraWrapper>

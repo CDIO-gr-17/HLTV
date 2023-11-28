@@ -28,6 +28,7 @@ import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import coil.compose.rememberAsyncImagePainter
 import com.example.hltv.R
+import com.example.hltv.data.remote.getMatchStatistics
 import com.example.hltv.ui.common.CommonCard
 
 
@@ -59,7 +60,7 @@ fun SingleTeamScreen(teamID : String? = "364378", onClickSinglePlayer: (String?)
                     )
                     stats(
                         coach = "Peter 'Castle' Ardenskjold",
-                        points = "1000",
+                        points = statsOverview.value.kills,
                         winRate = "61%",
                         bestMap = "Overpass",
                         averagePlayerAge = statsOverview.value.avgAgeofPlayers,
@@ -266,7 +267,7 @@ fun recentMatches(
 @Composable
 fun stats(
     coach: String,
-    points: String,
+    points: String?,
     winRate: String,
     bestMap: String,
     averagePlayerAge: String?,
@@ -325,7 +326,7 @@ fun stats(
                                 )
                         }
                         Text(
-                            text = points,
+                            text = points ?: "/",
                             color = MaterialTheme.colorScheme.onPrimaryContainer)
                         Text(
                             text = winRate,

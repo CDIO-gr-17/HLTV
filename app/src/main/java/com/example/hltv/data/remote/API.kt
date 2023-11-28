@@ -55,6 +55,26 @@ suspend fun waitForAPI(){
 
  */
 }
+suspend fun getMatchStatistics(gameID : Int): APIResponse.LineupStatistics{
+    return getAPIResponse("game/$gameID/lineups", APIKEY, APIResponse.LineupStatistics::class.java) as APIResponse.LineupStatistics
+}
+
+suspend fun getPlayerStatisticsFromEvent(gameID: Int, playerID: Int): APIResponse.PlayerAndStatistics? {
+    var playerStats : APIResponse.PlayerAndStatistics ?= null
+    var i = 0
+    for(item in getMatchStatistics(gameID).homeTeamPlayers){
+        if(item.player?.id == playerID)
+            playerStats = getMatchStatistics(gameID).homeTeamPlayers[i]
+        i++
+    }
+    i = 0
+    for(item in getMatchStatistics(gameID).awayTeamPlayers){
+        if(item.player?.id == playerID)
+            playerStats = getMatchStatistics(gameID).awayTeamPlayers[i]
+        i++
+    }
+    return playerStats
+}
 /**
  * Returns live matches
  */
