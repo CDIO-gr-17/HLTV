@@ -20,24 +20,18 @@ import androidx.compose.material3.Card
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.State
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import androidx.lifecycle.viewmodel.compose.viewModel
 import coil.compose.AsyncImagePainter
 import coil.compose.rememberAsyncImagePainter
 import com.example.hltv.R
 import com.example.hltv.ui.screens.homeScreen.LiveMatchCard
-import com.example.hltv.ui.screens.singleTeamScreen.SingleTeamViewModel
 
-//Used for testing
-val items = (1..20).map { index ->
-    ListItem(index, "Item $index Text 1", "Item $index Text 2")
-}
+
 data class ListItem(val ranking: Int, val text1: String, val text2: String)
 
 @Composable
@@ -57,21 +51,17 @@ fun MatchesScreen(onClickSingleTeam : (String?) -> Unit) {
             LiveMatchCard(
                 modifier = Modifier,
                 teamOneName = item.homeTeam.name.toString(),
-                teamOneIcon =  rememberAsyncImagePainter(viewModel.homeTeamIcons[teamValues.indexOf(item)]),   //TODO: Needs TeamLogo
+                teamOneIcon =  rememberAsyncImagePainter(viewModel.homeTeamIcons[teamValues.indexOf(item)]),             //TODO: Needs TeamLogo
                 teamOneScore = item.homeScore!!.display!!.toInt(),
                 teamOneOnClick = { onClickSingleTeam(item.homeTeam.id.toString()) },
                 teamTwoName = item.awayTeam.name.toString(),
-                teamTwoIcon = rememberAsyncImagePainter(viewModel.awayTeamIcons[teamValues.indexOf(item)]),  //TODO: Needs TeamLogo
+                teamTwoIcon = rememberAsyncImagePainter(viewModel.awayTeamIcons[teamValues.indexOf(item)]),             //TODO: Needs TeamLogo
                 teamTwoScore = item.awayScore!!.current!!.toInt(),
                 teamTwoOnClick = { onClickSingleTeam(item.awayTeam.id.toString()) },
             )
 
         }
     }
-
-
-
-
 
 
             }
