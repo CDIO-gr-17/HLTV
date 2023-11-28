@@ -2,9 +2,7 @@
 
 package com.example.hltv.ui.screens.homeScreen
 
-import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
-import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -13,8 +11,6 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.layout.width
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.AccountBox
 import androidx.compose.material.icons.filled.Delete
@@ -27,37 +23,37 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.painter.Painter
-import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import com.example.hltv.R
-import com.example.hltv.ui.common.CommonCard
+import coil.compose.rememberAsyncImagePainter
+import com.example.hltv.ui.common.LiveMatchCard
 
 val M = MaterialTheme
 
 @Composable
 fun HomeScreen() {
-
-
     Column(
         horizontalAlignment = Alignment.CenterHorizontally,
         modifier = Modifier
             .fillMaxSize()
+            .testTag("HomeScreen")
     ) {
 
-/*
+
         LiveMatchCard(
             modifier = Modifier,
             teamOneName = "Astralis",
-            teamOneIcon = Icons.Default.AccountBox,
+            teamOneIcon = rememberAsyncImagePainter(model = "https://static.hltv.org/images/team/logo/6665"),
             teamOneScore = 16,
+            teamOneOnClick = {},
             teamTwoName = "Navi",
-            teamTwoIcon = Icons.Default.AccountBox,
+            teamTwoIcon = rememberAsyncImagePainter(model = "https://static.hltv.org/images/team/logo/4608"),
             teamTwoScore = 14,
+            teamTwoOnClick = {},
         )
-*/
+
 
 
         Divider(modifier = Modifier.padding(horizontal = 8.dp), color = M.colorScheme.onBackground)
@@ -181,90 +177,6 @@ fun HomeScreen() {
     }
 }
 
-@Composable
-fun LiveMatchCard(
-    modifier: Modifier = Modifier,
-    teamOneName: String,
-    teamOneIcon: Painter,
-    teamOneScore: Int,
-    teamOneOnClick: () -> Unit,
-    teamTwoName: String,
-    teamTwoIcon: Painter,
-    teamTwoScore: Int,
-    teamTwoOnClick: () -> Unit,
-
-    ) {
-    CommonCard(
-        modifier = modifier,
-        headText = "Your match is live!",
-        image = painterResource(id = R.drawable.pngtree_icon_live_streaming_vector_png_image_4643886),
-        bottomBox = {
-            Row() {
-                Column(horizontalAlignment = Alignment.CenterHorizontally,
-                    modifier = modifier
-                        .fillMaxWidth(0.5f)
-                        .clickable { teamOneOnClick() }) {
-                    Text(
-                        text = teamOneName,
-                        modifier = modifier
-                            .padding(8.dp),
-                        fontSize = M.typography.bodyLarge.fontSize,
-                        color = M.colorScheme.onSecondaryContainer,
-                        textAlign = TextAlign.Center,
-                    )
-                    Image(
-                        painter = teamOneIcon,
-                        contentDescription = "teamOneIcon",
-                        modifier = Modifier
-                            .padding(4.dp)
-                            .size(50.dp, 50.dp),
-
-
-                        )
-                    Text(
-                        text = teamOneScore.toString(),
-                        fontSize = M.typography.displayLarge.fontSize
-                    )
-                }
-
-                Divider(
-                    modifier = Modifier
-                        .width(1.dp)
-                        .padding(vertical = 4.dp),
-                    color = M.colorScheme.onBackground
-                )
-
-                Column(horizontalAlignment = Alignment.CenterHorizontally,
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .clickable { teamTwoOnClick() }) {
-                    Text(
-                        text = teamTwoName,
-                        modifier = Modifier
-                            .padding(8.dp),
-                        fontSize = M.typography.bodyLarge.fontSize,
-                        color = M.colorScheme.onSecondaryContainer,
-                        textAlign = TextAlign.Center,
-                    )
-                    Image(
-                        painter = teamTwoIcon,
-                        contentDescription = "teamOneIcon",
-                        modifier = Modifier
-                            .padding(4.dp)
-                            .size(50.dp, 50.dp),
-                    )
-                    Text(
-                        text = teamTwoScore.toString(),
-                        fontSize = M.typography.displayLarge.fontSize
-                    )
-                }
-            }
-
-        }
-
-    )
-
-}
 
 @Preview
 @Composable
