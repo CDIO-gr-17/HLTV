@@ -29,7 +29,8 @@ import androidx.compose.ui.unit.dp
 import coil.compose.AsyncImagePainter
 import coil.compose.rememberAsyncImagePainter
 import com.example.hltv.R
-import com.example.hltv.ui.screens.homeScreen.LiveMatchCard
+import com.example.hltv.ui.common.LiveMatchCard
+
 
 data class ListItem(val ranking: Int, val text1: String, val text2: String)
 

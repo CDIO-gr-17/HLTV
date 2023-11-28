@@ -27,4 +27,8 @@ class HomeScreenKtTest {
         } }
         composeTestRule.onNodeWithText("Your match is live!").assertExists()
     }
+
+    @Test
+    fun homeScreen() {
+    }
 }
