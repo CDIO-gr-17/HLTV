@@ -140,7 +140,7 @@ private suspend fun getAPIImage(apiURL: String, apiKEY: String): Bitmap?{
 
 }
 
-suspend fun getTeamNameFromID(teamID: Int): String? {
+suspend fun getTeamNameFromID(teamID: Int): String {
 val team = getAPIResponse(
         "team/$teamID",
         APIKEY,
@@ -148,7 +148,10 @@ val team = getAPIResponse(
     ) as APIResponse.TeamContainer
     val name = team.team.name
     if (name != null) return team.team.name.toString()
-    else return null
+    else {
+        Log.d("getTeamNameFromID", "Team ID is unknown")
+        return "Team info"
+    }
 }
 /**
  * @return The API's ID of Counter-Strike

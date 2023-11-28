@@ -11,14 +11,11 @@ import com.example.hltv.data.remote.getLiveMatches
 import com.example.hltv.data.remote.getPlayerImage
 import com.example.hltv.data.remote.getPlayersFromEvent
 import com.example.hltv.data.remote.getTeamImage
-import kotlinx.coroutines.CompletableDeferred
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Deferred
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.async
 import kotlinx.coroutines.coroutineScope
-import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
 
 data class TeamPlayerImages(
@@ -61,7 +58,7 @@ data class img(
 class MatchesScreenViewModel: ViewModel() {
     val teamValues = mutableStateListOf<Event>()
 
-    val awayTeamIcons = MutableList<Bitmap?>(20){null}
+    val awayTeamIcons = MutableList<Bitmap?>(20){null}      //Todo: Size
     val homeTeamIcons = MutableList<Bitmap?>(20){null}
 
     fun loadData(){

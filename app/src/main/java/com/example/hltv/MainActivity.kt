@@ -21,23 +21,17 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.res.vectorResource
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
 import com.example.compose.HLTVTheme
-import com.example.hltv.data.remote.getTeamNameFromID
 import com.example.hltv.navigation.Home
 import com.example.hltv.navigation.MainNavHost
 import com.example.hltv.navigation.Settings
-import com.example.hltv.navigation.SingleTeam
 import com.example.hltv.navigation.allAppScreens
 import com.example.hltv.navigation.bottomAppBarScreens
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.launch
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -58,32 +52,12 @@ fun HLTVApp() {
         val currentDestination = currentBackStack?.destination
         val canNavigateBack = !bottomAppBarScreens.any { it.route == currentDestination?.route }
         val currentScreen = allAppScreens.find { it.route == currentDestination?.route } ?: Home
-
+        val viewModel = MainActivityViewModel()
 
 
         Scaffold(topBar = {
             CenterAlignedTopAppBar(
-                title = {
-
-                    if (currentScreen == SingleTeam) {
-                        var teamName = mutableStateOf("Team info")
-                        CoroutineScope(Dispatchers.IO).launch { //TODO: THIS BAD!
-
-                            var teamID = currentBackStack?.arguments?.getString("teamID")
-                            teamID = teamID?.removePrefix("{teamID}")
-                            val teamIDInt = teamID?.toInt()
-
-                            if (teamIDInt != null) {
-                                teamName.value = getTeamNameFromID(teamIDInt)!!
-                            } else {
-                                teamName.value = "Team info"
-                            }
-                        }
-                        Text(text = teamName.value)
-                    } else {
-                        Text(text = currentScreen.name)
-                    }
-                },
+                title = { viewModel.getTopAppBarTitle(currentBackStack) },
                 navigationIcon = if (canNavigateBack) {
                     {
                         IconButton(onClick = { navController.popBackStack() }) {
