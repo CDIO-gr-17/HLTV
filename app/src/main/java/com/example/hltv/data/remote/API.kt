@@ -57,6 +57,7 @@ suspend fun waitForAPI(){
  */
 }
 suspend fun getMatchStatistics(gameID : Int): APIResponse.LineupStatistics{
+    Log.i("getMatchStatistics", "${getAPIResponse("game/$gameID/lineups", APIKEY, APIResponse.LineupStatistics::class.java) as APIResponse.LineupStatistics}")
     return getAPIResponse("game/$gameID/lineups", APIKEY, APIResponse.LineupStatistics::class.java) as APIResponse.LineupStatistics
 }
 
@@ -92,8 +93,10 @@ suspend fun getAvgStatsFromTeam(teamID: Int) : avgStatsOfTeam?{
     for(events in getPreviousMatches(teamID,0).events){
         if(events.id!=null && events.homeTeam.id==teamID)
             playerStats = getMatchStatistics(events.id!!).homeTeamPlayers
+        //Passing an eventID to getMatchStatistics, but it needs a gameID.
+        //Need to implement E-Sports Event Games from the API, to iterate over games in an event
         if (events.id!=null && events.awayTeam.id==teamID)
-            playerStats = getMatchStatistics(events.id!!).awayTeamPlayers
+            playerStats = getMatchStatistics(events.id!!).awayTeamPlayers // Same here
         Log.i("Stats", "playerStats is $playerStats")
         if (playerStats!=null)
             for (player in playerStats){
