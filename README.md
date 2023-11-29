@@ -19,6 +19,8 @@ There are several ways to install the app:
 5a) Run the app (Making sure to select your phone as the target)
 6b) If it doesn't happen automatically, run the app on your android phone
 
+If any issues occur during method A or B, we reccomend syncing the project with gradle files as a first response. This is a common cause of issues
+
 **C:  Running the provided APK**
 Running the code manually can be bothersome, and following methods A and B can result in poor performance (depending on hardware) because it is not a release build. One of these is provided.
 1) Download the APK to a modern Android phone.
