@@ -76,7 +76,6 @@ class SingleTeamViewModel(): ViewModel() {
         val lineup = CompletableDeferred<PlayerGroup?>()
 
         CoroutineScope(Dispatchers.IO).launch {
-            Log.w(this.toString(), "Got previous matches of team with id: $teamID")
             val completedMatches = getPreviousMatches(teamID, 0)
             recentMatches.clear()
             //recentMatches
@@ -118,10 +117,6 @@ class SingleTeamViewModel(): ViewModel() {
                     bestOf = event.bestOf,
                 )
                 recentMatches.add(recentMatch)
-                Log.w(
-                    this.toString(),
-                    "Added recent match with homeTeam ${event.homeTeam.name}, ${event.homeScore}, ${event.bestOf}"
-                )
             }
         }
         CoroutineScope(Dispatchers.IO).launch {
@@ -150,13 +145,11 @@ class SingleTeamViewModel(): ViewModel() {
                         String.format("%.1f",TimeUnit.MILLISECONDS.toDays(avgAgeofPlayers) / 365.25) //Sets it to days and divides by the avg. days in a year, and displays with a decimalpoint
                 }
                 kills = getPlayerStatisticsFromEvent(359360,1074085)?.kills
-                Log.i("stats","før stats")
                 statisticsOverview.value = Stats(
                     avgAgeofPlayers = avgAgeofPlayersString,
                     country = team1?.country,
                     //kills = getAvgStatsFromTeam(team1?.id!!)?.avgKills.toString()
                 )
-                Log.i("stats","efter stats")
             }
         }
     }
