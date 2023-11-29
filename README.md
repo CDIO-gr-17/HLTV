@@ -25,7 +25,10 @@ If any issues occur during method A or B, we reccomend syncing the project with 
 Running the code manually can be bothersome, and following methods A and B can result in poor performance (depending on hardware) because it is not a release build. One of these is provided.
 1) Download the APK to a modern Android phone.
 2) Install the APK.
-3) Run the APK. 
+3) Run the APK.
+
+**In case of API errors**
+The current APP is developed with a very limited API key paid for my group members. The API key allows for 6 requests per second, which *will* be saturated if more than one person uses certain parts of the app at the same time. If this occurs while testing the app, contact any member of the group via email or other contact methods, to ensure that multiple people are not using the app at the same time. 
 
 
    
