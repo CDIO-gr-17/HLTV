@@ -14,6 +14,7 @@ import kotlinx.coroutines.sync.withLock
 import okhttp3.Request
 import java.io.ByteArrayOutputStream
 import java.io.IOException
+import java.util.concurrent.TimeUnit
 
 const val APIKEY = "24b0f292d5mshdf7eb12b4760333p19075ajsncc1561769190"
 const val ONLYCS = true
@@ -53,6 +54,19 @@ suspend fun waitForAPI(){
     }
 
  */
+}
+fun getAvgAgeFromTimestamp(dateOfBirthTimestampList: MutableList<Int>): Double {
+    var totalAgeOfPlayers: Long = 0
+    for (dateOfBirthTimestamp in dateOfBirthTimestampList) {
+        totalAgeOfPlayers += ((System.currentTimeMillis() // Subtracts the current time in milliseconds from the players date of birth in milliseconds
+                - (dateOfBirthTimestamp.toLong() * 1000)))
+    }
+    if(dateOfBirthTimestampList.size!=0) {
+        val avgAgeOfPlayersInMillis: Long = totalAgeOfPlayers / dateOfBirthTimestampList.size
+        return String.format("%.1f", TimeUnit.MILLISECONDS.toDays(avgAgeOfPlayersInMillis) / 365.25)
+            .toDouble()
+    }
+    else return 0.0
 }
 /**
  * Returns live matches
