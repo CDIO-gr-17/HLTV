@@ -8,6 +8,8 @@ import io.cucumber.java.en.Given
 import io.cucumber.java.en.Then
 import io.cucumber.java.en.When
 import org.junit.jupiter.api.Assertions.*
+import java.math.RoundingMode
+import java.text.DecimalFormat
 import kotlin.math.roundToInt
 
 class TeamStatsSteps {
@@ -36,7 +38,25 @@ class TeamStatsSteps {
         assertEquals(int,averageAge.roundToInt())
     }
 
+    fun getAvgAgeFromTimestamp(dateOfBirthTimestampList: MutableList<Int>): Double {            //TODO: This should be moved to a more appropriate place
+        var totalAgeOfPlayers: Long = 0
+        for (dateOfBirthTimestamp in dateOfBirthTimestampList) {
+            totalAgeOfPlayers += ((System.currentTimeMillis() // Subtracts the current time in milliseconds from the players date of birth in milliseconds
+                    - (dateOfBirthTimestamp.toLong() * 1000)))
+        }
+        if(dateOfBirthTimestampList.size!=0) {
+            val avgAgeOfPlayersInMillis: Long = totalAgeOfPlayers / dateOfBirthTimestampList.size
+            val df = DecimalFormat("#.#")
+            val avgAgeOfPlayersInYears = avgAgeOfPlayersInMillis/365.25/3600/24/1000
+            df.roundingMode = RoundingMode.CEILING
+            print(avgAgeOfPlayersInYears.toDouble())
+            return avgAgeOfPlayersInYears.toDouble()
 
+            // String.format("%.1f", TimeUnit.MILLISECONDS.toDays(avgAgeOfPlayersInMillis) / 365.25).toDouble()
+
+        }
+        else return 0.0
+    }
 
 
 
