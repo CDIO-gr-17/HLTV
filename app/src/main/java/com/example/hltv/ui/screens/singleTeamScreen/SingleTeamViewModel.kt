@@ -1,19 +1,15 @@
 package com.example.hltv.ui.screens.singleTeamScreen
 
 import android.graphics.Bitmap
-import android.text.format.DateUtils
 import android.util.Log
 import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.mutableStateOf
-import androidx.compose.ui.platform.LocalContext
 import androidx.lifecycle.ViewModel
-import androidx.lifecycle.viewModelScope
 import com.example.hltv.data.remote.APIResponse
 import com.example.hltv.data.remote.Country
 import com.example.hltv.data.remote.PlayerGroup
 import com.example.hltv.data.remote.Score
 import com.example.hltv.data.remote.Team
-import com.example.hltv.data.remote.getAvgAgeFromTimestamp
 import com.example.hltv.data.remote.getPlayerImage
 import com.example.hltv.data.remote.getPlayersFromEvent
 import com.example.hltv.data.remote.getPreviousMatches
@@ -22,11 +18,11 @@ import kotlinx.coroutines.CompletableDeferred
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
+import java.math.RoundingMode
+import java.text.DecimalFormat
 import java.text.SimpleDateFormat
-import java.time.LocalDate
-import java.time.Period
 import java.util.Date
-import java.util.concurrent.TimeUnit
+
 
 var called = false;
 
@@ -148,4 +144,25 @@ class SingleTeamViewModel(): ViewModel() {
             }
         }
     }
+    fun getAvgAgeFromTimestamp(dateOfBirthTimestampList: MutableList<Int>): Double {            //TODO: This should be moved to a more appropriate place
+        var totalAgeOfPlayers: Long = 0
+        for (dateOfBirthTimestamp in dateOfBirthTimestampList) {
+            totalAgeOfPlayers += ((System.currentTimeMillis() // Subtracts the current time in milliseconds from the players date of birth in milliseconds
+                    - (dateOfBirthTimestamp.toLong() * 1000)))
+        }
+        if(dateOfBirthTimestampList.size!=0) {
+            val avgAgeOfPlayersInMillis: Long = totalAgeOfPlayers / dateOfBirthTimestampList.size
+            val df = DecimalFormat("#.#")
+            val avgAgeOfPlayersInYears = avgAgeOfPlayersInMillis/365.25/3600/24/1000
+            df.roundingMode = RoundingMode.CEILING
+            print(avgAgeOfPlayersInYears.toDouble())
+            return avgAgeOfPlayersInYears.toDouble()
+
+            // String.format("%.1f", TimeUnit.MILLISECONDS.toDays(avgAgeOfPlayersInMillis) / 365.25).toDouble()
+
+        }
+        else return 0.0
+    }
 }
+
+
