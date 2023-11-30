@@ -13,6 +13,7 @@ import com.example.hltv.data.remote.Country
 import com.example.hltv.data.remote.PlayerGroup
 import com.example.hltv.data.remote.Score
 import com.example.hltv.data.remote.Team
+import com.example.hltv.data.remote.getAvgAgeFromTimestamp
 import com.example.hltv.data.remote.getPlayerImage
 import com.example.hltv.data.remote.getPlayersFromEvent
 import com.example.hltv.data.remote.getPreviousMatches
@@ -50,7 +51,7 @@ data class Player(
 )
 data class Stats(
     val country: Country ?= null,
-    val avgAgeofPlayers : String ?= null,
+    val avgAgeofPlayers : Double ?= null,
 )
 class SingleTeamViewModel(): ViewModel() {
 
@@ -66,6 +67,7 @@ class SingleTeamViewModel(): ViewModel() {
     var avgAgeofPlayersString = ""
     var playersWithAge : Int = 0
     var teamID = 0
+    val playersDateOfBirthTimestamp = mutableStateListOf<Int>()
     fun loadData(teamIDString: String){
         val teamID = teamIDString.removePrefix("{teamID}").toInt()
 
@@ -133,20 +135,14 @@ class SingleTeamViewModel(): ViewModel() {
                     )
                     playerOverview.add(player)
                     if(playerorsub.player?.dateOfBirthTimestamp!=null) { // Checks if the player has a dateOfBirthTimeStimp
-                        avgAgeofPlayers += ((System.currentTimeMillis() // Subtracts the current time in milliseconds from the players date of birth in milliseconds
-                                - (playerorsub.player?.dateOfBirthTimestamp!!.toLong() * 1000)))
-                        playersWithAge++
+                        playersDateOfBirthTimestamp.add(playerorsub.player!!.dateOfBirthTimestamp!!)
                     }
                     else
                         Log.i("avgAgeOfPlayers", "Player ${player.name} had dateOfBirthTimeStamp = null. Left out of calculation" )
                 }
-                if (playersWithAge!=0) {
-                    avgAgeofPlayers /= playersWithAge // Gives the avg. player age in milliseconds (of players with an age)
-                    avgAgeofPlayersString =
-                        String.format("%.1f",TimeUnit.MILLISECONDS.toDays(avgAgeofPlayers) / 365.25) //Sets it to days and divides by the avg. days in a year, and displays with a decimalpoint
-                }
+
                 statisticsOverview.value = Stats(
-                    avgAgeofPlayers = avgAgeofPlayersString,
+                    avgAgeofPlayers = getAvgAgeFromTimestamp(playersDateOfBirthTimestamp),
                     country = team1?.country
                 )
             }
