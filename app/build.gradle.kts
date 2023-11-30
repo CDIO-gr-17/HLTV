@@ -82,8 +82,10 @@ dependencies {
     androidTestImplementation("org.junit.jupiter:junit-jupiter:5.8.1")
     androidTestImplementation("io.cucumber:cucumber-android:7.14.0")
     testImplementation("io.cucumber:cucumber-junit:7.14.0")
-    androidTestImplementation("io.cucumber:cucumber-android:6.10.0")
+    testImplementation ("io.cucumber:cucumber-java:7.14.0")
+    androidTestImplementation("io.cucumber:cucumber-android:7.14.0")
     androidTestImplementation("io.cucumber:cucumber-picocontainer:6.10.0")
+    testImplementation("io.cucumber:cucumber-picocontainer:6.10.0")
     androidTestImplementation("androidx.test.ext:junit-ktx:1.1.5")
 
     // Test rules and transitive dependencies:

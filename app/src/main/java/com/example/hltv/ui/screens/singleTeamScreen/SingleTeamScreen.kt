@@ -269,7 +269,7 @@ fun stats(
     points: String,
     winRate: String,
     bestMap: String,
-    averagePlayerAge: String?,
+    averagePlayerAge: Double?,
     imageNat: Painter){
 
             Box{
@@ -334,7 +334,7 @@ fun stats(
                             text = bestMap,
                             color = MaterialTheme.colorScheme.onPrimaryContainer)
                         Text(
-                            text = averagePlayerAge ?: "0",
+                            text = "$averagePlayerAge",
                             color = MaterialTheme.colorScheme.onPrimaryContainer)
                     }
                 }

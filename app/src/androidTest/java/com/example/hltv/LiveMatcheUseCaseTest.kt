@@ -8,7 +8,6 @@ import androidx.compose.ui.test.onNodeWithText
 import androidx.compose.ui.test.performClick
 import androidx.navigation.NavHostController
 import androidx.test.ext.junit.runners.AndroidJUnit4
-import okhttp3.internal.wait
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
@@ -38,7 +37,6 @@ class LiveMatchesUseCaseTest {
     @Test
     fun iNavigateToTheMatchesPage(){
         composeTestRule.onNodeWithText("Matches").assertIsDisplayed().performClick()
-        composeTestRule.waitUntilAtLeastOneExists()
         composeTestRule.onNodeWithText("Your match is live!").assertIsDisplayed()
 
     }
