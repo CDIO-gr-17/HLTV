@@ -21,10 +21,8 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.hltv.R
+import com.example.hltv.data.convertTimestampToDateDisplay
 import com.example.hltv.ui.common.CommonCard
-import java.text.DateFormat.getDateInstance
-import java.util.Date
-
 
 
 @Composable
@@ -37,7 +35,7 @@ fun EventsScreen() {
         items(viewModel.tournaments){ item ->
             SingleEventCard(
                 eventTitle = item.name.toString(),
-                eventDate = convertTimestampToDate(item.startDateTimestamp),
+                eventDate = convertTimestampToDateDisplay(item.startDateTimestamp),
                 eventLogo = painterResource(id = R.drawable.astralis_logo),
                 location = item.country?.name.toString(),
                 prizePool = "Unknown",
@@ -47,15 +45,7 @@ fun EventsScreen() {
     }
 }
 
-private fun convertTimestampToDate(timestamp: Int?): String {
-    val dateFormat = getDateInstance()
-    if(timestamp != null) {
-        val date = Date(timestamp.toLong()*1000)// Assuming the timestamp is in seconds, multiply by 1000 for milliseconds
-        return dateFormat.format(date)
-    } else {
-        return "Unknown date"
-    }
-}
+
 
 @Composable
 fun SingleEventCard(
