@@ -17,10 +17,21 @@ import androidx.compose.ui.graphics.painter.Painter
 import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.example.hltv.R
 import com.example.hltv.ui.screens.homeScreen.M
 
+@Composable
+fun MatchCard(){
+    UpcomingMatchCard(
+        teamOneName = "Astralis1",
+        teamOneIcon = painterResource(id = com.example.hltv.R.drawable.astralis_logo),
+        teamTwoName = "Astralis2",
+        teamTwoIcon = painterResource(id = com.example.hltv.R.drawable.astralis_logo),
+        matchDate = "Tuesday 22/10 - 18:00"
+    )
+}
 
 @Composable
 fun LiveMatchCard(
@@ -105,4 +116,93 @@ fun LiveMatchCard(
 
     )
 
+}
+
+@Composable
+fun UpcomingMatchCard(
+    modifier: Modifier = Modifier,
+    teamOneName: String,
+    teamOneIcon: Painter,
+    teamOneOnClick: (() -> Unit?)? = null,
+    teamTwoName: String,
+    teamTwoIcon: Painter,
+    teamTwoOnClick: (() -> Unit?)? = null,
+    matchDate: String
+
+    ) {
+    CommonCard(
+        modifier = modifier.testTag("UpcomingMatchCard"),
+        headText = matchDate,
+        bottomBox = {
+            Row() {
+                Column(horizontalAlignment = Alignment.CenterHorizontally,
+                    modifier = modifier
+                        .fillMaxWidth(0.5f)
+                        .clickable {
+                            if (teamOneOnClick != null) {
+                                teamOneOnClick()
+                            }
+                        }) {
+                    Text(
+                        text = teamOneName,
+                        modifier = modifier
+                            .padding(8.dp),
+                        fontSize = M.typography.bodyLarge.fontSize,
+                        color = M.colorScheme.onSecondaryContainer,
+                        textAlign = TextAlign.Center,
+                    )
+                    Image(
+                        painter = teamOneIcon,
+                        contentDescription = "teamOneIcon",
+                        modifier = Modifier
+                            .padding(4.dp)
+                            .size(50.dp, 50.dp),
+
+
+                        )
+                }
+
+                Divider(
+                    modifier = Modifier
+                        .width(1.dp)
+                        .padding(vertical = 4.dp),
+                    color = M.colorScheme.onBackground
+                )
+
+                Column(horizontalAlignment = Alignment.CenterHorizontally,
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .clickable {
+                            if (teamTwoOnClick != null) {
+                                teamTwoOnClick()
+                            }
+                        }) {
+                    Text(
+                        text = teamTwoName,
+                        modifier = Modifier
+                            .padding(8.dp),
+                        fontSize = M.typography.bodyLarge.fontSize,
+                        color = M.colorScheme.onSecondaryContainer,
+                        textAlign = TextAlign.Center,
+                    )
+                    Image(
+                        painter = teamTwoIcon,
+                        contentDescription = "teamOneIcon",
+                        modifier = Modifier
+                            .padding(4.dp)
+                            .size(50.dp, 50.dp),
+                    )
+                }
+            }
+
+        }
+
+    )
+
+}
+
+@Preview
+@Composable
+fun MatchCardPreview(){
+    MatchCard()
 }
