@@ -5,20 +5,20 @@ import android.util.Log
 import androidx.compose.runtime.mutableStateListOf
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.example.hltv.data.convertTimestampToDateDisplay
+import com.example.hltv.data.convertTimestampToDateURL
 import com.example.hltv.data.remote.APIResponse
 import com.example.hltv.data.remote.Event
 import com.example.hltv.data.remote.getLiveMatches
 import com.example.hltv.data.remote.getPlayerImage
 import com.example.hltv.data.remote.getPlayersFromEvent
 import com.example.hltv.data.remote.getTeamImage
-import kotlinx.coroutines.CompletableDeferred
+import com.example.hltv.data.remote.getMatchesFromDay
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Deferred
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.async
 import kotlinx.coroutines.coroutineScope
-import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
 
 data class TeamPlayerImages(
@@ -61,14 +61,13 @@ data class img(
 class MatchesScreenViewModel: ViewModel() {
     val teamValues = mutableStateListOf<Event>()
 
-    val awayTeamIcons = MutableList<Bitmap?>(20){null}
-    val homeTeamIcons = MutableList<Bitmap?>(20){null}
+    val awayTeamIcons = MutableList<Bitmap?>(999){null}
+    val homeTeamIcons = MutableList<Bitmap?>(999){null}
 
     fun loadData(){
         viewModelScope.launch {
-
             CoroutineScope(Dispatchers.IO).launch {
-                val liveMatches = getLiveMatches()
+                var liveMatches = getLiveMatches()//getMatchesFromDay(convertTimestampToDateURL((System.currentTimeMillis()/1000).toInt()))
                 if (liveMatches.events.isNotEmpty()) {
                     for ((index, event) in liveMatches.events.withIndex()) {
                         teamValues.add(event)
