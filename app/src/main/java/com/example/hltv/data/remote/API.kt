@@ -223,6 +223,15 @@ suspend fun getRelevantTournaments(): List<ThirdUniqueTournament> {
     finalTournamentDetailList.sortBy { it.startDateTimestamp }
     return finalTournamentDetailList
 }
+suspend fun getMatchesFromDay(timestamp: String): APIResponse.EventsWrapper {
+    val matchesFromDay = getAPIResponse(
+        "category/1572/events/$timestamp",
+        APIKEY,
+        APIResponse.EventsWrapper::class.java
+    ) as APIResponse.EventsWrapper
+    matchesFromDay.events = matchesFromDay.events.subList(0,matchesFromDay.events.size-1)
+    return matchesFromDay
+}
 /*
 private fun checkIfTournamentIsPast(timeStamp: TimeStamp): Boolean{
 
