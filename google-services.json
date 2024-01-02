@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "920892570434",
+    "project_id": "hltv-6418f",
+    "storage_bucket": "hltv-6418f.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:920892570434:android:bdcf08106cccea4b9366db",
+        "android_client_info": {
+          "package_name": "com.example.hltv"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDoP_XHyGGhYM8CFPNtHPkHbEKq42tiPCE"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
