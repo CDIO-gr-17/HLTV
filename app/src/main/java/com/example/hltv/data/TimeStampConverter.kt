@@ -19,12 +19,10 @@ fun convertTimestampToDateDisplay(timestamp: Int?): String {
 }
 
 fun convertTimestampToDateURL(timestamp: Int?): String {
-    Log.i("convertTimestampToDateURL","timestamp: $timestamp")
     val dateFormat = SimpleDateFormat("dd/MM/yyyy", Locale.getDefault())
     if (timestamp != null) {
         val date =
             Date(timestamp.toLong() * 1000) // Assuming the timestamp is in seconds, multiply by 1000 for milliseconds
-        Log.i("convertTimestampToDateURL","date: $date")
         return dateFormat.format(date)
     } else {
         return "Unknown date"
@@ -32,12 +30,9 @@ fun convertTimestampToDateURL(timestamp: Int?): String {
 }
 
 fun convertTimestampToDateClock(timestamp: Int?): String {
-    Log.i("convertTimestampToDateURL","timestamp: $timestamp")
     val dateFormat = SimpleDateFormat("EEEE, dd/MM HH:mm", Locale.getDefault())
     if (timestamp != null) {
-        val date =
-            Date(timestamp.toLong() * 1000) // Assuming the timestamp is in seconds, multiply by 1000 for milliseconds
-        Log.i("convertTimestampToDateURL","date: $date")
+        val date = Date(timestamp.toLong() * 1000) // Assuming the timestamp is in seconds, multiply by 1000 for milliseconds
         return dateFormat.format(date)
     } else {
         return "Unknown date"
