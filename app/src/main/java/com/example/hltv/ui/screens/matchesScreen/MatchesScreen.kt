@@ -31,7 +31,9 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import coil.compose.AsyncImagePainter
 import coil.compose.rememberAsyncImagePainter
 import com.example.hltv.R
+import com.example.hltv.data.convertTimestampToDateClock
 import com.example.hltv.ui.common.LiveMatchCard
+import com.example.hltv.ui.common.UpcomingMatchCard
 
 
 data class ListItem(val ranking: Int, val text1: String, val text2: String)
@@ -42,26 +44,35 @@ fun MatchesScreen(onClickSingleTeam : (String?) -> Unit) {
     LaunchedEffect(Unit){
         viewModel.loadData()
     }
-    val teamValues = viewModel.teamValues
+    val liveMatchesValues = viewModel.liveMatchesValues
+    val upcomingsMatchesValues = viewModel.upcomingMatchesValues
 
 /*
     val allPlayerImages = viewModel.allPlayerImages.collectAsState()
     val playerbmap = viewModel.playerImage.collectAsState()*/
 
     LazyColumn {
-        items(teamValues) { item  ->
+        items(liveMatchesValues) { item  ->
             LiveMatchCard(
                 modifier = Modifier,
                 teamOneName = item.homeTeam.name.toString(),
-                teamOneIcon =  rememberAsyncImagePainter(viewModel.homeTeamIcons[teamValues.indexOf(item)]),             //TODO: Needs TeamLogo
+                teamOneIcon =  rememberAsyncImagePainter(viewModel.homeTeamIcons[liveMatchesValues.indexOf(item)]),
                 teamOneScore = item.homeScore!!.display!!.toInt(),
                 teamOneOnClick = { onClickSingleTeam(item.homeTeam.id.toString()) },
                 teamTwoName = item.awayTeam.name.toString(),
-                teamTwoIcon = rememberAsyncImagePainter(viewModel.awayTeamIcons[teamValues.indexOf(item)]),             //TODO: Needs TeamLogo
+                teamTwoIcon = rememberAsyncImagePainter(viewModel.awayTeamIcons[liveMatchesValues.indexOf(item)]),
                 teamTwoScore = item.awayScore!!.current!!.toInt(),
                 teamTwoOnClick = { onClickSingleTeam(item.awayTeam.id.toString()) },
             )
-
+        }
+        items(upcomingsMatchesValues) { item ->
+            UpcomingMatchCard(
+                teamOneName = item.homeTeam.name.toString(),
+                teamOneIcon = rememberAsyncImagePainter(viewModel.homeTeamIcons[upcomingsMatchesValues.indexOf(item)]),
+                teamTwoName = item.awayTeam.name.toString(),
+                teamTwoIcon = rememberAsyncImagePainter(viewModel.awayTeamIcons[upcomingsMatchesValues.indexOf(item)]),
+                matchDate = convertTimestampToDateClock(item.startTimestamp)
+            )
         }
     }
 
