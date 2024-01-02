@@ -5,7 +5,6 @@ import android.util.Log
 import androidx.compose.runtime.mutableStateListOf
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.example.hltv.data.convertTimestampToDateDisplay
 import com.example.hltv.data.convertTimestampToDateURL
 import com.example.hltv.data.remote.APIResponse
 import com.example.hltv.data.remote.Event
@@ -59,7 +58,8 @@ data class img(
 )
 
 class MatchesScreenViewModel: ViewModel() {
-    val teamValues = mutableStateListOf<Event>()
+    val liveMatchesValues = mutableStateListOf<Event>()
+    val upcomingMatchesValues = mutableStateListOf<Event>()
 
     val awayTeamIcons = MutableList<Bitmap?>(999){null}
     val homeTeamIcons = MutableList<Bitmap?>(999){null}
@@ -67,16 +67,26 @@ class MatchesScreenViewModel: ViewModel() {
     fun loadData(){
         viewModelScope.launch {
             CoroutineScope(Dispatchers.IO).launch {
-                var liveMatches = getLiveMatches()//getMatchesFromDay(convertTimestampToDateURL((System.currentTimeMillis()/1000).toInt()))
+                val liveMatches = getLiveMatches()
                 if (liveMatches.events.isNotEmpty()) {
                     for ((index, event) in liveMatches.events.withIndex()) {
-                        teamValues.add(event)
+                        liveMatchesValues.add(event)
                         homeTeamIcons[index] = (getTeamImage(event.homeTeam.id))
                         awayTeamIcons[index] = (getTeamImage(event.awayTeam.id))
                     }
-
                 } else {
                     Log.w(this.toString(), "There were no live matches?")
+                }
+                val upcomingMatches = getMatchesFromDay(convertTimestampToDateURL((System.currentTimeMillis()/1000).toInt()))
+                upcomingMatches.events = upcomingMatches.events.reversed()
+                if(upcomingMatches.events.isNotEmpty()){
+                    for ((index, event) in upcomingMatches.events.withIndex()) {
+                        if(event.homeScore!!.current==null) { //Assumes that all upcoming matches have scores of null, and only displays these. Might be an issue.
+                            upcomingMatchesValues.add(event)
+                            homeTeamIcons[index] = (getTeamImage(event.homeTeam.id))
+                            awayTeamIcons[index] = (getTeamImage(event.awayTeam.id))
+                        }
+                    }
                 }
             }
         }
