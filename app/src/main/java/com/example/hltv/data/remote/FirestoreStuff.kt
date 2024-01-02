@@ -15,6 +15,7 @@ fun sendPredictionToFirestore(prediction: Prediction, matchID: Int) {
         .addOnSuccessListener { Log.d("Database","DocumentSnapshot successfully written!") }
         .addOnFailureListener { e -> Log.w("Database","Error writing document: $e") }
 }
+
 fun getPredictionFromFirestore(matchID: Int): Prediction? {
     val docRef = DatabaseSingleton.db.collection("predictions").document(matchID.toString())
     var prediction: Prediction? = null
