@@ -69,9 +69,11 @@ fun MatchesScreen(onClickSingleTeam : (String?) -> Unit) {
             UpcomingMatchCard(
                 teamOneName = item.homeTeam.name.toString(),
                 teamOneIcon = rememberAsyncImagePainter(viewModel.homeTeamIcons[upcomingsMatchesValues.indexOf(item)]),
+                teamOneOnClick = { onClickSingleTeam(item.homeTeam.id.toString()) },
                 teamTwoName = item.awayTeam.name.toString(),
                 teamTwoIcon = rememberAsyncImagePainter(viewModel.awayTeamIcons[upcomingsMatchesValues.indexOf(item)]),
-                matchDate = convertTimestampToDateClock(item.startTimestamp)
+                matchDate = convertTimestampToDateClock(item.startTimestamp),
+                teamTwoOnClick = { onClickSingleTeam(item.awayTeam.id.toString()) }
             )
         }
     }
