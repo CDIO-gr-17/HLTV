@@ -78,7 +78,7 @@ class MatchesScreenViewModel: ViewModel() {
                     Log.w(this.toString(), "There were no live matches?")
                 }
                 val upcomingMatches = getMatchesFromDay(convertTimestampToDateURL((System.currentTimeMillis()/1000).toInt()))
-                upcomingMatches.events = upcomingMatches.events.reversed()
+                upcomingMatches.events = upcomingMatches.events.sortedBy { it.startTimestamp }
                 if(upcomingMatches.events.isNotEmpty()){
                     for ((index, event) in upcomingMatches.events.withIndex()) {
                         if(event.homeScore!!.current==null) { //Assumes that all upcoming matches have scores of null, and only displays these. Might be an issue.
