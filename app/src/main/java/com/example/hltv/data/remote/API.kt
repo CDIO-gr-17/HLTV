@@ -16,6 +16,7 @@ import java.io.ByteArrayOutputStream
 import java.io.IOException
 
 const val APIKEY = "24b0f292d5mshdf7eb12b4760333p19075ajsncc1561769190"
+const val MILISBETWEENREQUEST : Long = 200
 const val ONLYCS = true
 var currentRequestCount = 0
 val cond = ConditionVariable()
@@ -25,10 +26,39 @@ val mutexForAPI = Mutex()
 suspend fun waitForAPI(){
 
     //TODO: This needs to be optimized because it assumes that all other operations take 0 time. Set to 200 because 166 sometimes gives errors
+
+
     mutexForAPI.withLock {
 
-        delay(200)
+
+        delay(MILISBETWEENREQUEST)
+        /*
+        //Seems to save 1 ish second, so slightly slower than the one below, but is stable? [No, its not. Or someone else is using the app] Please combine
+        //Mixing these two seemed to break it, so fix that
+        val delta = ((lastAPIPull + MILISBETWEENREQUEST) - java.util.Date().time)
+        Log.d("waitForAPI", "Waiting: " + delta.toString())
+        delay(delta)
+        lastAPIPull = java.util.Date().time
+
+         */
+
+
+
+    //This saves about 1.5 seconds loading astralis as compared to alaways waiting, for MILISBETWEENREQUEST = 170
+        /*
+        if (currentRequestCount < 5){
+            currentRequestCount++
+            Log.d("waitForAPI", "Skipping wait because of 5")
+
+        }else{
+            delay(MILISBETWEENREQUEST)
+            currentRequestCount--
+        }
+
+         */
     }
+
+
 
     /*
     val currentDateTime: java.util.Date = java.util.Date()
@@ -65,7 +95,7 @@ suspend fun getLiveMatches(): APIResponse.EventsWrapper {
     if (ONLYCS){
         val csEvents: MutableList<Event> = mutableListOf()
         for (event in eventsWrapper.events){//We should also be able to use slug or flag instead of name
-            if(event.tournament?.category?.name.equals("CS:GO")){
+            if(event.tournament?.category?.name.equals("Counter Strike")){
                 csEvents.add(event)
             }
         }
@@ -117,6 +147,7 @@ private suspend fun getAPIImage(apiURL: String, apiKEY: String): Bitmap?{
     waitForAPI()
     val response = client.newCall(request).execute()
 
+
     val inputStream2 = response.body?.byteStream()
     val buffer = ByteArray(1024)
     val output = ByteArrayOutputStream()
@@ -135,7 +166,7 @@ private suspend fun getAPIImage(apiURL: String, apiKEY: String): Bitmap?{
     val bitmap = BitmapFactory.decodeByteArray(decodedImage, 0, decodedImage.size)
 
     if (bitmap == null){
-       Log.d("getAPIImage", "Bitmap is null, probably because player image does not exist")
+        Log.d("getAPIImage", "Bitmap is null, probably because player image does not exist")
     }
     return bitmap
 
