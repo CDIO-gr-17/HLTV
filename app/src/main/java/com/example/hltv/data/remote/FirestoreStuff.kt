@@ -7,7 +7,7 @@ data class PredictionsWrapper(
 )
 data class Prediction(
     val homeTeamVoteCount: Int,
-    val awayTeamVoteCount: Int
+    var awayTeamVoteCount: Int
 )
 
 fun sendPredictionToFirestore(prediction: Prediction, matchID: Int) {

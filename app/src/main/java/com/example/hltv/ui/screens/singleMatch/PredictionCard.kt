@@ -1,4 +1,4 @@
-package com.example.hltv.ui.common
+package com.example.hltv.ui.screens.singleMatch
 
 
 import androidx.compose.foundation.Image
@@ -26,11 +26,14 @@ import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.painter.Painter
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.example.hltv.R
+import com.example.hltv.ui.common.CommonCard
 
 var hasVoted : MutableState<Boolean> = mutableStateOf(false)
 val borderColor : MutableState<Color> = mutableStateOf(Color.Black)
@@ -43,6 +46,7 @@ fun PredictionCard(
     teamTwoIcon: Painter,
     teamOneColor: Color = Color.Blue,
     teamTwoColor: Color = Color.Red,
+    viewModel : SingleMatchViewModel
 ) {
     CommonCard(modifier = modifier, customInnerPadding = 0.dp, topBox = {
         Box(
@@ -99,8 +103,10 @@ fun PredictionCard(
                 drawCircle(
                     modifier = modifier,
                     teamIcon = teamOneIcon,
+                    voteCount = viewModel.prediction.value.homeTeamVoteCount,
                     onClick = {
                         hasVoted = mutableStateOf(true)
+                        viewModel.updatePrediction(1,1)
                     }
                 )
                 Text(
@@ -111,13 +117,15 @@ fun PredictionCard(
                     fontSize = 65.sp,
                     color = MaterialTheme.colorScheme.onPrimaryContainer,
                     textAlign = TextAlign.Center,
-                    fontWeight = androidx.compose.ui.text.font.FontWeight.Bold,
+                    fontWeight = FontWeight.Bold,
                     )
                 drawCircle(
                     modifier = modifier,
                     teamIcon = teamTwoIcon,
+                    voteCount = viewModel.prediction.value.awayTeamVoteCount,
                     onClick = {
                         hasVoted = mutableStateOf(true)
+                        viewModel.updatePrediction(1,2)
                     }
                 )
             }
@@ -126,7 +134,7 @@ fun PredictionCard(
 }
 
 @Composable
-private fun drawCircle(modifier: Modifier, teamIcon: Painter, onClick: () -> Unit) {
+private fun drawCircle(modifier: Modifier, teamIcon: Painter, voteCount : Int, onClick: () -> Unit) {
     Box(modifier =
     if (hasVoted.value) {
         modifier
@@ -157,21 +165,26 @@ private fun drawCircle(modifier: Modifier, teamIcon: Painter, onClick: () -> Uni
                 .align(Alignment.Center)
                 .padding(16.dp)
         )
-        if (hasVoted.value) drawText()
+        if (hasVoted.value) {
+            Text(
+                text = voteCount.toString()+"%",
+                modifier = Modifier
+                    .align(Alignment.Center)
+                    .padding(8.dp),
+                textAlign = TextAlign.Center,
 
+
+            )
+        }
     }
-
-}
-fun drawText() {
-
 }
 
 @Preview
 @Composable
 fun PredictionCardPreview() {
     PredictionCard(
-        teamOneIcon = painterResource(id = com.example.hltv.R.drawable.astralis_logo),
-        teamTwoIcon = painterResource(id = com.example.hltv.R.drawable.astralis_logo),
-
+        teamOneIcon = painterResource(id = R.drawable.astralis_logo),
+        teamTwoIcon = painterResource(id = R.drawable.astralis_logo),
+        viewModel = SingleMatchViewModel()
     )
 }
