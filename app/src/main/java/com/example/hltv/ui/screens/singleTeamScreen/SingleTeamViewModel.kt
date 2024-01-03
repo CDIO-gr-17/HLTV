@@ -7,9 +7,11 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
 import com.example.hltv.data.remote.APIResponse
 import com.example.hltv.data.remote.Country
+import com.example.hltv.data.remote.Map
 import com.example.hltv.data.remote.PlayerGroup
 import com.example.hltv.data.remote.Score
 import com.example.hltv.data.remote.Team
+import com.example.hltv.data.remote.getGamesFromEvent
 import com.example.hltv.data.remote.getPlayerImage
 import com.example.hltv.data.remote.getPlayersFromEvent
 import com.example.hltv.data.remote.getPreviousMatches
@@ -38,6 +40,12 @@ data class RecentMatch(
     val awayScore: Score? = null,
     val startTimestamp: String? = null,
     val bestOf: Int? = null,
+)
+data class RecentGame(
+    val homeScore: Score? = null,
+    val awayScore: Score? = null,
+    val hasCompletedStatistics : Boolean? = false,
+    val map: Map? = null
 )
 data class Player(
     val name: String ?= null,

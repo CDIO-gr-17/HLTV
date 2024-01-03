@@ -198,6 +198,11 @@ data class Score (
 
 )
 
+
+data class Map(
+    @SerializedName("id" ) var id : Int? = null,
+    @SerializedName("name" ) var name : String? = null
+)
 data class Time (
 
     @SerializedName("currentPeriodStartTimestamp" ) var currentPeriodStartTimestamp : Int? = null
