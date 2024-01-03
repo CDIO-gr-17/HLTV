@@ -18,4 +18,5 @@ val R = MaterialTheme
 fun SingleMatchScreenPreview() {
     SingleMatchScreen(viewModel = SingleMatchViewModel())
 
+
 }

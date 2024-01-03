@@ -17,6 +17,8 @@ import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.MutableState
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -26,8 +28,13 @@ import androidx.compose.ui.graphics.painter.Painter
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+
+var hasVoted : MutableState<Boolean> = mutableStateOf(false)
+val borderColor : MutableState<Color> = mutableStateOf(Color.Black)
+val borderWidth : MutableState<Dp> = mutableStateOf(2.dp)
 
 @Composable
 fun PredictionCard(
@@ -75,8 +82,9 @@ fun PredictionCard(
                     brush = Brush.horizontalGradient(
                         listOf(
                             teamOneColor, teamTwoColor
+                        ),
+
                         )
-                    )
                 )
         ) {
             Row(
@@ -89,9 +97,11 @@ fun PredictionCard(
             ) {
 
                 drawCircle(
-                    modifier = modifier, teamIcon = teamOneIcon,
-                    onClick = {}
-
+                    modifier = modifier,
+                    teamIcon = teamOneIcon,
+                    onClick = {
+                        hasVoted = mutableStateOf(true)
+                    }
                 )
                 Text(
                     text = "VS",
@@ -104,23 +114,31 @@ fun PredictionCard(
                     fontWeight = androidx.compose.ui.text.font.FontWeight.Bold,
                     )
                 drawCircle(
-                    modifier = modifier, teamIcon = teamTwoIcon,onClick = {}
+                    modifier = modifier,
+                    teamIcon = teamTwoIcon,
+                    onClick = {
+                        hasVoted = mutableStateOf(true)
+                    }
                 )
-
             }
-
-
         }
-
-
     })
-
 }
 
 @Composable
-private fun drawCircle(modifier: Modifier, teamIcon: Painter, onClick: () -> Unit){
-    Box(
-        modifier = modifier
+private fun drawCircle(modifier: Modifier, teamIcon: Painter, onClick: () -> Unit) {
+    Box(modifier =
+    if (hasVoted.value) {
+        modifier
+            .size(100.dp)
+            .border(4.dp, Color.White, CircleShape)
+            .clip(CircleShape)
+            .background(MaterialTheme.colorScheme.onPrimaryContainer)
+            .clickable {
+                onClick()
+            }
+    } else {
+        modifier
             .size(100.dp)
             .border(2.dp, Color.Black, CircleShape)
             .clip(CircleShape)
@@ -128,6 +146,7 @@ private fun drawCircle(modifier: Modifier, teamIcon: Painter, onClick: () -> Uni
             .clickable {
                 onClick()
             }
+    }
 
     ) {
         Image(
@@ -138,8 +157,12 @@ private fun drawCircle(modifier: Modifier, teamIcon: Painter, onClick: () -> Uni
                 .align(Alignment.Center)
                 .padding(16.dp)
         )
+        if (hasVoted.value) drawText()
 
     }
+
+}
+fun drawText() {
 
 }
 
