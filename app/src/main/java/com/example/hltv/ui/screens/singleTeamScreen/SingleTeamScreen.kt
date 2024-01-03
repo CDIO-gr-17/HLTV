@@ -127,7 +127,7 @@ fun overviewPlayer(
                 customOuterPadding = 0.dp,
                 topBox = {
                     Text(
-                        text = player.name ?: "Unknown",
+                        text = if (player.name!=null) player.name.substring(0, minOf(7, player.name.length)) else "Player",
                         fontSize = MaterialTheme.typography.bodyMedium.fontSize,
                         color = MaterialTheme.colorScheme.onPrimaryContainer,
                         textAlign = TextAlign.Center,
@@ -148,7 +148,7 @@ fun overviewInfo(
 ){
     Row (
         modifier = Modifier.fillMaxWidth(),
-        horizontalArrangement = Arrangement.SpaceAround
+        horizontalArrangement = Arrangement.SpaceAround,
     ){
         Column(
             horizontalAlignment = Alignment.CenterHorizontally
