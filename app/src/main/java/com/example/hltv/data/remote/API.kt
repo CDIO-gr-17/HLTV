@@ -65,7 +65,7 @@ suspend fun getLiveMatches(): APIResponse.EventsWrapper {
     if (ONLYCS){
         val csEvents: MutableList<Event> = mutableListOf()
         for (event in eventsWrapper.events){//We should also be able to use slug or flag instead of name
-            if(event.tournament?.category?.name.equals("CS:GO")){
+            if(event.tournament?.category?.name.equals("Counter Strike")){
                 csEvents.add(event)
             }
         }
