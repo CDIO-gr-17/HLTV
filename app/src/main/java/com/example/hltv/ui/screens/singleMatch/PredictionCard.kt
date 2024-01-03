@@ -17,7 +17,6 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.CheckCircle
-import androidx.compose.material.icons.filled.Clear
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
@@ -26,6 +25,7 @@ import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
@@ -174,19 +174,23 @@ private fun drawCircle(modifier: Modifier, teamIcon: Painter, voteCount : Int, h
             )
         }
         if (hasVoted != null){
+
                 Icon(
-                    imageVector = if (isHomeTeamSelected.value && hometeam) Icons.Default.CheckCircle
-                    else if (!hometeam && !isHomeTeamSelected.value) Icons.Default.CheckCircle
-                    else Icons.Filled.Clear,
+                    imageVector = Icons.Default.CheckCircle,
                     contentDescription = "mark",
                     tint = Color.Black,
                     modifier = Modifier
                         .align(Alignment.CenterHorizontally)
-                        .offset(y = (-30).dp,x = (25).dp)
+                        .offset(y = (-30).dp, x = (25).dp)
                         .size(35.dp)
-                        //.border(2.dp,Color.White, circleShape)
-
+                        .alpha(if ((isHomeTeamSelected.value && hometeam) || (!hometeam && !isHomeTeamSelected.value)) {
+                            1f
+                        } else {
+                            0f
+                        })
+                    //.border(2.dp,Color.White, circleShape)
                 )
+
                 Text(
                     text = voteCount.toString() + "%",
                     modifier = Modifier
