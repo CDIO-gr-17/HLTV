@@ -178,8 +178,10 @@ val team = getAPIResponse(
         APIKEY,
         APIResponse.TeamContainer::class.java
     ) as APIResponse.TeamContainer
-    val name = team.team.name
-    if (name != null) return team.team.name.toString()
+
+    //Had a nullpointerexception here
+    //val name = .name
+    if (team.team != null && team.team.name != null) return team.team.name.toString()
     else return null
 }
 /**
