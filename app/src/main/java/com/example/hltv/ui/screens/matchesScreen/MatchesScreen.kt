@@ -4,6 +4,7 @@ import android.os.SystemClock.sleep
 import android.util.Log
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -16,6 +17,7 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.wrapContentSize
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
+import androidx.compose.material3.Button
 import androidx.compose.material3.Card
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
@@ -27,6 +29,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.lifecycle.viewModelScope
 import androidx.lifecycle.viewmodel.compose.viewModel
 import coil.compose.AsyncImagePainter
 import coil.compose.rememberAsyncImagePainter
@@ -34,6 +37,7 @@ import com.example.hltv.R
 import com.example.hltv.data.convertTimestampToDateClock
 import com.example.hltv.ui.common.LiveMatchCard
 import com.example.hltv.ui.common.UpcomingMatchCard
+import kotlinx.coroutines.launch
 
 
 data class ListItem(val ranking: Int, val text1: String, val text2: String)
@@ -68,18 +72,45 @@ fun MatchesScreen(onClickSingleTeam : (String?) -> Unit) {
         items(upcomingsMatchesValues) { item ->
             UpcomingMatchCard(
                 teamOneName = item.homeTeam.name.toString(),
-                teamOneIcon = rememberAsyncImagePainter(viewModel.homeTeamIcons[upcomingsMatchesValues.indexOf(item)]),
+                teamOneIcon = rememberAsyncImagePainter(viewModel.homeTeamIcons[liveMatchesValues.size + upcomingsMatchesValues.indexOf(item)]),
                 teamOneOnClick = { onClickSingleTeam(item.homeTeam.id.toString()) },
                 teamTwoName = item.awayTeam.name.toString(),
-                teamTwoIcon = rememberAsyncImagePainter(viewModel.awayTeamIcons[upcomingsMatchesValues.indexOf(item)]),
+                teamTwoIcon = rememberAsyncImagePainter(viewModel.awayTeamIcons[liveMatchesValues.size + upcomingsMatchesValues.indexOf(item)]),
                 matchDate = convertTimestampToDateClock(item.startTimestamp),
                 teamTwoOnClick = { onClickSingleTeam(item.awayTeam.id.toString()) }
             )
         }
-    }
-
-
+        item{
+            Row (
+                modifier = Modifier.fillMaxWidth(),
+                horizontalArrangement = Arrangement.Center
+            ){
+                loadMatchesButton {
+                    viewModel.viewModelScope.launch {
+                        viewModel.loadUpcomingMatches()
+                    }
+                }
             }
+        }
+    }
+}
+
+@Composable
+fun loadMatchesButton(function: () -> Unit) {
+    Button(
+        modifier = Modifier.background(MaterialTheme.colorScheme.primaryContainer),
+        onClick = function
+    ) {
+        Row {
+            Text(
+                text = "Load more matches",
+                fontSize = MaterialTheme.typography.bodyLarge.fontSize,
+                color = MaterialTheme.colorScheme.onPrimaryContainer
+            )
+
+        }
+    }
+}
            /* if (index < viewModel.teamNames.size - 1) {
                 Spacer(modifier = Modifier.height(1.dp))*/
         /*
@@ -198,5 +229,5 @@ fun teamCard(
 @Preview(showBackground = true)
 @Composable
 fun MatchesScreenPreview() {
-   // MatchesScreen(onClickSingleTeam = print(""))
+   MatchesScreen(onClickSingleTeam = { /*TODO*/ })
 }
