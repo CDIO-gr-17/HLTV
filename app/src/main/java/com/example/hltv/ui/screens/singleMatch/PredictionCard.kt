@@ -106,7 +106,7 @@ fun PredictionCard(
                 drawCircle(
                     modifier = modifier,
                     teamIcon = teamOneIcon,
-                    voteCount = viewModel.prediction.value.homeTeamVoteCount,
+                    voteCount = viewModel.prediction.value.homeTeamVotePercentage,
                     hometeam = true,
                     onClick = {
                         hasVoted = mutableStateOf(1)
@@ -127,7 +127,7 @@ fun PredictionCard(
                 drawCircle(
                     modifier = modifier,
                     teamIcon = teamTwoIcon,
-                    voteCount = viewModel.prediction.value.awayTeamVoteCount,
+                    voteCount = viewModel.prediction.value.awayTeamVotePercentage,
                     hometeam = false,
                     onClick = {
                         hasVoted = mutableStateOf(2)
@@ -188,7 +188,6 @@ private fun drawCircle(modifier: Modifier, teamIcon: Painter, voteCount : Int, h
                         } else {
                             0f
                         })
-                    //.border(2.dp,Color.White, circleShape)
                 )
 
                 Text(

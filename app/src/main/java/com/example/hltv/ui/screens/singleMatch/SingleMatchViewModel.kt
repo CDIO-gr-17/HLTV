@@ -33,15 +33,7 @@ class SingleMatchViewModel(var matchID: String?) : ViewModel() {
             } else {
                 prediction.value = tempPrediction
             }
-            val totalVotes = prediction.value.homeTeamVoteCount + prediction.value.awayTeamVoteCount
-            if (totalVotes != 0) {
-                prediction.value.homeTeamVotePercentage =
-                    prediction.value.homeTeamVoteCount * 100 / totalVotes
-                prediction.value.awayTeamVotePercentage =
-                    prediction.value.awayTeamVoteCount * 100 / totalVotes
-            } else {
-                Log.d("SingleMatchViewModel", "totalVotes = 0")
-            }
+            calculateVotePercentage(prediction.value)
         }
     }
 
@@ -60,8 +52,19 @@ class SingleMatchViewModel(var matchID: String?) : ViewModel() {
             } else {
                 return@launch
             }
+            calculateVotePercentage(prediction.value)
             sendPredictionToFirestore(prediction.value, matchID!!.removePrefix("{matchID}").toInt())
-            getPrediction()
         }
+    }
+    fun calculateVotePercentage(prediction: Prediction) {
+        val totalVotes = prediction.homeTeamVoteCount + prediction.awayTeamVoteCount
+        if(totalVotes == 0){
+            Log.d("SingleMatchViewModel", "totalVotes = 0")
+            return
+        }
+        prediction.homeTeamVotePercentage =
+            prediction.homeTeamVoteCount * 100 / totalVotes
+        prediction.awayTeamVotePercentage =
+            prediction.awayTeamVoteCount * 100 / totalVotes
     }
 }
