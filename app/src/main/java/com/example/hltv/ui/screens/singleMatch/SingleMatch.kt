@@ -42,8 +42,8 @@ val R = MaterialTheme
 @Composable
 fun EventImage(
     image: Painter? = null,
-    overlayImage1: Painter,
-    overlayImage2: Painter,
+    teamLogo1: Painter,
+    teamLogo2: Painter,
     scoreText: String
 ) {
     Box {
@@ -53,7 +53,14 @@ fun EventImage(
             modifier = Modifier
                 .fillMaxWidth()
         )
-
+        Image(
+            painter = image ?: painterResource(id = R.drawable.trophy_24px),
+            contentDescription = null,
+            modifier = Modifier
+                .fillMaxWidth()
+                .size(35.dp)
+                .offset(y = 30.dp)
+        )
         Row(
             modifier = Modifier
                 .fillMaxWidth()
@@ -61,7 +68,7 @@ fun EventImage(
         ) {
 
             Image(
-                painter = overlayImage1,
+                painter = teamLogo1,
                 contentDescription = null,
                 modifier = Modifier
                     .size(70.dp)
@@ -81,7 +88,7 @@ fun EventImage(
             Spacer(modifier = Modifier.weight(1f))
 
             Image(
-                painter = overlayImage2,
+                painter = teamLogo2,
                 contentDescription = null,
                 modifier = Modifier
                     .size(70.dp)
@@ -111,6 +118,6 @@ fun EventImage(
 @Composable
 fun SingleMatchScreenPreview() {
     SingleMatchScreen(viewModel = SingleMatchViewModel())
-    EventImage(overlayImage1 = painterResource(id = R.drawable.astralis_logo), overlayImage2 = painterResource(id = R.drawable.astralis_logo), scoreText = "10 - 10")
+    EventImage(teamLogo1 = painterResource(id = R.drawable.astralis_logo), teamLogo2 = painterResource(id = R.drawable.astralis_logo), scoreText = "10 - 10")
 
 }
