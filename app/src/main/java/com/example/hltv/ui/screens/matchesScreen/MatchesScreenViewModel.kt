@@ -83,12 +83,13 @@ class MatchesScreenViewModel: ViewModel() {
                     if(upcomingMatches.events.isNotEmpty()){
                         for ((index, event) in upcomingMatches.events.withIndex()) {
                             if (event.startTimestamp?.toLong() != null &&  //Makes sure that the upcoming match has an associated startTimestamp
-                                event.startTimestamp!! > (System.currentTimeMillis() / 1000)) {  //Excludes matches where the startTimestamp has passed (i.e it is live or has been played)
+                                event.startTimestamp!! > (System.currentTimeMillis() / 1000) &&
+                                event !in upcomingMatchesValues) {  //Excludes matches where the startTimestamp has passed (i.e it is live or has been played)
                                 upcomingMatchesValues.add(event)
                                 homeTeamIcons[liveMatchesValues.size + index] = (getTeamImage(event.homeTeam.id))
-                                Log.i("homeTeamIcons", "${event.homeTeam.name} logo index: ${liveMatchesValues.size + index}, (${liveMatchesValues.size} + $index)")
+                                //Log.i("homeTeamIcons", "${event.homeTeam.name} logo index: ${liveMatchesValues.size + index}, (${liveMatchesValues.size} + $index)")
                                 awayTeamIcons[liveMatchesValues.size + index] = (getTeamImage(event.awayTeam.id))
-                                Log.i("awayTeamIcons", "${event.awayTeam.name} logo index: ${liveMatchesValues.size + index}, (${liveMatchesValues.size} + $index)")
+                                //Log.i("awayTeamIcons", "${event.awayTeam.name} logo index: ${liveMatchesValues.size + index}, (${liveMatchesValues.size} + $index)")
                             }
                         }
                     }

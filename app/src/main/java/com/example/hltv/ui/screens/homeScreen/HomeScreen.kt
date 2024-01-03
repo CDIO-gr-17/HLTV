@@ -54,8 +54,6 @@ fun HomeScreen() {
             teamTwoOnClick = {},
         )
 
-
-
         Divider(modifier = Modifier.padding(horizontal = 8.dp), color = M.colorScheme.onBackground)
         Card(
 

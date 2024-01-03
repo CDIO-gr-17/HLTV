@@ -1,20 +1,24 @@
 package com.example.hltv.ui.screens.singleMatch
 
-import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.tooling.preview.Preview
+import com.example.hltv.R
 
 @Composable
-fun SingleMatchScreen(viewModel: SingleMatchViewModel){
-val R = MaterialTheme
-   // val singlematches by viewModel.matches.collectAsState()
-//teamCard(modifier = Modifier, R = R, text1 = singlematches.toString(), text2 = "test")
+fun SingleMatchScreen(matchID : String?){
+    val viewModel = SingleMatchViewModel(matchID)
+
+    PredictionCard(teamOneIcon = painterResource(id = R.drawable.astralis_logo), teamTwoIcon = painterResource(
+        id = R.drawable.astralis_logo
+    ) , viewModel = viewModel)
+
 }
 
 @Preview(showBackground = true)
 @Composable
 fun SingleMatchScreenPreview() {
-    SingleMatchScreen(viewModel = SingleMatchViewModel())
+
 
 
 }
