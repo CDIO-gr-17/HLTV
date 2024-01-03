@@ -9,12 +9,13 @@ import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.navArgument
-import com.example.hltv.ui.screens.matchesScreen.MatchesScreen
 import com.example.hltv.ui.screens.eventsScreen.EventsScreen
 import com.example.hltv.ui.screens.homeScreen.HomeScreen
+import com.example.hltv.ui.screens.matchesScreen.MatchesScreen
 import com.example.hltv.ui.screens.newsScreen.NewsScreen
 import com.example.hltv.ui.screens.playerScreen.PlayerScreen
 import com.example.hltv.ui.screens.settingsScreen.SettingsScreen
+import com.example.hltv.ui.screens.singleMatch.SingleMatchScreen
 import com.example.hltv.ui.screens.singleTeamScreen.SingleTeamScreen
 
 
@@ -32,7 +33,8 @@ fun MainNavHost(navController: NavHostController, modifier: Modifier) {
             EventsScreen()
         }
         composable(route = Matches.route) {
-            MatchesScreen { navController.navigate(SingleTeam.route + it) }
+            MatchesScreen(onClickSingleMatch = {String -> navController.navigate(SingleMatch.route + it)},
+                onClickSingleTeam = {String -> navController.navigate(SingleTeam.route + it)})
         }
         composable(route = News.route) {
             NewsScreen { navController.navigate(SinglePlayer.route + it) } //How it work? It just no. Ninjutsu
@@ -51,8 +53,12 @@ fun MainNavHost(navController: NavHostController, modifier: Modifier) {
                 navController.navigate(SinglePlayer.route + it)
             }
         }
-
-
+        composable(route = SingleMatch.route,
+            arguments = listOf(navArgument("matchID") { type = NavType.StringType }))
+        { backStackEntry ->
+            Log.i("MainNavHost", backStackEntry.toString())
+            SingleMatchScreen(backStackEntry.arguments?.getString("matchID"))
+        }
 
         composable(route = SinglePlayer.route,
             arguments = listOf(navArgument("playerID") { type = NavType.StringType })

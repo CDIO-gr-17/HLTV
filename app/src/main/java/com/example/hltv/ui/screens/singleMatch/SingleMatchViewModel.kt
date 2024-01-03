@@ -10,9 +10,8 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 
-class SingleMatchViewModel : ViewModel() {
+class SingleMatchViewModel(var matchID: String?) : ViewModel() {
     var prediction: MutableState<Prediction> = mutableStateOf(Prediction(0, 0))
-
 
     /*
     private val _matches = MutableStateFlow<List<APIResponse.EventsWrapper>>(emptyList())
@@ -22,14 +21,15 @@ class SingleMatchViewModel : ViewModel() {
 
     init {
         CoroutineScope(Dispatchers.IO).launch {
+            getPrediction()
 
         }
 
 
     }
 
-    fun getPrediction(matchID: Int) {
-        val tempPrediction = getPredictionFromFirestore(matchID)
+    fun getPrediction() {
+        val tempPrediction = getPredictionFromFirestore(matchID!!.toInt())
         if (tempPrediction == null) {
             prediction.value = Prediction(0, 0)
             return
@@ -37,12 +37,10 @@ class SingleMatchViewModel : ViewModel() {
             prediction.value = tempPrediction
         }
         val totalVotes = prediction.value.homeTeamVoteCount + prediction.value.awayTeamVoteCount
-        prediction.value = Prediction(
-            prediction.value.homeTeamVoteCount * 100 / totalVotes,
-            prediction.value.awayTeamVoteCount * 100 / totalVotes
-        )
+        prediction.value.homeTeamVotePercentage = prediction.value.homeTeamVoteCount * 100 / totalVotes
+        prediction.value.awayTeamVotePercentage = prediction.value.awayTeamVoteCount * 100 / totalVotes
     }
-    fun updatePrediction(matchID: Int, vote: Int) {
+    fun updatePrediction( vote: Int) {
         if (vote == 1) {
             prediction.value = Prediction(prediction.value.homeTeamVoteCount + 1, prediction.value.awayTeamVoteCount)
         } else if (vote == 2) {
@@ -50,6 +48,6 @@ class SingleMatchViewModel : ViewModel() {
         } else {
             return
         }
-        sendPredictionToFirestore(prediction.value, matchID)
+        sendPredictionToFirestore(prediction.value, matchID!!.toInt())
     }
 }
