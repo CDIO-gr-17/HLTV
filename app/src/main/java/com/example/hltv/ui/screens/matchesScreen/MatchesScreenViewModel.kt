@@ -70,6 +70,8 @@ class MatchesScreenViewModel: ViewModel() {
 
     private val _loadingState = MutableStateFlow(false)
     val loadingState: StateFlow<Boolean> get() = _loadingState
+
+    private var dataLoaded = false
     suspend fun loadUpcomingMatches(){
         try{
             _loadingState.value = true
@@ -99,6 +101,10 @@ class MatchesScreenViewModel: ViewModel() {
         }
     }
     fun loadData(){
+        if (dataLoaded){
+            return
+        }
+        dataLoaded = true
         viewModelScope.launch {
             CoroutineScope(Dispatchers.IO).launch {
                 val liveMatches = getLiveMatches()
