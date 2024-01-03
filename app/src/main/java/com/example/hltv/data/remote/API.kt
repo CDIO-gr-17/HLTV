@@ -129,6 +129,9 @@ suspend fun getPreviousMatches(teamID: Int, pageID: Int = 0):APIResponse.EventsW
     return getAPIResponse("team/"+teamID.toString()+"/matches/previous/"+ pageID, APIKEY, APIResponse.EventsWrapper::class.java) as APIResponse.EventsWrapper
 }
 
+suspend fun getGamesFromEvent(eventID: Int?) : APIResponse.EventsWrapper{
+    return getAPIResponse("event/$eventID/games", APIKEY, APIResponse.EventsWrapper::class.java) as APIResponse.EventsWrapper
+}
 /**
  * I couldn't get coil to work with the whole APIkey, MVVM model and stuff
  * If you can, feel free to, but this slightly convoluted thing works
