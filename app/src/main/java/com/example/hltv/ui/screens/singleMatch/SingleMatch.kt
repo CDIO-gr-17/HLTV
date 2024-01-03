@@ -7,9 +7,12 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.MaterialTheme
@@ -55,48 +58,25 @@ fun EventImage(
             modifier = Modifier
                 .fillMaxWidth()
                 .align(Alignment.Center)
-
         ) {
 
             Image(
                 painter = overlayImage1,
                 contentDescription = null,
                 modifier = Modifier
-                    .width(50.dp)
-                    .height(50.dp)
-                    .fillMaxWidth()
+                    .size(70.dp)
+                    .offset(x = 50.dp)
             )
 
             Spacer(modifier = Modifier.weight(1f))
 
-            Column(
-                horizontalAlignment = Alignment.CenterHorizontally
-
-
-            ) {
-                Text(
-                    text = scoreText,
-                    color = Color.White,
-                    fontSize = 24.sp,
-                    fontWeight = FontWeight.Bold,
-                    modifier = Modifier
-                        .padding(8.dp)
-                        .align(Alignment.CenterHorizontally)
-                )
-
-                Spacer(modifier = Modifier.height(30.dp))
-
-                Text(
-                    text = "Live",
-                    color = Color.White,
-                    fontSize = 18.sp,
-                    fontWeight = FontWeight.Bold,
-                    modifier = Modifier
-                        .clip(RoundedCornerShape(10.dp))
-                        .background(Color.Red)
-                        .padding(horizontal = 8.dp, vertical = 4.dp)
-                )
-            }
+            Text(
+                text = scoreText,
+                color = Color.White,
+                fontSize = 24.sp,
+                fontWeight = FontWeight.Normal,
+                modifier = Modifier.align(Alignment.CenterVertically)
+            )
 
             Spacer(modifier = Modifier.weight(1f))
 
@@ -104,13 +84,26 @@ fun EventImage(
                 painter = overlayImage2,
                 contentDescription = null,
                 modifier = Modifier
-                    .width(50.dp)
-                    .height(50.dp)
-
+                    .size(70.dp)
+                    .offset(x = -50.dp)
             )
         }
+
+        Text(
+            text = "Live",
+            color = Color.White,
+            fontSize = 10.sp,
+            fontWeight = FontWeight.Medium,
+            modifier = Modifier
+                .align(Alignment.BottomCenter)
+                .offset(y = (-20).dp)
+                .clip(RoundedCornerShape(10.dp))
+                .background(Color.Red)
+                .padding(horizontal = 12.dp, vertical = 3.dp)
+        )
     }
 }
+
 
 
 
@@ -118,6 +111,6 @@ fun EventImage(
 @Composable
 fun SingleMatchScreenPreview() {
     SingleMatchScreen(viewModel = SingleMatchViewModel())
-    EventImage(overlayImage1 = painterResource(id = R.drawable.astralis_logo), overlayImage2 = painterResource(id = R.drawable.astralis_logo), scoreText = "10-10")
+    EventImage(overlayImage1 = painterResource(id = R.drawable.astralis_logo), overlayImage2 = painterResource(id = R.drawable.astralis_logo), scoreText = "10 - 10")
 
 }
