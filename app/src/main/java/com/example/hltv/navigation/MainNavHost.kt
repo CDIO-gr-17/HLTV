@@ -33,8 +33,8 @@ fun MainNavHost(navController: NavHostController, modifier: Modifier) {
             EventsScreen()
         }
         composable(route = Matches.route) {
-            MatchesScreen(onClickSingleMatch = {String -> navController.navigate(SingleMatch.route + it)},
-                onClickSingleTeam = {String -> navController.navigate(SingleTeam.route + it)})
+            MatchesScreen(onClickSingleMatch = { navController.navigate(SingleMatch.route + it)},
+                onClickSingleTeam = { navController.navigate(SingleTeam.route + it)})
         }
         composable(route = News.route) {
             NewsScreen { navController.navigate(SinglePlayer.route + it) } //How it work? It just no. Ninjutsu
