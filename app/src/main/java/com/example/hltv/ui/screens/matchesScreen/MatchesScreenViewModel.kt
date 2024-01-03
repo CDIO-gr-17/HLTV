@@ -2,7 +2,9 @@ package com.example.hltv.ui.screens.matchesScreen
 
 import android.graphics.Bitmap
 import android.util.Log
+import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.mutableStateListOf
+import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.hltv.data.convertTimestampToDateURL
@@ -63,13 +65,15 @@ class MatchesScreenViewModel: ViewModel() {
     val liveMatchesValues = mutableStateListOf<Event>()
     val upcomingMatchesValues = mutableStateListOf<Event>()
 
+    var upcomingMatchIndex = 0
+
     val awayTeamIcons = MutableList<Bitmap?>(999){null}
     val homeTeamIcons = MutableList<Bitmap?>(999){null}
 
     var nextDayInSeconds = System.currentTimeMillis()/1000
 
-    private val _loadingState = MutableStateFlow(false)
-    val loadingState: StateFlow<Boolean> get() = _loadingState
+    private val _loadingState :  MutableState<Boolean> = mutableStateOf(false)
+    val loadingState: MutableState<Boolean> get() = _loadingState
     suspend fun loadUpcomingMatches(){
         try{
             _loadingState.value = true
@@ -82,16 +86,16 @@ class MatchesScreenViewModel: ViewModel() {
                         for ((index, event) in upcomingMatches.events.withIndex()) {
                             if (event.startTimestamp?.toLong() != null &&  //Makes sure that the upcoming match has an associated startTimestamp
                                 event.startTimestamp!! > (System.currentTimeMillis() / 1000)) {  //Excludes matches where the startTimestamp has passed (i.e it is live or has been played)
-                                upcomingMatchesValues.add(event)
+                                upcomingMatchesValues.add(upcomingMatchIndex, event)
                                 homeTeamIcons[liveMatchesValues.size + index] = (getTeamImage(event.homeTeam.id))
                                 Log.i("homeTeamIcons", "${event.homeTeam.name} logo index: ${liveMatchesValues.size + index}, (${liveMatchesValues.size} + $index)")
                                 awayTeamIcons[liveMatchesValues.size + index] = (getTeamImage(event.awayTeam.id))
                                 Log.i("awayTeamIcons", "${event.awayTeam.name} logo index: ${liveMatchesValues.size + index}, (${liveMatchesValues.size} + $index)")
+                                upcomingMatchIndex++
                             }
                         }
                     }
                     nextDayInSeconds += (24 * 60 * 60)
-                    Log.i("upcomings","nextdayinsceonds : $nextDayInSeconds")
                 }
             }
         } finally {

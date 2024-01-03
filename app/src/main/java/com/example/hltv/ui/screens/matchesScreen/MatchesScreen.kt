@@ -52,7 +52,7 @@ fun MatchesScreen(onClickSingleTeam : (String?) -> Unit) {
     }
     val liveMatchesValues = viewModel.liveMatchesValues
     val upcomingsMatchesValues = viewModel.upcomingMatchesValues
-    val loadingState by viewModel.loadingState.collectAsState()
+    val loadingState by viewModel.loadingState
 
 /*
     val allPlayerImages = viewModel.allPlayerImages.collectAsState()
@@ -83,7 +83,7 @@ fun MatchesScreen(onClickSingleTeam : (String?) -> Unit) {
                 teamTwoOnClick = { onClickSingleTeam(item.awayTeam.id.toString()) }
             )
         }
-        if(loadingState){
+        if(!loadingState){
             item{
                 Row (
                     modifier = Modifier.fillMaxWidth(),
