@@ -19,6 +19,7 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.async
 import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
 
 data class TeamPlayerImages(
@@ -67,27 +68,34 @@ class MatchesScreenViewModel: ViewModel() {
 
     var nextDayInSeconds = System.currentTimeMillis()/1000
 
+    private val _loadingState = MutableStateFlow(false)
+    val loadingState: StateFlow<Boolean> get() = _loadingState
     suspend fun loadUpcomingMatches(){
-        viewModelScope.launch {
-            CoroutineScope(Dispatchers.IO).launch {
-                Log.i("upcomings","nextdayinsceonds : $nextDayInSeconds")
-                val upcomingMatches = getMatchesFromDay(convertTimestampToDateURL((nextDayInSeconds).toInt()))
-                upcomingMatches.events = upcomingMatches.events.sortedBy { it.startTimestamp }
-                if(upcomingMatches.events.isNotEmpty()){
-                    for ((index, event) in upcomingMatches.events.withIndex()) {
-                        if (event.startTimestamp?.toLong() != null &&  //Makes sure that the upcoming match has an associated startTimestamp
-                            event.startTimestamp!! > (System.currentTimeMillis() / 1000)) {  //Excludes matches where the startTimestamp has passed (i.e it is live or has been played)
-                            upcomingMatchesValues.add(event)
-                            homeTeamIcons[liveMatchesValues.size + index] = (getTeamImage(event.homeTeam.id))
-                            Log.i("homeTeamIcons", "${event.homeTeam.name} logo index: ${liveMatchesValues.size + index}, (${liveMatchesValues.size} + $index)")
-                            awayTeamIcons[liveMatchesValues.size + index] = (getTeamImage(event.awayTeam.id))
-                            Log.i("awayTeamIcons", "${event.awayTeam.name} logo index: ${liveMatchesValues.size + index}, (${liveMatchesValues.size} + $index)")
+        try{
+            _loadingState.value = true
+            viewModelScope.launch {
+                CoroutineScope(Dispatchers.IO).launch {
+                    Log.i("upcomings","nextdayinsceonds : $nextDayInSeconds")
+                    val upcomingMatches = getMatchesFromDay(convertTimestampToDateURL((nextDayInSeconds).toInt()))
+                    upcomingMatches.events = upcomingMatches.events.sortedBy { it.startTimestamp }
+                    if(upcomingMatches.events.isNotEmpty()){
+                        for ((index, event) in upcomingMatches.events.withIndex()) {
+                            if (event.startTimestamp?.toLong() != null &&  //Makes sure that the upcoming match has an associated startTimestamp
+                                event.startTimestamp!! > (System.currentTimeMillis() / 1000)) {  //Excludes matches where the startTimestamp has passed (i.e it is live or has been played)
+                                upcomingMatchesValues.add(event)
+                                homeTeamIcons[liveMatchesValues.size + index] = (getTeamImage(event.homeTeam.id))
+                                Log.i("homeTeamIcons", "${event.homeTeam.name} logo index: ${liveMatchesValues.size + index}, (${liveMatchesValues.size} + $index)")
+                                awayTeamIcons[liveMatchesValues.size + index] = (getTeamImage(event.awayTeam.id))
+                                Log.i("awayTeamIcons", "${event.awayTeam.name} logo index: ${liveMatchesValues.size + index}, (${liveMatchesValues.size} + $index)")
+                            }
                         }
                     }
+                    nextDayInSeconds += (24 * 60 * 60)
+                    Log.i("upcomings","nextdayinsceonds : $nextDayInSeconds")
                 }
-                nextDayInSeconds += (24 * 60 * 60)
-                Log.i("upcomings","nextdayinsceonds : $nextDayInSeconds")
             }
+        } finally {
+            _loadingState.value = false
         }
     }
     fun loadData(){

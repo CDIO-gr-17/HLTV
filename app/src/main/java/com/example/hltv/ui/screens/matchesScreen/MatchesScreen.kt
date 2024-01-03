@@ -24,6 +24,8 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.State
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -50,6 +52,7 @@ fun MatchesScreen(onClickSingleTeam : (String?) -> Unit) {
     }
     val liveMatchesValues = viewModel.liveMatchesValues
     val upcomingsMatchesValues = viewModel.upcomingMatchesValues
+    val loadingState by viewModel.loadingState.collectAsState()
 
 /*
     val allPlayerImages = viewModel.allPlayerImages.collectAsState()
@@ -80,14 +83,16 @@ fun MatchesScreen(onClickSingleTeam : (String?) -> Unit) {
                 teamTwoOnClick = { onClickSingleTeam(item.awayTeam.id.toString()) }
             )
         }
-        item{
-            Row (
-                modifier = Modifier.fillMaxWidth(),
-                horizontalArrangement = Arrangement.Center
-            ){
-                loadMatchesButton {
-                    viewModel.viewModelScope.launch {
-                        viewModel.loadUpcomingMatches()
+        if(loadingState){
+            item{
+                Row (
+                    modifier = Modifier.fillMaxWidth(),
+                    horizontalArrangement = Arrangement.Center
+                ){
+                    loadMatchesButton {
+                        viewModel.viewModelScope.launch {
+                            viewModel.loadUpcomingMatches()
+                        }
                     }
                 }
             }
