@@ -73,7 +73,7 @@ class MatchesScreenViewModel: ViewModel() {
 
     var nextDayInSeconds = System.currentTimeMillis()/1000
 
-    private val _loadingState = MutableStateFlow(false)
+    private val _loadingState = MutableStateFlow(true)
     val loadingState: StateFlow<Boolean> get() = _loadingState
 
     private var dataLoaded = false
@@ -111,6 +111,7 @@ class MatchesScreenViewModel: ViewModel() {
         if (dataLoaded){
             return
         }
+
         dataLoaded = true
         viewModelScope.launch {
             CoroutineScope(Dispatchers.IO).launch {
