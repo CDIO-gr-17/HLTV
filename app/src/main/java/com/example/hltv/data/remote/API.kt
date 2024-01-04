@@ -25,12 +25,9 @@ val mutexForAPI = Mutex()
 
 suspend fun waitForAPI(){
 
-    //TODO: This needs to be optimized because it assumes that all other operations take 0 time. Set to 200 because 166 sometimes gives errors
-
 
     mutexForAPI.withLock {
 
-        //Seems to save 1 ish second, so slightly slower than the one below, but is stable? [No, its not. Or someone else is using the app] Please combine
         //Mixing these two seemed to break it, so fix that
         val delta = ((lastAPIPull + MILISBETWEENREQUEST) - java.util.Date().time)
         Log.d("waitForAPI", "Waiting: " + delta.toString())
