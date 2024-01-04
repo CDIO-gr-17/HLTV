@@ -4,6 +4,7 @@ package com.example.hltv
 
 import android.annotation.SuppressLint
 import android.os.Bundle
+import android.util.Log
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.compose.foundation.layout.padding
@@ -22,6 +23,8 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.res.vectorResource
@@ -64,22 +67,19 @@ fun HLTVApp() {
         Scaffold(topBar = {
             CenterAlignedTopAppBar(
                 title = {
-
                     if (currentScreen == SingleTeam) {
-                        var teamName = mutableStateOf("Team info")
-                        CoroutineScope(Dispatchers.IO).launch { //TODO: THIS BAD!
-
+                        var teamName by remember{ mutableStateOf("Team info")}
+                        CoroutineScope(Dispatchers.IO).launch {
                             var teamID = currentBackStack?.arguments?.getString("teamID")
                             teamID = teamID?.removePrefix("{teamID}")
                             val teamIDInt = teamID?.toInt()
-
                             if (teamIDInt != null) {
-                                teamName.value = getTeamNameFromID(teamIDInt)!!
+                                teamName = getTeamNameFromID(teamIDInt)!!
                             } else {
-                                teamName.value = "Team info"
+                                teamName = "Team info"
                             }
                         }
-                        Text(text = teamName.value)
+                        Text(text = teamName)
                     } else {
                         Text(text = currentScreen.name)
                     }
