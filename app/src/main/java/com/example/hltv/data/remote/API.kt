@@ -30,9 +30,6 @@ suspend fun waitForAPI(){
 
     mutexForAPI.withLock {
 
-
-        delay(MILISBETWEENREQUEST)
-        /*
         //Seems to save 1 ish second, so slightly slower than the one below, but is stable? [No, its not. Or someone else is using the app] Please combine
         //Mixing these two seemed to break it, so fix that
         val delta = ((lastAPIPull + MILISBETWEENREQUEST) - java.util.Date().time)
@@ -40,7 +37,7 @@ suspend fun waitForAPI(){
         delay(delta)
         lastAPIPull = java.util.Date().time
 
-         */
+
 
 
 
