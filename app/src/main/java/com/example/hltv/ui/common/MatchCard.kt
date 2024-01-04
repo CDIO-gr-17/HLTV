@@ -36,6 +36,7 @@ fun MatchCard(){
 @Composable
 fun LiveMatchCard(
     modifier: Modifier = Modifier,
+    title: String = "Your match is live!",
     teamOneName: String,
     teamOneIcon: Painter,
     teamOneScore: Int,
@@ -48,7 +49,7 @@ fun LiveMatchCard(
     ) {
     CommonCard(
         modifier = modifier.testTag("LiveMatchCard"),
-        headText = "Your match is live!",
+        headText = title,
         image = painterResource(id = R.drawable.pngtree_icon_live_streaming_vector_png_image_4643886),
         bottomBox = {
             Row {
