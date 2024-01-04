@@ -23,6 +23,7 @@ import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonColors
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Card
+import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -88,20 +89,26 @@ fun MatchesScreen(onClickSingleTeam : (String?) -> Unit, onClickSingleMatch : (S
                 teamTwoOnClick = { onClickSingleTeam(item.awayTeam.id.toString()) }
             )
         }
-        if(!loadingState){
-            Log.i("loadingState", "$loadingState")
-            item{
-                AnimatedVisibility(visible = !loadingState) {  //maybe make this a loading bar instead?
-                    Row (
-                        modifier = Modifier.fillMaxWidth(),
-                        horizontalArrangement = Arrangement.Center
-                    ){
-                        loadMatchesButton {
-                            viewModel.viewModelScope.launch {
-                                viewModel.loadUpcomingMatches()
-                            }
+        Log.i("loadingState", "$loadingState")
+        item{
+            AnimatedVisibility(visible = !loadingState) {  //maybe make this a loading bar instead?
+                Row (
+                    modifier = Modifier.fillMaxWidth(),
+                    horizontalArrangement = Arrangement.Center
+                ){
+                    loadMatchesButton {
+                        viewModel.viewModelScope.launch {
+                            viewModel.loadUpcomingMatches()
                         }
                     }
+                }
+            }
+            AnimatedVisibility(visible = loadingState) {
+                Row(
+                    modifier = Modifier.fillMaxWidth(),
+                    horizontalArrangement = Arrangement.Center
+                ) {
+                    CircularProgressIndicator(color = MaterialTheme.colorScheme.secondaryContainer)
                 }
             }
         }
