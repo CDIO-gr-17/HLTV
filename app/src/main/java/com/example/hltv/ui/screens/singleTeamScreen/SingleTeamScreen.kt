@@ -32,7 +32,7 @@ import com.example.hltv.ui.common.CommonCard
 
 
 @Composable
-fun SingleTeamScreen(teamID : String? = "364378", onClickSinglePlayer: (String?) -> Unit){
+fun SingleTeamScreen(teamID : String? = "364378", onClickSinglePlayer: (String?) -> Unit, onClickSingleTeam: (String?) -> Unit, onClickSingleMatch: (String?) -> Unit){
     val viewModel : SingleTeamViewModel = viewModel()
     LaunchedEffect(teamID){
         viewModel.loadData(teamID!!)
@@ -72,10 +72,12 @@ fun SingleTeamScreen(teamID : String? = "364378", onClickSinglePlayer: (String?)
                     LazyColumn (Modifier.fillParentMaxHeight()) {
                         items(recentMatches.size) { index ->
                             recentMatches(
+                                modifier = Modifier.clickable { onClickSingleMatch(recentMatches[index].matchID.toString()) },
                                 team1 = recentMatches[index].homeTeam?.name,
                                 team2 = recentMatches[index].awayTeam?.name,
                                 imageTeam1 = rememberAsyncImagePainter(recentMatches[index].homeTeamImage),
                                 imageTeam2 = rememberAsyncImagePainter(recentMatches[index].awayTeamImage),
+                                team2OnClick = { onClickSingleTeam(recentMatches[index].awayTeam?.id.toString()) },
                                 score = recentMatches[index].homeScore?.display.toString() + " - " + recentMatches[index].awayScore?.display.toString(),
                                 date = recentMatches[index].startTimestamp.toString()
                             )
@@ -187,20 +189,22 @@ fun overviewInfo(
 
 @Composable
 fun recentMatches(
+    modifier: Modifier = Modifier,
     team1: String ?= null,
     team2: String ?= null,
     imageTeam1: Painter,
     imageTeam2: Painter,
+    team2OnClick: () -> Unit,
     score: String ?= null,
     date: String ?= null,
-
+    matchID: Int ?= null
 ){
     CommonCard(
         modifier = Modifier.fillMaxWidth(),
         topBox = {
             Box {
                 Row (
-                    modifier = Modifier
+                    modifier = modifier
                         .fillMaxWidth()
                 ){
                     Row (
@@ -241,6 +245,7 @@ fun recentMatches(
                         verticalAlignment = Alignment.CenterVertically,
                         horizontalArrangement = Arrangement.End,
                         modifier = Modifier.weight(0.4f)
+                            .clickable { team2OnClick() }
                     ){
                         Text(
                             text = team2 ?: "Team 2",

@@ -29,13 +29,15 @@ fun MatchCard(){
         teamOneIcon = painterResource(id = R.drawable.astralis_logo),
         teamTwoName = "Astralis2",
         teamTwoIcon = painterResource(id = R.drawable.astralis_logo),
-        matchDate = "Tuesday 22/10 - 18:00"
+        matchDate = "Tuesday 22/10 - 18:00",
+        tournamentIcon = painterResource(id = R.drawable.astralis_logo)
     )
 }
 
 @Composable
 fun LiveMatchCard(
     modifier: Modifier = Modifier,
+    title: String = "Your match is live!",
     teamOneName: String,
     teamOneIcon: Painter,
     teamOneScore: Int,
@@ -48,7 +50,7 @@ fun LiveMatchCard(
     ) {
     CommonCard(
         modifier = modifier.testTag("LiveMatchCard"),
-        headText = "Your match is live!",
+        headText = title,
         image = painterResource(id = R.drawable.pngtree_icon_live_streaming_vector_png_image_4643886),
         bottomBox = {
             Row {
@@ -127,12 +129,13 @@ fun UpcomingMatchCard(
     teamTwoName: String,
     teamTwoIcon: Painter,
     teamTwoOnClick: (() -> Unit?)? = null,
-    matchDate: String
-
+    matchDate: String,
+    tournamentIcon: Painter
     ) {
     CommonCard(
         modifier = modifier.testTag("UpcomingMatchCard"),
         headText = matchDate,
+        image = tournamentIcon,
         bottomBox = {
             Row {
                 Column(horizontalAlignment = Alignment.CenterHorizontally,

@@ -5,6 +5,7 @@ import android.util.Log
 import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
+import com.example.hltv.R
 import com.example.hltv.data.remote.APIResponse
 import com.example.hltv.data.remote.Country
 import com.example.hltv.data.remote.Map
@@ -40,6 +41,7 @@ data class RecentMatch(
     val awayScore: Score? = null,
     val startTimestamp: String? = null,
     val bestOf: Int? = null,
+    val matchID: Int? = null
 )
 data class RecentGame(
     val homeScore: Score? = null,
@@ -83,6 +85,7 @@ class SingleTeamViewModel : ViewModel() {
         }
         dataLoaded = true
 
+
         val teamID = teamIDString.removePrefix("{teamID}").toInt()
         val lineup = CompletableDeferred<PlayerGroup?>()
 
@@ -102,7 +105,6 @@ class SingleTeamViewModel : ViewModel() {
                         Log.i("asdasd", "Also loading here")
                         lineup.complete(getPlayersFromEvent(event.id).home)
                     }
-
                 }
                 if (teamID != event.homeTeam.id) {
                     team1 = event.awayTeam
@@ -113,7 +115,6 @@ class SingleTeamViewModel : ViewModel() {
                         Log.i("asdasd", "Loading here")
                         lineup.complete(getPlayersFromEvent(event.id).away)
                     }
-
                 }
                 val date = Date(event.startTimestamp?.toLong()?.times(1000) ?: 0)
                 val dateFormat = SimpleDateFormat("dd MMM.")
@@ -127,6 +128,7 @@ class SingleTeamViewModel : ViewModel() {
                     awayScore = team2score,
                     startTimestamp = formattedDate,
                     bestOf = event.bestOf,
+                    matchID = event.id
                 )
                 recentMatches.add(recentMatch)
                 Log.w(

@@ -16,6 +16,7 @@ import com.example.hltv.data.remote.getPlayerImage
 import com.example.hltv.data.remote.getPlayersFromEvent
 import com.example.hltv.data.remote.getTeamImage
 import com.example.hltv.data.remote.getMatchesFromDay
+import com.example.hltv.data.remote.getTournamentLogo
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Deferred
 import kotlinx.coroutines.Dispatchers
@@ -65,15 +66,18 @@ data class img(
 class MatchesScreenViewModel: ViewModel() {
     val liveMatchesValues = mutableStateListOf<Event>()
     val upcomingMatchesValues = mutableStateListOf<Event>()
+    val tournamentValues = mutableStateListOf<Event>()
 
     var upcomingMatchIndex = 0
+    var tournamentIndex = 0
 
     val awayTeamIcons = MutableList<Bitmap?>(999){null}
     val homeTeamIcons = MutableList<Bitmap?>(999){null}
+    val tournamentIcons = MutableList<Bitmap?>(999){null}
 
     var nextDayInSeconds = System.currentTimeMillis()/1000
 
-    private val _loadingState = MutableStateFlow(false)
+    private val _loadingState = MutableStateFlow(true)
     val loadingState: StateFlow<Boolean> get() = _loadingState
 
     private var dataLoaded = false
@@ -92,9 +96,14 @@ class MatchesScreenViewModel: ViewModel() {
                                 event.startTimestamp!! > (System.currentTimeMillis() / 1000) && //Excludes matches where the startTimestamp has passed (i.e it is live or has been played)
                                 event !in upcomingMatchesValues) { //Questionable, but seems to work
                                 upcomingMatchesValues.add(upcomingMatchIndex, event)
+                                tournamentValues.add(tournamentIndex,event)
                                 homeTeamIcons[liveMatchesValues.size + upcomingMatchIndex] = (getTeamImage(event.homeTeam.id))
                                 awayTeamIcons[liveMatchesValues.size + upcomingMatchIndex] = (getTeamImage(event.awayTeam.id))
+                                tournamentIcons[tournamentIndex] = getTournamentLogo(event.tournament?.uniqueTournament?.id)
+                                Log.i("Compare","${awayTeamIcons[liveMatchesValues.size + upcomingMatchIndex]}")
+                                Log.i("tournamentLogo2", "Added tournamentLogo from tournament ${event.tournament?.name}, ${event.tournament?.uniqueTournament?.name} to ${tournamentIcons[tournamentIndex]} at $tournamentIndex")
                                 upcomingMatchIndex++
+                                tournamentIndex++
                             }
                         }
                     }
@@ -111,6 +120,7 @@ class MatchesScreenViewModel: ViewModel() {
         if (dataLoaded){
             return
         }
+
         dataLoaded = true
         viewModelScope.launch {
             CoroutineScope(Dispatchers.IO).launch {

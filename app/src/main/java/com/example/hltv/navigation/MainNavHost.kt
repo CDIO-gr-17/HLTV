@@ -37,7 +37,8 @@ fun MainNavHost(navController: NavHostController, modifier: Modifier) {
                 onClickSingleTeam = { navController.navigate(SingleTeam.route + it)})
         }
         composable(route = News.route) {
-            NewsScreen { navController.navigate(SinglePlayer.route + it) } //How it work? It just no. Ninjutsu
+            NewsScreen({ navController.navigate(SinglePlayer.route + it) },
+                { navController.navigate(SingleTeam.route + it) })  //How it work? It just no. Ninjutsu
         }
         composable(route = Settings.route) {
             SettingsScreen()
@@ -49,9 +50,10 @@ fun MainNavHost(navController: NavHostController, modifier: Modifier) {
             arguments = listOf(navArgument("teamID") { type = NavType.StringType }))
         { backStackEntry ->
             Log.i("MainNavHost", backStackEntry.toString())
-            SingleTeamScreen(backStackEntry.arguments?.getString("teamID")){
-                navController.navigate(SinglePlayer.route + it)
-            }
+            SingleTeamScreen(backStackEntry.arguments?.getString("teamID"),
+                {navController.navigate(SinglePlayer.route + it)},
+                {navController.navigate(SingleTeam.route + it) },
+                {navController.navigate(SingleMatch.route + it) })
         }
         composable(route = SingleMatch.route,
             arguments = listOf(navArgument("matchID") { type = NavType.StringType }))

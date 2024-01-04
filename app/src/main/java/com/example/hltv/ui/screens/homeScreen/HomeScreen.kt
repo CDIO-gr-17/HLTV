@@ -27,13 +27,22 @@ import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.lifecycle.viewmodel.compose.viewModel
 import coil.compose.rememberAsyncImagePainter
+import com.example.hltv.data.convertTimestampToDateClock
 import com.example.hltv.ui.common.LiveMatchCard
+import com.example.hltv.ui.common.UpcomingMatchCard
+import com.example.hltv.ui.screens.matchesScreen.MatchesScreenViewModel
 
 val M = MaterialTheme
 
 @Composable
 fun HomeScreen() {
+
+    val viewModel : HomeScreenViewModel = viewModel()
+    viewModel.loadData()
+
+
     Column(
         horizontalAlignment = Alignment.CenterHorizontally,
         modifier = Modifier
@@ -41,17 +50,30 @@ fun HomeScreen() {
             .testTag("HomeScreen")
     ) {
 
-        LiveMatchCard(
-            modifier = Modifier,
-            teamOneName = "Astralis",
-            teamOneIcon = rememberAsyncImagePainter(model = "https://static.hltv.org/images/team/logo/6665"),
-            teamOneScore = 16,
-            teamOneOnClick = {},
-            teamTwoName = "Navi",
-            teamTwoIcon = rememberAsyncImagePainter(model = "https://static.hltv.org/images/team/logo/4608"),
-            teamTwoScore = 14,
-            teamTwoOnClick = {},
-        )
+         if (viewModel.liveMatchValue.value != null){
+            LiveMatchCard(
+                title = "Highlighted match",
+                modifier = Modifier,
+                teamOneName = viewModel.liveMatchValue.value!!.homeTeam.name?:"Unknown",
+                teamOneIcon = rememberAsyncImagePainter(model = viewModel.homeTeamIcon.value),
+                teamOneScore = viewModel.liveMatchValue.value!!.homeScore?.current ?: 0,
+                teamOneOnClick = {},
+                teamTwoName = viewModel.liveMatchValue.value!!.awayTeam.name?:"Unknown",
+                teamTwoIcon = rememberAsyncImagePainter(model = viewModel.awayTeamIcon.value),
+                teamTwoScore = viewModel.liveMatchValue.value!!.awayScore?.current ?: 0,
+                teamTwoOnClick = {},
+            )
+        } else if (viewModel.upcomingMatchValue.value != null){
+            UpcomingMatchCard(
+                teamOneName = viewModel.upcomingMatchValue.value!!.homeTeam.name?: "Unknown",
+                teamOneIcon = rememberAsyncImagePainter(model = viewModel.homeTeamIcon.value),
+                teamTwoName = viewModel.upcomingMatchValue.value!!.awayTeam.name?: "Unknown",
+                teamTwoIcon = rememberAsyncImagePainter(model = viewModel.awayTeamIcon.value),
+                matchDate = convertTimestampToDateClock(viewModel.upcomingMatchValue.value!!.startTimestamp),
+                tournamentIcon = rememberAsyncImagePainter(model = viewModel.awayTeamIcon.value)
+            )
+
+         }
 
         Divider(modifier = Modifier.padding(horizontal = 8.dp), color = M.colorScheme.onBackground)
         Card(
