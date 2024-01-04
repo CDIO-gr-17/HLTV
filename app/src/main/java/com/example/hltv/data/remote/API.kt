@@ -262,7 +262,10 @@ suspend fun getMatchesFromDay(timestamp: String): APIResponse.EventsWrapper {
         APIKEY,
         APIResponse.EventsWrapper::class.java
     ) as APIResponse.EventsWrapper
-    matchesFromDay.events = matchesFromDay.events.subList(0,matchesFromDay.events.size-1)
+    if (matchesFromDay.events.size == 0){
+        Log.i("getMatchesFromDay","There are no more matches to load")
+    }
+    matchesFromDay.events = matchesFromDay.events.subList(0,(maxOf(matchesFromDay.events.size-1,0)))
     return matchesFromDay
 }
 /*
