@@ -13,16 +13,18 @@ import kotlinx.coroutines.launch
 
 class SingleMatchViewModel(var matchID: String?) : ViewModel() {
     var prediction: MutableState<Prediction> = mutableStateOf(Prediction(0, 0))
+    val niceMatchID = matchID!!.removePrefix("{matchID}").toInt()
 
     init {
         CoroutineScope(Dispatchers.IO).launch {
+
             getPrediction()
         }
     }
     fun getPrediction() {
         CoroutineScope(Dispatchers.IO).launch {
             val tempPrediction =
-                getPredictionFromFirestore(matchID!!.removePrefix("{matchID}").toInt())
+                getPredictionFromFirestore(niceMatchID)
             if (tempPrediction == null) {
                 prediction.value = Prediction(0, 0)
                 return@launch
@@ -49,7 +51,7 @@ class SingleMatchViewModel(var matchID: String?) : ViewModel() {
                 return@launch
             }
             calculateVotePercentage(prediction.value)
-            sendPredictionToFirestore(prediction.value, matchID!!.removePrefix("{matchID}").toInt())
+            sendPredictionToFirestore(prediction.value, niceMatchID)
         }
     }
     fun calculateVotePercentage(prediction: Prediction) {
