@@ -1,4 +1,4 @@
-package com.example.hltv.ui.common
+package com.example.hltv.ui.screens.singleMatch
 
 
 import androidx.compose.foundation.Image
@@ -11,31 +11,39 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.CheckCircle
+import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.MutableState
+import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.painter.Painter
-import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
-import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.example.hltv.ui.common.CommonCard
 
-var hasVoted : MutableState<Boolean> = mutableStateOf(false)
-val borderColor : MutableState<Color> = mutableStateOf(Color.Black)
-val borderWidth : MutableState<Dp> = mutableStateOf(2.dp)
 
+class PredictionCardState {
+    var hasVoted by mutableStateOf(false)
+    var isHomeTeamSelected by mutableStateOf(false)
+}
 @Composable
 fun PredictionCard(
     modifier: Modifier = Modifier,
@@ -43,7 +51,10 @@ fun PredictionCard(
     teamTwoIcon: Painter,
     teamOneColor: Color = Color.Blue,
     teamTwoColor: Color = Color.Red,
+    viewModel : SingleMatchViewModel
 ) {
+    var hasVoted by remember { mutableStateOf(false)}
+    var isHomeTeamSelected by remember {mutableStateOf(false)}
     CommonCard(modifier = modifier, customInnerPadding = 0.dp, topBox = {
         Box(
             modifier = Modifier
@@ -71,7 +82,6 @@ fun PredictionCard(
                         color = MaterialTheme.colorScheme.onPrimaryContainer,
                     )
                 }
-
             }
         }
     }, bottomBox = {
@@ -83,8 +93,7 @@ fun PredictionCard(
                         listOf(
                             teamOneColor, teamTwoColor
                         ),
-
-                        )
+                    )
                 )
         ) {
             Row(
@@ -99,8 +108,17 @@ fun PredictionCard(
                 drawCircle(
                     modifier = modifier,
                     teamIcon = teamOneIcon,
+                    voteCount = viewModel.prediction.value.homeTeamVotePercentage,
+                    hometeam = true,
+                    hasVoted = hasVoted,
+                    isHomeTeamSelected = isHomeTeamSelected,
                     onClick = {
-                        hasVoted = mutableStateOf(true)
+                        if (hasVoted) {
+                            return@drawCircle
+                        }
+                        hasVoted = true
+                        isHomeTeamSelected = true
+                        viewModel.updatePrediction(1)
                     }
                 )
                 Text(
@@ -111,13 +129,22 @@ fun PredictionCard(
                     fontSize = 65.sp,
                     color = MaterialTheme.colorScheme.onPrimaryContainer,
                     textAlign = TextAlign.Center,
-                    fontWeight = androidx.compose.ui.text.font.FontWeight.Bold,
+                    fontWeight = FontWeight.Bold,
                     )
                 drawCircle(
                     modifier = modifier,
                     teamIcon = teamTwoIcon,
+                    voteCount = viewModel.prediction.value.awayTeamVotePercentage,
+                    hometeam = false,
+                    hasVoted = hasVoted,
+                    isHomeTeamSelected = isHomeTeamSelected,
                     onClick = {
-                        hasVoted = mutableStateOf(true)
+                        if (hasVoted) {
+                            return@drawCircle
+                        }
+                        hasVoted = true
+                        isHomeTeamSelected = false
+                        viewModel.updatePrediction(2)
                     }
                 )
             }
@@ -126,52 +153,64 @@ fun PredictionCard(
 }
 
 @Composable
-private fun drawCircle(modifier: Modifier, teamIcon: Painter, onClick: () -> Unit) {
-    Box(modifier =
-    if (hasVoted.value) {
-        modifier
-            .size(100.dp)
-            .border(4.dp, Color.White, CircleShape)
-            .clip(CircleShape)
-            .background(MaterialTheme.colorScheme.onPrimaryContainer)
-            .clickable {
-                onClick()
+private fun drawCircle(
+    modifier: Modifier,
+    teamIcon: Painter,
+    voteCount: Int,
+    hometeam: Boolean,
+    hasVoted: Boolean,
+    isHomeTeamSelected: Boolean,
+    onClick: () -> Unit
+) {
+    Column {
+        Box(
+            modifier =
+                modifier
+                    .size(100.dp)
+                    .border(when {hasVoted -> 4.dp else -> 2.dp}, if (hasVoted) Color.White else Color.Black, CircleShape)//here TODO
+                    .clip(CircleShape)
+                    .background(MaterialTheme.colorScheme.onPrimaryContainer)
+                    .clickable {
+                        onClick()
+                    }
+        ) {
+            Image(
+                painter = teamIcon,
+                contentDescription = "teamIcon",
+                modifier = Modifier
+                    .fillMaxSize()
+                    .align(Alignment.Center)
+                    .padding(16.dp)
+            )
+        }
+        if (hasVoted){
+                Icon(
+                    imageVector = Icons.Default.CheckCircle,
+                    contentDescription = "mark",
+                    tint = Color.Black,
+                    modifier = Modifier
+                        .align(Alignment.CenterHorizontally)
+                        .offset(y = (-30).dp, x = (25).dp)
+                        .size(35.dp)
+                        .alpha(
+                            if ((isHomeTeamSelected && hometeam) || (!hometeam && !isHomeTeamSelected)) {
+                                1f
+                            } else {
+                                0f
+                            }
+                        )
+                )
+                Text(
+                    text = voteCount.toString() + "%",
+                    modifier = Modifier
+                        .align(Alignment.CenterHorizontally)
+                        .offset(y = (-25).dp),
+                    fontSize = 20.sp,
+                    textAlign = TextAlign.Center,
+                )
             }
-    } else {
-        modifier
-            .size(100.dp)
-            .border(2.dp, Color.Black, CircleShape)
-            .clip(CircleShape)
-            .background(MaterialTheme.colorScheme.onPrimaryContainer)
-            .clickable {
-                onClick()
-            }
-    }
-
-    ) {
-        Image(
-            painter = teamIcon,
-            contentDescription = "teamIcon",
-            modifier = Modifier
-                .fillMaxSize()
-                .align(Alignment.Center)
-                .padding(16.dp)
-        )
-        if (hasVoted.value) drawText()
-
-    }
-
-}
-fun drawText() {
-
-}
-
+    }}
 @Preview
 @Composable
 fun PredictionCardPreview() {
-    PredictionCard(
-        teamOneIcon = painterResource(id = com.example.hltv.R.drawable.astralis_logo),
-        teamTwoIcon = painterResource(id = com.example.hltv.R.drawable.astralis_logo),
-
-    )
 }

@@ -27,16 +27,21 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.painter.Painter
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.hltv.R
+import com.example.hltv.R
 
 @Composable
-fun SingleMatchScreen(viewModel: SingleMatchViewModel){
-val R = MaterialTheme
-    val singlematches by viewModel.matches.collectAsState()
-//teamCard(modifier = Modifier, R = R, text1 = singlematches.toString(), text2 = "test")
+fun SingleMatchScreen(matchID : String?){
+    val viewModel = SingleMatchViewModel(matchID)
+
+    PredictionCard(teamOneIcon = painterResource(id = R.drawable.astralis_logo), teamTwoIcon = painterResource(
+        id = R.drawable.astralis_logo
+    ) , viewModel = viewModel)
+
 }
 
 @Composable
@@ -118,6 +123,6 @@ fun EventImage(
 @Composable
 fun SingleMatchScreenPreview() {
     SingleMatchScreen(viewModel = SingleMatchViewModel())
-    EventImage(teamLogo1 = painterResource(id = R.drawable.astralis_logo), teamLogo2 = painterResource(id = R.drawable.astralis_logo), scoreText = "10 - 10")
+
 
 }

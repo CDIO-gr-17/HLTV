@@ -2,23 +2,27 @@ package com.example.hltv.ui.screens.matchesScreen
 
 import android.graphics.Bitmap
 import android.util.Log
+import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.mutableStateListOf
+import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.example.hltv.data.convertTimestampToDateURL
 import com.example.hltv.data.remote.APIResponse
 import com.example.hltv.data.remote.Event
 import com.example.hltv.data.remote.getLiveMatches
+import com.example.hltv.data.remote.getMatchesFromDay
 import com.example.hltv.data.remote.getPlayerImage
 import com.example.hltv.data.remote.getPlayersFromEvent
 import com.example.hltv.data.remote.getTeamImage
-import kotlinx.coroutines.CompletableDeferred
+import com.example.hltv.data.remote.getMatchesFromDay
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Deferred
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.async
 import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
 
 data class TeamPlayerImages(
@@ -59,26 +63,67 @@ data class img(
 )
 
 class MatchesScreenViewModel: ViewModel() {
-    val teamValues = mutableStateListOf<Event>()
+    val liveMatchesValues = mutableStateListOf<Event>()
+    val upcomingMatchesValues = mutableStateListOf<Event>()
 
-    val awayTeamIcons = MutableList<Bitmap?>(20){null}
-    val homeTeamIcons = MutableList<Bitmap?>(20){null}
+    var upcomingMatchIndex = 0
 
+    val awayTeamIcons = MutableList<Bitmap?>(999){null}
+    val homeTeamIcons = MutableList<Bitmap?>(999){null}
+
+    var nextDayInSeconds = System.currentTimeMillis()/1000
+
+    private val _loadingState = MutableStateFlow(false)
+    val loadingState: StateFlow<Boolean> get() = _loadingState
+
+    private var dataLoaded = false
+    suspend fun loadUpcomingMatches(){
+
+            _loadingState.value = true
+            Log.i("loadUpcomingMatches", "Loading state set to true")
+            viewModelScope.launch {
+                CoroutineScope(Dispatchers.IO).launch {
+                    Log.i("upcomings","nextdayinsceonds : $nextDayInSeconds")
+                    val upcomingMatches = getMatchesFromDay(convertTimestampToDateURL((nextDayInSeconds).toInt()))
+                    upcomingMatches.events = upcomingMatches.events.sortedBy { it.startTimestamp }
+                    if(upcomingMatches.events.isNotEmpty()){
+                        for ((index, event) in upcomingMatches.events.withIndex()) {
+                            if (event.startTimestamp?.toLong() != null &&  //Makes sure that the upcoming match has an associated startTimestamp
+                                event.startTimestamp!! > (System.currentTimeMillis() / 1000)) {  //Excludes matches where the startTimestamp has passed (i.e it is live or has been played)
+                                upcomingMatchesValues.add(upcomingMatchIndex, event)
+                                homeTeamIcons[liveMatchesValues.size + upcomingMatchIndex] = (getTeamImage(event.homeTeam.id))
+                                awayTeamIcons[liveMatchesValues.size + upcomingMatchIndex] = (getTeamImage(event.awayTeam.id))
+                                upcomingMatchIndex++
+                            }
+                        }
+                    }
+                    nextDayInSeconds += (24 * 60 * 60)
+                    Log.i("upcomings","nextdayinsceonds : $nextDayInSeconds")
+                    _loadingState.value = false
+
+                }
+            }
+
+
+    }
     fun loadData(){
+        if (dataLoaded){
+            return
+        }
+        dataLoaded = true
         viewModelScope.launch {
-
             CoroutineScope(Dispatchers.IO).launch {
                 val liveMatches = getLiveMatches()
                 if (liveMatches.events.isNotEmpty()) {
                     for ((index, event) in liveMatches.events.withIndex()) {
-                        teamValues.add(event)
+                        liveMatchesValues.add(event)
                         homeTeamIcons[index] = (getTeamImage(event.homeTeam.id))
                         awayTeamIcons[index] = (getTeamImage(event.awayTeam.id))
                     }
-
                 } else {
                     Log.w(this.toString(), "There were no live matches?")
                 }
+                loadUpcomingMatches()
             }
         }
     }

@@ -24,7 +24,7 @@ import java.text.SimpleDateFormat
 import java.util.Date
 
 
-var called = false;
+var called = false
 
 data class SingleTeam(
     val eventsWrapper: APIResponse.EventsWrapper
@@ -49,7 +49,7 @@ data class Stats(
     val country: Country ?= null,
     val avgAgeofPlayers : Double ?= null,
 )
-class SingleTeamViewModel(): ViewModel() {
+class SingleTeamViewModel : ViewModel() {
 
     val recentMatches = mutableStateListOf<RecentMatch>()
     val playerOverview = mutableStateListOf<Player>()
@@ -64,9 +64,18 @@ class SingleTeamViewModel(): ViewModel() {
     var playersWithAge : Int = 0
     var teamID = 0
     val playersDateOfBirthTimestamp = mutableStateListOf<Int>()
-    fun loadData(teamIDString: String){
-        val teamID = teamIDString.removePrefix("{teamID}").toInt()
 
+    var dataLoaded = false
+    fun loadData(teamIDString: String){
+
+        //I love how jank this is but it works, I think. Loading a new team loads a new viewmodel
+        //where dataloaded will default to false, so I think it works?
+        if (dataLoaded){
+            return
+        }
+        dataLoaded = true
+
+        val teamID = teamIDString.removePrefix("{teamID}").toInt()
         val lineup = CompletableDeferred<PlayerGroup?>()
 
         CoroutineScope(Dispatchers.IO).launch {

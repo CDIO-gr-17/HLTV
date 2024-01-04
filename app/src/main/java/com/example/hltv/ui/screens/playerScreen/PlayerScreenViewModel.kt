@@ -20,7 +20,7 @@ data class SinglePlayerData(
     //TODO: add stats?
 )
 
-class PlayerScreenViewModel(){
+class PlayerScreenViewModel {
 
     private val _singlePlayerData = MutableStateFlow<SinglePlayerData>(SinglePlayerData())
     val singlePlayerData = _singlePlayerData.asStateFlow()
