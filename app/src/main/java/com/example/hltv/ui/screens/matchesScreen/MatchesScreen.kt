@@ -18,6 +18,8 @@ import androidx.compose.foundation.layout.wrapContentSize
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material3.Button
+import androidx.compose.material3.ButtonColors
+import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Card
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
@@ -73,6 +75,7 @@ fun MatchesScreen(onClickSingleTeam : (String?) -> Unit) {
             )
         }
         items(upcomingsMatchesValues) { item ->
+            Log.i("upcomingMatch", "Displaying new match")
             UpcomingMatchCard(
                 teamOneName = item.homeTeam.name.toString(),
                 teamOneIcon = rememberAsyncImagePainter(viewModel.homeTeamIcons[liveMatchesValues.size + upcomingsMatchesValues.indexOf(item)]),
@@ -84,6 +87,7 @@ fun MatchesScreen(onClickSingleTeam : (String?) -> Unit) {
             )
         }
         if(!loadingState){
+            Log.i("loadingState", "$loadingState")
             item{
                 Row (
                     modifier = Modifier.fillMaxWidth(),
@@ -103,14 +107,17 @@ fun MatchesScreen(onClickSingleTeam : (String?) -> Unit) {
 @Composable
 fun loadMatchesButton(function: () -> Unit) {
     Button(
-        modifier = Modifier.background(MaterialTheme.colorScheme.primaryContainer),
-        onClick = function
+        //modifier = Modifier.background(MaterialTheme.colorScheme.primaryContainer),
+        onClick = function,
+        colors = ButtonDefaults.buttonColors(
+            containerColor = MaterialTheme.colorScheme.secondaryContainer
+        )
     ) {
         Row {
             Text(
                 text = "Load more matches",
                 fontSize = MaterialTheme.typography.bodyLarge.fontSize,
-                color = MaterialTheme.colorScheme.onPrimaryContainer
+                color = MaterialTheme.colorScheme.onSecondaryContainer
             )
 
         }

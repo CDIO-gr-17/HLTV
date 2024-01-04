@@ -77,9 +77,9 @@ class MatchesScreenViewModel: ViewModel() {
     suspend fun loadUpcomingMatches(){
         try{
             _loadingState.value = true
+            Log.i("loadUpcomingMatches", "Loading state set to true")
             viewModelScope.launch {
                 CoroutineScope(Dispatchers.IO).launch {
-                    Log.i("upcomings","nextdayinsceonds : $nextDayInSeconds")
                     val upcomingMatches = getMatchesFromDay(convertTimestampToDateURL((nextDayInSeconds).toInt()))
                     upcomingMatches.events = upcomingMatches.events.sortedBy { it.startTimestamp }
                     if(upcomingMatches.events.isNotEmpty()){
@@ -87,10 +87,8 @@ class MatchesScreenViewModel: ViewModel() {
                             if (event.startTimestamp?.toLong() != null &&  //Makes sure that the upcoming match has an associated startTimestamp
                                 event.startTimestamp!! > (System.currentTimeMillis() / 1000)) {  //Excludes matches where the startTimestamp has passed (i.e it is live or has been played)
                                 upcomingMatchesValues.add(upcomingMatchIndex, event)
-                                homeTeamIcons[liveMatchesValues.size + index] = (getTeamImage(event.homeTeam.id))
-                                Log.i("homeTeamIcons", "${event.homeTeam.name} logo index: ${liveMatchesValues.size + index}, (${liveMatchesValues.size} + $index)")
-                                awayTeamIcons[liveMatchesValues.size + index] = (getTeamImage(event.awayTeam.id))
-                                Log.i("awayTeamIcons", "${event.awayTeam.name} logo index: ${liveMatchesValues.size + index}, (${liveMatchesValues.size} + $index)")
+                                homeTeamIcons[liveMatchesValues.size + upcomingMatchIndex] = (getTeamImage(event.homeTeam.id))
+                                awayTeamIcons[liveMatchesValues.size + upcomingMatchIndex] = (getTeamImage(event.awayTeam.id))
                                 upcomingMatchIndex++
                             }
                         }
@@ -100,6 +98,7 @@ class MatchesScreenViewModel: ViewModel() {
             }
         } finally {
             _loadingState.value = false
+            Log.i("loadUpcomingMatches", "Loading state set to false")
         }
     }
     fun loadData(){
@@ -110,7 +109,6 @@ class MatchesScreenViewModel: ViewModel() {
                     for ((index, event) in liveMatches.events.withIndex()) {
                         liveMatchesValues.add(event)
                         homeTeamIcons[index] = (getTeamImage(event.homeTeam.id))
-                        Log.i("homeTeamIconslive", "${event.homeTeam.name} logo index: ${liveMatchesValues.size + index}")
                         awayTeamIcons[index] = (getTeamImage(event.awayTeam.id))
                     }
                 } else {
