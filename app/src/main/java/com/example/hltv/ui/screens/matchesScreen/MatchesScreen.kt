@@ -2,8 +2,10 @@ package com.example.hltv.ui.screens.matchesScreen
 import android.graphics.Bitmap
 import android.os.SystemClock.sleep
 import android.util.Log
+import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -47,14 +49,14 @@ import kotlinx.coroutines.launch
 data class ListItem(val ranking: Int, val text1: String, val text2: String)
 
 @Composable
-fun MatchesScreen(onClickSingleTeam : (String?) -> Unit) {
+fun MatchesScreen(onClickSingleTeam : (String?) -> Unit, onClickSingleMatch : (String?) -> Unit) {
     val viewModel : MatchesScreenViewModel = viewModel()
     LaunchedEffect(Unit){
         viewModel.loadData()
     }
     val liveMatchesValues = viewModel.liveMatchesValues
     val upcomingsMatchesValues = viewModel.upcomingMatchesValues
-    val loadingState by viewModel.loadingState
+    val loadingState by viewModel.loadingState.collectAsState()
 
 /*
     val allPlayerImages = viewModel.allPlayerImages.collectAsState()
@@ -63,7 +65,7 @@ fun MatchesScreen(onClickSingleTeam : (String?) -> Unit) {
     LazyColumn {
         items(liveMatchesValues) { item  ->
             LiveMatchCard(
-                modifier = Modifier,
+                modifier = Modifier.clickable { onClickSingleMatch(item.id.toString()) },
                 teamOneName = item.homeTeam.name.toString(),
                 teamOneIcon =  rememberAsyncImagePainter(viewModel.homeTeamIcons[liveMatchesValues.indexOf(item)]),
                 teamOneScore = item.homeScore!!.display!!.toInt(),
@@ -75,8 +77,8 @@ fun MatchesScreen(onClickSingleTeam : (String?) -> Unit) {
             )
         }
         items(upcomingsMatchesValues) { item ->
-            Log.i("upcomingMatch", "Displaying new match")
             UpcomingMatchCard(
+                modifier = Modifier.clickable { onClickSingleMatch(item.id.toString()) },
                 teamOneName = item.homeTeam.name.toString(),
                 teamOneIcon = rememberAsyncImagePainter(viewModel.homeTeamIcons[liveMatchesValues.size + upcomingsMatchesValues.indexOf(item)]),
                 teamOneOnClick = { onClickSingleTeam(item.homeTeam.id.toString()) },
@@ -89,13 +91,15 @@ fun MatchesScreen(onClickSingleTeam : (String?) -> Unit) {
         if(!loadingState){
             Log.i("loadingState", "$loadingState")
             item{
-                Row (
-                    modifier = Modifier.fillMaxWidth(),
-                    horizontalArrangement = Arrangement.Center
-                ){
-                    loadMatchesButton {
-                        viewModel.viewModelScope.launch {
-                            viewModel.loadUpcomingMatches()
+                AnimatedVisibility(visible = !loadingState) {  //maybe make this a loading bar instead?
+                    Row (
+                        modifier = Modifier.fillMaxWidth(),
+                        horizontalArrangement = Arrangement.Center
+                    ){
+                        loadMatchesButton {
+                            viewModel.viewModelScope.launch {
+                                viewModel.loadUpcomingMatches()
+                            }
                         }
                     }
                 }
@@ -241,5 +245,5 @@ fun teamCard(
 @Preview(showBackground = true)
 @Composable
 fun MatchesScreenPreview() {
-   MatchesScreen(onClickSingleTeam = { /*TODO*/ })
+   //MatchesScreen(onClickSingleTeam = { /*TODO*/ })
 }

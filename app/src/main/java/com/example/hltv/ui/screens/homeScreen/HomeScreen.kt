@@ -41,7 +41,6 @@ fun HomeScreen() {
             .testTag("HomeScreen")
     ) {
 
-
         LiveMatchCard(
             modifier = Modifier,
             teamOneName = "Astralis",
@@ -53,8 +52,6 @@ fun HomeScreen() {
             teamTwoScore = 14,
             teamTwoOnClick = {},
         )
-
-
 
         Divider(modifier = Modifier.padding(horizontal = 8.dp), color = M.colorScheme.onBackground)
         Card(

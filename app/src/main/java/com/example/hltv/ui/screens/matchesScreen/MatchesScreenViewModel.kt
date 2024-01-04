@@ -11,6 +11,7 @@ import com.example.hltv.data.convertTimestampToDateURL
 import com.example.hltv.data.remote.APIResponse
 import com.example.hltv.data.remote.Event
 import com.example.hltv.data.remote.getLiveMatches
+import com.example.hltv.data.remote.getMatchesFromDay
 import com.example.hltv.data.remote.getPlayerImage
 import com.example.hltv.data.remote.getPlayersFromEvent
 import com.example.hltv.data.remote.getTeamImage
@@ -72,14 +73,17 @@ class MatchesScreenViewModel: ViewModel() {
 
     var nextDayInSeconds = System.currentTimeMillis()/1000
 
-    private val _loadingState :  MutableState<Boolean> = mutableStateOf(false)
-    val loadingState: MutableState<Boolean> get() = _loadingState
+    private val _loadingState = MutableStateFlow(false)
+    val loadingState: StateFlow<Boolean> get() = _loadingState
+
+    private var dataLoaded = false
     suspend fun loadUpcomingMatches(){
-        try{
+
             _loadingState.value = true
             Log.i("loadUpcomingMatches", "Loading state set to true")
             viewModelScope.launch {
                 CoroutineScope(Dispatchers.IO).launch {
+                    Log.i("upcomings","nextdayinsceonds : $nextDayInSeconds")
                     val upcomingMatches = getMatchesFromDay(convertTimestampToDateURL((nextDayInSeconds).toInt()))
                     upcomingMatches.events = upcomingMatches.events.sortedBy { it.startTimestamp }
                     if(upcomingMatches.events.isNotEmpty()){
@@ -94,14 +98,19 @@ class MatchesScreenViewModel: ViewModel() {
                         }
                     }
                     nextDayInSeconds += (24 * 60 * 60)
+                    Log.i("upcomings","nextdayinsceonds : $nextDayInSeconds")
+                    _loadingState.value = false
+
                 }
             }
-        } finally {
-            _loadingState.value = false
-            Log.i("loadUpcomingMatches", "Loading state set to false")
-        }
+
+
     }
     fun loadData(){
+        if (dataLoaded){
+            return
+        }
+        dataLoaded = true
         viewModelScope.launch {
             CoroutineScope(Dispatchers.IO).launch {
                 val liveMatches = getLiveMatches()
