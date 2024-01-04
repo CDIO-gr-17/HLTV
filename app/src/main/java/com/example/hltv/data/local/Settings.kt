@@ -1,4 +1,3 @@
 package com.example.hltv.data.local
 
-class Settings {
-}
+class Settings

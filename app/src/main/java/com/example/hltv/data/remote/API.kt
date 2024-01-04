@@ -162,7 +162,7 @@ private suspend fun getAPIImage(apiURL: String, apiKEY: String): Bitmap?{
         Log.i("getAPIImage", "inputStream2 is null")
     }
     val base64String = Base64.encodeToString(output.toByteArray(), Base64.DEFAULT)
-    val decodedImage: ByteArray = android.util.Base64.decode(base64String, 0)
+    val decodedImage: ByteArray = Base64.decode(base64String, 0)
     val bitmap = BitmapFactory.decodeByteArray(decodedImage, 0, decodedImage.size)
 
     if (bitmap == null){
@@ -314,7 +314,7 @@ private suspend fun getAPIResponse(apiURL: String, apiKEY: String, desiredClass:
 
     if (jsonString != null) {
         if (jsonString.length > 100){
-            Log.i("getAPIResponse", "JSON IS: " + jsonString!!.substring(0,100) + "...")
+            Log.i("getAPIResponse", "JSON IS: " + jsonString.substring(0,100) + "...")
         } else{
             Log.i("getAPIResponse", "JSON IS: " + jsonString)
 
