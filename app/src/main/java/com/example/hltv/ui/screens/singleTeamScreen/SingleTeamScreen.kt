@@ -32,7 +32,7 @@ import com.example.hltv.ui.common.CommonCard
 
 
 @Composable
-fun SingleTeamScreen(teamID : String? = "364378", onClickSinglePlayer: (String?) -> Unit, onClickSingleTeam: (String?) -> Unit){
+fun SingleTeamScreen(teamID : String? = "364378", onClickSinglePlayer: (String?) -> Unit, onClickSingleTeam: (String?) -> Unit, onClickSingleMatch: (String?) -> Unit){
     val viewModel : SingleTeamViewModel = viewModel()
     LaunchedEffect(teamID){
         viewModel.loadData(teamID!!)
@@ -72,6 +72,7 @@ fun SingleTeamScreen(teamID : String? = "364378", onClickSinglePlayer: (String?)
                     LazyColumn (Modifier.fillParentMaxHeight()) {
                         items(recentMatches.size) { index ->
                             recentMatches(
+                                modifier = Modifier.clickable { onClickSingleMatch(recentMatches[index].matchID.toString()) },
                                 team1 = recentMatches[index].homeTeam?.name,
                                 team2 = recentMatches[index].awayTeam?.name,
                                 imageTeam1 = rememberAsyncImagePainter(recentMatches[index].homeTeamImage),
@@ -188,6 +189,7 @@ fun overviewInfo(
 
 @Composable
 fun recentMatches(
+    modifier: Modifier = Modifier,
     team1: String ?= null,
     team2: String ?= null,
     imageTeam1: Painter,
@@ -195,14 +197,14 @@ fun recentMatches(
     team2OnClick: () -> Unit,
     score: String ?= null,
     date: String ?= null,
-
+    matchID: Int ?= null
 ){
     CommonCard(
         modifier = Modifier.fillMaxWidth(),
         topBox = {
             Box {
                 Row (
-                    modifier = Modifier
+                    modifier = modifier
                         .fillMaxWidth()
                 ){
                     Row (

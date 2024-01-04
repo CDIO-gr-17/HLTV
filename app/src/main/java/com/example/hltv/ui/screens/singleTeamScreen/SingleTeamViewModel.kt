@@ -40,6 +40,7 @@ data class RecentMatch(
     val awayScore: Score? = null,
     val startTimestamp: String? = null,
     val bestOf: Int? = null,
+    val matchID: Int? = null
 )
 data class RecentGame(
     val homeScore: Score? = null,
@@ -102,7 +103,6 @@ class SingleTeamViewModel : ViewModel() {
                         Log.i("asdasd", "Also loading here")
                         lineup.complete(getPlayersFromEvent(event.id).home)
                     }
-
                 }
                 if (teamID != event.homeTeam.id) {
                     team1 = event.awayTeam
@@ -113,7 +113,6 @@ class SingleTeamViewModel : ViewModel() {
                         Log.i("asdasd", "Loading here")
                         lineup.complete(getPlayersFromEvent(event.id).away)
                     }
-
                 }
                 val date = Date(event.startTimestamp?.toLong()?.times(1000) ?: 0)
                 val dateFormat = SimpleDateFormat("dd MMM.")
@@ -127,6 +126,7 @@ class SingleTeamViewModel : ViewModel() {
                     awayScore = team2score,
                     startTimestamp = formattedDate,
                     bestOf = event.bestOf,
+                    matchID = event.id
                 )
                 recentMatches.add(recentMatch)
                 Log.w(
