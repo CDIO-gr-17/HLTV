@@ -29,7 +29,8 @@ fun MatchCard(){
         teamOneIcon = painterResource(id = R.drawable.astralis_logo),
         teamTwoName = "Astralis2",
         teamTwoIcon = painterResource(id = R.drawable.astralis_logo),
-        matchDate = "Tuesday 22/10 - 18:00"
+        matchDate = "Tuesday 22/10 - 18:00",
+        tournamentIcon = painterResource(id = R.drawable.astralis_logo)
     )
 }
 
@@ -128,12 +129,13 @@ fun UpcomingMatchCard(
     teamTwoName: String,
     teamTwoIcon: Painter,
     teamTwoOnClick: (() -> Unit?)? = null,
-    matchDate: String
-
+    matchDate: String,
+    tournamentIcon: Painter
     ) {
     CommonCard(
         modifier = modifier.testTag("UpcomingMatchCard"),
         headText = matchDate,
+        image = tournamentIcon,
         bottomBox = {
             Row {
                 Column(horizontalAlignment = Alignment.CenterHorizontally,

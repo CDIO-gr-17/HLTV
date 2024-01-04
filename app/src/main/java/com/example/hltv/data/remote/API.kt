@@ -271,6 +271,11 @@ suspend fun getMatchesFromDay(timestamp: String): APIResponse.EventsWrapper {
     matchesFromDay.events = matchesFromDay.events.subList(0,(maxOf(matchesFromDay.events.size-1,0)))
     return matchesFromDay
 }
+suspend fun getTournamentLogo(tournamentID: Int? = 16026): Bitmap?{
+    val apiURL = "tournament/" + tournamentID.toString() + "/image"
+    Log.i("tournamentLogo", "Getting tournamentlogo with URL: $apiURL")
+    return getAPIImage(apiURL, APIKEY)
+}
 /*
 private fun checkIfTournamentIsPast(timeStamp: TimeStamp): Boolean{
 

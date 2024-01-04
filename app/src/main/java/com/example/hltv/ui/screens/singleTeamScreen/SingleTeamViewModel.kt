@@ -5,6 +5,7 @@ import android.util.Log
 import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
+import com.example.hltv.R
 import com.example.hltv.data.remote.APIResponse
 import com.example.hltv.data.remote.Country
 import com.example.hltv.data.remote.Map
@@ -83,6 +84,7 @@ class SingleTeamViewModel : ViewModel() {
             return
         }
         dataLoaded = true
+
 
         val teamID = teamIDString.removePrefix("{teamID}").toInt()
         val lineup = CompletableDeferred<PlayerGroup?>()

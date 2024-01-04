@@ -69,7 +69,8 @@ fun HomeScreen() {
                 teamOneIcon = rememberAsyncImagePainter(model = viewModel.homeTeamIcon.value),
                 teamTwoName = viewModel.upcomingMatchValue.value!!.awayTeam.name?: "Unknown",
                 teamTwoIcon = rememberAsyncImagePainter(model = viewModel.awayTeamIcon.value),
-                matchDate = convertTimestampToDateClock(viewModel.upcomingMatchValue.value!!.startTimestamp)
+                matchDate = convertTimestampToDateClock(viewModel.upcomingMatchValue.value!!.startTimestamp),
+                tournamentIcon = rememberAsyncImagePainter(model = viewModel.awayTeamIcon.value)
             )
 
          }

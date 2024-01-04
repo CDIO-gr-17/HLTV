@@ -57,6 +57,7 @@ fun MatchesScreen(onClickSingleTeam : (String?) -> Unit, onClickSingleMatch : (S
     }
     val liveMatchesValues = viewModel.liveMatchesValues
     val upcomingsMatchesValues = viewModel.upcomingMatchesValues
+    val tournamentValues = viewModel.tournamentValues
     val loadingState by viewModel.loadingState.collectAsState()
 
 /*
@@ -86,8 +87,10 @@ fun MatchesScreen(onClickSingleTeam : (String?) -> Unit, onClickSingleMatch : (S
                 teamTwoName = item.awayTeam.name.toString(),
                 teamTwoIcon = rememberAsyncImagePainter(viewModel.awayTeamIcons[liveMatchesValues.size + upcomingsMatchesValues.indexOf(item)]),
                 matchDate = convertTimestampToDateClock(item.startTimestamp),
-                teamTwoOnClick = { onClickSingleTeam(item.awayTeam.id.toString()) }
+                teamTwoOnClick = { onClickSingleTeam(item.awayTeam.id.toString()) },
+                tournamentIcon = rememberAsyncImagePainter(viewModel.tournamentIcons[tournamentValues.indexOf(item)])
             )
+            Log.i("tournamentLogo3","${viewModel.tournamentIcons.size}")
         }
         Log.i("loadingState", "$loadingState")
         item{
