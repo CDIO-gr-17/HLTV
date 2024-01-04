@@ -165,7 +165,7 @@ private suspend fun getAPIImage(apiURL: String, apiKEY: String): Bitmap?{
         Log.i("getAPIImage", "inputStream2 is null")
     }
     val base64String = Base64.encodeToString(output.toByteArray(), Base64.DEFAULT)
-    val decodedImage: ByteArray = android.util.Base64.decode(base64String, 0)
+    val decodedImage: ByteArray = Base64.decode(base64String, 0)
     val bitmap = BitmapFactory.decodeByteArray(decodedImage, 0, decodedImage.size)
 
     if (bitmap == null){
@@ -181,8 +181,10 @@ val team = getAPIResponse(
         APIKEY,
         APIResponse.TeamContainer::class.java
     ) as APIResponse.TeamContainer
-    val name = team.team.name
-    if (name != null) return team.team.name.toString()
+
+    //Had a nullpointerexception here
+    //val name = .name
+    if (team.team != null && team.team.name != null) return team.team.name.toString()
     else return null
 }
 /**
@@ -263,7 +265,10 @@ suspend fun getMatchesFromDay(timestamp: String): APIResponse.EventsWrapper {
         APIKEY,
         APIResponse.EventsWrapper::class.java
     ) as APIResponse.EventsWrapper
-    matchesFromDay.events = matchesFromDay.events.subList(0,matchesFromDay.events.size-1)
+    if (matchesFromDay.events.size == 0){
+        Log.i("getMatchesFromDay","There are no more matches to load")
+    }
+    matchesFromDay.events = matchesFromDay.events.subList(0,(maxOf(matchesFromDay.events.size-1,0)))
     return matchesFromDay
 }
 /*
@@ -317,7 +322,7 @@ private suspend fun getAPIResponse(apiURL: String, apiKEY: String, desiredClass:
 
     if (jsonString != null) {
         if (jsonString.length > 100){
-            Log.i("getAPIResponse", "JSON IS: " + jsonString!!.substring(0,100) + "...")
+            Log.i("getAPIResponse", "JSON IS: " + jsonString.substring(0,100) + "...")
         } else{
             Log.i("getAPIResponse", "JSON IS: " + jsonString)
 

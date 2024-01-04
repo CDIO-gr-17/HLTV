@@ -63,6 +63,12 @@ object SingleTeam : Destination {
     override val screen: @Composable () -> Unit = { SettingsScreen() }
     override val name :String = "SingleTeam"
 }
+object SingleMatch : Destination {
+    override val icon: Int = R.drawable.settings_24px
+    override val route: String = "Match/{matchID}"
+    override val screen: @Composable () -> Unit = { SettingsScreen() }
+    override val name :String = "SingleMatch"
+}
 
 val bottomAppBarScreens = listOf(News, Events, Home, Ranking, Matches)
-val allAppScreens = listOf(Home, Events, Matches, News, Ranking, Settings, SinglePlayer, SingleTeam )
+val allAppScreens = listOf(Home, Events, Matches, News, Ranking, Settings, SinglePlayer, SingleTeam, SingleMatch )

@@ -2,8 +2,10 @@ package com.example.hltv.ui.screens.matchesScreen
 import android.graphics.Bitmap
 import android.os.SystemClock.sleep
 import android.util.Log
+import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -18,7 +20,10 @@ import androidx.compose.foundation.layout.wrapContentSize
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material3.Button
+import androidx.compose.material3.ButtonColors
+import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Card
+import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -45,7 +50,7 @@ import kotlinx.coroutines.launch
 data class ListItem(val ranking: Int, val text1: String, val text2: String)
 
 @Composable
-fun MatchesScreen(onClickSingleTeam : (String?) -> Unit) {
+fun MatchesScreen(onClickSingleTeam : (String?) -> Unit, onClickSingleMatch : (String?) -> Unit) {
     val viewModel : MatchesScreenViewModel = viewModel()
     LaunchedEffect(Unit){
         viewModel.loadData()
@@ -61,7 +66,7 @@ fun MatchesScreen(onClickSingleTeam : (String?) -> Unit) {
     LazyColumn {
         items(liveMatchesValues) { item  ->
             LiveMatchCard(
-                modifier = Modifier,
+                modifier = Modifier.clickable { onClickSingleMatch(item.id.toString()) },
                 teamOneName = item.homeTeam.name.toString(),
                 teamOneIcon =  rememberAsyncImagePainter(viewModel.homeTeamIcons[liveMatchesValues.indexOf(item)]),
                 teamOneScore = item.homeScore!!.display!!.toInt(),
@@ -74,6 +79,7 @@ fun MatchesScreen(onClickSingleTeam : (String?) -> Unit) {
         }
         items(upcomingsMatchesValues) { item ->
             UpcomingMatchCard(
+                modifier = Modifier.clickable { onClickSingleMatch(item.id.toString()) },
                 teamOneName = item.homeTeam.name.toString(),
                 teamOneIcon = rememberAsyncImagePainter(viewModel.homeTeamIcons[liveMatchesValues.size + upcomingsMatchesValues.indexOf(item)]),
                 teamOneOnClick = { onClickSingleTeam(item.homeTeam.id.toString()) },
@@ -83,8 +89,9 @@ fun MatchesScreen(onClickSingleTeam : (String?) -> Unit) {
                 teamTwoOnClick = { onClickSingleTeam(item.awayTeam.id.toString()) }
             )
         }
-        if(loadingState){
-            item{
+        Log.i("loadingState", "$loadingState")
+        item{
+            AnimatedVisibility(visible = !loadingState) {  //maybe make this a loading bar instead?
                 Row (
                     modifier = Modifier.fillMaxWidth(),
                     horizontalArrangement = Arrangement.Center
@@ -96,6 +103,14 @@ fun MatchesScreen(onClickSingleTeam : (String?) -> Unit) {
                     }
                 }
             }
+            AnimatedVisibility(visible = loadingState) {
+                Row(
+                    modifier = Modifier.fillMaxWidth(),
+                    horizontalArrangement = Arrangement.Center
+                ) {
+                    CircularProgressIndicator(color = MaterialTheme.colorScheme.secondaryContainer)
+                }
+            }
         }
     }
 }
@@ -103,14 +118,17 @@ fun MatchesScreen(onClickSingleTeam : (String?) -> Unit) {
 @Composable
 fun loadMatchesButton(function: () -> Unit) {
     Button(
-        modifier = Modifier.background(MaterialTheme.colorScheme.primaryContainer),
-        onClick = function
+        //modifier = Modifier.background(MaterialTheme.colorScheme.primaryContainer),
+        onClick = function,
+        colors = ButtonDefaults.buttonColors(
+            containerColor = MaterialTheme.colorScheme.secondaryContainer
+        )
     ) {
         Row {
             Text(
                 text = "Load more matches",
                 fontSize = MaterialTheme.typography.bodyLarge.fontSize,
-                color = MaterialTheme.colorScheme.onPrimaryContainer
+                color = MaterialTheme.colorScheme.onSecondaryContainer
             )
 
         }
@@ -234,5 +252,5 @@ fun teamCard(
 @Preview(showBackground = true)
 @Composable
 fun MatchesScreenPreview() {
-   MatchesScreen(onClickSingleTeam = { /*TODO*/ })
+   //MatchesScreen(onClickSingleTeam = { /*TODO*/ })
 }

@@ -28,8 +28,9 @@ import com.example.hltv.ui.common.CommonCard
 
 @Composable
 fun PlayerScreen(
-    playerID: String?
+    playerIDfullString: String? = "Name"
 ){
+    val playerID = playerIDfullString!!.removePrefix("{playerID}")
     Log.i("", "Transferred player \"ID\": " + playerID)
     Column (
         horizontalAlignment = Alignment.CenterHorizontally,

@@ -1,5 +1,6 @@
 package com.example.hltv.ui.screens.singleMatch
 
+import android.util.Log
 import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
@@ -10,46 +11,56 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 
-class SingleMatchViewModel : ViewModel() {
+class SingleMatchViewModel(var matchID: String?) : ViewModel() {
     var prediction: MutableState<Prediction> = mutableStateOf(Prediction(0, 0))
-
-
-    /*
-    private val _matches = MutableStateFlow<List<APIResponse.EventsWrapper>>(emptyList())
-    val matches = _matches.asStateFlow()
-    val matchResult = mutableStateListOf(" ", " ", " ")
-*/
 
     init {
         CoroutineScope(Dispatchers.IO).launch {
-
+            getPrediction()
         }
-
-
+    }
+    fun getPrediction() {
+        CoroutineScope(Dispatchers.IO).launch {
+            val tempPrediction =
+                getPredictionFromFirestore(matchID!!.removePrefix("{matchID}").toInt())
+            if (tempPrediction == null) {
+                prediction.value = Prediction(0, 0)
+                return@launch
+            } else {
+                prediction.value = tempPrediction
+            }
+            calculateVotePercentage(prediction.value)
+        }
     }
 
-    fun getPrediction(matchID: Int) {
-        val tempPrediction = getPredictionFromFirestore(matchID)
-        if (tempPrediction == null) {
-            prediction.value = Prediction(0, 0)
-            return
-        } else {
-            prediction.value = tempPrediction
+    fun updatePrediction(vote: Int) {
+        CoroutineScope(Dispatchers.IO).launch {
+            if (vote == 1) {
+                prediction.value = Prediction(
+                    prediction.value.homeTeamVoteCount + 1,
+                    prediction.value.awayTeamVoteCount
+                )
+            } else if (vote == 2) {
+                prediction.value = Prediction(
+                    prediction.value.homeTeamVoteCount,
+                    prediction.value.awayTeamVoteCount + 1
+                )
+            } else {
+                return@launch
+            }
+            calculateVotePercentage(prediction.value)
+            sendPredictionToFirestore(prediction.value, matchID!!.removePrefix("{matchID}").toInt())
         }
-        val totalVotes = prediction.value.homeTeamVoteCount + prediction.value.awayTeamVoteCount
-        prediction.value = Prediction(
-            prediction.value.homeTeamVoteCount * 100 / totalVotes,
-            prediction.value.awayTeamVoteCount * 100 / totalVotes
-        )
     }
-    fun updatePrediction(matchID: Int, vote: Int) {
-        if (vote == 1) {
-            prediction.value = Prediction(prediction.value.homeTeamVoteCount + 1, prediction.value.awayTeamVoteCount)
-        } else if (vote == 2) {
-            prediction.value = Prediction(prediction.value.homeTeamVoteCount, prediction.value.awayTeamVoteCount + 1)
-        } else {
+    fun calculateVotePercentage(prediction: Prediction) {
+        val totalVotes = prediction.homeTeamVoteCount + prediction.awayTeamVoteCount
+        if(totalVotes == 0){
+            Log.d("SingleMatchViewModel", "totalVotes = 0")
             return
         }
-        sendPredictionToFirestore(prediction.value, matchID)
+        prediction.homeTeamVotePercentage =
+            prediction.homeTeamVoteCount * 100 / totalVotes
+        prediction.awayTeamVotePercentage =
+            prediction.awayTeamVoteCount * 100 / totalVotes
     }
 }
