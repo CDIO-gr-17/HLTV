@@ -24,7 +24,7 @@ import java.text.SimpleDateFormat
 import java.util.Date
 
 
-var called = false;
+var called = false
 
 data class SingleTeam(
     val eventsWrapper: APIResponse.EventsWrapper
@@ -49,7 +49,7 @@ data class Stats(
     val country: Country ?= null,
     val avgAgeofPlayers : Double ?= null,
 )
-class SingleTeamViewModel(): ViewModel() {
+class SingleTeamViewModel : ViewModel() {
 
     val recentMatches = mutableStateListOf<RecentMatch>()
     val playerOverview = mutableStateListOf<Player>()

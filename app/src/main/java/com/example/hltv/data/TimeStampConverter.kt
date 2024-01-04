@@ -7,8 +7,8 @@ import java.util.Date
 import java.util.Locale
 import java.util.TimeZone
 
-class TimeStampConverter {
-}
+class TimeStampConverter
+
 fun convertTimestampToDateDisplay(timestamp: Int?): String {
     val dateFormat = DateFormat.getDateInstance()
     if(timestamp != null) {

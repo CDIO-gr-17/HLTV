@@ -107,8 +107,8 @@ fun HLTVApp() {
                 },
             )
         }, bottomBar = {
-            NavigationBar() {
-                bottomAppBarScreens.forEach() { item ->
+            NavigationBar {
+                bottomAppBarScreens.forEach { item ->
                     NavigationBarItem(selected = currentScreen == item,
                         onClick = { navController.navigate(item.route) },
                         icon = {

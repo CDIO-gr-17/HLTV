@@ -26,9 +26,9 @@ import com.example.hltv.ui.screens.homeScreen.M
 fun MatchCard(){
     UpcomingMatchCard(
         teamOneName = "Astralis1",
-        teamOneIcon = painterResource(id = com.example.hltv.R.drawable.astralis_logo),
+        teamOneIcon = painterResource(id = R.drawable.astralis_logo),
         teamTwoName = "Astralis2",
-        teamTwoIcon = painterResource(id = com.example.hltv.R.drawable.astralis_logo),
+        teamTwoIcon = painterResource(id = R.drawable.astralis_logo),
         matchDate = "Tuesday 22/10 - 18:00"
     )
 }
@@ -51,7 +51,7 @@ fun LiveMatchCard(
         headText = "Your match is live!",
         image = painterResource(id = R.drawable.pngtree_icon_live_streaming_vector_png_image_4643886),
         bottomBox = {
-            Row() {
+            Row {
                 Column(horizontalAlignment = Alignment.CenterHorizontally,
                     modifier = modifier
                         .fillMaxWidth(0.5f)
@@ -134,7 +134,7 @@ fun UpcomingMatchCard(
         modifier = modifier.testTag("UpcomingMatchCard"),
         headText = matchDate,
         bottomBox = {
-            Row() {
+            Row {
                 Column(horizontalAlignment = Alignment.CenterHorizontally,
                     modifier = modifier
                         .fillMaxWidth(0.5f)
