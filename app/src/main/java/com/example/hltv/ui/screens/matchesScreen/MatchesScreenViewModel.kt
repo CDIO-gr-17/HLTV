@@ -89,7 +89,8 @@ class MatchesScreenViewModel: ViewModel() {
                     if(upcomingMatches.events.isNotEmpty()){
                         for ((index, event) in upcomingMatches.events.withIndex()) {
                             if (event.startTimestamp?.toLong() != null &&  //Makes sure that the upcoming match has an associated startTimestamp
-                                event.startTimestamp!! > (System.currentTimeMillis() / 1000)) {  //Excludes matches where the startTimestamp has passed (i.e it is live or has been played)
+                                event.startTimestamp!! > (System.currentTimeMillis() / 1000) && //Excludes matches where the startTimestamp has passed (i.e it is live or has been played)
+                                event !in upcomingMatchesValues) { //Questionable, but seems to work
                                 upcomingMatchesValues.add(upcomingMatchIndex, event)
                                 homeTeamIcons[liveMatchesValues.size + upcomingMatchIndex] = (getTeamImage(event.homeTeam.id))
                                 awayTeamIcons[liveMatchesValues.size + upcomingMatchIndex] = (getTeamImage(event.awayTeam.id))
