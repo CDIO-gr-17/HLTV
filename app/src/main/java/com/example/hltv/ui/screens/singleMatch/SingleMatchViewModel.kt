@@ -14,15 +14,11 @@ import kotlinx.coroutines.launch
 class SingleMatchViewModel(var matchID: String?) : ViewModel() {
     var prediction: MutableState<Prediction> = mutableStateOf(Prediction(0, 0))
 
-
     init {
         CoroutineScope(Dispatchers.IO).launch {
             getPrediction()
-
-
         }
     }
-
     fun getPrediction() {
         CoroutineScope(Dispatchers.IO).launch {
             val tempPrediction =

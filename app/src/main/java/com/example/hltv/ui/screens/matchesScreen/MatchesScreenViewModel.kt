@@ -9,10 +9,10 @@ import com.example.hltv.data.convertTimestampToDateURL
 import com.example.hltv.data.remote.APIResponse
 import com.example.hltv.data.remote.Event
 import com.example.hltv.data.remote.getLiveMatches
+import com.example.hltv.data.remote.getMatchesFromDay
 import com.example.hltv.data.remote.getPlayerImage
 import com.example.hltv.data.remote.getPlayersFromEvent
 import com.example.hltv.data.remote.getTeamImage
-import com.example.hltv.data.remote.getMatchesFromDay
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Deferred
 import kotlinx.coroutines.Dispatchers
@@ -73,7 +73,7 @@ class MatchesScreenViewModel: ViewModel() {
 
     private var dataLoaded = false
     suspend fun loadUpcomingMatches(){
-        try{
+
             _loadingState.value = true
             viewModelScope.launch {
                 CoroutineScope(Dispatchers.IO).launch {
@@ -95,11 +95,12 @@ class MatchesScreenViewModel: ViewModel() {
                     }
                     nextDayInSeconds += (24 * 60 * 60)
                     Log.i("upcomings","nextdayinsceonds : $nextDayInSeconds")
+                    _loadingState.value = false
+
                 }
             }
-        } finally {
-            _loadingState.value = false
-        }
+
+
     }
     fun loadData(){
         if (dataLoaded){

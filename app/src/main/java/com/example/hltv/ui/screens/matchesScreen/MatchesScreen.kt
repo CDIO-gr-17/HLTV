@@ -2,6 +2,7 @@ package com.example.hltv.ui.screens.matchesScreen
 import android.graphics.Bitmap
 import android.os.SystemClock.sleep
 import android.util.Log
+import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -84,16 +85,20 @@ fun MatchesScreen(onClickSingleTeam : (String?) -> Unit, onClickSingleMatch : (S
         }
         if(!loadingState){
             item{
-                Row (
-                    modifier = Modifier.fillMaxWidth(),
-                    horizontalArrangement = Arrangement.Center
-                ){
-                    loadMatchesButton {
-                        viewModel.viewModelScope.launch {
-                            viewModel.loadUpcomingMatches()
+                AnimatedVisibility(visible = !loadingState) {  //maybe make this a loading bar instead?
+                    Row (
+                        modifier = Modifier.fillMaxWidth(),
+                        horizontalArrangement = Arrangement.Center
+                    ){
+                        loadMatchesButton {
+                            viewModel.viewModelScope.launch {
+                                viewModel.loadUpcomingMatches()
+                            }
                         }
                     }
+
                 }
+
             }
         }
     }

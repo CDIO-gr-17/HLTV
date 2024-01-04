@@ -41,7 +41,6 @@ fun HomeScreen() {
             .testTag("HomeScreen")
     ) {
 
-
         LiveMatchCard(
             modifier = Modifier,
             teamOneName = "Astralis",
