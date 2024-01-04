@@ -1,5 +1,8 @@
 package com.example.hltv.ui.screens.singleMatch
 
+import android.graphics.Bitmap
+import android.graphics.BitmapFactory
+import android.os.Environment
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
@@ -17,8 +20,10 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.asImageBitmap
 import androidx.compose.ui.graphics.painter.Painter
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
@@ -27,16 +32,24 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.hltv.R
 
+
 @Composable
 fun SingleMatchScreen(matchID : String?){
     val viewModel = SingleMatchViewModel(matchID)
+    viewModel.loadGames()
+    val games = viewModel.games.value.events
     Column {
-        EventImage(
-            teamOneLogo = painterResource(id = R.drawable.astralis_logo), teamTwoLogo = painterResource(
-                id = R.drawable.astralis_logo
-            ), teamOneScore = "35", teamTwoScore = "35"
-        )
+        val root = Environment.getExternalStorageDirectory().toString()
 
+        games.forEach { game ->
+
+            GameInfo(
+                teamOneLogo = viewModel.teamImages[0],
+                teamTwoLogo = viewModel.teamImages[1],
+                teamOneScore = game.homeScore?.current.toString(),
+                teamTwoScore = game.awayScore?.display.toString()
+            )
+        }
         PredictionCard(teamOneIcon = painterResource(id = R.drawable.astralis_logo), teamTwoIcon = painterResource(
             id = R.drawable.astralis_logo
         ) , viewModel = viewModel)
@@ -44,19 +57,21 @@ fun SingleMatchScreen(matchID : String?){
 
 }
 
+//BitmapFactory.decodeResource(LocalContext.current.resources, R.drawable.astralis_logo)
+
 @Composable
-fun EventImage(
+fun GameInfo(
     backgroundImage: Painter = painterResource(id = R.drawable.event_background),
     trophyImage: Painter = painterResource(id = R.drawable.trophy_24px),
-    teamOneLogo: Painter,
-    teamTwoLogo: Painter,
-    teamOneScore: String,
-    teamTwoScore: String,
+    teamOneLogo: Bitmap?,
+    teamTwoLogo: Bitmap?,
+    teamOneScore: String = "N/A",
+    teamTwoScore: String = "N/A",
 ) {
     Box (modifier = Modifier.height(180.dp)){
         Image(
             painter = backgroundImage,
-            contentDescription = null,
+            contentDescription = "background image",
             contentScale = ContentScale.FillBounds,
             modifier = Modifier
                 .fillMaxWidth()
@@ -68,8 +83,11 @@ fun EventImage(
         ) {
             Spacer(modifier = Modifier.weight(1f))
             Image(
-                painter = teamOneLogo,
-                contentDescription = null,
+                bitmap = if (teamOneLogo == null) BitmapFactory.decodeResource(
+                    LocalContext.current.resources,
+                    R.drawable.diversity_3_24px).asImageBitmap()
+                else teamOneLogo.asImageBitmap(),
+                contentDescription = "team one logo",
                 modifier = Modifier
                     .size(110.dp)
                     .align(Alignment.CenterVertically)
@@ -80,7 +98,7 @@ fun EventImage(
 
                 Image(
                     painter = trophyImage,
-                    contentDescription = null,
+                    contentDescription = "trophy image",
                     modifier = Modifier
                         .size(50.dp)
                         .align(Alignment.CenterHorizontally)
@@ -128,8 +146,11 @@ fun EventImage(
             }
             Spacer(modifier = Modifier.weight(1f))
             Image(
-                painter = teamTwoLogo,
-                contentDescription = null,
+                bitmap = if (teamTwoLogo == null) BitmapFactory.decodeResource(
+                    LocalContext.current.resources,
+                    R.drawable.diversity_3_24px).asImageBitmap()
+                else teamTwoLogo.asImageBitmap(),
+                contentDescription = "team two logo",
                 modifier = Modifier
                     .size(110.dp)
                     .align(Alignment.CenterVertically)
@@ -138,9 +159,6 @@ fun EventImage(
         }
     }
 }
-
-
-
 
 @Preview(showBackground = true)
 @Composable

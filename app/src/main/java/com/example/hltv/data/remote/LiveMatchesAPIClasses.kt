@@ -11,7 +11,7 @@ sealed class APIResponse{
 
         @SerializedName("events") var events: List<Event>
 
-    ) : APIResponse()
+        ) : APIResponse()
     data class Lineup (
 
         @SerializedName("confirmed" ) var confirmed : Boolean? = null,
