@@ -88,27 +88,30 @@ class MatchesScreenViewModel: ViewModel() {
             viewModelScope.launch {
                 CoroutineScope(Dispatchers.IO).launch {
                     Log.i("upcomings","nextdayinsceonds : $nextDayInSeconds")
-                    val upcomingMatches = getMatchesFromDay(convertTimestampToDateURL((nextDayInSeconds).toInt()))
-                    upcomingMatches.events = upcomingMatches.events.sortedBy { it.startTimestamp }
-                    if(upcomingMatches.events.isNotEmpty()){
-                        for ((index, event) in upcomingMatches.events.withIndex()) {
-                            if (event.startTimestamp?.toLong() != null &&  //Makes sure that the upcoming match has an associated startTimestamp
-                                event.startTimestamp!! > (System.currentTimeMillis() / 1000) && //Excludes matches where the startTimestamp has passed (i.e it is live or has been played)
-                                event !in upcomingMatchesValues) { //Questionable, but seems to work
-                                upcomingMatchesValues.add(upcomingMatchIndex, event)
-                                tournamentValues.add(tournamentIndex,event)
-                                homeTeamIcons[liveMatchesValues.size + upcomingMatchIndex] = (getTeamImage(event.homeTeam.id))
-                                awayTeamIcons[liveMatchesValues.size + upcomingMatchIndex] = (getTeamImage(event.awayTeam.id))
-                                tournamentIcons[tournamentIndex] = getTournamentLogo(event.tournament?.uniqueTournament?.id)
-                                Log.i("Compare","${awayTeamIcons[liveMatchesValues.size + upcomingMatchIndex]}")
-                                Log.i("tournamentLogo2", "Added tournamentLogo from tournament ${event.tournament?.name}, ${event.tournament?.uniqueTournament?.name} to ${tournamentIcons[tournamentIndex]} at $tournamentIndex")
-                                upcomingMatchIndex++
-                                tournamentIndex++
+                    do{
+                        val upcomingMatches = getMatchesFromDay(convertTimestampToDateURL((nextDayInSeconds).toInt()))
+                        upcomingMatches.events = upcomingMatches.events.sortedBy { it.startTimestamp }
+                        if(upcomingMatches.events.isNotEmpty()){
+                            for ((index, event) in upcomingMatches.events.withIndex()) {
+                                if (event.startTimestamp?.toLong() != null &&  //Makes sure that the upcoming match has an associated startTimestamp
+                                    event.startTimestamp!! > (System.currentTimeMillis() / 1000) && //Excludes matches where the startTimestamp has passed (i.e it is live or has been played)
+                                    event !in upcomingMatchesValues) { //Questionable, but seems to work
+                                    upcomingMatchesValues.add(upcomingMatchIndex, event)
+                                    tournamentValues.add(tournamentIndex,event)
+                                    homeTeamIcons[liveMatchesValues.size + upcomingMatchIndex] = (getTeamImage(event.homeTeam.id))
+                                    awayTeamIcons[liveMatchesValues.size + upcomingMatchIndex] = (getTeamImage(event.awayTeam.id))
+                                    tournamentIcons[tournamentIndex] = getTournamentLogo(event.tournament?.uniqueTournament?.id)
+                                    //Log.i("Compare","${awayTeamIcons[liveMatchesValues.size + upcomingMatchIndex]}")
+                                    //Log.i("tournamentLogo2", "Added tournamentLogo from tournament ${event.tournament?.name}, ${event.tournament?.uniqueTournament?.name} to ${tournamentIcons[tournamentIndex]} at $tournamentIndex")
+                                    upcomingMatchIndex++
+                                    tournamentIndex++
+                                }
                             }
                         }
-                    }
-                    nextDayInSeconds += (24 * 60 * 60)
-                    Log.i("upcomings","nextdayinsceonds : $nextDayInSeconds")
+                        nextDayInSeconds += (24 * 60 * 60)
+                        Log.i("upcomings","nextdayinsceonds : $nextDayInSeconds")
+                    } while(upcomingMatches.events.isEmpty())
+
                     _loadingState.value = false
 
                 }
