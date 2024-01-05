@@ -339,7 +339,7 @@ fun stats(
                             text = bestMap,
                             color = MaterialTheme.colorScheme.onPrimaryContainer)
                         Text(
-                            text = "$averagePlayerAge",
+                            text = averagePlayerAge.toString().substring(0,minOf(4, averagePlayerAge.toString().length)),
                             color = MaterialTheme.colorScheme.onPrimaryContainer)
                     }
                 }
