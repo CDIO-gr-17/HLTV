@@ -42,7 +42,11 @@ sealed class APIResponse{
     ) : APIResponse()
 
     data class UniqueTournamentInfoWrapper (
-        @SerializedName("uniqueTournamentInfo") var uniqueTournamentInfo: UniqueTournamentInfo
+        @SerializedName("info") var uniqueTournamentInfo: UniqueTournamentInfo
+    ) : APIResponse()
+
+    data class SeasonsWrapper (
+        @SerializedName("seasons") var seasons : ArrayList<Season> = arrayListOf()
     ) : APIResponse()
 }
 
@@ -312,7 +316,7 @@ data class UniqueTournamentInfo (
     @SerializedName("newcomersLowerDivision"  ) var newcomersLowerDivision  : ArrayList<String>   = arrayListOf(),
     @SerializedName("newcomersOther"          ) var newcomersOther          : ArrayList<String>   = arrayListOf(),
     @SerializedName("numberOfCompetitors"     ) var numberOfCompetitors     : Int?                = null,
-    @SerializedName("totalPrizeMoney"         ) var totalPrizeMoney         : Int?                = null,
+    @SerializedName("totalPrizeMoney"         ) var totalPrizeMoney         : Int?                = -1,
     @SerializedName("totalPrizeMoneyCurrency" ) var totalPrizeMoneyCurrency : String?             = null,
     @SerializedName("winner"                  ) var winner                  : Team?               = Team(),
     @SerializedName("tier"                    ) var tier                    : String?             = null,
