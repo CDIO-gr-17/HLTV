@@ -40,6 +40,10 @@ sealed class APIResponse{
     data class ThirdTournamentWrapper (
         @SerializedName("uniqueTournament") var tournamentDetails : ThirdUniqueTournament
     ) : APIResponse()
+
+    data class UniqueTournamentInfoWrapper (
+        @SerializedName("uniqueTournamentInfo") var uniqueTournamentInfo: UniqueTournamentInfo
+    ) : APIResponse()
 }
 
 
@@ -228,8 +232,8 @@ data class Event (
     @SerializedName("customId"                        ) var customId                        : String?     = null,
     @SerializedName("status"                          ) var status                          : Status?     = Status(),
     @SerializedName("winnerCode"                      ) var winnerCode                      : Int?        = null,
-    @SerializedName("homeTeam"                        ) var homeTeam                        : Team?       = Team(),
-    @SerializedName("awayTeam"                        ) var awayTeam                        : Team?       = Team(),
+    @SerializedName("homeTeam"                        ) var homeTeam                        : Team       = Team(),
+    @SerializedName("awayTeam"                        ) var awayTeam                        : Team       = Team(),
     @SerializedName("homeScore"                       ) var homeScore                       : Score?      = Score(),
     @SerializedName("awayScore"                       ) var awayScore                       : Score?      = Score(),
     @SerializedName("coverage"                        ) var coverage                        : Int?        = null,
@@ -302,7 +306,7 @@ data class PlayerGroup (
     @SerializedName("goalkeeperColor" ) var goalkeeperColor : PlayerColor?       = PlayerColor()
 
 )
-data class TournamentDetails (
+data class UniqueTournamentInfo (
 
     @SerializedName("newcomersUpperDivision"  ) var newcomersUpperDivision  : ArrayList<String>   = arrayListOf(),
     @SerializedName("newcomersLowerDivision"  ) var newcomersLowerDivision  : ArrayList<String>   = arrayListOf(),
