@@ -9,10 +9,10 @@ import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.navArgument
+import com.example.hltv.ui.screens.SearchScreen.SearchScreen
 import com.example.hltv.ui.screens.eventsScreen.EventsScreen
 import com.example.hltv.ui.screens.homeScreen.HomeScreen
 import com.example.hltv.ui.screens.matchesScreen.MatchesScreen
-import com.example.hltv.ui.screens.newsScreen.NewsScreen
 import com.example.hltv.ui.screens.playerScreen.PlayerScreen
 import com.example.hltv.ui.screens.settingsScreen.SettingsScreen
 import com.example.hltv.ui.screens.singleMatch.SingleMatchScreen
@@ -36,9 +36,10 @@ fun MainNavHost(navController: NavHostController, modifier: Modifier) {
             MatchesScreen(onClickSingleMatch = { navController.navigate(SingleMatch.route + it)},
                 onClickSingleTeam = { navController.navigate(SingleTeam.route + it)})
         }
-        composable(route = News.route) {
-            NewsScreen({ navController.navigate(SinglePlayer.route + it) },
-                { navController.navigate(SingleTeam.route + it) })  //How it work? It just no. Ninjutsu
+        composable(route = Search.route) {
+            SearchScreen({ navController.navigate(SinglePlayer.route + it) },
+                { navController.navigate(SingleTeam.route + it) },
+                { navController.navigate(SingleEvent.route + it)})  //How it work? It just no. Ninjutsu
         }
         composable(route = Settings.route) {
             SettingsScreen()

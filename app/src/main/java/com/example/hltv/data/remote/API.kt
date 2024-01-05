@@ -71,6 +71,10 @@ suspend fun getPlayersFromEvent(eventID: Int? = 10945127): APIResponse.Lineup {
     print(eventID)
     return getAPIResponse("event/" + eventID.toString() + "/lineups", APIKEY, APIResponse.Lineup::class.java) as APIResponse.Lineup
 }
+suspend fun searchInAPIFromString(searchQuery : String) : APIResponse.resultsWrapper {
+    return getAPIResponse("search/$searchQuery", APIKEY, APIResponse.resultsWrapper::class.java) as APIResponse.resultsWrapper
+
+}
 
 
 
