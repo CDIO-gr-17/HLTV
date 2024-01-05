@@ -221,16 +221,17 @@ data class Changes (
 /**
  * Is actually only one event?
  */
-data class  Event (
+data class Event (
 
     @SerializedName("tournament"                      ) var tournament                      : Tournament? = Tournament(),
+    @SerializedName("season"                          ) var season                          : Season?     = Season(),
     @SerializedName("customId"                        ) var customId                        : String?     = null,
     @SerializedName("status"                          ) var status                          : Status?     = Status(),
     @SerializedName("winnerCode"                      ) var winnerCode                      : Int?        = null,
-    @SerializedName("homeTeam"                        ) var homeTeam                        : Team   = Team(),
-    @SerializedName("awayTeam"                        ) var awayTeam                        : Team   = Team(),
-    @SerializedName("homeScore"                       ) var homeScore                       : Score?  = Score(),
-    @SerializedName("awayScore"                       ) var awayScore                       : Score?  = Score(),
+    @SerializedName("homeTeam"                        ) var homeTeam                        : Team?       = Team(),
+    @SerializedName("awayTeam"                        ) var awayTeam                        : Team?       = Team(),
+    @SerializedName("homeScore"                       ) var homeScore                       : Score?      = Score(),
+    @SerializedName("awayScore"                       ) var awayScore                       : Score?      = Score(),
     @SerializedName("coverage"                        ) var coverage                        : Int?        = null,
     @SerializedName("time"                            ) var time                            : Time?       = Time(),
     @SerializedName("changes"                         ) var changes                         : Changes?    = Changes(),
@@ -239,9 +240,12 @@ data class  Event (
     @SerializedName("id"                              ) var id                              : Int?        = null,
     @SerializedName("bestOf"                          ) var bestOf                          : Int?        = null,
     @SerializedName("eventType"                       ) var eventType                       : String?     = null,
+    @SerializedName("currentPeriodStartTimestamp"     ) var currentPeriodStartTimestamp     : Int?        = null,
     @SerializedName("startTimestamp"                  ) var startTimestamp                  : Int?        = null,
     @SerializedName("slug"                            ) var slug                            : String?     = null,
     @SerializedName("finalResultOnly"                 ) var finalResultOnly                 : Boolean?    = null,
+    @SerializedName("fanRatingEvent"                  ) var fanRatingEvent                  : Boolean?    = null,
+    @SerializedName("showTotoPromo"                   ) var showTotoPromo                   : Boolean?    = null,
     @SerializedName("isEditor"                        ) var isEditor                        : Boolean?    = null,
     @SerializedName("crowdsourcingEnabled"            ) var crowdsourcingEnabled            : Boolean?    = null
 
@@ -296,5 +300,35 @@ data class PlayerGroup (
     @SerializedName("players"         ) var players         : ArrayList<Player_orsub> = arrayListOf(),
     @SerializedName("playerColor"     ) var playerColor     : PlayerColor?       = PlayerColor(),
     @SerializedName("goalkeeperColor" ) var goalkeeperColor : PlayerColor?       = PlayerColor()
+
+)
+data class TournamentDetails (
+
+    @SerializedName("newcomersUpperDivision"  ) var newcomersUpperDivision  : ArrayList<String>   = arrayListOf(),
+    @SerializedName("newcomersLowerDivision"  ) var newcomersLowerDivision  : ArrayList<String>   = arrayListOf(),
+    @SerializedName("newcomersOther"          ) var newcomersOther          : ArrayList<String>   = arrayListOf(),
+    @SerializedName("numberOfCompetitors"     ) var numberOfCompetitors     : Int?                = null,
+    @SerializedName("totalPrizeMoney"         ) var totalPrizeMoney         : Int?                = null,
+    @SerializedName("totalPrizeMoneyCurrency" ) var totalPrizeMoneyCurrency : String?             = null,
+    @SerializedName("winner"                  ) var winner                  : Team?               = Team(),
+    @SerializedName("tier"                    ) var tier                    : String?             = null,
+    @SerializedName("id"                      ) var id                      : Int?                = null,
+    @SerializedName("hostCountries"           ) var hostCountries           : ArrayList<String>   = arrayListOf(),
+    @SerializedName("totalPrizeMoneyRaw"      ) var totalPrizeMoneyRaw      : TotalPrizeMoneyRaw? = TotalPrizeMoneyRaw()
+
+)
+data class TotalPrizeMoneyRaw (
+
+    @SerializedName("value"    ) var value    : Int?    = null,
+    @SerializedName("currency" ) var currency : String? = null
+
+)
+
+data class Season (
+
+    @SerializedName("name"   ) var name   : String?  = null,
+    @SerializedName("year"   ) var year   : String?  = null,
+    @SerializedName("editor" ) var editor : Boolean? = null,
+    @SerializedName("id"     ) var id     : Int?     = null
 
 )
