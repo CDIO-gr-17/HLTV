@@ -233,6 +233,19 @@ suspend fun getTournamentLogo(tournamentID: Int? = 16026): Bitmap?{
     Log.i("tournamentLogo", "Getting tournamentlogo with URL: $apiURL")
     return getAPIImage(apiURL, APIKEY)
 }
+
+
+suspend fun getUniqueTournamentDetails(tournamentID: Int? = 16026, seasonID: Int? = 47832): APIResponse.UniqueTournamentInfoWrapper{
+    return getAPIResponse("tournament/${tournamentID.toString()}/season/${seasonID.toString()}/info", APIKEY,
+        APIResponse.UniqueTournamentInfoWrapper::class.java) as APIResponse.UniqueTournamentInfoWrapper
+}
+
+suspend fun getUniqueTournamentSeasons(tournamentID: Int? = 16137): APIResponse.SeasonsWrapper{
+    return getAPIResponse("tournament/${tournamentID.toString()}/seasons",
+        APIKEY,
+        APIResponse.SeasonsWrapper::class.java
+    ) as APIResponse.SeasonsWrapper
+}
 /*
 private fun checkIfTournamentIsPast(timeStamp: TimeStamp): Boolean{
 
