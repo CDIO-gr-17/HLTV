@@ -16,7 +16,8 @@ import java.io.ByteArrayOutputStream
 import java.io.IOException
 
 const val APIKEY = "24b0f292d5mshdf7eb12b4760333p19075ajsncc1561769190"
-const val MILISBETWEENREQUEST : Long = 200
+const val MILISBETWEENREQUEST : Long = 200 //If this is set to 167 then some images disappear,
+// not sure why. Maybe API counts time from when it stopped sending the last request?
 const val ONLYCS = true
 var currentRequestCount = 0
 val cond = ConditionVariable()
@@ -30,6 +31,9 @@ suspend fun waitForAPI(){
 
         //Mixing these two seemed to break it, so fix that
         val delta = ((lastAPIPull + MILISBETWEENREQUEST) - java.util.Date().time)
+        delay(delta)
+        lastAPIPull = java.util.Date().time
+
         /*
         val saved = minOf(MILISBETWEENREQUEST - delta, MILISBETWEENREQUEST)
         totalSaved += saved
@@ -39,8 +43,6 @@ suspend fun waitForAPI(){
             "New wait implementation saved: " + saved.toString() + "ms, in total " + totalSaved.toString() + "ms"
         )
         */
-        delay(delta)
-        lastAPIPull = java.util.Date().time
 
     }
 }
