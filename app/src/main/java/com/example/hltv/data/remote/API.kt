@@ -16,13 +16,13 @@ import java.io.ByteArrayOutputStream
 import java.io.IOException
 
 const val APIKEY = "24b0f292d5mshdf7eb12b4760333p19075ajsncc1561769190"
-const val MILISBETWEENREQUEST : Long = 200
+const val MILISBETWEENREQUEST : Long = 167
 const val ONLYCS = true
 var currentRequestCount = 0
 val cond = ConditionVariable()
 var lastAPIPull: Long = 0
 val mutexForAPI = Mutex()
-
+var totalSaved = 0.0
 suspend fun waitForAPI(){
 
 
@@ -30,53 +30,16 @@ suspend fun waitForAPI(){
 
         //Mixing these two seemed to break it, so fix that
         val delta = ((lastAPIPull + MILISBETWEENREQUEST) - java.util.Date().time)
-        Log.d("waitForAPI", "Waiting: " + delta.toString())
+        val saved = minOf(MILISBETWEENREQUEST - delta, MILISBETWEENREQUEST)
+        totalSaved += saved
+        Log.i(
+            "waitForAPI",
+            "New wait implementation saved: " + saved.toString() + "ms, in total " + totalSaved.toString() + "ms"
+        )
         delay(delta)
         lastAPIPull = java.util.Date().time
 
-
-
-
-
-    //This saves about 1.5 seconds loading astralis as compared to alaways waiting, for MILISBETWEENREQUEST = 170
-        /*
-        if (currentRequestCount < 5){
-            currentRequestCount++
-            Log.d("waitForAPI", "Skipping wait because of 5")
-
-        }else{
-            delay(MILISBETWEENREQUEST)
-            currentRequestCount--
-        }
-
-         */
     }
-
-
-
-    /*
-    val currentDateTime: java.util.Date = java.util.Date()
-    val currentTimestamp = currentDateTime.time
-    val nextAllowedTime = lastAPIPull + 166;
-    val delta = nextAllowedTime-currentTimestamp
-    delay(delta)
-    Log.i("waitForAPI", "I am being called")
-
-     */
-/*
-    if (currentRequestCount < 6){
-        currentRequestCount += 1
-        run{
-            delay(166)
-            currentRequestCount -=1
-            cond.open()
-        }
-        return
-    } else {
-        cond.block()
-    }
-
- */
 }
 
 /**
