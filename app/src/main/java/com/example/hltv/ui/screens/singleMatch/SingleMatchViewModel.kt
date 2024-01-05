@@ -5,12 +5,12 @@ import android.util.Log
 import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
-import com.example.hltv.data.remote.APIResponse
-import com.example.hltv.data.remote.Event
+import androidx.lifecycle.viewModelScope
+import com.example.hltv.data.remote.Game
 import com.example.hltv.data.remote.Prediction
 import com.example.hltv.data.remote.getGamesFromEvent
+import com.example.hltv.data.remote.getMapImageFromMapID
 import com.example.hltv.data.remote.getPredictionFromFirestore
-import com.example.hltv.data.remote.getTeamImage
 import com.example.hltv.data.remote.sendPredictionToFirestore
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -19,24 +19,38 @@ import kotlinx.coroutines.launch
 class SingleMatchViewModel(matchID: String?) : ViewModel() {
     var prediction: MutableState<Prediction> = mutableStateOf(Prediction(0, 0))
     val niceMatchID = matchID!!.removePrefix("{matchID}").toInt()
-    val games = mutableStateOf(APIResponse.EventsWrapper(listOf(Event())))
-    val teamImages = MutableList<Bitmap?>(999){null}
+    val games = mutableListOf<Game>()
+    val teamImages = MutableList<Bitmap?>(2){null}
+    val mapImages = mutableListOf<Bitmap?> (null)
 
     fun loadGames() {
-        CoroutineScope(Dispatchers.IO).launch {
-            games.value = getGamesFromEvent(niceMatchID)
-            if(games.value.events != null) {
-                val homeTeamImage = getTeamImage(games.value.events[0].homeTeam.id)
-                val awayTeamImage = getTeamImage(games.value.events[0].awayTeam.id)
+        viewModelScope.launch(Dispatchers.IO) {
+            games.addAll(getGamesFromEvent(niceMatchID).games)
+val tempGames = List<Game>(1,){Game()}
+            if (tempGames != null) {
+                val homeTeamImage = null
+                val awayTeamImage = null
                 if (homeTeamImage != null && awayTeamImage != null) {
                     teamImages.add(homeTeamImage)
                     teamImages.add(awayTeamImage)
                 } else {
                     Log.d("SingleMatchViewModel", "Team images are null")
                 }
+                games.forEach { game ->                 //get map images
+                    val mapImage = getMapImageFromMapID(game.map?.id!!)
+                    if (mapImage != null) {
+                        mapImages.add(mapImage)
+                    } else {
+                        Log.d("SingleMatchViewModel", "Map image is null")
+                    }
+                }
+
+                games.addAll(tempGames)
+            } else {
             }
             getPrediction()
-        }
+
+    }
 
     }
     init {
