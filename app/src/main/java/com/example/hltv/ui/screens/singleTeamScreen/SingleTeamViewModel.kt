@@ -145,7 +145,7 @@ class SingleTeamViewModel : ViewModel() {
                 for (playerorsub in lineup.await()!!.players) {
                     val player = Player(
                         name = playerorsub.player?.name,
-                        image = getPlayerImage(playerorsub.player?.id,),
+                        image = getPlayerImage(playerorsub.player?.id),
                         playerId = playerorsub.player?.id,
                     )
                     playerOverview.add(player)
