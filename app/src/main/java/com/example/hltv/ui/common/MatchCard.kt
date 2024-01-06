@@ -24,6 +24,7 @@ import com.example.hltv.ui.screens.homeScreen.M
 
 @Composable
 fun MatchCard(){
+    /*
     LiveMatchCard(
         teamOneName = "Team1name",
         teamOneIcon = painterResource(id = R.drawable.astralis_logo),
@@ -36,7 +37,9 @@ fun MatchCard(){
 
     }
 
-    /*
+     */
+
+
     UpcomingMatchCard(
         teamOneName = "Astralis1",
         teamOneIcon = painterResource(id = R.drawable.astralis_logo),
@@ -46,7 +49,7 @@ fun MatchCard(){
         tournamentIcon = painterResource(id = R.drawable.astralis_logo)
     )
 
-     */
+
 }
 
 
@@ -162,7 +165,7 @@ fun UpcomingMatchCard(
                         }) {
                     Text(
                         text = teamOneName,
-                        modifier = modifier
+                        modifier = Modifier
                             .padding(8.dp),
                         fontSize = M.typography.bodyLarge.fontSize,
                         color = M.colorScheme.onSecondaryContainer,
@@ -171,7 +174,7 @@ fun UpcomingMatchCard(
                     Image(
                         painter = teamOneIcon,
                         contentDescription = "teamOneIcon",
-                        modifier = modifier
+                        modifier = Modifier
                             .padding(4.dp)
                             .size(50.dp, 50.dp),
 
@@ -196,7 +199,7 @@ fun UpcomingMatchCard(
                         }) {
                     Text(
                         text = teamTwoName,
-                        modifier = modifier
+                        modifier = Modifier
                             .padding(8.dp),
                         fontSize = M.typography.bodyLarge.fontSize,
                         color = M.colorScheme.onSecondaryContainer,
@@ -205,7 +208,7 @@ fun UpcomingMatchCard(
                     Image(
                         painter = teamTwoIcon,
                         contentDescription = "teamOneIcon",
-                        modifier = modifier
+                        modifier = Modifier
                             .padding(4.dp)
                             .size(50.dp, 50.dp),
                     )
