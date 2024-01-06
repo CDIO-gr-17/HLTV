@@ -24,6 +24,19 @@ import com.example.hltv.ui.screens.homeScreen.M
 
 @Composable
 fun MatchCard(){
+    LiveMatchCard(
+        teamOneName = "Team1name",
+        teamOneIcon = painterResource(id = R.drawable.astralis_logo),
+        teamOneScore = 1,
+        teamOneOnClick = { /*TODO*/ },
+        teamTwoName = "Team2name",
+        teamTwoIcon = painterResource(id = R.drawable.astralis_logo),
+        teamTwoScore = 2
+    ) {
+
+    }
+
+    /*
     UpcomingMatchCard(
         teamOneName = "Astralis1",
         teamOneIcon = painterResource(id = R.drawable.astralis_logo),
@@ -32,7 +45,10 @@ fun MatchCard(){
         matchDate = "Tuesday 22/10 - 18:00",
         tournamentIcon = painterResource(id = R.drawable.astralis_logo)
     )
+
+     */
 }
+
 
 @Composable
 fun LiveMatchCard(
@@ -55,12 +71,12 @@ fun LiveMatchCard(
         bottomBox = {
             Row {
                 Column(horizontalAlignment = Alignment.CenterHorizontally,
-                    modifier = modifier
+                    modifier = Modifier
                         .fillMaxWidth(0.5f)
                         .clickable { teamOneOnClick() }) {
                     Text(
                         text = teamOneName,
-                        modifier = modifier
+                        modifier = Modifier
                             .padding(8.dp),
                         fontSize = M.typography.bodyLarge.fontSize,
                         color = M.colorScheme.onSecondaryContainer,
@@ -72,8 +88,6 @@ fun LiveMatchCard(
                         modifier = Modifier
                             .padding(4.dp)
                             .size(50.dp, 50.dp),
-
-
                         )
                     Text(
                         text = teamOneScore.toString(),
@@ -139,7 +153,7 @@ fun UpcomingMatchCard(
         bottomBox = {
             Row {
                 Column(horizontalAlignment = Alignment.CenterHorizontally,
-                    modifier = modifier
+                    modifier = Modifier
                         .fillMaxWidth(0.5f)
                         .clickable {
                             if (teamOneOnClick != null) {
@@ -157,7 +171,7 @@ fun UpcomingMatchCard(
                     Image(
                         painter = teamOneIcon,
                         contentDescription = "teamOneIcon",
-                        modifier = Modifier
+                        modifier = modifier
                             .padding(4.dp)
                             .size(50.dp, 50.dp),
 
@@ -174,7 +188,7 @@ fun UpcomingMatchCard(
 
                 Column(horizontalAlignment = Alignment.CenterHorizontally,
                     modifier = Modifier
-                        .fillMaxWidth()
+                        .fillMaxWidth(1f)
                         .clickable {
                             if (teamTwoOnClick != null) {
                                 teamTwoOnClick()
@@ -182,7 +196,7 @@ fun UpcomingMatchCard(
                         }) {
                     Text(
                         text = teamTwoName,
-                        modifier = Modifier
+                        modifier = modifier
                             .padding(8.dp),
                         fontSize = M.typography.bodyLarge.fontSize,
                         color = M.colorScheme.onSecondaryContainer,
@@ -191,7 +205,7 @@ fun UpcomingMatchCard(
                     Image(
                         painter = teamTwoIcon,
                         contentDescription = "teamOneIcon",
-                        modifier = Modifier
+                        modifier = modifier
                             .padding(4.dp)
                             .size(50.dp, 50.dp),
                     )
