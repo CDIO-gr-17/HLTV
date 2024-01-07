@@ -1,5 +1,6 @@
 package com.example.hltv.ui.screens.singleMatch
 
+import android.util.Log
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
@@ -13,6 +14,7 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -25,16 +27,25 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.lifecycle.viewmodel.compose.viewModel
+import coil.compose.rememberAsyncImagePainter
 import com.example.hltv.R
+import com.example.hltv.data.remote.getTeamImage
+import com.example.hltv.ui.screens.matchesScreen.MatchesScreenViewModel
 
 @Composable
 fun SingleMatchScreen(matchID : String?){
     val viewModel = SingleMatchViewModel(matchID)
+    viewModel.loadData()
     Column {
+        Log.i("En","${viewModel.en}")
+        Log.i("SingleMatch","Added singleMatch, ${viewModel.event.value?.homeTeam?.name} vs ${viewModel.event.value?.awayTeam?.name}, ${viewModel.event.value?.homeScore?.display} - ${viewModel.event.value?.awayScore?.display}")
+
         EventImage(
-            teamOneLogo = painterResource(id = R.drawable.astralis_logo), teamTwoLogo = painterResource(
-                id = R.drawable.astralis_logo
-            ), teamOneScore = "35", teamTwoScore = "35"
+            teamOneLogo = rememberAsyncImagePainter(viewModel.homeTeamIcon),
+            teamTwoLogo = rememberAsyncImagePainter(viewModel.awayTeamIcon),
+            teamOneScore = viewModel.event.value?.homeScore?.display.toString(),
+            teamTwoScore = viewModel.event.value?.awayScore?.display.toString()
         )
 
         PredictionCard(teamOneIcon = painterResource(id = R.drawable.astralis_logo), teamTwoIcon = painterResource(
