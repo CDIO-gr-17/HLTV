@@ -311,6 +311,14 @@ private suspend fun getAPIResponse(apiURL: String, apiKEY: String, desiredClass:
     return gson.fromJson(jsonString, desiredClass) as APIResponse
 }
 
+suspend fun getTournamentMedia(uniqueTournamentID: String): APIResponse.MediaWrapper{
+    return getAPIResponse(
+        "tournament/$uniqueTournamentID/media",
+        APIKEY,
+        APIResponse.MediaWrapper::class.java
+    ) as APIResponse.MediaWrapper
+}
+
 fun main() {
 
     //val a = getPreviousMatches(364425,0)

@@ -44,8 +44,11 @@ sealed class APIResponse{
     data class UniqueTournamentInfoWrapper (
         @SerializedName("uniqueTournamentInfo") var uniqueTournamentInfo: UniqueTournamentInfo
     ) : APIResponse()
-}
 
+    data class MediaWrapper (
+        @SerializedName("media") var media: Media
+    ) : APIResponse()
+}
 
 
 
@@ -334,5 +337,19 @@ data class Season (
     @SerializedName("year"   ) var year   : String?  = null,
     @SerializedName("editor" ) var editor : Boolean? = null,
     @SerializedName("id"     ) var id     : Int?     = null
+
+)
+
+data class Media (
+
+    @SerializedName("title"              ) var title              : String?  = null,
+    @SerializedName("subtitle"           ) var subtitle           : String?  = null,
+    @SerializedName("url"                ) var url                : String?  = null,
+    @SerializedName("mediaType"          ) var mediaType          : Int?     = null,
+    @SerializedName("doFollow"           ) var doFollow           : Boolean? = null,
+    @SerializedName("keyHighlight"       ) var keyHighlight       : Boolean? = null,
+    @SerializedName("id"                 ) var id                 : Int?     = null,
+    @SerializedName("createdAtTimestamp" ) var createdAtTimestamp : Int?     = null,
+    @SerializedName("sourceUrl"          ) var sourceUrl          : String?  = null
 
 )
