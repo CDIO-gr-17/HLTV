@@ -4,14 +4,17 @@ import android.util.Log
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Search
+import androidx.compose.material3.Divider
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Text
+import androidx.compose.material3.TextField
 import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -24,6 +27,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.hltv.data.capitalizeFirstLetter
 import com.example.hltv.data.getFlagFromCountryCode
@@ -117,25 +121,40 @@ fun ShowSearchResult(
 @Composable
 private fun SearchField(): String {
     var text by rememberSaveable(stateSaver = TextFieldValue.Saver) { mutableStateOf(TextFieldValue("")) }
-    OutlinedTextField(
-        value = text,
-        leadingIcon = {
-            Icon(
-                imageVector = Icons.Default.Search,
-                contentDescription = "SearchIcon",
-                tint = MaterialTheme.colorScheme.onPrimaryContainer
+    CommonCard (
+        modifier = Modifier.fillMaxWidth(),
+        topBox = {
+            TextField(
+                modifier = Modifier
+                    .fillMaxWidth(),
+                value = text,
+                leadingIcon = {
+                    Icon(
+                        imageVector = Icons.Default.Search,
+                        contentDescription = "SearchIcon",
+                        tint = MaterialTheme.colorScheme.onPrimaryContainer
+                    )
+                },
+                onValueChange = { text = it },
+                placeholder = {
+                    Text(
+                        text = "Search for teams, players or tournaments",
+                        color = MaterialTheme.colorScheme.onPrimaryContainer
+                    )
+                },
+                singleLine = true,
+                colors = TextFieldDefaults.textFieldColors(
+
+                )
+                //shape = TextFieldDefaults.outlinedShape,
             )
-        },
-        onValueChange = { text = it },
-        placeholder = {
-            Text(
-                text = "Enter your search query",
-                color = MaterialTheme.colorScheme.onPrimaryContainer
-            )
-        },
-        singleLine = true,
-        shape = TextFieldDefaults.filledShape,
+        }
+
     )
+    Divider(modifier = Modifier
+        .padding(top = 4.dp, bottom = 4.dp,start = 12.dp, end = 12.dp),
+        thickness = 4.dp,)
+
     return text.text
 }
 
@@ -144,5 +163,5 @@ private fun SearchField(): String {
 @Preview
 @Composable
 fun SearchScreenPreview() {
-    SearchScreen(onClickSinglePlayer = {}, onClickSingleTeam = {}, onClickSingleTournament = {})
+    SearchField()
 }
