@@ -56,7 +56,8 @@ data class Player(
     var dateOfBirthTimestamp: Int ?= null
 )
 data class Stats(
-    val country: Country ?= null,
+    val countryName: String ?= null,
+    val countryCode: String ?= null,
     val avgAgeofPlayers : Double ?= null,
 )
 class SingleTeamViewModel : ViewModel() {
@@ -158,7 +159,8 @@ class SingleTeamViewModel : ViewModel() {
 
                 statisticsOverview.value = Stats(
                     avgAgeofPlayers = getAvgAgeFromTimestamp(playersDateOfBirthTimestamp),
-                    country = team1?.country
+                    countryName = team1?.country?.name,
+                    countryCode = team1?.country?.alpha2
                 )
             }
         }
