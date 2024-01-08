@@ -4,26 +4,64 @@ import android.graphics.BitmapFactory
 import android.os.ConditionVariable
 import android.util.Base64
 import android.util.Log
+import androidx.compose.material3.Snackbar
+import androidx.compose.material3.SnackbarHost
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.async
 import kotlinx.coroutines.awaitAll
 import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
 import kotlinx.coroutines.sync.Mutex
 import kotlinx.coroutines.sync.withLock
 import okhttp3.Request
+import okhttp3.Response
 import java.io.ByteArrayOutputStream
 import java.io.IOException
+import java.util.LinkedList
+import java.util.Queue
+import java.util.concurrent.CompletableFuture
 
 const val APIKEY = "24b0f292d5mshdf7eb12b4760333p19075ajsncc1561769190"
-const val MILISBETWEENREQUEST : Long = 200 //If this is set to 167 then some images disappear,
-// not sure why. Maybe API counts time from when it stopped sending the last request?
+const val MILISPERUSER : Long = 190
+var MILISBETWEENREQUEST : Long = MILISPERUSER
 const val ONLYCS = true
 var currentRequestCount = 0
 val cond = ConditionVariable()
 var lastAPIPull: Long = 0
 val mutexForAPI = Mutex()
 var totalSaved = 0.0
+val requestQueue = RequestQueue()
+
+data class RequestForQueue(
+    val future: CompletableFuture<Response>,
+    val funcToComplete : () -> Response
+)
+class RequestQueue {
+
+    private val queue: Queue<RequestForQueue> = LinkedList()
+    private var isRunning = false
+    fun enQueue(completableFuture: CompletableFuture<Response>, funcToComplete : () -> Response){
+        val request = RequestForQueue(completableFuture, funcToComplete)
+        queue.add(request)
+        complete()
+    }
+
+    private fun complete(){
+        if (isRunning){
+            return
+        }
+        isRunning = true
+        CoroutineScope(Dispatchers.IO).launch {
+            while(!queue.isEmpty()){
+                val request = queue.poll()!!
+                request.future.complete(request.funcToComplete())
+                delay(MILISBETWEENREQUEST)
+            }
+            isRunning = false
+        }
+    }
+}
 suspend fun waitForAPI(){
 
 
@@ -129,8 +167,10 @@ private suspend fun getAPIImage(apiURL: String, apiKEY: String): Bitmap?{
         .build()
 
     val client = OkHttpClientSingleton.instance
-    waitForAPI()
-    val response = client.newCall(request).execute()
+    //waitForAPI()
+    val res = CompletableFuture<Response>()
+    requestQueue.enQueue(res, {client.newCall(request).execute()})
+    val response = res.get()
 
 
     val inputStream2 = response.body?.byteStream()
@@ -270,16 +310,18 @@ private fun checkIfTournamentIsPast(timeStamp: TimeStamp): Boolean{
 /**
  * @param desiredClass The class to pass to gson. This is the same as your return class, e.g. APIResponse.Lineup::class.java
  */
-
 private suspend fun getAPIResponse(apiURL: String, apiKEY: String, desiredClass:Class<*>): APIResponse {
+
+
 
     var jsonString : String?
     var tries = 3
-    var apiInUse = false
+
     Log.i("getAPIResponse",
-        "Attempting to get: https://allsportsapi2.p.rapidapi.com/api/esport/$apiURL"
+        "Queueing request for: https://allsportsapi2.p.rapidapi.com/api/esport/$apiURL"
     )
     do{
+        var apiInUse = false
         val request = Request.Builder()
             .url("https://allsportsapi2.p.rapidapi.com/api/esport/$apiURL")
             .get()
@@ -288,22 +330,29 @@ private suspend fun getAPIResponse(apiURL: String, apiKEY: String, desiredClass:
             .build()
 
         val client = OkHttpClientSingleton.instance
-        waitForAPI()
-        val response = client.newCall(request).execute()
+        //waitForAPI()
+        val res = CompletableFuture<Response>()
+        requestQueue.enQueue(res, {client.newCall(request).execute()})
+        val response = res.get()
         // Get the HTTP response as a string
         jsonString = response.body?.string()
         response.close()
 
         if (jsonString != null) {
             if (jsonString.contains("You have exceeded the rate limit per second for your plan")){
-                Log.e("getAPIResponse", "You have exceeded the rate limit per second for your plan")
                 apiInUse = true
+                MILISBETWEENREQUEST += MILISPERUSER
+                delay(MILISBETWEENREQUEST)
+                Log.w("getAPIResponse",
+                    "You have exceeded the rate limit per second for your plan. New time between API calls is $MILISBETWEENREQUEST"
+                )
+
             }
         }else {
             Log.i("getAPIResponse", "jsonString is null")
         }
         tries--
-    }while (jsonString?.compareTo("") == 0 && tries > 0 && !apiInUse)
+    }while ((jsonString?.compareTo("") == 0 && tries > 0) || (!apiInUse && tries > 0))
 
     if (jsonString?.compareTo("") == 0){
         Log.e("getAPIResponse", "jsonString is repeatedly null", IOException("STRING IS NULL"))
