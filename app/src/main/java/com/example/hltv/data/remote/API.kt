@@ -194,7 +194,7 @@ suspend fun getCSCategory(): Int {
  * @return A list of relevant tournament IDs (above 1000 users)
  */
 suspend fun getCSTournamentsID(catID: Int): List<Int> {
-    val acceptableUserCount = 200
+    val acceptableUserCount = 0
     val tournamentWrapper = getAPIResponse(
         "tournament/all/category/$catID",
         APIKEY,
@@ -203,7 +203,7 @@ suspend fun getCSTournamentsID(catID: Int): List<Int> {
     val tournamentIDs: MutableList<Int> = mutableListOf()
     var i  = 0
     for (tournament in tournamentWrapper.uniqueTournament[0].wrapper) {
-        if (tournament.userCount!! > acceptableUserCount) {
+        if (tournament.userCount!! >= acceptableUserCount) {
             tournamentIDs.add(tournament.id!!)
             i++
         }

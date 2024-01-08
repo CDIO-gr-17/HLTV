@@ -1,6 +1,7 @@
 package com.example.hltv.ui.screens.searchScreen
 
 import android.util.Log
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.lazy.LazyColumn
@@ -11,22 +12,24 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Text
+import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
+import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.lifecycle.viewmodel.compose.viewModel
+import com.example.hltv.data.capitalizeFirstLetter
+import com.example.hltv.data.getFlagFromCountryCode
 import com.example.hltv.data.remote.Results
 import com.example.hltv.ui.common.CommonCard
 import kotlinx.coroutines.delay
-
 
 
 @Composable
@@ -35,7 +38,7 @@ fun SearchScreen(
     onClickSingleTeam: (teamID: String?) -> Unit,
     onClickSingleTournament: (tournamentID: String?) -> Unit
 ) {
-    val viewModel : SearchScreenViewModel = viewModel()
+    val viewModel: SearchScreenViewModel = viewModel()
 
     val searchText by viewModel.searchQuery.collectAsState()
     val isSearching by viewModel.isSearching.collectAsState()
@@ -45,67 +48,67 @@ fun SearchScreen(
     Column(modifier = Modifier.fillMaxSize(), horizontalAlignment = Alignment.CenterHorizontally) {
         viewModel.setQuery(SearchField())
 
-
         if (isSearching) {
             Text(text = "Searching...", color = MaterialTheme.colorScheme.onPrimaryContainer)
-        } else {
-
-
         }
         LaunchedEffect(searchText) {
-            delay(1000) // Adjust the delay as needed
+            delay(300) // Adjust the delay as needed
             viewModel.search()
             Log.d("Launchedeffect", "Launchedeffect is used")
         }
 
-        if (searchResults != null){ //Android Studio says this condition is always true. That is false
-            ShowSearchResult(searchResults = searchResults)
+        if (searchResults != null) {
+            ShowSearchResult(
+                searchResults = searchResults,
+                onClickSinglePlayer = onClickSinglePlayer,
+                onClickSingleTeam = onClickSingleTeam,
+                onClickSingleTournament = onClickSingleTournament
+            )
         }
 
-
     }
-
-
 }
 
 @Composable
-fun ShowSearchResult(searchResults: List<Results>) {
-    if(searchResults.isEmpty()){
+fun ShowSearchResult(
+    searchResults: List<Results>,
+    onClickSinglePlayer: (playerID: String?) -> Unit,
+    onClickSingleTeam: (teamID: String?) -> Unit,
+    onClickSingleTournament: (tournamentID: String?) -> Unit
+) {
+    if (searchResults.isEmpty()) {
         Log.d("ShowSearchResult", "SearchResult is empty")
         return
     }
-Log.d("ShowSearchResult", "Seatchresult is not empty")
+    Log.d("ShowSearchResult", "Seatchresult is not empty")
     LazyColumn {
         items(searchResults.size) {
-            Log.d("LazyCollumn", "Is generated")
-            when (searchResults[it].type) {
-                "player" -> {
-                    CommonCard(
-                        modifier = Modifier,
-                        headText = searchResults[it].entity?.name,
-
-                        ) {
-
-                    }
-                }
-
-                "team" -> {
-                    CommonCard(
-                        modifier = Modifier,
-                        headText = searchResults[it].entity?.name,
-
-                        )
-
-                }
-
-                "tournament" -> {
-                    CommonCard(
-                        modifier = Modifier,
-                        headText = searchResults[it].entity?.name,
-
-                        )
-                }
+            val id = searchResults[it].entity?.id.toString()
+            val type = if (searchResults[it].type == null) {
+                "Unknown"
+            } else if (searchResults[it].type!!.isEmpty()) {
+                "Unknown"
+            } else {
+                capitalizeFirstLetter(searchResults[it].type!!)
             }
+            val name = searchResults[it].entity?.name.toString()
+            val countryCode = searchResults[it].entity?.country?.alpha2.toString()
+            val flag =  getFlagFromCountryCode(countryCode = countryCode)
+
+
+            CommonCard(
+                modifier = Modifier
+                    .clickable {
+                        when (searchResults[it].type) {
+                            "player" -> onClickSinglePlayer(id)
+                            "team" -> onClickSingleTeam(id)
+                            "tournament" -> onClickSingleTournament(id)
+                        }
+                    },
+                headText = name,
+                subText = type,
+                image = flag,
+                )
         }
     }
 }
@@ -113,7 +116,7 @@ Log.d("ShowSearchResult", "Seatchresult is not empty")
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 private fun SearchField(): String {
-    var text by remember { mutableStateOf(TextFieldValue("")) }
+    var text by rememberSaveable(stateSaver = TextFieldValue.Saver) { mutableStateOf(TextFieldValue("")) }
     OutlinedTextField(
         value = text,
         leadingIcon = {
@@ -131,9 +134,12 @@ private fun SearchField(): String {
             )
         },
         singleLine = true,
+        shape = TextFieldDefaults.filledShape,
     )
     return text.text
 }
+
+
 
 @Preview
 @Composable
