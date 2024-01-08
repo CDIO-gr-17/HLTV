@@ -44,6 +44,10 @@ sealed class APIResponse{
     data class UniqueTournamentInfoWrapper (
         @SerializedName("uniqueTournamentInfo") var uniqueTournamentInfo: UniqueTournamentInfo
     ) : APIResponse()
+
+    data class EventWrapper (
+        @SerializedName("event" ) var event : Event? = Event()
+    ) : APIResponse()
 }
 
 
