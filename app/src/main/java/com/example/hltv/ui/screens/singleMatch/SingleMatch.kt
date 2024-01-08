@@ -11,6 +11,7 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
@@ -26,6 +27,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.hltv.R
+import com.example.hltv.ui.common.CommonCard
 
 @Composable
 fun SingleMatchScreen(matchID : String?){
@@ -40,8 +42,9 @@ fun SingleMatchScreen(matchID : String?){
         PredictionCard(teamOneIcon = painterResource(id = R.drawable.astralis_logo), teamTwoIcon = painterResource(
             id = R.drawable.astralis_logo
         ) , viewModel = viewModel)
-    }
 
+        LiveStream(liveStreamLink = "Et link")
+    }
 }
 
 @Composable
@@ -139,7 +142,27 @@ fun EventImage(
     }
 }
 
-
+@Composable
+fun LiveStream (
+    liveStreamLink: String
+){
+    CommonCard (
+        modifier = Modifier.fillMaxWidth(),
+        headText = "Live Stream",
+        bottomBox = {
+            Row (
+                modifier = Modifier.fillMaxWidth()
+            ){
+                Text(text = "Watch the match:")
+                Spacer(modifier = Modifier.weight(1f))
+                Text(
+                    text = liveStreamLink,
+                    color = MaterialTheme.colorScheme.primary
+                )
+            }
+        }
+    )
+}
 
 
 @Preview(showBackground = true)
