@@ -44,6 +44,14 @@ sealed class APIResponse{
     data class UniqueTournamentInfoWrapper (
         @SerializedName("uniqueTournamentInfo") var uniqueTournamentInfo: UniqueTournamentInfo
     ) : APIResponse()
+
+
+    data class PlayerWrapper (
+        @SerializedName("player") var player:Player
+    ) : APIResponse()
+
+
+
 }
 
 
@@ -262,9 +270,7 @@ data class Event (
 //Below are for the "event lineup" API endpoint
 //https://rapidapi.com/fluis.lacasse/api/allsportsapi2/
 ////////////////////////////////////////////////////////////////////////////////////////////
-
-
-
+//New data class for player:)
 data class Player (
 
     @SerializedName("name"                 ) var name                 : String?  = null,
@@ -272,13 +278,36 @@ data class Player (
     @SerializedName("lastName"             ) var lastName             : String?  = null,
     @SerializedName("slug"                 ) var slug                 : String?  = null,
     @SerializedName("shortName"            ) var shortName            : String?  = null,
+    @SerializedName("team"                 ) var team                 : Team?    = Team(),
+    @SerializedName("position"             ) var position             : String?  = null,
     @SerializedName("userCount"            ) var userCount            : Int?     = null,
     @SerializedName("id"                   ) var id                   : Int?     = null,
+    @SerializedName("country"              ) var country              : Country? = Country(),
+    @SerializedName("dateOfBirthTimestamp" ) var dateOfBirthTimestamp : Int?     = null
+
+)
+
+
+
+
+
+
+/*data class Player (
+
+    @SerializedName("name"                 ) var name                 : String?  = null,
+    @SerializedName("firstName"            ) var firstName            : String?  = null,
+    @SerializedName("lastName"             ) var lastName             : String?  = null,
+    @SerializedName("slug"                 ) var slug                 : String?  = null,
+    @SerializedName("shortName"            ) var shortName            : String?  = null,
+    @SerializedName("userCount"            ) var userCount            : Int?     = null,
+    @SerializedName("id"                   ) var  id                   : Int?     = null,
     @SerializedName("country"              ) var country              : Country? = Country(),
     @SerializedName("marketValueCurrency"  ) var marketValueCurrency  : String?  = null,
     @SerializedName("dateOfBirthTimestamp" ) var dateOfBirthTimestamp : Int?     = null
 
 )
+*/
+
 
 data class Player_orsub (
 
