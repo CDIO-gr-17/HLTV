@@ -19,13 +19,11 @@ class EventsScreenViewModel : ViewModel() {
 
 
     fun loadData(){
-        viewModelScope.launch{
-            CoroutineScope(Dispatchers.IO).launch {
-                val tournamentsList = getRelevantTournaments()
-                tournaments.clear()
-                for (tournament in tournamentsList) {
-                    tournaments.add(tournament)
-                }
+        viewModelScope.launch(Dispatchers.IO){
+            val tournamentsList = getRelevantTournaments()
+            tournaments.clear()
+            for (tournament in tournamentsList) {
+                tournaments.add(tournament)
             }
         }
     }
