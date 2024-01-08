@@ -5,6 +5,7 @@ import android.util.Log
 import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
 import com.example.hltv.R
 import com.example.hltv.data.remote.APIResponse
 import com.example.hltv.data.remote.Country
@@ -90,7 +91,7 @@ class SingleTeamViewModel : ViewModel() {
         val teamID = teamIDString.removePrefix("{teamID}").toInt()
         val lineup = CompletableDeferred<PlayerGroup?>()
 
-        CoroutineScope(Dispatchers.IO).launch {
+        viewModelScope.launch(Dispatchers.IO) {
             Log.w(this.toString(), "Got previous matches of team with id: $teamID")
             val completedMatches = getPreviousMatches(teamID, 0)
             recentMatches.clear()
@@ -138,7 +139,7 @@ class SingleTeamViewModel : ViewModel() {
                 )
             }
         }
-        CoroutineScope(Dispatchers.IO).launch {
+        viewModelScope.launch(Dispatchers.IO) {
             // Lineup
             Log.w(this.toString(), "Loaded lineup ${lineup}")
             if (lineup != null) {
