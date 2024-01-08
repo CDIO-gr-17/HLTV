@@ -3,6 +3,7 @@ package com.example.hltv.ui.screens.singleMatch
 import android.util.Log
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -34,19 +35,21 @@ import com.example.hltv.data.remote.getTeamImage
 import com.example.hltv.ui.screens.matchesScreen.MatchesScreenViewModel
 
 @Composable
-fun SingleMatchScreen(matchID : String?){
+fun SingleMatchScreen(matchID : String?, onClickSingleTeam : (String?) -> Unit){
     val viewModel : SingleMatchViewModel = viewModel()
     LaunchedEffect(Unit){
         viewModel.loadData(matchID)
     }
-    val event = viewModel.event
+    val event = viewModel.event.value
     Column {
 
         EventImage(
             teamOneLogo = rememberAsyncImagePainter(viewModel.homeTeamIcon.value),
             teamTwoLogo = rememberAsyncImagePainter(viewModel.awayTeamIcon.value),
-            teamOneScore = event.value?.homeScore?.display.toString(),
-            teamTwoScore = event.value?.awayScore?.display.toString()
+            teamOneScore = event?.homeScore?.display.toString(),
+            teamTwoScore = event?.awayScore?.display.toString(),
+            teamOneOnClick = { onClickSingleTeam(event?.homeTeam?.id.toString()) },
+            teamTwoOnClick = { onClickSingleTeam(event?.awayTeam?.id.toString()) }
         )
 
         PredictionCard(
@@ -65,6 +68,8 @@ fun EventImage(
     teamTwoLogo: Painter,
     teamOneScore: String,
     teamTwoScore: String,
+    teamOneOnClick: () -> Unit,
+    teamTwoOnClick: () -> Unit,
 ) {
     Box (modifier = Modifier.height(180.dp)){
         Image(
@@ -86,6 +91,7 @@ fun EventImage(
                 modifier = Modifier
                     .size(110.dp)
                     .align(Alignment.CenterVertically)
+                    .clickable { teamOneOnClick() }
             )
             Spacer(modifier = Modifier.weight(1f))
             Column {
@@ -146,6 +152,7 @@ fun EventImage(
                 modifier = Modifier
                     .size(110.dp)
                     .align(Alignment.CenterVertically)
+                    .clickable { teamTwoOnClick() }
             )
             Spacer(modifier = Modifier.weight(1f))
         }
@@ -158,6 +165,5 @@ fun EventImage(
 @Preview(showBackground = true)
 @Composable
 fun SingleMatchScreenPreview() {
-    SingleMatchScreen(matchID = "1")
-
+    //SingleMatchScreen(matchID = "1")
 }
