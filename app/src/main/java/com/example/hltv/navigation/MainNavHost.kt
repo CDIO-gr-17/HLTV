@@ -27,7 +27,10 @@ fun MainNavHost(navController: NavHostController, modifier: Modifier) {
         modifier = modifier.padding()
     ) {
         composable(route = Home.route) {
-            HomeScreen()
+            HomeScreen(
+                {navController.navigate(SingleTeam.route + it) },
+                {navController.navigate(SingleMatch.route + it) }
+            )
         }
         composable(route = Events.route) {
             EventsScreen()
