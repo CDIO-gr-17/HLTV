@@ -22,6 +22,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.hltv.data.remote.Results
 import com.example.hltv.ui.common.CommonCard
 import kotlinx.coroutines.delay
@@ -34,7 +35,7 @@ fun SearchScreen(
     onClickSingleTeam: (teamID: String?) -> Unit,
     onClickSingleTournament: (tournamentID: String?) -> Unit
 ) {
-    val viewModel = SearchScreenViewModel()
+    val viewModel : SearchScreenViewModel = viewModel()
 
     val searchText by viewModel.searchQuery.collectAsState()
     val isSearching by viewModel.isSearching.collectAsState()
@@ -56,9 +57,11 @@ fun SearchScreen(
             viewModel.search()
             Log.d("Launchedeffect", "Launchedeffect is used")
         }
-        if(!isSearching){
+
+        if (searchResults != null){ //Android Studio says this condition is always true. That is false
             ShowSearchResult(searchResults = searchResults)
         }
+
 
     }
 
