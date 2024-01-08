@@ -232,10 +232,8 @@ suspend fun getTournamentInfo(tournamentID: Int): APIResponse.ThirdTournamentWra
  */
 suspend fun getRelevantTournaments(): List<ThirdUniqueTournament> {
     val finalTournamentDetailList: MutableList<ThirdUniqueTournament> = mutableListOf()
-    //val tempTournamentDetailList: MutableList<ThirdUniqueTournament> = mutableListOf() //TODO This is commented out for performance reasons
 
-    //By doing this we make sure that all requests are sent as fast as possible,
-    // rather than sending one, waiting for a reply and then sending another, waiting for a reply...
+    //TODO: This function needs to return things one at a time so we get dynamic loading of tournaments
     val deferreds = getCSTournamentsID(getCSCategory()).map { tournamentID ->
         CoroutineScope(Dispatchers.IO).async {
             getTournamentInfo(tournamentID).tournamentDetails
@@ -282,6 +280,8 @@ private suspend fun getAPIResponse(apiURL: String, apiKEY: String, desiredClass:
     var jsonString : String?
     var tries = 3
     var apiInUse = false
+    val gson = GsonSingleton.instance
+
     Log.i("getAPIResponse",
         "Attempting to get: https://allsportsapi2.p.rapidapi.com/api/esport/$apiURL"
     )
@@ -325,9 +325,6 @@ private suspend fun getAPIResponse(apiURL: String, apiKEY: String, desiredClass:
     }
 
 
-
-    //Initiating as late as possible for performance reasons. Don't think it makes much of a difference
-    val gson = GsonSingleton.instance
     return gson.fromJson(jsonString, desiredClass) as APIResponse
 }
 
