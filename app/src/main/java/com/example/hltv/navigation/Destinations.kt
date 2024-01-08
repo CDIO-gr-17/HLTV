@@ -16,7 +16,7 @@ interface Destination {
 object Home : Destination {
     override val icon: Int = R.drawable.home_24px
     override val route: String = "Home"
-    override val screen: @Composable () -> Unit = { HomeScreen() }
+    override val screen: @Composable () -> Unit = { /*HomeScreen()*/ }
     override val name: String = "Home"
 }
 

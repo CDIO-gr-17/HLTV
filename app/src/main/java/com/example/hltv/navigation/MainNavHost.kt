@@ -27,7 +27,10 @@ fun MainNavHost(navController: NavHostController, modifier: Modifier) {
         modifier = modifier.padding()
     ) {
         composable(route = Home.route) {
-            HomeScreen()
+            HomeScreen(
+                {navController.navigate(SingleTeam.route + it) },
+                {navController.navigate(SingleMatch.route + it) }
+            )
         }
         composable(route = Events.route) {
             EventsScreen()
@@ -60,7 +63,8 @@ fun MainNavHost(navController: NavHostController, modifier: Modifier) {
             arguments = listOf(navArgument("matchID") { type = NavType.StringType }))
         { backStackEntry ->
             Log.i("MainNavHost", backStackEntry.toString())
-            SingleMatchScreen(backStackEntry.arguments?.getString("matchID"))
+            SingleMatchScreen(backStackEntry.arguments?.getString("matchID"),
+                {navController.navigate(SingleTeam.route + it) })
         }
 
         composable(route = SinglePlayer.route,

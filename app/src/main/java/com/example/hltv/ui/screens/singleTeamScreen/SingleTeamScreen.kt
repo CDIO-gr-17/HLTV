@@ -20,6 +20,7 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.painter.Painter
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
@@ -27,9 +28,12 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import coil.compose.rememberAsyncImagePainter
+import coil.decode.SvgDecoder
+import coil.request.ImageRequest
+import coil.size.Size
 import com.example.hltv.R
 import com.example.hltv.ui.common.CommonCard
-
+import java.net.URL
 
 @Composable
 fun SingleTeamScreen(teamID : String? = "364378", onClickSinglePlayer: (String?) -> Unit, onClickSingleTeam: (String?) -> Unit, onClickSingleMatch: (String?) -> Unit){
@@ -40,6 +44,18 @@ fun SingleTeamScreen(teamID : String? = "364378", onClickSinglePlayer: (String?)
     val recentMatches = viewModel.recentMatches
     val playerOverview = viewModel.playerOverview
     val statsOverview = viewModel.statisticsOverview
+    val countryCode = statsOverview.value.countryCode
+    val painter = if (countryCode != null) {
+        rememberAsyncImagePainter(
+            model = ImageRequest.Builder(LocalContext.current)
+                .decoderFactory(SvgDecoder.Factory()) //TODO HLTV-144 Crash may be caused here although doesn't seem to be a bitmap?
+                .data("https://flagcdn.com/${countryCode.lowercase()}.svg")
+                .size(Size.ORIGINAL) // Set the target size to load the image at.
+                .build()
+        )
+    } else
+        rememberAsyncImagePainter(R.drawable.world_flag)
+
     LazyColumn {
         item {
             CommonCard(modifier = Modifier, bottomBox = {
@@ -53,8 +69,8 @@ fun SingleTeamScreen(teamID : String? = "364378", onClickSinglePlayer: (String?)
                         }
                     }
                     overviewInfo(
-                        country = statsOverview.value.country?.name,
-                        countryImage = painterResource(id = R.drawable.dk_flag),
+                        country = statsOverview.value.countryName,
+                        countryImage = painter,
                         worldRank = "#"
                     )
                     stats(
@@ -129,7 +145,7 @@ fun overviewPlayer(
                 customOuterPadding = 0.dp,
                 topBox = {
                     Text(
-                        text = if (player.name!=null) player.name.substring(0, minOf(7, player.name.length)) else "Player",
+                        text = if (player.name!=null) player.name.substring(0, minOf(6, player.name.length)) else "Player",
                         fontSize = MaterialTheme.typography.bodyMedium.fontSize,
                         color = MaterialTheme.colorScheme.onPrimaryContainer,
                         textAlign = TextAlign.Center,
@@ -244,7 +260,8 @@ fun recentMatches(
                     Row (
                         verticalAlignment = Alignment.CenterVertically,
                         horizontalArrangement = Arrangement.End,
-                        modifier = Modifier.weight(0.4f)
+                        modifier = Modifier
+                            .weight(0.4f)
                             .clickable { team2OnClick() }
                     ){
                         Text(
