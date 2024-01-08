@@ -120,6 +120,9 @@ suspend fun getEvent(eventID: Int?) : APIResponse.EventWrapper{
  */
 private suspend fun getAPIImage(apiURL: String, apiKEY: String): Bitmap?{
 
+    Log.i("getAPIResponse",
+        "Attempting to get: https://allsportsapi2.p.rapidapi.com/api/esport/$apiURL"
+    )
 
     val request = Request.Builder()
         .url("https://allsportsapi2.p.rapidapi.com/api/esport/" + apiURL)
@@ -249,15 +252,18 @@ suspend fun getMatchesFromDay(timestamp: String): APIResponse.EventsWrapper {
         APIKEY,
         APIResponse.EventsWrapper::class.java
     ) as APIResponse.EventsWrapper
+    /*
     if (matchesFromDay.events.size == 0){
         Log.i("getMatchesFromDay","There are no more matches to load")
     }
+
+     */
     matchesFromDay.events = matchesFromDay.events.subList(0,(maxOf(matchesFromDay.events.size-1,0)))
     return matchesFromDay
 }
 suspend fun getTournamentLogo(tournamentID: Int? = 16026): Bitmap?{
     val apiURL = "tournament/" + tournamentID.toString() + "/image"
-    Log.i("tournamentLogo", "Getting tournamentlogo with URL: $apiURL")
+    //Log.i("tournamentLogo", "Getting tournamentlogo with URL: $apiURL")
     return getAPIImage(apiURL, APIKEY)
 }
 /*
