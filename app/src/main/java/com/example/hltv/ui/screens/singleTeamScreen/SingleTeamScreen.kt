@@ -145,7 +145,7 @@ fun overviewPlayer(
                 customOuterPadding = 0.dp,
                 topBox = {
                     Text(
-                        text = if (player.name!=null) player.name.substring(0, minOf(7, player.name.length)) else "Player",
+                        text = if (player.name!=null) player.name.substring(0, minOf(6, player.name.length)) else "Player",
                         fontSize = MaterialTheme.typography.bodyMedium.fontSize,
                         color = MaterialTheme.colorScheme.onPrimaryContainer,
                         textAlign = TextAlign.Center,
