@@ -238,7 +238,7 @@ data class Entity (
 
     @SerializedName("country"    ) var country    : Country?    = Country(),
     @SerializedName("id"         ) var id         : Int?        = null,
-    @SerializedName("name"       ) var name       : String?     = null,
+    @SerializedName("name"       ) var name       : String?     = null ,
     @SerializedName("nameCode"   ) var nameCode   : String?     = null,
     @SerializedName("national"   ) var national   : Boolean?    = null,
     @SerializedName("shortName"  ) var shortName  : String?     = null,

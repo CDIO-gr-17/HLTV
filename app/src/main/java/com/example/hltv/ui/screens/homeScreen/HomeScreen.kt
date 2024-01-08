@@ -32,7 +32,6 @@ import coil.compose.rememberAsyncImagePainter
 import com.example.hltv.data.convertTimestampToDateClock
 import com.example.hltv.ui.common.LiveMatchCard
 import com.example.hltv.ui.common.UpcomingMatchCard
-import com.example.hltv.ui.screens.matchesScreen.MatchesScreenViewModel
 
 val M = MaterialTheme
 
@@ -187,11 +186,12 @@ fun HomeScreen() {
         Divider(modifier = Modifier.padding(horizontal = 8.dp), color = M.colorScheme.onBackground)
 
         Text(
-            text = "News",
+            text = "Test",
             color = M.colorScheme.primary,
             textAlign = TextAlign.Start
 
         )
+        Text(text = "Test")
 
     }
 }

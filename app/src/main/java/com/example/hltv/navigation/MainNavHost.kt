@@ -9,7 +9,7 @@ import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.navArgument
-import com.example.hltv.ui.screens.SearchScreen.SearchScreen
+import com.example.hltv.ui.screens.searchScreen.SearchScreen
 import com.example.hltv.ui.screens.eventsScreen.EventsScreen
 import com.example.hltv.ui.screens.homeScreen.HomeScreen
 import com.example.hltv.ui.screens.matchesScreen.MatchesScreen

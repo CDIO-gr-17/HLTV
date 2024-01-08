@@ -1,4 +1,4 @@
-package com.example.hltv.ui.screens.SearchScreen
+package com.example.hltv.ui.screens.searchScreen
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
@@ -20,14 +20,16 @@ class SearchScreenViewModel : ViewModel(){
     val searchResult : MutableStateFlow<List<Results>> = _searchResults
 
 
-    fun search(query: String){
+    fun search(){
         viewModelScope.launch(Dispatchers.IO) {
             _isSearching.value = true
-            _searchQuery.value = query
-            _searchResults.value = searchInAPIFromString(query).results
-
-
+            val search = searchInAPIFromString(_searchQuery.value)
+            _searchResults.value = search.results
             _isSearching.value = false
         }
     }
+    fun setQuery(query: String){
+        _searchQuery.value = query
+    }
+
 }
