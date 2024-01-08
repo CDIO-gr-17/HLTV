@@ -35,22 +35,24 @@ import com.example.hltv.ui.screens.matchesScreen.MatchesScreenViewModel
 
 @Composable
 fun SingleMatchScreen(matchID : String?){
-    val viewModel = SingleMatchViewModel(matchID)
-    viewModel.loadData()
+    val viewModel : SingleMatchViewModel = viewModel()
+    LaunchedEffect(Unit){
+        viewModel.loadData(matchID)
+    }
+    val event = viewModel.event
     Column {
-        Log.i("En","${viewModel.en}")
-        Log.i("SingleMatch","Added singleMatch, ${viewModel.event.value?.homeTeam?.name} vs ${viewModel.event.value?.awayTeam?.name}, ${viewModel.event.value?.homeScore?.display} - ${viewModel.event.value?.awayScore?.display}")
 
         EventImage(
-            teamOneLogo = rememberAsyncImagePainter(viewModel.homeTeamIcon),
-            teamTwoLogo = rememberAsyncImagePainter(viewModel.awayTeamIcon),
-            teamOneScore = viewModel.event.value?.homeScore?.display.toString(),
-            teamTwoScore = viewModel.event.value?.awayScore?.display.toString()
+            teamOneLogo = rememberAsyncImagePainter(viewModel.homeTeamIcon.value),
+            teamTwoLogo = rememberAsyncImagePainter(viewModel.awayTeamIcon.value),
+            teamOneScore = event.value?.homeScore?.display.toString(),
+            teamTwoScore = event.value?.awayScore?.display.toString()
         )
 
-        PredictionCard(teamOneIcon = painterResource(id = R.drawable.astralis_logo), teamTwoIcon = painterResource(
-            id = R.drawable.astralis_logo
-        ) , viewModel = viewModel)
+        PredictionCard(
+            teamOneIcon = rememberAsyncImagePainter(viewModel.homeTeamIcon.value),
+            teamTwoIcon = rememberAsyncImagePainter(viewModel.awayTeamIcon.value),
+            viewModel = viewModel, matchID = matchID)
     }
 
 }
