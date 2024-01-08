@@ -45,6 +45,10 @@ sealed class APIResponse{
         @SerializedName("uniqueTournamentInfo") var uniqueTournamentInfo: UniqueTournamentInfo
     ) : APIResponse()
 
+    data class EventWrapper (
+        @SerializedName("event" ) var event : Event? = Event()
+    ) : APIResponse()
+
 
     data class PlayerWrapper (
         @SerializedName("player") var player:Player
@@ -235,8 +239,8 @@ data class Changes (
  */
 data class Event (
 
-    @SerializedName("tournament"                      ) var tournament                      : Tournament? = Tournament(),
-    @SerializedName("season"                          ) var season                          : Season?     = Season(),
+    @SerializedName("tournament"                      ) var tournament                      : Tournament = Tournament(),
+    @SerializedName("season"                          ) var season                          : Season     = Season(),
     @SerializedName("customId"                        ) var customId                        : String?     = null,
     @SerializedName("status"                          ) var status                          : Status?     = Status(),
     @SerializedName("winnerCode"                      ) var winnerCode                      : Int?        = null,

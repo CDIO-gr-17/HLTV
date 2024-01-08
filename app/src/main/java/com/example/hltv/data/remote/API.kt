@@ -75,21 +75,18 @@ suspend fun getPlayersFromEvent(eventID: Int? = 10945127): APIResponse.Lineup {
 }
 
 
-suspend fun getPlayerFromPlayerID(playerID: Int? = 1078255): APIResponse.PlayerWrapper {
-    return getAPIResponse("player/" + playerID.toString(), APIKEY, APIResponse.Lineup::class.java) as APIResponse.PlayerWrapper
-}
-
-
-
-
-
-
 
 //Doesnt use the reusable function because of the return type
 suspend fun getPlayerImage(playerID: Int? = 1078255): Bitmap? {
     Log.v("getPlayerImage", "Getting player image with playerID " + playerID.toString())
     val apiURL = "player/" + playerID.toString() + "/image"
-    return getAPIImage(apiURL, APIKEY)
+    var image = getAPIImage(apiURL, APIKEY)
+    /*
+    if (image == null){
+        val decodedImage: ByteArray = Base64.decode(playerSilhouetteAsBase64, 0)
+        image = BitmapFactory.decodeByteArray(decodedImage, 0, decodedImage.size)
+    }*/
+    return image
 }
 suspend fun getTeamImage(teamID: Int? = 372647): Bitmap? {
     val apiURL = "team/" + teamID.toString() + "/image"
@@ -102,6 +99,9 @@ suspend fun getPreviousMatches(teamID: Int, pageID: Int = 0):APIResponse.EventsW
 
 suspend fun getGamesFromEvent(eventID: Int?) : APIResponse.EventsWrapper{
     return getAPIResponse("event/$eventID/games", APIKEY, APIResponse.EventsWrapper::class.java) as APIResponse.EventsWrapper
+}
+suspend fun getEvent(eventID: Int?) : APIResponse.EventWrapper{
+    return getAPIResponse("event/$eventID", APIKEY, APIResponse.EventWrapper::class.java) as APIResponse.EventWrapper
 }
 /**
  * I couldn't get coil to work with the whole APIkey, MVVM model and stuff

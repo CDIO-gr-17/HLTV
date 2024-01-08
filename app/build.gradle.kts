@@ -110,4 +110,9 @@ dependencies {
 
     implementation("com.google.firebase:firebase-analytics")
 
+    //Flags
+    implementation("io.coil-kt:coil-compose:2.5.0")
+    implementation("io.coil-kt:coil-svg:2.0.0")
+
+
 }
