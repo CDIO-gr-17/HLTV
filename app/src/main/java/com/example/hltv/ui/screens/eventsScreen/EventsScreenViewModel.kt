@@ -25,19 +25,17 @@ class EventsScreenViewModel : ViewModel() {
 
 
     fun loadData(){
-        viewModelScope.launch{
-            CoroutineScope(Dispatchers.IO).launch {
-                val tournamentsList = getRelevantTournaments()
-                tournaments.clear()
-                for ((index, tournament) in tournamentsList.withIndex()) {
-                    val tournamentSeasons = getUniqueTournamentSeasons(tournament.id)
-                    val seasonID = tournamentSeasons.seasons[0].id
-                    val uniqueTournament = getUniqueTournamentDetails(tournament.id, seasonID)
-                    Log.i("uniqueTournament", "$uniqueTournament")
-                    uniqueTournamentInfo.add(uniqueTournament.uniqueTournamentInfo)
-                    tournaments.add(tournament)
-                    Log.i("uniqueSeasons", "${tournament.name}, ${tournamentSeasons.seasons[0].name}, Prizemoney: ${uniqueTournament.uniqueTournamentInfo.totalPrizeMoney}")
-                }
+        viewModelScope.launch(Dispatchers.IO){
+            val tournamentsList = getRelevantTournaments()
+            tournaments.clear()
+            for ((index, tournament) in tournamentsList.withIndex()) {
+                val tournamentSeasons = getUniqueTournamentSeasons(tournament.id)
+                val seasonID = tournamentSeasons.seasons[0].id
+                val uniqueTournament = getUniqueTournamentDetails(tournament.id, seasonID)
+                Log.i("uniqueTournament", "$uniqueTournament")
+                uniqueTournamentInfo.add(uniqueTournament.uniqueTournamentInfo)
+                tournaments.add(tournament)
+                Log.i("uniqueSeasons", "${tournament.name}, ${tournamentSeasons.seasons[0].name}, Prizemoney: ${uniqueTournament.uniqueTournamentInfo.totalPrizeMoney}")
             }
         }
     }
