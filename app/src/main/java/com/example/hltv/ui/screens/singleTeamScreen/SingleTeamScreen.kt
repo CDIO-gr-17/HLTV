@@ -134,7 +134,9 @@ fun overviewPlayer(
             }
         ){
             Image(
-                painter = rememberAsyncImagePainter(player.image),
+                painter = if(player.image!=null) rememberAsyncImagePainter(player.image) else rememberAsyncImagePainter(
+                    model = R.drawable.person_24px
+                ),
                 contentDescription = null,
                 alignment = Alignment.CenterStart,
                 modifier = Modifier
