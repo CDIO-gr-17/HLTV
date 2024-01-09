@@ -4,6 +4,7 @@ import android.graphics.BitmapFactory
 import android.os.ConditionVariable
 import android.util.Base64
 import android.util.Log
+import com.example.hltv.data.convertYearToUnixTimestamp
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.async
@@ -35,7 +36,7 @@ suspend fun waitForAPI(){
         delay(delta)
         lastAPIPull = java.util.Date().time
 
-
+/*
         val saved = minOf(CURRENTMILISBETWEENREQUEST - delta, CURRENTMILISBETWEENREQUEST)
         totalSaved += saved
 
@@ -43,6 +44,8 @@ suspend fun waitForAPI(){
             "waitForAPI",
             "New wait implementation saved: " + saved.toString() + "ms, in total " + totalSaved.toString() + "ms"
         )
+
+ */
 
 
     }

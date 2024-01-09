@@ -26,6 +26,7 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import coil.compose.rememberAsyncImagePainter
 import com.example.hltv.R
 import com.example.hltv.data.convertTimestampToDateDisplay
+import com.example.hltv.data.remote.ThirdUniqueTournament
 import com.example.hltv.ui.common.CommonCard
 import java.text.NumberFormat
 import java.util.Locale
@@ -41,21 +42,37 @@ fun EventsScreen() {
     val tournamentSeasons = viewModel.tournamentSeasons
     val uniqueTournaments = viewModel.uniqueTournaments
 
+    //TODO: Optimize this for CPU performance so we dont resort on redraw
+    var sortedTournaments = mutableListOf<ThirdUniqueTournament>()
+    val map = mutableMapOf<Int, Int>()
+
+    //Running this inside a LaunchedEffect doesn't seem to work
+    sortedTournaments.clear()
+    sortedTournaments.addAll(viewModel.tournaments.sortedByDescending { it.startDateTimestamp })
+    sortedTournaments.forEachIndexed{ index, tournament ->
+        map.put(key = index, value = tournaments.indexOf(tournament))
+    }
+
+    LaunchedEffect(viewModel.loading) {
+        Log.i("EventsScreen", "Loading changed")
+    }
+
+
     if (tournamentSeasons.size != 0) { //Crashes if this isnt there, however not the best way to implement
         LazyColumn {
-            itemsIndexed(tournaments) { index, item ->
+            itemsIndexed(sortedTournaments) { index, item ->
                 SingleEventCard(
-                    eventTitle = "${item.name.toString()} ${tournamentSeasons[index][0].name}", //I think 0 is always the most recent season? Not sure tho
+                    eventTitle = "${item.name.toString()} ${tournamentSeasons[map.get(index)!!][0].name}", //I think 0 is always the most recent season? Not sure tho
                     eventDate = if (item.startDateTimestamp != null && item.endDateTimestamp != null) {
                         "${convertTimestampToDateDisplay(item.startDateTimestamp)} - ${convertTimestampToDateDisplay(item.endDateTimestamp)}"
                     } else {
                         null
                     },
-                    eventLogo = rememberAsyncImagePainter(viewModel.tournamentIcons[index]),
-                    tier = uniqueTournaments[index].uniqueTournamentInfo.tier?.uppercase(),
-                    prizePool = uniqueTournaments[index].uniqueTournamentInfo.totalPrizeMoney,
-                    competitors = uniqueTournaments[index].uniqueTournamentInfo.numberOfCompetitors,
-                    prizePoolCurrency = uniqueTournaments[index].uniqueTournamentInfo.totalPrizeMoneyCurrency
+                    eventLogo = rememberAsyncImagePainter(viewModel.tournamentIcons[map.get(index)!!]),
+                    tier = uniqueTournaments[map.get(index)!!].uniqueTournamentInfo.tier?.uppercase(),
+                    prizePool = uniqueTournaments[map.get(index)!!].uniqueTournamentInfo.totalPrizeMoney,
+                    competitors = uniqueTournaments[map.get(index)!!].uniqueTournamentInfo.numberOfCompetitors,
+                    prizePoolCurrency = uniqueTournaments[map.get(index)!!].uniqueTournamentInfo.totalPrizeMoneyCurrency
                 )
             }
         }
@@ -140,8 +157,6 @@ fun SingleEventCard(
                 }
             }
         }
-
-
     )
 }
 

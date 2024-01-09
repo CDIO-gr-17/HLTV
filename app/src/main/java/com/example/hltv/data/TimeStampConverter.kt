@@ -2,6 +2,8 @@ package com.example.hltv.data
 
 import java.text.DateFormat
 import java.text.SimpleDateFormat
+import java.time.LocalDate
+import java.time.ZoneId
 import java.util.Date
 import java.util.Locale
 import java.util.TimeZone
@@ -38,4 +40,23 @@ fun convertTimestampToDateClock(timestamp: Int?): String {
     } else {
         return "Unknown date"
     }
+}
+
+private fun extractYearFromString(input: String): String? {
+    val pattern = "\\d{4}".toRegex()
+    val match = pattern.find(input)
+    return match?.value
+}
+
+fun convertYearToUnixTimestamp(stringWithYear: String): Int {
+    val yearString = extractYearFromString(stringWithYear)
+    if (yearString != null) {
+        val year = yearString.toInt()
+        val date = LocalDate.of(year, 7, 1) // Middle of the year
+        val zoneId = ZoneId.systemDefault()
+        return date.atStartOfDay(zoneId).toEpochSecond().toInt()
+    }else{
+        throw NumberFormatException("String doesn't contain a year")
+    }
+
 }
