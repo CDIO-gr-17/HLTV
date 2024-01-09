@@ -4,6 +4,10 @@ import android.graphics.BitmapFactory
 import android.os.ConditionVariable
 import android.util.Base64
 import android.util.Log
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.async
+import kotlinx.coroutines.awaitAll
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.sync.Mutex
 import kotlinx.coroutines.sync.withLock
@@ -234,11 +238,18 @@ suspend fun getTournamentInfo(tournamentID: Int): APIResponse.ThirdTournamentWra
 suspend fun getRelevantTournaments(): List<ThirdUniqueTournament> {
     val finalTournamentDetailList: MutableList<ThirdUniqueTournament> = mutableListOf()
 
+    var tournaments : List<Int> = getCSTournamentsID(getCSCategory())
+
+    val croppedTournaments = tournaments.take(30)
+
     //TODO: This function needs to return things one at a time so we get dynamic loading of tournaments
-    for (tournamentID in getCSTournamentsID(getCSCategory())){
-        finalTournamentDetailList.add(getTournamentInfo(tournamentID).tournamentDetails)
+    val deferreds = croppedTournaments.map { tournamentID ->
+        CoroutineScope(Dispatchers.IO).async {
+            getTournamentInfo(tournamentID).tournamentDetails
+        }
     }
 
+    finalTournamentDetailList.addAll(deferreds.awaitAll())
     finalTournamentDetailList.sortBy { it.startDateTimestamp }
     return finalTournamentDetailList
 }
@@ -324,7 +335,7 @@ private suspend fun getAPIResponse(apiURL: String, apiKEY: String, desiredClass:
         apiInUse = checkRequestRate(jsonString)
         response.close()
         tries--
-    }while (jsonString?.compareTo("") == 0 && tries > 0 && !apiInUse)
+    }while (jsonString?.compareTo("") == 0 && tries > 0 || apiInUse)
 
     if (jsonString?.compareTo("") == 0){
         Log.e("getAPIResponse", "jsonString is repeatedly null", IOException("STRING IS NULL"))
