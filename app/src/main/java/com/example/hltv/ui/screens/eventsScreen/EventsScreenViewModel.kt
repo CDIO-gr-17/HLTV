@@ -31,7 +31,7 @@ class EventsScreenViewModel : ViewModel() {
             tournaments.clear()
             for ((index, tournament) in tournamentsList.withIndex()) {
                 tournamentSeasons.add(getUniqueTournamentSeasons(tournament.id).seasons)
-                val seasonID = tournamentSeasons[index][0].id
+                val seasonID = tournamentSeasons[index][0].id // I think 0 is always the most recent season? Not sure tho
                 uniqueTournaments.add(getUniqueTournamentDetails(tournament.id, seasonID))
                 uniqueTournamentInfo.add(uniqueTournaments[index].uniqueTournamentInfo)
                 tournaments.add(tournament)

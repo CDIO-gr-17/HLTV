@@ -41,13 +41,11 @@ fun EventsScreen() {
     val tournamentSeasons = viewModel.tournamentSeasons
     val uniqueTournaments = viewModel.uniqueTournaments
 
-    Log.i("tournaments", "${tournaments.size}")
-    Log.i("tournamentSeasons", "${tournamentSeasons.size}")
-    if (tournamentSeasons.size != 0) {
+    if (tournamentSeasons.size != 0) { //Crashes if this isnt there, however not the best way to implement
         LazyColumn {
             itemsIndexed(tournaments) { index, item ->
                 SingleEventCard(
-                    eventTitle = "${item.name.toString()} ${tournamentSeasons[index][0].name}",
+                    eventTitle = "${item.name.toString()} ${tournamentSeasons[index][0].name}", //I think 0 is always the most recent season? Not sure tho
                     eventDate = if (item.startDateTimestamp != null && item.endDateTimestamp != null) {
                         "${convertTimestampToDateDisplay(item.startDateTimestamp)} - ${convertTimestampToDateDisplay(item.endDateTimestamp)}"
                     } else {
