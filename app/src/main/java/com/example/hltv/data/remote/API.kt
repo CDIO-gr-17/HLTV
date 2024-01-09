@@ -234,13 +234,10 @@ suspend fun getRelevantTournaments(): List<ThirdUniqueTournament> {
     val finalTournamentDetailList: MutableList<ThirdUniqueTournament> = mutableListOf()
 
     //TODO: This function needs to return things one at a time so we get dynamic loading of tournaments
-    val deferreds = getCSTournamentsID(getCSCategory()).map { tournamentID ->
-        CoroutineScope(Dispatchers.IO).async {
-            getTournamentInfo(tournamentID).tournamentDetails
-        }
+    for (tournamentID in getCSTournamentsID(getCSCategory())){
+        finalTournamentDetailList.add(getTournamentInfo(tournamentID).tournamentDetails)
     }
 
-    finalTournamentDetailList.addAll(deferreds.awaitAll())
     finalTournamentDetailList.sortBy { it.startDateTimestamp }
     return finalTournamentDetailList
 }
