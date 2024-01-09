@@ -236,7 +236,7 @@ suspend fun getTournamentInfo(tournamentID: Int): APIResponse.ThirdTournamentWra
  * Dont know what user count means. Can be adjusted in @getCSTournamentsID
  */
 suspend fun getRelevantTournaments(): List<ThirdUniqueTournament> {
-    val finalTournamentDetailList: MutableList<ThirdUniqueTournament> = mutableListOf()
+    var finalTournamentDetailList: MutableList<ThirdUniqueTournament> = mutableListOf()
 
     var tournaments : List<Int> = getCSTournamentsID(getCSCategory())
 
@@ -251,6 +251,7 @@ suspend fun getRelevantTournaments(): List<ThirdUniqueTournament> {
 
     finalTournamentDetailList.addAll(deferreds.awaitAll())
     finalTournamentDetailList.sortBy { it.startDateTimestamp }
+    finalTournamentDetailList = finalTournamentDetailList.reversed().toMutableList()
     return finalTournamentDetailList
 }
 suspend fun getMatchesFromDay(timestamp: String): APIResponse.EventsWrapper {
