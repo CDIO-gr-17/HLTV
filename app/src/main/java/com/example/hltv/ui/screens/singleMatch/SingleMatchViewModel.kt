@@ -23,7 +23,7 @@ class SingleMatchViewModel() : ViewModel() {
     var homeTeamIcon =  mutableStateOf<Bitmap?>(null)
 
     fun getPrediction(matchID: String?) {
-        val niceMatchID = matchID!!.removePrefix("{matchID}").toInt()
+        val niceMatchID = matchID!!.toInt()
         CoroutineScope(Dispatchers.IO).launch {
             val tempPrediction =
                 getPredictionFromFirestore(niceMatchID)
@@ -38,7 +38,7 @@ class SingleMatchViewModel() : ViewModel() {
     }
 
     fun updatePrediction(vote: Int, matchID: String?) {
-        val niceMatchID = matchID!!.removePrefix("{matchID}").toInt()
+        val niceMatchID = matchID!!.toInt()
         CoroutineScope(Dispatchers.IO).launch {
             if (vote == 1) {
                 prediction.value = Prediction(
@@ -69,7 +69,7 @@ class SingleMatchViewModel() : ViewModel() {
             prediction.awayTeamVoteCount * 100 / totalVotes
     }
     fun loadData(matchID : String?){
-        val niceMatchID = matchID!!.removePrefix("{matchID}").toInt()
+        val niceMatchID = matchID!!.toInt()
         viewModelScope.launch{
             CoroutineScope(Dispatchers.IO).launch {
                 //Det ik for sjov det her

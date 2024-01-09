@@ -32,6 +32,7 @@ import coil.decode.SvgDecoder
 import coil.request.ImageRequest
 import coil.size.Size
 import com.example.hltv.R
+import com.example.hltv.data.getFlagFromCountryCode
 import com.example.hltv.ui.common.CommonCard
 import java.net.URL
 
@@ -45,16 +46,7 @@ fun SingleTeamScreen(teamID : String? = "364378", onClickSinglePlayer: (String?)
     val playerOverview = viewModel.playerOverview
     val statsOverview = viewModel.statisticsOverview
     val countryCode = statsOverview.value.countryCode
-    val painter = if (countryCode != null) {
-        rememberAsyncImagePainter(
-            model = ImageRequest.Builder(LocalContext.current)
-                .decoderFactory(SvgDecoder.Factory()) //TODO HLTV-144 Crash may be caused here although doesn't seem to be a bitmap?
-                .data("https://flagcdn.com/${countryCode.lowercase()}.svg")
-                .size(200) // Set the target size to load the image at.
-                .build()
-        )
-    } else
-        rememberAsyncImagePainter(R.drawable.world_flag)
+    val painter = getFlagFromCountryCode(countryCode = countryCode)
 
     LazyColumn {
         item {

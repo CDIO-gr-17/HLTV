@@ -35,15 +35,15 @@ suspend fun waitForAPI(){
         delay(delta)
         lastAPIPull = java.util.Date().time
 
-        /*
-        val saved = minOf(MILISBETWEENREQUEST - delta, MILISBETWEENREQUEST)
+
+        val saved = minOf(CURRENTMILISBETWEENREQUEST - delta, CURRENTMILISBETWEENREQUEST)
         totalSaved += saved
 
         Log.i(
             "waitForAPI",
             "New wait implementation saved: " + saved.toString() + "ms, in total " + totalSaved.toString() + "ms"
         )
-        */
+
 
     }
 }

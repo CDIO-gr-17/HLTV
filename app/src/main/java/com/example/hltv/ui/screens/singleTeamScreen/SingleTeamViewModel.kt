@@ -88,7 +88,7 @@ class SingleTeamViewModel : ViewModel() {
         dataLoaded = true
 
 
-        val teamID = teamIDString.removePrefix("{teamID}").toInt()
+        val teamID = teamIDString.toInt()
         val lineup = CompletableDeferred<PlayerGroup?>()
 
         viewModelScope.launch(Dispatchers.IO) {

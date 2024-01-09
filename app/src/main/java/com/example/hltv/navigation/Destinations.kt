@@ -53,19 +53,19 @@ object Settings : Destination {
 
 object SinglePlayer : Destination {
     override val icon: Int = R.drawable.settings_24px
-    override val route: String = "Player/{playerID}"
+    override val route: String = "Player/"
     override val screen: @Composable () -> Unit = { SettingsScreen() }
     override val name :String = "SinglePlayer"
 }
 object SingleTeam : Destination {
     override val icon: Int = R.drawable.settings_24px
-    override val route: String = "Team/{teamID}"
+    override val route: String = "Team/"
     override val screen: @Composable () -> Unit = { SettingsScreen() }
     override val name :String = "SingleTeam"
 }
 object SingleMatch : Destination {
     override val icon: Int = R.drawable.settings_24px
-    override val route: String = "Match/{matchID}"
+    override val route: String = "Match/"
     override val screen: @Composable () -> Unit = { SettingsScreen() }
     override val name :String = "SingleMatch"
 }

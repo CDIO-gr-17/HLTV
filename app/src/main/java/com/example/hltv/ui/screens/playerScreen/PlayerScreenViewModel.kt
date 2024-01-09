@@ -1,6 +1,7 @@
 package com.example.hltv.ui.screens.playerScreen
 
 import android.graphics.Bitmap
+import android.util.Log
 import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
@@ -31,7 +32,8 @@ class PlayerScreenViewModel():ViewModel() {
     var playerImage = mutableStateOf<Bitmap?>(null)
 
     fun loadData(playerIDfullString: String?) {
-        val playerID = playerIDfullString!!.removePrefix("{playerID}").toInt()
+        Log.i("PlayerScreenViewModel", "playerIDfullString is: $playerIDfullString")
+        val playerID = playerIDfullString?.toInt()
         viewModelScope.launch {
             CoroutineScope(Dispatchers.IO).launch {
                 val data = getPlayerFromPlayerID(playerID)
