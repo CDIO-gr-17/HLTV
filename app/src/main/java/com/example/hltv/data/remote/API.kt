@@ -77,7 +77,7 @@ suspend fun getPlayersFromEvent(eventID: Int? = 10945127): APIResponse.Lineup {
 
 
 suspend fun getPlayerFromPlayerID(playerID: Int? = 1078255): APIResponse.PlayerWrapper {
-    return getAPIResponse("player/" + playerID.toString(), APIKEY, APIResponse.Lineup::class.java) as APIResponse.PlayerWrapper
+    return getAPIResponse("player/" + playerID.toString(), APIKEY, APIResponse.PlayerWrapper::class.java) as APIResponse.PlayerWrapper
 }
 
 

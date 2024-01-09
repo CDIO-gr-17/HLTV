@@ -31,7 +31,7 @@ class PlayerScreenViewModel():ViewModel() {
     var playerImage = mutableStateOf<Bitmap?>(null)
 
     fun loadData(playerIDfullString: String?) {
-        val playerID = playerIDfullString!!.removePrefix("{playerID}").toInt() //TODO fix denne her basse
+        val playerID = playerIDfullString!!.removePrefix("{playerID}").toInt()//TODO fix denne her basse
         viewModelScope.launch {
             CoroutineScope(Dispatchers.IO).launch {
                 val data = getPlayerFromPlayerID(playerID)
