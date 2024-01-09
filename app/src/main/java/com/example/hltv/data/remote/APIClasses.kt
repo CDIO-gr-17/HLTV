@@ -349,7 +349,7 @@ data class UniqueTournamentInfo (
     @SerializedName("newcomersLowerDivision"  ) var newcomersLowerDivision  : ArrayList<String>   = arrayListOf(),
     @SerializedName("newcomersOther"          ) var newcomersOther          : ArrayList<String>   = arrayListOf(),
     @SerializedName("numberOfCompetitors"     ) var numberOfCompetitors     : Int?                = null,
-    @SerializedName("totalPrizeMoney"         ) var totalPrizeMoney         : Int?                = -1,
+    @SerializedName("totalPrizeMoney"         ) var totalPrizeMoney         : Int?                = null,
     @SerializedName("totalPrizeMoneyCurrency" ) var totalPrizeMoneyCurrency : String?             = null,
     @SerializedName("winner"                  ) var winner                  : Team?               = Team(),
     @SerializedName("tier"                    ) var tier                    : String?             = null,
