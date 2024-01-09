@@ -27,6 +27,8 @@ import coil.compose.rememberAsyncImagePainter
 import com.example.hltv.R
 import com.example.hltv.data.convertTimestampToDateDisplay
 import com.example.hltv.ui.common.CommonCard
+import java.text.NumberFormat
+import java.util.Locale
 
 
 @Composable
@@ -38,6 +40,7 @@ fun EventsScreen() {
     val tournaments = viewModel.tournaments
     val tournamentSeasons = viewModel.tournamentSeasons
     val uniqueTournaments = viewModel.uniqueTournaments
+
     Log.i("tournaments", "${tournaments.size}")
     Log.i("tournamentSeasons", "${tournamentSeasons.size}")
     if (tournamentSeasons.size != 0) {
@@ -54,6 +57,7 @@ fun EventsScreen() {
                     tier = uniqueTournaments[index].uniqueTournamentInfo.tier?.uppercase(),
                     prizePool = uniqueTournaments[index].uniqueTournamentInfo.totalPrizeMoney,
                     competitors = uniqueTournaments[index].uniqueTournamentInfo.numberOfCompetitors,
+                    prizePoolCurrency = uniqueTournaments[index].uniqueTournamentInfo.totalPrizeMoneyCurrency
                 )
             }
         }
@@ -70,6 +74,7 @@ fun SingleEventCard(
     tier : String ?= null,
     prizePool : Int ?= null,
     competitors : Int ?= null,
+    prizePoolCurrency : String ?= null,
 ) {
     CommonCard(
         modifier = Modifier,
@@ -119,7 +124,8 @@ fun SingleEventCard(
                     }
                     prizePool?.let {
                         Text(
-                            text = prizePool.toString(),
+                            text = NumberFormat.getNumberInstance(Locale.getDefault()).format(prizePool) +
+                                    " ${prizePoolCurrency}",
                             textAlign = TextAlign.End,
                             modifier = Modifier
                                 .padding(8.dp)

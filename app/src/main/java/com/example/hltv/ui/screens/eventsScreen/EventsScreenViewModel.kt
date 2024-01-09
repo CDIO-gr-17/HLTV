@@ -18,14 +18,11 @@ import kotlinx.coroutines.launch
 
 
 class EventsScreenViewModel : ViewModel() {
-    val tournaments = mutableStateListOf<ThirdUniqueTournament>(ThirdUniqueTournament("Loading Tournaments"))
+    val tournaments = mutableStateListOf(ThirdUniqueTournament("Loading Tournaments"))
     val uniqueTournamentInfo = mutableStateListOf<UniqueTournamentInfo>()
-    val tournamentStartDateTimeStamp = mutableStateListOf<Int?>()
     var tournamentSeasons = mutableStateListOf<ArrayList<Season>>()
     var uniqueTournaments = mutableStateListOf<APIResponse.UniqueTournamentInfoWrapper>()
     val tournamentIcons = MutableList<Bitmap?>(999){null}
-    //private var _tournaments = MutableStateFlow<ThirdUniqueTournament>(ThirdUniqueTournament())
-    //var tournaments = _tournaments.asStateFlow()
 
 
     fun loadData(){
@@ -36,14 +33,9 @@ class EventsScreenViewModel : ViewModel() {
                 tournamentSeasons.add(getUniqueTournamentSeasons(tournament.id).seasons)
                 val seasonID = tournamentSeasons[index][0].id
                 uniqueTournaments.add(getUniqueTournamentDetails(tournament.id, seasonID))
-                Log.i("uniqueTournament", "${tournament.name}, ${uniqueTournaments[index].uniqueTournamentInfo.totalPrizeMoney}")
                 uniqueTournamentInfo.add(uniqueTournaments[index].uniqueTournamentInfo)
                 tournaments.add(tournament)
-                tournaments.sortedBy { tournament.startDateTimestamp }
-                tournamentStartDateTimeStamp.add(tournament.startDateTimestamp)
                 tournamentIcons[index] = getTournamentLogo(tournament.id)
-                Log.i("uniqueSeasons", "${tournament.name}, ${tournamentSeasons[index][0].id}, " +
-                        "Prizemoney: ${uniqueTournaments[index].uniqueTournamentInfo.totalPrizeMoney}")
             }
         }
     }
