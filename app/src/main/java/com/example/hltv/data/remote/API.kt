@@ -31,7 +31,7 @@ suspend fun waitForAPI(){
     mutexForAPI.withLock {
 
         //Mixing these two seemed to break it, so fix that
-        val delta = ((lastAPIPull + MILISBETWEENREQUEST) - java.util.Date().time)
+        val delta = ((lastAPIPull + CURRENTMILISBETWEENREQUEST) - java.util.Date().time)
         delay(delta)
         lastAPIPull = java.util.Date().time
 
