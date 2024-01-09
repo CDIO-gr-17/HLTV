@@ -130,7 +130,7 @@ fun overviewPlayer(
         Column(
             horizontalAlignment = Alignment.CenterHorizontally,
             modifier = Modifier.clickable {
-                onClickSinglePlayer(player.name)
+                onClickSinglePlayer(player.playerId.toString())
             }
         ){
             Image(
