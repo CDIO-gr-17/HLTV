@@ -21,9 +21,10 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
+import coil.compose.rememberAsyncImagePainter
 import com.example.hltv.R
+import com.example.hltv.data.convertTimestampToDateDisplay
 import com.example.hltv.ui.common.CommonCard
-import com.example.hltv.ui.screens.singleTeamScreen.SingleTeamViewModel
 
 
 @SuppressLint("StateFlowValueCalledInComposition")
@@ -43,21 +44,20 @@ fun PlayerScreen(
         modifier = Modifier
             .fillMaxHeight()
     ){
-        PlayerImage(image = null)
+        PlayerImage(image = rememberAsyncImagePainter(model = viewModel.playerImage.value))
         Row(
             modifier = Modifier,
             horizontalArrangement = Arrangement.SpaceEvenly
         ){
             Box(modifier = Modifier
-                    .fillMaxWidth()
-                    .weight(1f)
+                .fillMaxWidth()
+                .weight(1f)
             ){
 
                     TeamBox(
                         team = viewModel.player.value?.team?.name,
-                        //("Player: " + playerID),
-                        teamWorldRank = "5",
-                        teamNationality = "Denmark",
+                        teamWorldRank = "",
+                        teamNationality = if (viewModel.player.value?.country?.name!=null) viewModel.player.value!!.country?.name!! else "no team",
                     )
                 }
             }
@@ -67,9 +67,8 @@ fun PlayerScreen(
             {
                 StatsBox(
                     name = viewModel.player.value?.name,
-                    rating = "1.23 test",
-                    KD = "1.23 test"
-                )
+                    age =  convertTimestampToDateDisplay(viewModel.player.value?.dateOfBirthTimestamp),
+                    position =viewModel.player.value?.position)
             }
 
         }
@@ -100,8 +99,8 @@ fun TeamBox(
         headText = "Team",
         bottomBox = {
             Column {
-                Text(text = "$team #$teamWorldRank")
-                Text(text = "Nationality $teamNationality")
+                Text(text = "$team: #$teamWorldRank")
+                Text(text = "Nationality: $teamNationality")
             }
         }
     )
@@ -110,8 +109,8 @@ fun TeamBox(
 @Composable
 fun StatsBox(
     name: String ?= null,
-    rating: String ?= null,
-    KD: String ?= null
+    age: String ?= null,
+    position: String ?= null
 ){
     CommonCard (
         modifier = Modifier.fillMaxWidth(),
@@ -121,11 +120,11 @@ fun StatsBox(
                 name?.let {
                     Text(text = "Name: $name")
                 }
-                rating?.let{
-                    Text(text = "Rating: $rating")
+                age?.let{
+                    Text(text = "Age: $age")
                 }
-                KD?.let{
-                    Text(text = "KD: $KD")
+                position?.let{
+                    Text(text = "Position: $position")
                 }
             }
         }
