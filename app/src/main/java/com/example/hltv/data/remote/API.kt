@@ -4,10 +4,6 @@ import android.graphics.BitmapFactory
 import android.os.ConditionVariable
 import android.util.Base64
 import android.util.Log
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.async
-import kotlinx.coroutines.awaitAll
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.sync.Mutex
 import kotlinx.coroutines.sync.withLock
@@ -16,7 +12,8 @@ import java.io.ByteArrayOutputStream
 import java.io.IOException
 
 const val APIKEY = "24b0f292d5mshdf7eb12b4760333p19075ajsncc1561769190"
-const val MILISBETWEENREQUEST : Long = 200 //If this is set to 167 then some images disappear,
+var MILISBETWEENREQUESTS : Long = 200
+var CURRENTMILISBETWEENREQUEST : Long = MILISBETWEENREQUESTS //If this is set to 167 then some images disappear,
 // not sure why. Maybe API counts time from when it stopped sending the last request?
 const val ONLYCS = true
 var currentRequestCount = 0
@@ -30,7 +27,7 @@ suspend fun waitForAPI(){
     mutexForAPI.withLock {
 
         //Mixing these two seemed to break it, so fix that
-        val delta = ((lastAPIPull + MILISBETWEENREQUEST) - java.util.Date().time)
+        val delta = ((lastAPIPull + CURRENTMILISBETWEENREQUEST) - java.util.Date().time)
         delay(delta)
         lastAPIPull = java.util.Date().time
 
@@ -150,6 +147,10 @@ private suspend fun getAPIImage(apiURL: String, apiKEY: String): Bitmap?{
         Log.i("getAPIImage", "inputStream2 is null")
     }
 
+    val responseBodyCopy = response.body
+    val jsonString = responseBodyCopy?.string()
+    checkRequestRate(jsonString)
+
     //TODO: This is unnecessary
     val base64String = Base64.encodeToString(output.toByteArray(), Base64.DEFAULT)
     val decodedImage: ByteArray = Base64.decode(base64String, 0)
@@ -268,6 +269,18 @@ private fun checkIfTournamentIsPast(timeStamp: TimeStamp): Boolean{
 }
 */
 
+suspend fun checkRequestRate(jsonString: String?) : Boolean{
+    if (jsonString != null) {
+        if (jsonString.contains("You have exceeded the rate limit per second for your plan")){
+            Log.e("getAPIResponse", "You have exceeded the rate limit per second for your plan. Allowing less requests/second to allow for multiple app instances")
+            CURRENTMILISBETWEENREQUEST += MILISBETWEENREQUESTS
+            delay(CURRENTMILISBETWEENREQUEST)
+            return true
+        }
+    }
+    return false
+}
+
 /**
  * @param desiredClass The class to pass to gson. This is the same as your return class, e.g. APIResponse.Lineup::class.java
  */
@@ -276,7 +289,7 @@ private suspend fun getAPIResponse(apiURL: String, apiKEY: String, desiredClass:
 
     var jsonString : String?
     var tries = 3
-    var apiInUse = false
+    var apiInUse: Boolean
     val gson = GsonSingleton.instance
 
     Log.i("getAPIResponse",
@@ -295,16 +308,8 @@ private suspend fun getAPIResponse(apiURL: String, apiKEY: String, desiredClass:
         val response = client.newCall(request).execute()
         // Get the HTTP response as a string
         jsonString = response.body?.string()
+        apiInUse = checkRequestRate(jsonString)
         response.close()
-
-        if (jsonString != null) {
-            if (jsonString.contains("You have exceeded the rate limit per second for your plan")){
-                Log.e("getAPIResponse", "You have exceeded the rate limit per second for your plan")
-                apiInUse = true
-            }
-        }else {
-            Log.i("getAPIResponse", "jsonString is null")
-        }
         tries--
     }while (jsonString?.compareTo("") == 0 && tries > 0 && !apiInUse)
 
