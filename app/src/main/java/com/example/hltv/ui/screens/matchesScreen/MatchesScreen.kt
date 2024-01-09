@@ -90,9 +90,9 @@ fun MatchesScreen(onClickSingleTeam : (String?) -> Unit, onClickSingleMatch : (S
                 teamTwoOnClick = { onClickSingleTeam(item.awayTeam.id.toString()) },
                 tournamentIcon = rememberAsyncImagePainter(viewModel.tournamentIcons[tournamentValues.indexOf(item)])
             )
-            Log.i("tournamentLogo3","${viewModel.tournamentIcons.size}")
+            //Log.i("tournamentLogo3","${viewModel.tournamentIcons.size}")
         }
-        Log.i("loadingState", "$loadingState")
+        //Log.i("loadingState", "$loadingState")
         item{
             AnimatedVisibility(visible = !loadingState) {  //maybe make this a loading bar instead?
                 Row (

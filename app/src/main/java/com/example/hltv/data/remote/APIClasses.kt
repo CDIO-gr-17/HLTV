@@ -19,6 +19,11 @@ sealed class APIResponse{
         @SerializedName("away"      ) var away      : PlayerGroup?    = PlayerGroup()
 
     ) : APIResponse()
+    data class resultsWrapper (
+
+        @SerializedName("results") var results: List<Results>
+
+    ) : APIResponse()
 
 
 
@@ -47,6 +52,10 @@ sealed class APIResponse{
 
     data class SeasonsWrapper (
         @SerializedName("seasons") var seasons : ArrayList<Season> = arrayListOf()
+    ) : APIResponse()
+
+    data class EventWrapper (
+        @SerializedName("event" ) var event : Event? = Event()
     ) : APIResponse()
 }
 
@@ -226,13 +235,37 @@ data class Changes (
 
 )
 
+data class Results (
+
+    @SerializedName("entity" ) var entity : Entity? = Entity(),
+    @SerializedName("score"  ) var score  : Double? = null,
+    @SerializedName("type"   ) var type   : String? = null
+
+)
+data class Entity (
+
+    @SerializedName("country"    ) var country    : Country?    = Country(),
+    @SerializedName("id"         ) var id         : Int?        = null,
+    @SerializedName("name"       ) var name       : String?     = null ,
+    @SerializedName("nameCode"   ) var nameCode   : String?     = null,
+    @SerializedName("national"   ) var national   : Boolean?    = null,
+    @SerializedName("shortName"  ) var shortName  : String?     = null,
+    @SerializedName("slug"       ) var slug       : String?     = null,
+    @SerializedName("sport"      ) var sport      : Sport?      = Sport(),
+    @SerializedName("teamColors" ) var teamColors : TeamColors? = TeamColors(),
+    @SerializedName("type"       ) var type       : Int?        = null,
+    @SerializedName("userCount"  ) var userCount  : Int?        = null
+
+)
+
+
 /**
  * Is actually only one event?
  */
 data class Event (
 
-    @SerializedName("tournament"                      ) var tournament                      : Tournament? = Tournament(),
-    @SerializedName("season"                          ) var season                          : Season?     = Season(),
+    @SerializedName("tournament"                      ) var tournament                      : Tournament = Tournament(),
+    @SerializedName("season"                          ) var season                          : Season     = Season(),
     @SerializedName("customId"                        ) var customId                        : String?     = null,
     @SerializedName("status"                          ) var status                          : Status?     = Status(),
     @SerializedName("winnerCode"                      ) var winnerCode                      : Int?        = null,

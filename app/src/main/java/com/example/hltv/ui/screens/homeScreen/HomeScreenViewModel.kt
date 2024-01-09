@@ -35,8 +35,7 @@ class HomeScreenViewModel: ViewModel() {
         if (dataLoaded){
             return
         }
-        viewModelScope.launch {
-            CoroutineScope(Dispatchers.IO).launch {
+        viewModelScope.launch(Dispatchers.IO) {
                 val liveMatches = getLiveMatches()
 
                 if (liveMatches.events.isNotEmpty()) {
@@ -48,7 +47,6 @@ class HomeScreenViewModel: ViewModel() {
                 else {
                     loadUpcomingMatch()
                 }
-            }
             dataLoaded = true
         }
 

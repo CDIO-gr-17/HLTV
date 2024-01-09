@@ -51,7 +51,8 @@ fun PredictionCard(
     teamTwoIcon: Painter,
     teamOneColor: Color = Color.Blue,
     teamTwoColor: Color = Color.Red,
-    viewModel : SingleMatchViewModel
+    viewModel : SingleMatchViewModel,
+    matchID : String ?= null
 ) {
     var hasVoted by remember { mutableStateOf(false)}
     var isHomeTeamSelected by remember {mutableStateOf(false)}
@@ -118,7 +119,7 @@ fun PredictionCard(
                         }
                         hasVoted = true
                         isHomeTeamSelected = true
-                        viewModel.updatePrediction(1)
+                        viewModel.updatePrediction(1, matchID)
                     }
                 )
                 Text(
@@ -144,7 +145,7 @@ fun PredictionCard(
                         }
                         hasVoted = true
                         isHomeTeamSelected = false
-                        viewModel.updatePrediction(2)
+                        viewModel.updatePrediction(2, matchID)
                     }
                 )
             }
