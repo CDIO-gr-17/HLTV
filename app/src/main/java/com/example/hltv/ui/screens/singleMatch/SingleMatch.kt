@@ -42,20 +42,48 @@ fun SingleMatchScreen(matchID : String?, onClickSingleTeam : (String?) -> Unit){
     }
     val event = viewModel.event.value
     Column {
+        if (viewModel.LiveEvent.value != null) {
+            EventImage(
+                teamOneLogo = rememberAsyncImagePainter(viewModel.homeTeamIcon.value),
+                teamTwoLogo = rememberAsyncImagePainter(viewModel.awayTeamIcon.value),
+                teamOneScore = event?.homeScore?.display.toString(),
+                teamTwoScore = event?.awayScore?.display.toString(),
+                teamOneOnClick = { onClickSingleTeam(event?.homeTeam?.id.toString()) },
+                teamTwoOnClick = { onClickSingleTeam(event?.awayTeam?.id.toString()) }
+            )
 
-        EventImage(
-            teamOneLogo = rememberAsyncImagePainter(viewModel.homeTeamIcon.value),
-            teamTwoLogo = rememberAsyncImagePainter(viewModel.awayTeamIcon.value),
-            teamOneScore = event?.homeScore?.display.toString(),
-            teamTwoScore = event?.awayScore?.display.toString(),
-            teamOneOnClick = { onClickSingleTeam(event?.homeTeam?.id.toString()) },
-            teamTwoOnClick = { onClickSingleTeam(event?.awayTeam?.id.toString()) }
-        )
+            PredictionCard(
+                teamOneIcon = rememberAsyncImagePainter(viewModel.homeTeamIcon.value),
+                teamTwoIcon = rememberAsyncImagePainter(viewModel.awayTeamIcon.value),
+                viewModel = viewModel, matchID = matchID
+            )
+        }
+        else if(viewModel.UpcomingEvent.value != null){
+            EventImage(
+                teamOneLogo = rememberAsyncImagePainter(viewModel.homeTeamIcon.value),
+                teamTwoLogo = rememberAsyncImagePainter(viewModel.awayTeamIcon.value),
+                teamOneScore = event?.homeScore?.display.toString(),
+                teamTwoScore = event?.awayScore?.display.toString(),
+                teamOneOnClick = { onClickSingleTeam(event?.homeTeam?.id.toString()) },
+                teamTwoOnClick = { onClickSingleTeam(event?.awayTeam?.id.toString()) }
+            )
 
-        PredictionCard(
-            teamOneIcon = rememberAsyncImagePainter(viewModel.homeTeamIcon.value),
-            teamTwoIcon = rememberAsyncImagePainter(viewModel.awayTeamIcon.value),
-            viewModel = viewModel, matchID = matchID)
+            PredictionCard(
+                teamOneIcon = rememberAsyncImagePainter(viewModel.homeTeamIcon.value),
+                teamTwoIcon = rememberAsyncImagePainter(viewModel.awayTeamIcon.value),
+                viewModel = viewModel, matchID = matchID
+            )
+        }
+        else if(viewModel.FinishedEvent.value != null){
+            EventImage(
+                teamOneLogo = rememberAsyncImagePainter(viewModel.homeTeamIcon.value),
+                teamTwoLogo = rememberAsyncImagePainter(viewModel.awayTeamIcon.value),
+                teamOneScore = event?.homeScore?.display.toString(),
+                teamTwoScore = event?.awayScore?.display.toString(),
+                teamOneOnClick = { onClickSingleTeam(event?.homeTeam?.id.toString()) },
+                teamTwoOnClick = { onClickSingleTeam(event?.awayTeam?.id.toString()) }
+            )
+        }
     }
 
 }

@@ -19,8 +19,11 @@ import kotlinx.coroutines.launch
 class SingleMatchViewModel() : ViewModel() {
     var prediction: MutableState<Prediction> = mutableStateOf(Prediction(0, 0))
     var event = mutableStateOf<Event?>(null)
-    var awayTeamIcon =  mutableStateOf<Bitmap?>(null)
-    var homeTeamIcon =  mutableStateOf<Bitmap?>(null)
+    var LiveEvent = mutableStateOf<Event?>(null)
+    var UpcomingEvent = mutableStateOf<Event?>(null)
+    var FinishedEvent = mutableStateOf<Event?>(null)
+    var awayTeamIcon = mutableStateOf<Bitmap?>(null)
+    var homeTeamIcon = mutableStateOf<Bitmap?>(null)
 
     fun getPrediction(matchID: String?) {
         val niceMatchID = matchID!!.toInt()
@@ -57,9 +60,10 @@ class SingleMatchViewModel() : ViewModel() {
             sendPredictionToFirestore(prediction.value, niceMatchID)
         }
     }
+
     fun calculateVotePercentage(prediction: Prediction) {
         val totalVotes = prediction.homeTeamVoteCount + prediction.awayTeamVoteCount
-        if(totalVotes == 0){
+        if (totalVotes == 0) {
             Log.d("SingleMatchViewModel", "totalVotes = 0")
             return
         }
@@ -68,16 +72,24 @@ class SingleMatchViewModel() : ViewModel() {
         prediction.awayTeamVotePercentage =
             prediction.awayTeamVoteCount * 100 / totalVotes
     }
-    fun loadData(matchID : String?){
+
+    fun loadData(matchID: String?) {
         val niceMatchID = matchID!!.toInt()
-        viewModelScope.launch{
+        viewModelScope.launch {
             CoroutineScope(Dispatchers.IO).launch {
-                //Det ik for sjov det her
                 event.value = getEvent(niceMatchID).event!!
-                Log.i("SingleMatchViewModel","Loaded niceMatch, ${event.value!!.homeTeam.name} vs ${event.value!!.awayTeam.name}, ${event.value?.homeScore?.display} - ${event.value?.awayScore?.display}")
                 homeTeamIcon.value = getTeamImage(event.value!!.homeTeam.id)
                 awayTeamIcon.value = getTeamImage(event.value!!.awayTeam.id)
                 getPrediction(matchID)
+                if (event.value!!.startTimestamp?.toLong() != null &&
+                    event.value!!.status?.description == "Ended" //Match with description "ended" has finished
+                ) {
+                    FinishedEvent.value = event.value
+                } else if (event.value!!.startTimestamp!! > (System.currentTimeMillis() / 1000)) { //Matches where the startTimestamp has passed, but not ended (i.e it must be live)
+                    LiveEvent.value = event.value
+                } else { //Match must be upcoming
+                    UpcomingEvent.value = event.value
+                }
             }
         }
     }
