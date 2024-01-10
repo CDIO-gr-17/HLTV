@@ -4,7 +4,6 @@ import android.graphics.BitmapFactory
 import android.os.ConditionVariable
 import android.util.Base64
 import android.util.Log
-import com.example.hltv.data.convertYearToUnixTimestamp
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.async
@@ -77,14 +76,14 @@ suspend fun getPlayersFromEvent(eventID: Int? = 10945127): APIResponse.Lineup {
     print(eventID)
     return getAPIResponse("event/" + eventID.toString() + "/lineups", APIKEY, APIResponse.Lineup::class.java) as APIResponse.Lineup
 }
-suspend fun searchInAPIFromString(searchQuery : String) : APIResponse.resultsWrapper {
+suspend fun searchInAPIFromString(searchQuery : String) : APIResponse.ResultsWrapper {
     try {
-        return getAPIResponse("search/$searchQuery", APIKEY, APIResponse.resultsWrapper::class.java) as APIResponse.resultsWrapper
+        return getAPIResponse("search/$searchQuery", APIKEY, APIResponse.ResultsWrapper::class.java) as APIResponse.ResultsWrapper
 
     } catch (e: Exception) {
         // handling empty response
         Log.e("searchInAPIFromString", "Exception: $e")
-        return APIResponse.resultsWrapper(emptyList())
+        return APIResponse.ResultsWrapper(emptyList())
     }
 
 }
@@ -370,7 +369,7 @@ private suspend fun getAPIResponse(apiURL: String, apiKEY: String, desiredClass:
 
     return gson.fromJson(jsonString, desiredClass) as APIResponse
 }
-
+/* NOt needed anymore we are using teamMedia
 suspend fun getTournamentMedia(uniqueTournamentID: String): APIResponse.MediaWrapper{
     try {
         return getAPIResponse(
@@ -383,8 +382,23 @@ suspend fun getTournamentMedia(uniqueTournamentID: String): APIResponse.MediaWra
         Log.e("getTournamentMedia()", "$e")
         return APIResponse.MediaWrapper(Media())
     }
+}*/
+suspend fun getTeamMedia (teamID: Int?) : APIResponse.MediaWrapper {
+    try {
+        return getAPIResponse(
+            "team/$teamID/media",
+            APIKEY,
+            APIResponse.MediaWrapper::class.java
+        ) as APIResponse.MediaWrapper
+    }
+    catch (e: Exception){
+        //handling when response is empty
+        Log.e("getTeamMedia()", "$e")
+        return APIResponse.MediaWrapper(emptyList())
+    }
 
 }
+
 
 fun main() {
 

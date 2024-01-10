@@ -19,7 +19,7 @@ sealed class APIResponse{
         @SerializedName("away"      ) var away      : PlayerGroup?    = PlayerGroup()
 
     ) : APIResponse()
-    data class resultsWrapper (
+    data class ResultsWrapper (
 
         @SerializedName("results") var results: List<Results>
 
@@ -64,7 +64,7 @@ sealed class APIResponse{
     ) : APIResponse()
 
     data class MediaWrapper (
-        @SerializedName("media") var media: Media
+        @SerializedName("media") var media: List<Media>
     ) : APIResponse()
 
 }

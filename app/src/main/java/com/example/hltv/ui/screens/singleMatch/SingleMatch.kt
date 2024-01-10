@@ -1,6 +1,5 @@
 package com.example.hltv.ui.screens.singleMatch
 
-import android.util.Log
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -32,14 +31,12 @@ import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import coil.compose.rememberAsyncImagePainter
 import com.example.hltv.R
-import com.example.hltv.data.remote.getTeamImage
-import com.example.hltv.ui.screens.matchesScreen.MatchesScreenViewModel
 import com.example.hltv.ui.common.CommonCard
 
 @Composable
-fun SingleMatchScreen(matchID : String?, onClickSingleTeam : (String?) -> Unit){
-    val viewModel : SingleMatchViewModel = viewModel()
-    LaunchedEffect(Unit){
+fun SingleMatchScreen(matchID : String?, onClickSingleTeam : (String?) -> Unit) {
+    val viewModel: SingleMatchViewModel = viewModel()
+    LaunchedEffect(Unit) {
         viewModel.loadData(matchID)
     }
     val event = viewModel.event.value
@@ -57,14 +54,16 @@ fun SingleMatchScreen(matchID : String?, onClickSingleTeam : (String?) -> Unit){
         PredictionCard(
             teamOneIcon = rememberAsyncImagePainter(viewModel.homeTeamIcon.value),
             teamTwoIcon = rememberAsyncImagePainter(viewModel.awayTeamIcon.value),
-            viewModel = viewModel, matchID = matchID)
+            viewModel = viewModel, matchID = matchID
+        )
 
-        if (viewModel.tournamentMedia.size != 0)
-            LiveStream(
-                liveStreamLink = viewModel.tournamentMedia[0].media.url
-            )
-        }
+        val mediaList = viewModel.tournamentMedia.value.media
+        LiveStream(
+            liveStreamLink = mediaList[mediaList.size - 1].url
+        )
+
     }
+}
 
 
 @Composable
