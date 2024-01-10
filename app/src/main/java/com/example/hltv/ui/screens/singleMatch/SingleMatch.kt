@@ -12,6 +12,7 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.text.ClickableText
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -22,19 +23,25 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.painter.Painter
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.LocalUriHandler
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.text.SpanStyle
+import androidx.compose.ui.text.buildAnnotatedString
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.text.style.TextDecoration
+import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import coil.compose.rememberAsyncImagePainter
 import com.example.hltv.R
+import com.example.hltv.data.remote.Media
 import com.example.hltv.ui.common.CommonCard
 
 @Composable
-fun SingleMatchScreen(matchID : String?, onClickSingleTeam : (String?) -> Unit) {
+fun SingleMatchScreen(matchID: String?, onClickSingleTeam: (String?) -> Unit) {
     val viewModel: SingleMatchViewModel = viewModel()
     LaunchedEffect(Unit) {
         viewModel.loadData(matchID)
@@ -58,9 +65,7 @@ fun SingleMatchScreen(matchID : String?, onClickSingleTeam : (String?) -> Unit) 
         )
 
         val mediaList = viewModel.tournamentMedia.value.media
-        LiveStream(
-            liveStreamLink = mediaList[mediaList.size - 1].url
-        )
+        ShowLiveStreams(mediaList)
 
     }
 }
@@ -77,7 +82,7 @@ fun EventImage(
     teamOneOnClick: () -> Unit,
     teamTwoOnClick: () -> Unit,
 ) {
-    Box (modifier = Modifier.height(180.dp)){
+    Box(modifier = Modifier.height(180.dp)) {
         Image(
             painter = backgroundImage,
             contentDescription = null,
@@ -166,23 +171,47 @@ fun EventImage(
 }
 
 @Composable
-fun LiveStream (
-    liveStreamLink: String?
-
-){
-    CommonCard (
+fun ShowLiveStreams(mediaList: List<Media>) {
+    if (mediaList.isEmpty())
+        return
+    CommonCard(
         modifier = Modifier.fillMaxWidth(),
-        headText = "Live Stream",
+        headText = "Livestreams",
+        subText = "May or may not have the game",
         bottomBox = {
-            Row (
-                modifier = Modifier.fillMaxWidth()
-            ){
-                Text(text = "Watch the match:")
-                Spacer(modifier = Modifier.weight(1f))
-                Text(
-                    text = liveStreamLink?:"No link found",
-                    color = MaterialTheme.colorScheme.primary
-                )
+            Column {
+                mediaList.distinctBy { it.url }.forEach { media ->
+                    if(media.url != null) {
+                        val annotatedString = buildAnnotatedString {
+                            withStyle(
+                                style = SpanStyle(
+                                    color = Color.Blue,
+                                    textDecoration = TextDecoration.Underline,
+                                    fontSize = MaterialTheme.typography.bodyMedium.fontSize
+                                )
+                            ) {
+                                append(media.url.toString())
+                                addStringAnnotation(
+                                    "URL",
+                                    media.url.toString(),
+                                    0,
+                                    media.url!!.length
+                                )
+                            }
+                        }
+
+                        val uriHandler = LocalUriHandler.current
+
+                        ClickableText(
+                            text = annotatedString,
+                            onClick = { offset ->
+                                annotatedString.getStringAnnotations("URL", offset, offset)
+                                    .firstOrNull()?.let { annotation ->
+                                        uriHandler.openUri(annotation.item)
+                                    }
+                            })
+                    }
+                }
             }
         }
     )
