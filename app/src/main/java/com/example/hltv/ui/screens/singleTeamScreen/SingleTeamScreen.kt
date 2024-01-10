@@ -20,21 +20,17 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.painter.Painter
-import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import coil.compose.rememberAsyncImagePainter
-import coil.decode.SvgDecoder
-import coil.request.ImageRequest
-import coil.size.Size
 import com.example.hltv.R
 import com.example.hltv.data.getFlagFromCountryCode
 import com.example.hltv.ui.common.CommonCard
-import java.net.URL
 
 @Composable
 fun SingleTeamScreen(teamID : String? = "364378", onClickSinglePlayer: (String?) -> Unit, onClickSingleTeam: (String?) -> Unit, onClickSingleMatch: (String?) -> Unit){
@@ -53,12 +49,27 @@ fun SingleTeamScreen(teamID : String? = "364378", onClickSinglePlayer: (String?)
             CommonCard(modifier = Modifier, bottomBox = {
                 Column {
                     LazyRow{
+
+                        /*
+                        playerOverview.forEachIndexed { index, player ->
+                            Log.i("SingleTeamScreen", "Index is: " + ((index+1).toFloat()/playerOverview.size.toFloat()).toString())
+                            overviewPlayer(
+                                player = player,
+                                onClickSinglePlayer = onClickSinglePlayer,
+                                size = ((index+1).toFloat()/playerOverview.size.toFloat())/*(index/playerOverview.size).toFloat()*/
+                            )
+                        }
+
+                         */
                         items(playerOverview.size){ index ->
                             overviewPlayer(
                                 player = playerOverview[index],
-                                onClickSinglePlayer
+                                onClickSinglePlayer = onClickSinglePlayer
                             )
                         }
+
+
+
                     }
                     overviewInfo(
                         country = statsOverview.value.countryName,
@@ -108,7 +119,7 @@ fun overviewPlayers(
         horizontalArrangement = Arrangement.SpaceEvenly
     ){
         for (player in players) {
-            overviewPlayer(player = player, onClickSinglePlayer)
+            overviewPlayer(player = player, onClickSinglePlayer = onClickSinglePlayer)
         }
     }
 }
@@ -116,9 +127,9 @@ fun overviewPlayers(
 @Composable
 fun overviewPlayer(
     player: Player,
-    onClickSinglePlayer: (String?) -> Unit
+    onClickSinglePlayer: (String?) -> Unit,
 ){
-    Row {
+    Row{
         Column(
             horizontalAlignment = Alignment.CenterHorizontally,
             modifier = Modifier.clickable {
@@ -126,27 +137,30 @@ fun overviewPlayer(
             }
         ){
             Image(
-                painter = if(player.image!=null) rememberAsyncImagePainter(player.image) else rememberAsyncImagePainter(
-                    model = R.drawable.person_24px
-                ),
+                painter = if(player.image!=null) rememberAsyncImagePainter(player.image)
+                    else rememberAsyncImagePainter(model = R.drawable.person_24px),
                 contentDescription = null,
                 alignment = Alignment.CenterStart,
                 modifier = Modifier
                     .size(70.dp)
                     .offset(y = 20.dp)
             )
-            CommonCard (modifier = Modifier,
+            CommonCard (modifier = Modifier.size(70.dp),
                 customOuterPadding = 0.dp,
+                bottomBox = null,
                 topBox = {
                     Text(
-                        text = if (player.name!=null) player.name.substring(0, minOf(6, player.name.length)) else "Player",
+                        text = player.name ?: "Player",
                         fontSize = MaterialTheme.typography.bodyMedium.fontSize,
                         color = MaterialTheme.colorScheme.onPrimaryContainer,
                         textAlign = TextAlign.Center,
                         modifier = Modifier.fillMaxWidth(),
-                        fontWeight = FontWeight.Bold
+                        fontWeight = FontWeight.Bold,
+                        maxLines = 1,
+                        overflow = TextOverflow.Ellipsis
                     )
                 }
+
             )
         }
     }
@@ -232,7 +246,9 @@ fun recentMatches(
                         Text(
                             text = team1 ?: "Team 1",
                             fontSize = MaterialTheme.typography.bodyLarge.fontSize,
-                            color = MaterialTheme.colorScheme.onPrimaryContainer
+                            color = MaterialTheme.colorScheme.onPrimaryContainer,
+                            maxLines = 1,
+                            overflow = TextOverflow.Ellipsis
                         )
                     }
                     Column (
@@ -261,7 +277,9 @@ fun recentMatches(
                         Text(
                             text = team2 ?: "Team 2",
                             fontSize = MaterialTheme.typography.bodyLarge.fontSize,
-                            color = MaterialTheme.colorScheme.onPrimaryContainer
+                            color = MaterialTheme.colorScheme.onPrimaryContainer,
+                            maxLines = 1,
+                            overflow = TextOverflow.Ellipsis
                         )
                         Image(
                             painter = imageTeam2,
