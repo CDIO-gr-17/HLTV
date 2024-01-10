@@ -7,11 +7,10 @@ import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.example.hltv.data.remote.Event
-import com.example.hltv.data.remote.Media
-import androidx.lifecycle.viewModelScope
 import com.example.hltv.data.convertTimestampToDateClock
+import com.example.hltv.data.remote.Event
 import com.example.hltv.data.remote.Game
+import com.example.hltv.data.remote.Media
 import com.example.hltv.data.remote.Prediction
 import com.example.hltv.data.remote.getEvent
 import com.example.hltv.data.remote.getGamesFromEvent
@@ -28,7 +27,7 @@ import kotlinx.coroutines.launch
 class SingleMatchViewModel() : ViewModel() {
     var prediction: MutableState<Prediction> = mutableStateOf(Prediction(0, 0))
     val games = mutableListOf<Game>()
-    val mapImages = mutableStateListOf<Bitmap?> (null)
+    val mapImages = mutableStateListOf<Bitmap?>(null)
     var event = mutableStateOf<Event?>(null)
     var LiveEvent = mutableStateOf<Event?>(null)
     var UpcomingEvent = mutableStateOf<Event?>(null)
@@ -39,17 +38,6 @@ class SingleMatchViewModel() : ViewModel() {
     var description = ""
 
 
-    fun calculateVotePercentage(prediction: Prediction) {
-        val totalVotes = prediction.homeTeamVoteCount + prediction.awayTeamVoteCount
-        if (totalVotes == 0) {
-            Log.d("SingleMatchViewModel", "totalVotes = 0")
-            return
-        }
-        prediction.homeTeamVotePercentage =
-            prediction.homeTeamVoteCount * 100 / totalVotes
-        prediction.awayTeamVotePercentage =
-            prediction.awayTeamVoteCount * 100 / totalVotes
-    }
     private var _tournamentMedia = MutableStateFlow(ArrayList<Media>())
     var tournamentMedia: MutableStateFlow<ArrayList<Media>> = _tournamentMedia
 
@@ -102,8 +90,6 @@ class SingleMatchViewModel() : ViewModel() {
     }
 
     fun loadData(matchID: String?) {
-
-    fun loadData(matchID: String?) {
         val niceMatchID = matchID!!.toInt()
         viewModelScope.launch {
             CoroutineScope(Dispatchers.IO).launch {
@@ -118,16 +104,23 @@ class SingleMatchViewModel() : ViewModel() {
                 getPrediction(matchID)
                 if (event.value!!.status?.type == "finished") { // Match with description "ended" has finished
                     FinishedEvent.value = event.value
-                    Log.i("SingleMatchViewModel", "${event.value!!.status?.description} match added to finished events")
+                    Log.i(
+                        "SingleMatchViewModel",
+                        "${event.value!!.status?.description} match added to finished events"
+                    )
                 } else if (event.value!!.status?.type == "inprogress") { // Match is not started
                     LiveEvent.value = event.value
-                    Log.i("SingleMatchViewModel", "${event.value!!.startTimestamp!!} > ${System.currentTimeMillis() / 1000}. ${event.value!!.status?.description}. Match added to live events.")
+                    Log.i(
+                        "SingleMatchViewModel",
+                        "${event.value!!.startTimestamp!!} > ${System.currentTimeMillis() / 1000}. ${event.value!!.status?.description}. Match added to live events."
+                    )
                 } else { // Match must be upcoming
                     UpcomingEvent.value = event.value
                     Log.i("SingleMatchViewModel", "Match added to upcoming events")
-                    description = "${event.value!!.homeTeam.name} will be playing against ${event.value!!.awayTeam.name}" +
-                            " at ${convertTimestampToDateClock(event.value!!.startTimestamp)} in the ${event.value!!.tournament.name} tournament." +
-                            " They will be playing in a best of ${event.value!!.bestOf} map format."
+                    description =
+                        "${event.value!!.homeTeam.name} will be playing against ${event.value!!.awayTeam.name}" +
+                                " at ${convertTimestampToDateClock(event.value!!.startTimestamp)} in the ${event.value!!.tournament.name} tournament." +
+                                " They will be playing in a best of ${event.value!!.bestOf} map format."
                 }
                 _tournamentMedia.value =
                     getMedia(event.value!!.homeTeam.id, event.value!!.awayTeam.id)
@@ -142,13 +135,19 @@ class SingleMatchViewModel() : ViewModel() {
             mapImages.clear()
             val tempGames = List(getGamesFromEvent(niceMatchID).games.size) { Game() }
             games.forEach { game ->
-                if(game.map?.id!=null){
+                if (game.map?.id != null) {
                     val mapImage = getMapImageFromMapID(game.map?.id!!)
                     if (mapImage != null) {
                         mapImages.add(mapImage)
-                        Log.i("mapImage","Added mapImage $mapImage from ID ${game.map?.id} Name ${game.map?.name}")
+                        Log.i(
+                            "mapImage",
+                            "Added mapImage $mapImage from ID ${game.map?.id} Name ${game.map?.name}"
+                        )
                     } else Log.d("SingleMatchViewModel", "Map image is null")
-                } else Log.d("SingleMatchViewModel", "Map ID is null for game with ID ${game.id}")
+                } else Log.d(
+                    "SingleMatchViewModel",
+                    "Map ID is null for game with ID ${game.id}"
+                )
             }
             games.addAll(tempGames)
             getPrediction(niceMatchID.toString())

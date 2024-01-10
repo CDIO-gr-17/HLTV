@@ -13,6 +13,7 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.ClickableText
 import androidx.compose.material3.MaterialTheme
@@ -39,18 +40,14 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import coil.compose.rememberAsyncImagePainter
-import androidx.compose.foundation.lazy.items
-import androidx.compose.foundation.lazy.itemsIndexed
 import com.example.hltv.R
-import com.example.hltv.data.remote.getMapImageFromMapID
-import com.example.hltv.data.remote.getTeamImage
+import com.example.hltv.data.remote.Media
 import com.example.hltv.ui.common.CommonCard
-import com.example.hltv.ui.screens.matchesScreen.MatchesScreenViewModel
 
 @Composable
-fun SingleMatchScreen(matchID : String?, onClickSingleTeam : (String?) -> Unit){
-    val viewModel : SingleMatchViewModel = viewModel()
-    LaunchedEffect(Unit){
+fun SingleMatchScreen(matchID: String?, onClickSingleTeam: (String?) -> Unit) {
+    val viewModel: SingleMatchViewModel = viewModel()
+    LaunchedEffect(Unit) {
         viewModel.loadData(matchID)
         viewModel.loadGames(matchID)
     }
@@ -59,7 +56,7 @@ fun SingleMatchScreen(matchID : String?, onClickSingleTeam : (String?) -> Unit){
     val games = viewModel.games
     Column {
         if (viewModel.LiveEvent.value != null) {
-            Log.i("SingleMatch","Drawing liveEvent")
+            Log.i("SingleMatch", "Drawing liveEvent")
             EventImage(
                 teamOneLogo = rememberAsyncImagePainter(viewModel.homeTeamIcon.value),
                 teamTwoLogo = rememberAsyncImagePainter(viewModel.awayTeamIcon.value),
@@ -73,11 +70,11 @@ fun SingleMatchScreen(matchID : String?, onClickSingleTeam : (String?) -> Unit){
             PredictionCard(
                 teamOneIcon = rememberAsyncImagePainter(viewModel.homeTeamIcon.value),
                 teamTwoIcon = rememberAsyncImagePainter(viewModel.awayTeamIcon.value),
-                viewModel = viewModel, matchID = matchID
+                viewModel = viewModel,
+                matchID = matchID
             )
-        }
-        else if(viewModel.UpcomingEvent.value != null){
-            Log.i("SingleMatch","Drawing upcomingEvent")
+        } else if (viewModel.UpcomingEvent.value != null) {
+            Log.i("SingleMatch", "Drawing upcomingEvent")
             EventImage(
                 teamOneLogo = rememberAsyncImagePainter(viewModel.homeTeamIcon.value),
                 teamTwoLogo = rememberAsyncImagePainter(viewModel.awayTeamIcon.value),
@@ -93,12 +90,11 @@ fun SingleMatchScreen(matchID : String?, onClickSingleTeam : (String?) -> Unit){
                 viewModel = viewModel,
                 matchID = matchID,
             )
-            CommonCard (modifier = Modifier,bottomBox = {
+            CommonCard(modifier = Modifier, bottomBox = {
                 Text(text = viewModel.description)
             })
-        }
-        else {
-            Log.i("SingleMatch","Drawing finishedEvent")
+        } else {
+            Log.i("SingleMatch", "Drawing finishedEvent")
             EventImage(
                 teamOneLogo = rememberAsyncImagePainter(viewModel.homeTeamIcon.value),
                 teamTwoLogo = rememberAsyncImagePainter(viewModel.awayTeamIcon.value),
@@ -108,56 +104,52 @@ fun SingleMatchScreen(matchID : String?, onClickSingleTeam : (String?) -> Unit){
                 teamTwoOnClick = { onClickSingleTeam(event?.awayTeam?.id.toString()) },
                 tournamentIcon = rememberAsyncImagePainter(viewModel.tournamentIcon.value)
             )
-            LazyColumn(){
-                itemsIndexed(games){gameNumber, game ->
-                    EventImage(
-                        backgroundImage = if (gameNumber<viewModel.mapImages.size){
-                            Log.i("mapImageGameNumber","$gameNumber")
-                            Log.i("mapImageGameNumberImage","${viewModel.mapImages[gameNumber]}")
-                            rememberAsyncImagePainter(viewModel.mapImages[gameNumber])
-                        } else rememberAsyncImagePainter(R.drawable.event_background),
+            LazyColumn() {
+                itemsIndexed(games) { gameNumber, game ->
+                    EventImage(backgroundImage = if (gameNumber < viewModel.mapImages.size) {
+                        Log.i("mapImageGameNumber", "$gameNumber")
+                        Log.i("mapImageGameNumberImage", "${viewModel.mapImages[gameNumber]}")
+                        rememberAsyncImagePainter(viewModel.mapImages[gameNumber])
+                    } else rememberAsyncImagePainter(R.drawable.event_background),
                         teamOneLogo = rememberAsyncImagePainter(viewModel.homeTeamIcon.value),
                         teamTwoLogo = rememberAsyncImagePainter(viewModel.awayTeamIcon.value),
                         teamOneScore = game.homeScore?.display.toString(),
                         teamTwoScore = game.awayScore?.display.toString(),
                         teamOneOnClick = { onClickSingleTeam(event?.homeTeam?.id.toString()) },
-                        teamTwoOnClick = { onClickSingleTeam(event?.awayTeam?.id.toString()) }
-                    )
+                        teamTwoOnClick = { onClickSingleTeam(event?.awayTeam?.id.toString()) })
                 }
             }
         }
         PredictionCard(
             teamOneIcon = rememberAsyncImagePainter(viewModel.homeTeamIcon.value),
             teamTwoIcon = rememberAsyncImagePainter(viewModel.awayTeamIcon.value),
-            viewModel = viewModel, matchID = matchID
+            viewModel = viewModel,
+            matchID = matchID
         )
-        if (mediaList.value.isNotEmpty())
-            ShowLiveStreams(mediaList.value)
+        if (mediaList.value.isNotEmpty()) ShowLiveStreams(mediaList.value)
 
     }
 }
 
-}
 
 @Composable
 fun EventImage(
     backgroundImage: Painter = painterResource(id = R.drawable.event_background),
-    tournamentIcon: Painter?=null,
+    tournamentIcon: Painter? = null,
     teamOneLogo: Painter,
     teamTwoLogo: Painter,
     teamOneScore: String,
     teamTwoScore: String,
     teamOneOnClick: () -> Unit,
     teamTwoOnClick: () -> Unit,
-    live: Boolean ?= false,
+    live: Boolean? = false,
 ) {
-    Box (modifier = Modifier.height(180.dp)){
+    Box(modifier = Modifier.height(180.dp)) {
         Image(
             painter = backgroundImage,
             contentDescription = null,
             contentScale = ContentScale.FillBounds,
-            modifier = Modifier
-                .fillMaxWidth()
+            modifier = Modifier.fillMaxWidth()
         )
         Row(
             modifier = Modifier
@@ -165,14 +157,12 @@ fun EventImage(
                 .align(Alignment.Center)
         ) {
             Spacer(modifier = Modifier.weight(1f))
-            Image(
-                painter = teamOneLogo,
+            Image(painter = teamOneLogo,
                 contentDescription = null,
                 modifier = Modifier
                     .size(110.dp)
                     .align(Alignment.CenterVertically)
-                    .clickable { teamOneOnClick() }
-            )
+                    .clickable { teamOneOnClick() })
             Spacer(modifier = Modifier.weight(1f))
             Column {
                 Spacer(modifier = Modifier.weight(1f))
@@ -210,7 +200,7 @@ fun EventImage(
                         modifier = Modifier.align(Alignment.CenterVertically)
                     )
                 }
-                if(live == true) {
+                if (live == true) {
                     Spacer(modifier = Modifier.weight(1f))
                     Text(
                         text = "Live",
@@ -229,14 +219,12 @@ fun EventImage(
                 }
             }
             Spacer(modifier = Modifier.weight(1f))
-            Image(
-                painter = teamTwoLogo,
+            Image(painter = teamTwoLogo,
                 contentDescription = null,
                 modifier = Modifier
                     .size(110.dp)
                     .align(Alignment.CenterVertically)
-                    .clickable { teamTwoOnClick() }
-            )
+                    .clickable { teamTwoOnClick() })
             Spacer(modifier = Modifier.weight(1f))
         }
     }
@@ -244,8 +232,7 @@ fun EventImage(
 
 @Composable
 fun ShowLiveStreams(mediaList: ArrayList<Media>) {
-    CommonCard(
-        modifier = Modifier.fillMaxWidth(),
+    CommonCard(modifier = Modifier.fillMaxWidth(),
         headText = "Livestreams",
         subText = "May or may not have the game",
         bottomBox = {
@@ -262,18 +249,14 @@ fun ShowLiveStreams(mediaList: ArrayList<Media>) {
                             ) {
                                 append(media.url.toString())
                                 addStringAnnotation(
-                                    "URL",
-                                    media.url.toString(),
-                                    0,
-                                    media.url!!.length
+                                    "URL", media.url.toString(), 0, media.url!!.length
                                 )
                             }
                         }
 
                         val uriHandler = LocalUriHandler.current
 
-                        ClickableText(
-                            modifier = Modifier.padding(vertical = 4.dp),
+                        ClickableText(modifier = Modifier.padding(vertical = 4.dp),
                             text = annotatedString,
                             onClick = { offset ->
                                 annotatedString.getStringAnnotations("URL", offset, offset)
@@ -284,8 +267,7 @@ fun ShowLiveStreams(mediaList: ArrayList<Media>) {
                     }
                 }
             }
-        }
-    )
+        })
 }
 
 
