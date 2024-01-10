@@ -34,6 +34,7 @@ import com.example.hltv.data.remote.getTeamNameFromID
 import com.example.hltv.navigation.Home
 import com.example.hltv.navigation.MainNavHost
 import com.example.hltv.navigation.Settings
+import com.example.hltv.navigation.SingleMatch
 import com.example.hltv.navigation.SingleTeam
 import com.example.hltv.navigation.allAppScreens
 import com.example.hltv.navigation.bottomAppBarScreens
@@ -76,7 +77,10 @@ fun HLTVApp() {
                             }
                         }
                         Text(text = teamName)
-                    } else {
+                    } else if (currentScreen == SingleMatch) {
+
+                    }
+                    else {
                         Text(text = currentScreen.name)
                     }
                 },

@@ -118,8 +118,18 @@ suspend fun getPreviousMatches(teamID: Int, pageID: Int = 0):APIResponse.EventsW
     return getAPIResponse("team/"+teamID.toString()+"/matches/previous/"+ pageID, APIKEY, APIResponse.EventsWrapper::class.java) as APIResponse.EventsWrapper
 }
 
-suspend fun getGamesFromEvent(eventID: Int?) : APIResponse.EventsWrapper{
-    return getAPIResponse("event/$eventID/games", APIKEY, APIResponse.EventsWrapper::class.java) as APIResponse.EventsWrapper
+suspend fun getGamesFromEvent(eventID: Int?) : APIResponse.GameWrapper{
+    try {
+        return getAPIResponse("event/$eventID/games", APIKEY, APIResponse.GameWrapper::class.java) as APIResponse.GameWrapper
+    } catch (e: Exception){
+        Log.e("getGamesFromEvent","No games found for match $eventID")
+        return APIResponse.GameWrapper(emptyList())
+    }
+}
+suspend fun getMapImageFromMapID(mapID : Int): Bitmap? {
+    val apiURL = "map/$mapID/image"
+    return getAPIImage(apiURL, APIKEY)
+
 }
 suspend fun getEvent(eventID: Int?) : APIResponse.EventWrapper{
     return getAPIResponse("event/$eventID", APIKEY, APIResponse.EventWrapper::class.java) as APIResponse.EventWrapper
