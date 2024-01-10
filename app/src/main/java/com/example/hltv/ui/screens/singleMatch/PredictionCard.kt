@@ -1,6 +1,7 @@
 package com.example.hltv.ui.screens.singleMatch
 
 
+import android.graphics.BitmapFactory
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
@@ -31,12 +32,15 @@ import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.painter.Painter
+import androidx.compose.ui.graphics.ImageBitmap
+import androidx.compose.ui.graphics.asImageBitmap
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.example.hltv.R
 import com.example.hltv.ui.common.CommonCard
 
 
@@ -47,8 +51,8 @@ class PredictionCardState {
 @Composable
 fun PredictionCard(
     modifier: Modifier = Modifier,
-    teamOneIcon: Painter,
-    teamTwoIcon: Painter,
+    teamOneIcon: ImageBitmap?,
+    teamTwoIcon: ImageBitmap?,
     teamOneColor: Color = Color.Blue,
     teamTwoColor: Color = Color.Red,
     viewModel : SingleMatchViewModel,
@@ -156,7 +160,9 @@ fun PredictionCard(
 @Composable
 private fun drawCircle(
     modifier: Modifier,
-    teamIcon: Painter,
+    teamIcon: ImageBitmap? = BitmapFactory.decodeResource(
+        LocalContext.current.resources, R.drawable.astralis_logo
+    ).asImageBitmap(),
     voteCount: Int,
     hometeam: Boolean,
     hasVoted: Boolean,
@@ -176,7 +182,10 @@ private fun drawCircle(
                     }
         ) {
             Image(
-                painter = teamIcon,
+                bitmap = if (teamIcon == null) BitmapFactory.decodeResource(
+                    LocalContext.current.resources, R.drawable.astralis_logo
+                ).asImageBitmap()
+                else teamIcon,
                 contentDescription = "teamIcon",
                 modifier = Modifier
                     .fillMaxSize()

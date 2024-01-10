@@ -7,11 +7,14 @@ import com.google.gson.annotations.SerializedName
 
 
 sealed class APIResponse{
+    data class GameWrapper (
+        @SerializedName("games") var games: List<Game>
+    ) : APIResponse()
     data class EventsWrapper(
 
         @SerializedName("events") var events: List<Event>
 
-    ) : APIResponse()
+        ) : APIResponse()
     data class Lineup (
 
         @SerializedName("confirmed" ) var confirmed : Boolean? = null,
@@ -227,6 +230,37 @@ data class Score (
 data class Map(
     @SerializedName("id" ) var id : Int? = null,
     @SerializedName("name" ) var name : String? = null
+)
+
+
+data class Game (
+
+    @SerializedName("length"                ) var length                : Int?       = null,
+    @SerializedName("status"                ) var status                : Status?    = Status(),
+    @SerializedName("winnerCode"            ) var winnerCode            : Int?       = null,
+    @SerializedName("map"                   ) var map                   : Map?       = Map(),
+    @SerializedName("homeScore"             ) var homeScore             : HomeScore? = HomeScore(),
+    @SerializedName("awayScore"             ) var awayScore             : AwayScore? = AwayScore(),
+    @SerializedName("homeTeamStartingSide"  ) var homeTeamStartingSide  : Int?       = null,
+    @SerializedName("hasCompleteStatistics" ) var hasCompleteStatistics : Boolean?   = null,
+    @SerializedName("id"                    ) var id                    : Int?       = null,
+    @SerializedName("startTimestamp"        ) var startTimestamp        : Int?       = null
+
+)
+data class AwayScore (
+
+    @SerializedName("display" ) var display : Int? = null,
+    @SerializedName("period1" ) var period1 : Int? = null,
+    @SerializedName("period2" ) var period2 : Int? = null
+
+)
+
+data class HomeScore (
+
+    @SerializedName("display" ) var display : Int? = null,
+    @SerializedName("period1" ) var period1 : Int? = null,
+    @SerializedName("period2" ) var period2 : Int? = null
+
 )
 data class Time (
 
