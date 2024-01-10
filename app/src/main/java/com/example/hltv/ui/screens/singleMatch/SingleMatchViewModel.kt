@@ -4,8 +4,10 @@ import android.util.Log
 import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
+import com.example.hltv.data.remote.Media
 import com.example.hltv.data.remote.Prediction
 import com.example.hltv.data.remote.getPredictionFromFirestore
+import com.example.hltv.data.remote.getTournamentMedia
 import com.example.hltv.data.remote.sendPredictionToFirestore
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -21,6 +23,7 @@ class SingleMatchViewModel(var matchID: String?) : ViewModel() {
             getPrediction()
         }
     }
+
     fun getPrediction() {
         CoroutineScope(Dispatchers.IO).launch {
             val tempPrediction =
@@ -54,9 +57,10 @@ class SingleMatchViewModel(var matchID: String?) : ViewModel() {
             sendPredictionToFirestore(prediction.value, niceMatchID)
         }
     }
+
     fun calculateVotePercentage(prediction: Prediction) {
         val totalVotes = prediction.homeTeamVoteCount + prediction.awayTeamVoteCount
-        if(totalVotes == 0){
+        if (totalVotes == 0) {
             Log.d("SingleMatchViewModel", "totalVotes = 0")
             return
         }
@@ -64,5 +68,10 @@ class SingleMatchViewModel(var matchID: String?) : ViewModel() {
             prediction.homeTeamVoteCount * 100 / totalVotes
         prediction.awayTeamVotePercentage =
             prediction.awayTeamVoteCount * 100 / totalVotes
+    }
+
+    fun GetMediaUrl(uniqueTournamentID: String) {
+    val url: MutableList<Media>
+
     }
 }
