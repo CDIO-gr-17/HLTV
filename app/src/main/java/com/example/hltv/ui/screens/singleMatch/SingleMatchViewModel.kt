@@ -1,7 +1,9 @@
 package com.example.hltv.ui.screens.singleMatch
 
+import android.graphics.Bitmap
 import android.util.Log
 import androidx.compose.runtime.MutableState
+import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
@@ -22,50 +24,27 @@ import kotlinx.coroutines.launch
 class SingleMatchViewModel() : ViewModel() {
     var prediction: MutableState<Prediction> = mutableStateOf(Prediction(0, 0))
     val games = mutableListOf<Game>()
-    val teamImages = MutableList<Bitmap?>(2){null}
-    val mapImages = mutableListOf<Bitmap?> (null)
+    val mapImages = mutableStateListOf<Bitmap?> (null)
     var event = mutableStateOf<Event?>(null)
     var LiveEvent = mutableStateOf<Event?>(null)
     var UpcomingEvent = mutableStateOf<Event?>(null)
     var FinishedEvent = mutableStateOf<Event?>(null)
     var awayTeamIcon = mutableStateOf<Bitmap?>(null)
     var homeTeamIcon = mutableStateOf<Bitmap?>(null)
+    var tournamentIcon = mutableStateOf<Bitmap?>(null)
 
-    fun loadGames() {
-        viewModelScope.launch(Dispatchers.IO) {
-            games.addAll(getGamesFromEvent(niceMatchID).games)
-val tempGames = List<Game>(1,){Game()}
-            if (tempGames != null) {
-                val homeTeamImage = null
-                val awayTeamImage = null
-                if (homeTeamImage != null && awayTeamImage != null) {
-                    teamImages.add(homeTeamImage)
-                    teamImages.add(awayTeamImage)
-                } else {
-                    Log.d("SingleMatchViewModel", "Team images are null")
-                }
-                games.forEach { game ->                 //get map images
-                    val mapImage = getMapImageFromMapID(game.map?.id!!)
-                    if (mapImage != null) {
-                        mapImages.add(mapImage)
-                    } else {
-                        Log.d("SingleMatchViewModel", "Map image is null")
-                    }
-                }
 
-                games.addAll(tempGames)
-            } else {
-            }
-            getPrediction()
-
+    fun calculateVotePercentage(prediction: Prediction) {
+        val totalVotes = prediction.homeTeamVoteCount + prediction.awayTeamVoteCount
+        if (totalVotes == 0) {
+            Log.d("SingleMatchViewModel", "totalVotes = 0")
+            return
+        }
+        prediction.homeTeamVotePercentage =
+            prediction.homeTeamVoteCount * 100 / totalVotes
+        prediction.awayTeamVotePercentage =
+            prediction.awayTeamVoteCount * 100 / totalVotes
     }
-
-    }
-    init {
-
-    }
-
-    fun getPrediction() {
     fun getPrediction(matchID: String?) {
         val niceMatchID = matchID!!.toInt()
         CoroutineScope(Dispatchers.IO).launch {
@@ -101,17 +80,6 @@ val tempGames = List<Game>(1,){Game()}
             sendPredictionToFirestore(prediction.value, niceMatchID)
         }
     }
-    fun calculateVotePercentage(prediction: Prediction) {
-        val totalVotes = prediction.homeTeamVoteCount + prediction.awayTeamVoteCount
-        if (totalVotes == 0) {
-            Log.d("SingleMatchViewModel", "totalVotes = 0")
-            return
-        }
-        prediction.homeTeamVotePercentage =
-            prediction.homeTeamVoteCount * 100 / totalVotes
-        prediction.awayTeamVotePercentage =
-            prediction.awayTeamVoteCount * 100 / totalVotes
-    }
 
     fun loadData(matchID: String?) {
         val niceMatchID = matchID!!.toInt()
@@ -120,6 +88,7 @@ val tempGames = List<Game>(1,){Game()}
                 event.value = getEvent(niceMatchID).event!!
                 homeTeamIcon.value = getTeamImage(event.value!!.homeTeam.id)
                 awayTeamIcon.value = getTeamImage(event.value!!.awayTeam.id)
+                tournamentIcon.value = getTeamImage(event.value!!.tournament.id)
                 getPrediction(matchID)
                 if (event.value!!.startTimestamp?.toLong() != null &&
                     event.value!!.status?.description == "Ended" //Match with description "ended" has finished
@@ -131,6 +100,25 @@ val tempGames = List<Game>(1,){Game()}
                     UpcomingEvent.value = event.value
                 }
             }
+        }
+    }
+    fun loadGames(matchID: String?) {
+        val niceMatchID = matchID!!.toInt()
+        viewModelScope.launch(Dispatchers.IO) {
+            games.addAll(getGamesFromEvent(niceMatchID).games)
+            mapImages.clear()
+            val tempGames = List(getGamesFromEvent(niceMatchID).games.size) { Game() }
+            games.forEach { game ->
+                if(game.map?.id!=null){
+                    val mapImage = getMapImageFromMapID(game.map?.id!!)
+                    if (mapImage != null) {
+                        mapImages.add(mapImage)
+                        Log.i("mapImage","Added mapImage $mapImage from ID ${game.map?.id} Name ${game.map?.name}")
+                    } else Log.d("SingleMatchViewModel", "Map image is null")
+                } else Log.d("SingleMatchViewModel", "Map ID is null for game with ID ${game.id}")
+            }
+            games.addAll(tempGames)
+            getPrediction(niceMatchID.toString())
         }
     }
 }

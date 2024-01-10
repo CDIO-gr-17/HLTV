@@ -12,6 +12,7 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -30,7 +31,10 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import coil.compose.rememberAsyncImagePainter
+import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.lazy.itemsIndexed
 import com.example.hltv.R
+import com.example.hltv.data.remote.getMapImageFromMapID
 import com.example.hltv.data.remote.getTeamImage
 import com.example.hltv.ui.screens.matchesScreen.MatchesScreenViewModel
 
@@ -39,8 +43,10 @@ fun SingleMatchScreen(matchID : String?, onClickSingleTeam : (String?) -> Unit){
     val viewModel : SingleMatchViewModel = viewModel()
     LaunchedEffect(Unit){
         viewModel.loadData(matchID)
+        viewModel.loadGames(matchID)
     }
     val event = viewModel.event.value
+    val games = viewModel.games
     Column {
         if (viewModel.LiveEvent.value != null) {
             EventImage(
@@ -67,22 +73,40 @@ fun SingleMatchScreen(matchID : String?, onClickSingleTeam : (String?) -> Unit){
                 teamOneOnClick = { onClickSingleTeam(event?.homeTeam?.id.toString()) },
                 teamTwoOnClick = { onClickSingleTeam(event?.awayTeam?.id.toString()) }
             )
-
             PredictionCard(
                 teamOneIcon = rememberAsyncImagePainter(viewModel.homeTeamIcon.value),
                 teamTwoIcon = rememberAsyncImagePainter(viewModel.awayTeamIcon.value),
-                viewModel = viewModel, matchID = matchID
+                viewModel = viewModel,
+                matchID = matchID,
             )
         }
-        else if(viewModel.FinishedEvent.value != null){
+        else {
             EventImage(
                 teamOneLogo = rememberAsyncImagePainter(viewModel.homeTeamIcon.value),
                 teamTwoLogo = rememberAsyncImagePainter(viewModel.awayTeamIcon.value),
                 teamOneScore = event?.homeScore?.display.toString(),
                 teamTwoScore = event?.awayScore?.display.toString(),
                 teamOneOnClick = { onClickSingleTeam(event?.homeTeam?.id.toString()) },
-                teamTwoOnClick = { onClickSingleTeam(event?.awayTeam?.id.toString()) }
+                teamTwoOnClick = { onClickSingleTeam(event?.awayTeam?.id.toString()) },
+                tournamentIcon = rememberAsyncImagePainter(viewModel.tournamentIcon.value)
             )
+            LazyColumn(){
+                itemsIndexed(games){gameNumber, game ->
+                    EventImage(
+                        backgroundImage = if (gameNumber<viewModel.mapImages.size){
+                            Log.i("mapImageGameNumber","$gameNumber")
+                            Log.i("mapImageGameNumberImage","${viewModel.mapImages[gameNumber]}")
+                            rememberAsyncImagePainter(viewModel.mapImages[gameNumber])
+                        } else rememberAsyncImagePainter(R.drawable.event_background),
+                        teamOneLogo = rememberAsyncImagePainter(viewModel.homeTeamIcon.value),
+                        teamTwoLogo = rememberAsyncImagePainter(viewModel.awayTeamIcon.value),
+                        teamOneScore = game.homeScore?.display.toString(),
+                        teamTwoScore = game.awayScore?.display.toString(),
+                        teamOneOnClick = { onClickSingleTeam(event?.homeTeam?.id.toString()) },
+                        teamTwoOnClick = { onClickSingleTeam(event?.awayTeam?.id.toString()) }
+                    )
+                }
+            }
         }
     }
 
@@ -91,7 +115,7 @@ fun SingleMatchScreen(matchID : String?, onClickSingleTeam : (String?) -> Unit){
 @Composable
 fun EventImage(
     backgroundImage: Painter = painterResource(id = R.drawable.event_background),
-    trophyImage: Painter = painterResource(id = R.drawable.trophy_24px),
+    tournamentIcon: Painter?=null,
     teamOneLogo: Painter,
     teamTwoLogo: Painter,
     teamOneScore: String,
@@ -124,14 +148,15 @@ fun EventImage(
             Spacer(modifier = Modifier.weight(1f))
             Column {
                 Spacer(modifier = Modifier.weight(1f))
-
-                Image(
-                    painter = trophyImage,
-                    contentDescription = null,
-                    modifier = Modifier
-                        .size(50.dp)
-                        .align(Alignment.CenterHorizontally)
-                )
+                tournamentIcon?.let {
+                    Image(
+                        painter = it,
+                        contentDescription = null,
+                        modifier = Modifier
+                            .size(50.dp)
+                            .align(Alignment.CenterHorizontally)
+                    )
+                }
                 Spacer(modifier = Modifier.weight(1f))
                 Row {
                     Text(

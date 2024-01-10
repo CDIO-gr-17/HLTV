@@ -34,6 +34,7 @@ import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.ImageBitmap
 import androidx.compose.ui.graphics.asImageBitmap
+import androidx.compose.ui.graphics.painter.Painter
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
@@ -51,8 +52,8 @@ class PredictionCardState {
 @Composable
 fun PredictionCard(
     modifier: Modifier = Modifier,
-    teamOneIcon: ImageBitmap?,
-    teamTwoIcon: ImageBitmap?,
+    teamOneIcon: Painter,
+    teamTwoIcon: Painter,
     teamOneColor: Color = Color.Blue,
     teamTwoColor: Color = Color.Red,
     viewModel : SingleMatchViewModel,
@@ -160,9 +161,7 @@ fun PredictionCard(
 @Composable
 private fun drawCircle(
     modifier: Modifier,
-    teamIcon: ImageBitmap? = BitmapFactory.decodeResource(
-        LocalContext.current.resources, R.drawable.astralis_logo
-    ).asImageBitmap(),
+    teamIcon: Painter,
     voteCount: Int,
     hometeam: Boolean,
     hasVoted: Boolean,
@@ -182,10 +181,7 @@ private fun drawCircle(
                     }
         ) {
             Image(
-                bitmap = if (teamIcon == null) BitmapFactory.decodeResource(
-                    LocalContext.current.resources, R.drawable.astralis_logo
-                ).asImageBitmap()
-                else teamIcon,
+                painter = teamIcon,
                 contentDescription = "teamIcon",
                 modifier = Modifier
                     .fillMaxSize()
