@@ -394,7 +394,7 @@ suspend fun getTeamMedia (teamID: Int?) : APIResponse.MediaWrapper {
     catch (e: Exception){
         //handling when response is empty
         Log.e("getTeamMedia()", "$e")
-        return APIResponse.MediaWrapper(emptyList())
+        return APIResponse.MediaWrapper(ArrayList())
     }
 
 }

@@ -17,6 +17,7 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.collectAsState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -47,6 +48,7 @@ fun SingleMatchScreen(matchID: String?, onClickSingleTeam: (String?) -> Unit) {
         viewModel.loadData(matchID)
     }
     val event = viewModel.event.value
+    val mediaList = viewModel.tournamentMedia.collectAsState()
     Column {
 
         EventImage(
@@ -63,9 +65,8 @@ fun SingleMatchScreen(matchID: String?, onClickSingleTeam: (String?) -> Unit) {
             teamTwoIcon = rememberAsyncImagePainter(viewModel.awayTeamIcon.value),
             viewModel = viewModel, matchID = matchID
         )
-
-        val mediaList = viewModel.tournamentMedia.value.media
-        ShowLiveStreams(mediaList)
+        if (mediaList.value.isNotEmpty())
+            ShowLiveStreams(mediaList.value)
 
     }
 }
@@ -171,9 +172,7 @@ fun EventImage(
 }
 
 @Composable
-fun ShowLiveStreams(mediaList: List<Media>) {
-    if (mediaList.isEmpty())
-        return
+fun ShowLiveStreams(mediaList: ArrayList<Media>) {
     CommonCard(
         modifier = Modifier.fillMaxWidth(),
         headText = "Livestreams",
@@ -181,11 +180,11 @@ fun ShowLiveStreams(mediaList: List<Media>) {
         bottomBox = {
             Column {
                 mediaList.distinctBy { it.url }.forEach { media ->
-                    if(media.url != null) {
+                    if (media.url != null) {
                         val annotatedString = buildAnnotatedString {
                             withStyle(
                                 style = SpanStyle(
-                                    color = Color.Blue,
+                                    color = MaterialTheme.colorScheme.onSecondaryContainer,
                                     textDecoration = TextDecoration.Underline,
                                     fontSize = MaterialTheme.typography.bodyMedium.fontSize
                                 )
@@ -203,6 +202,7 @@ fun ShowLiveStreams(mediaList: List<Media>) {
                         val uriHandler = LocalUriHandler.current
 
                         ClickableText(
+                            modifier = Modifier.padding(vertical = 4.dp),
                             text = annotatedString,
                             onClick = { offset ->
                                 annotatedString.getStringAnnotations("URL", offset, offset)

@@ -64,7 +64,7 @@ sealed class APIResponse{
     ) : APIResponse()
 
     data class MediaWrapper (
-        @SerializedName("media") var media: List<Media>
+        @SerializedName("media") var media: ArrayList<Media>
     ) : APIResponse()
 
 }
