@@ -59,10 +59,10 @@ fun SingleMatchScreen(matchID : String?, onClickSingleTeam : (String?) -> Unit){
             teamTwoIcon = rememberAsyncImagePainter(viewModel.awayTeamIcon.value),
             viewModel = viewModel, matchID = matchID)
     }
-
-        LiveStream(liveStreamLink = "Et link")
+        if (viewModel.tournamentMedia.size != 0)
+            LiveStream(liveStreamLink = viewModel.tournamentMedia[0].media.url)
     }
-}
+
 
 @Composable
 fun EventImage(
@@ -165,7 +165,7 @@ fun EventImage(
 
 @Composable
 fun LiveStream (
-    liveStreamLink: String
+    liveStreamLink: String?
 ){
     CommonCard (
         modifier = Modifier.fillMaxWidth(),
@@ -177,7 +177,7 @@ fun LiveStream (
                 Text(text = "Watch the match:")
                 Spacer(modifier = Modifier.weight(1f))
                 Text(
-                    text = liveStreamLink,
+                    text = liveStreamLink?: "No link found",
                     color = MaterialTheme.colorScheme.primary
                 )
             }

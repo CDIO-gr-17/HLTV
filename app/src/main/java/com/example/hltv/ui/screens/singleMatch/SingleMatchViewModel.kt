@@ -3,9 +3,11 @@ package com.example.hltv.ui.screens.singleMatch
 import android.graphics.Bitmap
 import android.util.Log
 import androidx.compose.runtime.MutableState
+import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.example.hltv.data.remote.APIResponse
 import com.example.hltv.data.remote.Event
 import com.example.hltv.data.remote.Media
 import com.example.hltv.data.remote.Prediction
@@ -23,6 +25,8 @@ class SingleMatchViewModel() : ViewModel() {
     var event = mutableStateOf<Event?>(null)
     var awayTeamIcon =  mutableStateOf<Bitmap?>(null)
     var homeTeamIcon =  mutableStateOf<Bitmap?>(null)
+
+    val tournamentMedia = mutableStateListOf<APIResponse.MediaWrapper>()
 
     fun getPrediction(matchID: String?) {
         val niceMatchID = matchID!!.toInt()
@@ -81,6 +85,7 @@ class SingleMatchViewModel() : ViewModel() {
                 homeTeamIcon.value = getTeamImage(event.value!!.homeTeam.id)
                 awayTeamIcon.value = getTeamImage(event.value!!.awayTeam.id)
                 getPrediction(matchID)
+                tournamentMedia.add(getTournamentMedia(event.value!!.tournament.id.toString()))
             }
         }
     }
