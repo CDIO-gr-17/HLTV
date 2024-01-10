@@ -120,7 +120,12 @@ suspend fun getPreviousMatches(teamID: Int, pageID: Int = 0):APIResponse.EventsW
 }
 
 suspend fun getGamesFromEvent(eventID: Int?) : APIResponse.GameWrapper{
-    return getAPIResponse("event/$eventID/games", APIKEY, APIResponse.GameWrapper::class.java) as APIResponse.GameWrapper
+    try {
+        return getAPIResponse("event/$eventID/games", APIKEY, APIResponse.GameWrapper::class.java) as APIResponse.GameWrapper
+    } catch (e: Exception){
+        Log.e("getGamesFromEvent","No games found for match $eventID")
+        return APIResponse.GameWrapper(emptyList())
+    }
 }
 suspend fun getMapImageFromMapID(mapID : Int): Bitmap? {
     val apiURL = "map/$mapID/image"
