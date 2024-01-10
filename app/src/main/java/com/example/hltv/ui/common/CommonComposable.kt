@@ -161,6 +161,7 @@ fun CommonCard(
                                 alignment = Alignment.CenterEnd,
                                 modifier = Modifier
                                     .size(40.dp)
+
                             )
                         }
                     }

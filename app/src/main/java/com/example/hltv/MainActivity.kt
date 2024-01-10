@@ -70,8 +70,7 @@ fun HLTVApp() {
                     if (currentScreen == SingleTeam) {
                         var teamName by remember{ mutableStateOf("Team info")}
                         CoroutineScope(Dispatchers.IO).launch {
-                            var teamID = currentBackStack?.arguments?.getString("teamID")
-                            teamID = teamID?.removePrefix("{teamID}")
+                            val teamID = currentBackStack?.arguments?.getString("teamID")
                             val teamIDInt = teamID?.toInt()
                             if (teamIDInt != null) {
                                 teamName = getTeamNameFromID(teamIDInt)!!

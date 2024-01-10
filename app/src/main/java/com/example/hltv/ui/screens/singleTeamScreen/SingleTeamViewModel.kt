@@ -5,6 +5,7 @@ import android.util.Log
 import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
 import com.example.hltv.R
 import com.example.hltv.data.remote.APIResponse
 import com.example.hltv.data.remote.Country
@@ -56,7 +57,8 @@ data class Player(
     var dateOfBirthTimestamp: Int ?= null
 )
 data class Stats(
-    val country: Country ?= null,
+    val countryName: String ?= null,
+    val countryCode: String ?= null,
     val avgAgeofPlayers : Double ?= null,
 )
 class SingleTeamViewModel : ViewModel() {
@@ -86,10 +88,10 @@ class SingleTeamViewModel : ViewModel() {
         dataLoaded = true
 
 
-        val teamID = teamIDString.removePrefix("{teamID}").toInt()
+        val teamID = teamIDString.toInt()
         val lineup = CompletableDeferred<PlayerGroup?>()
 
-        CoroutineScope(Dispatchers.IO).launch {
+        viewModelScope.launch(Dispatchers.IO) {
             Log.w(this.toString(), "Got previous matches of team with id: $teamID")
             val completedMatches = getPreviousMatches(teamID, 0)
             recentMatches.clear()
@@ -137,7 +139,7 @@ class SingleTeamViewModel : ViewModel() {
                 )
             }
         }
-        CoroutineScope(Dispatchers.IO).launch {
+        viewModelScope.launch(Dispatchers.IO) {
             // Lineup
             Log.w(this.toString(), "Loaded lineup ${lineup}")
             if (lineup != null) {
@@ -158,7 +160,8 @@ class SingleTeamViewModel : ViewModel() {
 
                 statisticsOverview.value = Stats(
                     avgAgeofPlayers = getAvgAgeFromTimestamp(playersDateOfBirthTimestamp),
-                    country = team1?.country
+                    countryName = team1?.country?.name,
+                    countryCode = team1?.country?.alpha2
                 )
             }
         }

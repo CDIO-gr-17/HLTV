@@ -2,7 +2,9 @@
 
 package com.example.hltv.ui.screens.homeScreen
 
+import android.util.Log
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -21,6 +23,7 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.testTag
@@ -32,15 +35,18 @@ import coil.compose.rememberAsyncImagePainter
 import com.example.hltv.data.convertTimestampToDateClock
 import com.example.hltv.ui.common.LiveMatchCard
 import com.example.hltv.ui.common.UpcomingMatchCard
-import com.example.hltv.ui.screens.matchesScreen.MatchesScreenViewModel
+import kotlinx.coroutines.delay
 
 val M = MaterialTheme
 
 @Composable
-fun HomeScreen() {
+fun HomeScreen(onClickSingleTeam : (String?) -> Unit, onClickSingleMatch : (String?) -> Unit) {
 
     val viewModel : HomeScreenViewModel = viewModel()
-    viewModel.loadData()
+    LaunchedEffect(Unit) {
+        viewModel.loadData()
+    }
+
 
 
     Column(
@@ -53,22 +59,25 @@ fun HomeScreen() {
          if (viewModel.liveMatchValue.value != null){
             LiveMatchCard(
                 title = "Highlighted match",
-                modifier = Modifier,
+                modifier = Modifier.clickable { onClickSingleMatch(viewModel.liveMatchValue.value!!.id.toString()) },
                 teamOneName = viewModel.liveMatchValue.value!!.homeTeam.name?:"Unknown",
                 teamOneIcon = rememberAsyncImagePainter(model = viewModel.homeTeamIcon.value),
                 teamOneScore = viewModel.liveMatchValue.value!!.homeScore?.current ?: 0,
-                teamOneOnClick = {},
+                teamOneOnClick = { onClickSingleTeam(viewModel.liveMatchValue.value!!.homeTeam.id.toString()) },
                 teamTwoName = viewModel.liveMatchValue.value!!.awayTeam.name?:"Unknown",
                 teamTwoIcon = rememberAsyncImagePainter(model = viewModel.awayTeamIcon.value),
                 teamTwoScore = viewModel.liveMatchValue.value!!.awayScore?.current ?: 0,
-                teamTwoOnClick = {},
+                teamTwoOnClick = { onClickSingleTeam(viewModel.liveMatchValue.value!!.awayTeam.id.toString()) },
             )
         } else if (viewModel.upcomingMatchValue.value != null){
             UpcomingMatchCard(
+                modifier = Modifier.clickable { onClickSingleMatch(viewModel.upcomingMatchValue.value!!.id.toString()) },
                 teamOneName = viewModel.upcomingMatchValue.value!!.homeTeam.name?: "Unknown",
                 teamOneIcon = rememberAsyncImagePainter(model = viewModel.homeTeamIcon.value),
+                teamOneOnClick = { onClickSingleTeam(viewModel.upcomingMatchValue.value!!.homeTeam.id.toString()) },
                 teamTwoName = viewModel.upcomingMatchValue.value!!.awayTeam.name?: "Unknown",
                 teamTwoIcon = rememberAsyncImagePainter(model = viewModel.awayTeamIcon.value),
+                teamTwoOnClick = { onClickSingleTeam(viewModel.upcomingMatchValue.value!!.awayTeam.id.toString()) },
                 matchDate = convertTimestampToDateClock(viewModel.upcomingMatchValue.value!!.startTimestamp),
                 tournamentIcon = rememberAsyncImagePainter(model = viewModel.awayTeamIcon.value)
             )
@@ -187,11 +196,12 @@ fun HomeScreen() {
         Divider(modifier = Modifier.padding(horizontal = 8.dp), color = M.colorScheme.onBackground)
 
         Text(
-            text = "News",
+            text = "Test",
             color = M.colorScheme.primary,
             textAlign = TextAlign.Start
 
         )
+        Text(text = "Test")
 
     }
 }
@@ -200,5 +210,5 @@ fun HomeScreen() {
 @Preview
 @Composable
 fun HomeScreenPreview() {
-    HomeScreen()
+    //HomeScreen()
 }

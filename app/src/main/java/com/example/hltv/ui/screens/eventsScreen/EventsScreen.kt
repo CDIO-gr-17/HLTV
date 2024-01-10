@@ -1,11 +1,14 @@
 package com.example.hltv.ui.screens.eventsScreen
 
+import android.util.Log
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Email
 import androidx.compose.material3.Icon
@@ -20,27 +23,58 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
+import coil.compose.rememberAsyncImagePainter
 import com.example.hltv.R
 import com.example.hltv.data.convertTimestampToDateDisplay
+import com.example.hltv.data.remote.ThirdUniqueTournament
 import com.example.hltv.ui.common.CommonCard
+import java.text.NumberFormat
+import java.util.Locale
 
 
 @Composable
 fun EventsScreen() {
-    val viewModel : EventsScreenViewModel = viewModel()
-    LaunchedEffect(Unit){
+    val viewModel: EventsScreenViewModel = viewModel()
+    LaunchedEffect(Unit) {
         viewModel.loadData()
     }
-    LazyColumn {
-        items(viewModel.tournaments){ item ->
-            SingleEventCard(
-                eventTitle = item.name.toString(),
-                eventDate = convertTimestampToDateDisplay(item.startDateTimestamp),
-                eventLogo = painterResource(id = R.drawable.astralis_logo),
-                location = item.country?.name.toString(),
-                prizePool = "Unknown",
-                flagIcon = painterResource(id = R.drawable.dk_flag)
-            )
+    val tournaments = viewModel.tournaments
+    val tournamentSeasons = viewModel.tournamentSeasons
+    val uniqueTournaments = viewModel.uniqueTournaments
+
+    //TODO: Optimize this for CPU performance so we dont resort on redraw
+    var sortedTournaments = mutableListOf<ThirdUniqueTournament>()
+    val map = mutableMapOf<Int, Int>()
+
+    //Running this inside a LaunchedEffect doesn't seem to work
+    sortedTournaments.clear()
+    sortedTournaments.addAll(viewModel.tournaments.sortedByDescending { it.startDateTimestamp })
+    sortedTournaments.forEachIndexed{ index, tournament ->
+        map.put(key = index, value = tournaments.indexOf(tournament))
+    }
+
+    LaunchedEffect(viewModel.loading) {
+        Log.i("EventsScreen", "Loading changed")
+    }
+
+
+    if (tournamentSeasons.size != 0) { //Crashes if this isnt there, however not the best way to implement
+        LazyColumn {
+            itemsIndexed(sortedTournaments) { index, item ->
+                SingleEventCard(
+                    eventTitle = "${item.name.toString()} ${tournamentSeasons[map.get(index)!!][0].name}", //I think 0 is always the most recent season? Not sure tho
+                    eventDate = if (item.startDateTimestamp != null && item.endDateTimestamp != null) {
+                        "${convertTimestampToDateDisplay(item.startDateTimestamp)} - ${convertTimestampToDateDisplay(item.endDateTimestamp)}"
+                    } else {
+                        null
+                    },
+                    eventLogo = rememberAsyncImagePainter(viewModel.tournamentIcons[map.get(index)!!]),
+                    tier = uniqueTournaments[map.get(index)!!].uniqueTournamentInfo.tier?.uppercase(),
+                    prizePool = uniqueTournaments[map.get(index)!!].uniqueTournamentInfo.totalPrizeMoney,
+                    competitors = uniqueTournaments[map.get(index)!!].uniqueTournamentInfo.numberOfCompetitors,
+                    prizePoolCurrency = uniqueTournaments[map.get(index)!!].uniqueTournamentInfo.totalPrizeMoneyCurrency
+                )
+            }
         }
     }
 }
@@ -50,71 +84,79 @@ fun EventsScreen() {
 @Composable
 fun SingleEventCard(
     eventTitle : String = "Unknown title",
-    eventDate : String = "Unknown date",
+    eventDate : String ?= null,
     eventLogo : Painter = painterResource(id = R.drawable.astralis_logo), //TODO: Change
-    location : String = "Unknown location",
-    prizePool : String = "Unknown prize pool",
-    flagIcon: Painter
-
+    tier : String ?= null,
+    prizePool : Int ?= null,
+    competitors : Int ?= null,
+    prizePoolCurrency : String ?= null,
 ) {
     CommonCard(
         modifier = Modifier,
         headText = eventTitle,
-        subText = eventDate.toString(),
+        subText = eventDate,
         image = eventLogo,
         bottomBox = {
             Row {
                 Column(
                     modifier = Modifier
-                        .weight(0.3f)
+                        .weight(0.6f)
                 ) {
-                    Text(
-                        text = "Location",
-                        modifier = Modifier
-                            .padding(all = 8.dp)
-
-                    )
-                    Text(
-                        text = "PrizePool",
-                        modifier = Modifier
-                            .padding(all = 8.dp)
-
-                    )                }
+                    tier?.let {
+                        Text(
+                            text = "Tier",
+                            modifier = Modifier
+                                .padding(all = 8.dp)
+                        )
+                    }
+                    prizePool?.let {
+                        Text(
+                            text = "PrizePool",
+                            modifier = Modifier
+                                .padding(all = 8.dp)
+                        )
+                    }
+                    competitors?.let {
+                        Text(
+                            text = "Number of competitors",
+                            modifier = Modifier
+                                .padding(all = 8.dp)
+                        )
+                    }
+                }
                 Column(
                     modifier = Modifier
-                        .weight(0.8f),
+                        .weight(0.4f),
                     horizontalAlignment = Alignment.End
                 ) {
-                    Row {
+                    tier?.let {
                         Text(
-                            text = location,
+                            text = tier,
                             textAlign = TextAlign.End,
                             modifier = Modifier
                                 .padding(8.dp)
                         )
-                        Icon(
-                            imageVector = Icons.Default.Email,  //TODO: Replace this imaage
-                            contentDescription = "Country flag",
+                    }
+                    prizePool?.let {
+                        Text(
+                            text = NumberFormat.getNumberInstance(Locale.getDefault()).format(prizePool) +
+                                    " ${prizePoolCurrency}",
+                            textAlign = TextAlign.End,
                             modifier = Modifier
-                                .padding(4.dp)
-                                .padding(end = 8.dp)
-                                .size(20.dp),
-                            tint = Color.Red
-
+                                .padding(8.dp)
                         )
                     }
-
-                    Text(
-                        text = prizePool,
-                        modifier = Modifier
-                            .padding(all = 8.dp)
-                            .padding(end = 8.dp)
-                    )
+                    competitors?.let {
+                        Text(
+                            text = competitors.toString(),
+                            textAlign = TextAlign.End,
+                            modifier = Modifier
+                                .padding(8.dp)
+                        )
+                    }
                 }
             }
         }
-
-
     )
 }
 

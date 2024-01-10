@@ -85,46 +85,44 @@ class MatchesScreenViewModel: ViewModel() {
 
             _loadingState.value = true
             Log.i("loadUpcomingMatches", "Loading state set to true")
-            viewModelScope.launch {
-                CoroutineScope(Dispatchers.IO).launch {
-                    var dayWasEmpty = false
-                    var MAXNUMBEROFDAYSTOLOAD = 15 //Prevent infinite loading in case theres no more tournaments, jamming the API
-                    do{
-                        val upcomingMatches = getMatchesFromDay(convertTimestampToDateURL((nextDayInSeconds).toInt()))
+            viewModelScope.launch(Dispatchers.IO) {
+                var dayWasEmpty = false
+                var MAXNUMBEROFDAYSTOLOAD = 15 //Prevent infinite loading in case theres no more tournaments, jamming the API
+                do{
+                    val upcomingMatches = getMatchesFromDay(convertTimestampToDateURL((nextDayInSeconds).toInt()))
 
-                        dayWasEmpty = true
-                        if(upcomingMatches.events.isNotEmpty()){
-                            upcomingMatches.events = upcomingMatches.events.sortedBy { it.startTimestamp }
-                            for (event in upcomingMatches.events) {
-                                if (event.startTimestamp?.toLong() != null &&  //Makes sure that the upcoming match has an associated startTimestamp
-                                    event.startTimestamp!! > (System.currentTimeMillis() / 1000) && //Excludes matches where the startTimestamp has passed (i.e it is live or has been played)
-                                    event !in upcomingMatchesValues) { //Questionable, but seems to work
-                                    upcomingMatchesValues.add(upcomingMatchIndex, event)
-                                    tournamentValues.add(tournamentIndex,event)
-                                    homeTeamIcons[liveMatchesValues.size + upcomingMatchIndex] = (getTeamImage(event.homeTeam.id))
-                                    awayTeamIcons[liveMatchesValues.size + upcomingMatchIndex] = (getTeamImage(event.awayTeam.id))
-                                    tournamentIcons[tournamentIndex] = getTournamentLogo(event.tournament?.uniqueTournament?.id)
-                                    //Log.i("Compare","${awayTeamIcons[liveMatchesValues.size + upcomingMatchIndex]}")
-                                    //Log.i("tournamentLogo2", "Added tournamentLogo from tournament ${event.tournament?.name}, ${event.tournament?.uniqueTournament?.name} to ${tournamentIcons[tournamentIndex]} at $tournamentIndex")
-                                    upcomingMatchIndex++
-                                    tournamentIndex++
-                                    dayWasEmpty = false
-                                }
+                    dayWasEmpty = true
+                    if(upcomingMatches.events.isNotEmpty()){
+                        upcomingMatches.events = upcomingMatches.events.sortedBy { it.startTimestamp }
+                        for (event in upcomingMatches.events) {
+                            if (event.startTimestamp?.toLong() != null &&  //Makes sure that the upcoming match has an associated startTimestamp
+                                event.startTimestamp!! > (System.currentTimeMillis() / 1000) && //Excludes matches where the startTimestamp has passed (i.e it is live or has been played)
+                                event !in upcomingMatchesValues) { //Questionable, but seems to work
+                                upcomingMatchesValues.add(upcomingMatchIndex, event)
+                                tournamentValues.add(tournamentIndex,event)
+                                homeTeamIcons[liveMatchesValues.size + upcomingMatchIndex] = (getTeamImage(event.homeTeam.id))
+                                awayTeamIcons[liveMatchesValues.size + upcomingMatchIndex] = (getTeamImage(event.awayTeam.id))
+                                tournamentIcons[tournamentIndex] = getTournamentLogo(event.tournament?.uniqueTournament?.id)
+                                //Log.i("Compare","${awayTeamIcons[liveMatchesValues.size + upcomingMatchIndex]}")
+                                //Log.i("tournamentLogo2", "Added tournamentLogo from tournament ${event.tournament?.name}, ${event.tournament?.uniqueTournament?.name} to ${tournamentIcons[tournamentIndex]} at $tournamentIndex")
+                                upcomingMatchIndex++
+                                tournamentIndex++
+                                dayWasEmpty = false
                             }
                         }
-                        nextDayInSeconds += (24 * 60 * 60)
-                        if (dayWasEmpty){
-                            Log.i("loadUpcomingMatches()","nextdayinsceonds : $nextDayInSeconds. Current day was empty")
-                        }
-                        else{
-                            Log.i("loadUpcomingMatches()","nextdayinsceonds : $nextDayInSeconds. Current day was not empty")
-                        }
-                        MAXNUMBEROFDAYSTOLOAD--
-                    } while(upcomingMatches.events.isEmpty() || dayWasEmpty || MAXNUMBEROFDAYSTOLOAD>0)
+                    }
+                    nextDayInSeconds += (24 * 60 * 60)
+                    if (dayWasEmpty){
+                        Log.i("loadUpcomingMatches()","nextdayinsceonds : $nextDayInSeconds. Current day was empty")
+                    }
+                    else{
+                        Log.i("loadUpcomingMatches()","nextdayinsceonds : $nextDayInSeconds. Current day was not empty")
+                    }
+                    MAXNUMBEROFDAYSTOLOAD--
+                } while(upcomingMatches.events.isEmpty() || dayWasEmpty || MAXNUMBEROFDAYSTOLOAD>0)
 
-                    _loadingState.value = false
-                }
-            }
+                _loadingState.value = false
+        }
     }
     fun loadData(){
         if (dataLoaded){

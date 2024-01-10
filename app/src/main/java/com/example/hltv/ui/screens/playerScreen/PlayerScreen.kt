@@ -1,71 +1,79 @@
 package com.example.hltv.ui.screens.playerScreen
 
+import android.annotation.SuppressLint
 import android.util.Log
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.IntrinsicSize
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
-import androidx.compose.foundation.layout.wrapContentSize
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.painter.Painter
 import androidx.compose.ui.res.painterResource
-import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.lifecycle.viewmodel.compose.viewModel
+import coil.compose.rememberAsyncImagePainter
 import com.example.hltv.R
+import com.example.hltv.data.convertTimestampToDateDisplay
 import com.example.hltv.ui.common.CommonCard
 
 
+@SuppressLint("StateFlowValueCalledInComposition")
 @Composable
 fun PlayerScreen(
     playerIDfullString: String? = "Name"
 ){
-    val playerID = playerIDfullString!!.removePrefix("{playerID}")
-    Log.i("", "Transferred player \"ID\": " + playerID)
+
+    val viewModel : PlayerScreenViewModel = viewModel()
+    LaunchedEffect(Unit){
+        viewModel.loadData(playerIDfullString)
+    }
+
+    Log.i("playerID", "Transferred player \"ID\": " + playerIDfullString)
     Column (
         horizontalAlignment = Alignment.CenterHorizontally,
         modifier = Modifier
             .fillMaxHeight()
     ){
-        PlayerImage(image = null)
+        PlayerImage(image = rememberAsyncImagePainter(model = viewModel.playerImage.value))
         Row(
             modifier = Modifier,
             horizontalArrangement = Arrangement.SpaceEvenly
         ){
             Box(modifier = Modifier
-                    .fillMaxWidth()
-                    .weight(1f)
+                .fillMaxWidth()
+                .weight(1f)
             ){
-                TeamBox(
-                    team = ("Player: " + playerID),
-                    teamWorldRank = "5",
-                    teamNationality = "Denmark",
-                )
+
+                    TeamBox(
+                        team = viewModel.player.value?.team?.name,
+                        teamWorldRank = "",
+                        teamNationality = if (viewModel.player.value?.country?.name!=null) viewModel.player.value!!.country?.name!! else "no team",
+                    )
+                }
             }
             Box (modifier = Modifier
                 .fillMaxWidth()
                 .weight(1f))
             {
                 StatsBox(
-                    name = "Dean big mama",
-                    rating = "2,0",
-                    KD = "1,45"
-                )
+                    name = viewModel.player.value?.name,
+                    age =  convertTimestampToDateDisplay(viewModel.player.value?.dateOfBirthTimestamp),
+                    position =viewModel.player.value?.position)
             }
 
         }
     }
-}
+
 
 @Composable
 fun PlayerImage(
@@ -82,7 +90,7 @@ fun PlayerImage(
 
 @Composable
 fun TeamBox(
-    team: String,
+    team: String?,
     teamWorldRank: String,
     teamNationality: String,
 ){
@@ -91,8 +99,8 @@ fun TeamBox(
         headText = "Team",
         bottomBox = {
             Column {
-                Text(text = "$team #$teamWorldRank")
-                Text(text = "Nationality $teamNationality")
+                Text(text = "$team: #$teamWorldRank")
+                Text(text = "Nationality: $teamNationality")
             }
         }
     )
@@ -101,8 +109,8 @@ fun TeamBox(
 @Composable
 fun StatsBox(
     name: String ?= null,
-    rating: String ?= null,
-    KD: String ?= null
+    age: String ?= null,
+    position: String ?= null
 ){
     CommonCard (
         modifier = Modifier.fillMaxWidth(),
@@ -112,16 +120,17 @@ fun StatsBox(
                 name?.let {
                     Text(text = "Name: $name")
                 }
-                rating?.let{
-                    Text(text = "Rating: $rating")
+                age?.let{
+                    Text(text = "Age: $age")
                 }
-                KD?.let{
-                    Text(text = "KD: $KD")
+                position?.let{
+                    Text(text = "Position: $position")
                 }
             }
         }
     )
 }
+
 
 @Preview
 @Composable
