@@ -1,6 +1,5 @@
 package com.example.hltv.navigation
 
-import android.util.Log
 import androidx.compose.foundation.layout.padding
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
@@ -9,12 +8,13 @@ import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.navArgument
-import com.example.hltv.ui.screens.searchScreen.SearchScreen
 import com.example.hltv.ui.screens.eventsScreen.EventsScreen
 import com.example.hltv.ui.screens.homeScreen.HomeScreen
 import com.example.hltv.ui.screens.matchesScreen.MatchesScreen
 import com.example.hltv.ui.screens.playerScreen.PlayerScreen
+import com.example.hltv.ui.screens.searchScreen.SearchScreen
 import com.example.hltv.ui.screens.settingsScreen.SettingsScreen
+import com.example.hltv.ui.screens.singleEvent.SingleEventScreen
 import com.example.hltv.ui.screens.singleMatch.SingleMatchScreen
 import com.example.hltv.ui.screens.singleTeamScreen.SingleTeamScreen
 
@@ -34,7 +34,9 @@ fun MainNavHost(navController: NavHostController, modifier: Modifier) {
         }
 
         composable(route = Events.route) {
-            EventsScreen()
+            EventsScreen(
+                onclickSingleEvent = { navController.navigate(SingleEvent.route + it) },
+            )
         }
 
         composable(route = Matches.route) {
@@ -83,6 +85,15 @@ fun MainNavHost(navController: NavHostController, modifier: Modifier) {
         )
         { backStackEntry ->
             PlayerScreen(backStackEntry.arguments?.getString("playerID"))
+        }
+        composable(route = SingleEvent.route + "{eventID}",
+            arguments = listOf(navArgument("eventID") { type = NavType.StringType }))
+        { backStackEntry ->
+            SingleEventScreen(
+                onClickSingleTeam = {navController.navigate(SingleTeam.route + it) },
+                onClickSingleMatch = {navController.navigate(SingleMatch.route + it) }
+
+            )
         }
     }
 }

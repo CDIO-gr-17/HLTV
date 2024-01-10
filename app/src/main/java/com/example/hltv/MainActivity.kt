@@ -4,7 +4,6 @@ package com.example.hltv
 
 import android.annotation.SuppressLint
 import android.os.Bundle
-import android.util.Log
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.compose.foundation.layout.padding
@@ -60,7 +59,7 @@ fun HLTVApp() {
         val currentBackStack by navController.currentBackStackEntryAsState()
         val currentDestination = currentBackStack?.destination
         val canNavigateBack = !bottomAppBarScreens.any { it.route == currentDestination?.route }
-        val currentScreen = allAppScreens.find { it.route == currentDestination?.route } ?: Home
+        val currentScreen = allAppScreens.find { currentDestination?.route?.startsWith(it.route) ?: false } ?: Home
 
 
 
@@ -74,8 +73,6 @@ fun HLTVApp() {
                             val teamIDInt = teamID?.toInt()
                             if (teamIDInt != null) {
                                 teamName = getTeamNameFromID(teamIDInt)!!
-                            } else {
-                                teamName = "Team info"
                             }
                         }
                         Text(text = teamName)
