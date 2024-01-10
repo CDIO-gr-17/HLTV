@@ -16,6 +16,8 @@ import com.example.hltv.data.remote.getTournamentLogo
 import com.example.hltv.data.remote.getUniqueTournamentDetails
 import com.example.hltv.data.remote.getUniqueTournamentSeasons
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
 import java.lang.NumberFormatException
 
@@ -26,6 +28,9 @@ class EventsScreenViewModel : ViewModel() {
     var uniqueTournaments = mutableStateListOf<APIResponse.UniqueTournamentInfoWrapper>()
     val tournamentIcons = MutableList<Bitmap?>(999){null}
     var loading = mutableStateOf(false)
+
+    private val _loadingState = MutableStateFlow(true)
+    val loadingState: StateFlow<Boolean> get() = _loadingState
 
 
     fun loadData(){
@@ -49,7 +54,7 @@ class EventsScreenViewModel : ViewModel() {
                 }
                 Log.i("EventsScreenViewModel", "Start date: " + tournament.startDateTimestamp)
             }
-            loading.value = false
+            _loadingState.value = false
         }
     }
 }
