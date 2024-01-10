@@ -68,6 +68,7 @@ fun HomeScreen(onClickSingleTeam : (String?) -> Unit, onClickSingleMatch : (Stri
                 teamTwoIcon = rememberAsyncImagePainter(model = viewModel.awayTeamIcon.value),
                 teamTwoScore = viewModel.liveMatchValue.value!!.awayScore?.current ?: 0,
                 teamTwoOnClick = { onClickSingleTeam(viewModel.liveMatchValue.value!!.awayTeam.id.toString()) },
+                bestOf = viewModel.liveMatchValue.value?.bestOf?:0
             )
         } else if (viewModel.upcomingMatchValue.value != null){
             UpcomingMatchCard(
@@ -79,7 +80,8 @@ fun HomeScreen(onClickSingleTeam : (String?) -> Unit, onClickSingleMatch : (Stri
                 teamTwoIcon = rememberAsyncImagePainter(model = viewModel.awayTeamIcon.value),
                 teamTwoOnClick = { onClickSingleTeam(viewModel.upcomingMatchValue.value!!.awayTeam.id.toString()) },
                 matchDate = convertTimestampToDateClock(viewModel.upcomingMatchValue.value!!.startTimestamp),
-                tournamentIcon = rememberAsyncImagePainter(model = viewModel.awayTeamIcon.value)
+                tournamentIcon = rememberAsyncImagePainter(model = viewModel.awayTeamIcon.value),
+                bestOf = viewModel.upcomingMatchValue.value!!.bestOf?:0
             )
 
          }

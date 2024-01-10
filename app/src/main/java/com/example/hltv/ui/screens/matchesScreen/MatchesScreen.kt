@@ -76,6 +76,7 @@ fun MatchesScreen(onClickSingleTeam : (String?) -> Unit, onClickSingleMatch : (S
                 teamTwoIcon = rememberAsyncImagePainter(viewModel.awayTeamIcons[liveMatchesValues.indexOf(item)]),
                 teamTwoScore = item.awayScore!!.current!!.toInt(),
                 teamTwoOnClick = { onClickSingleTeam(item.awayTeam.id.toString()) },
+                bestOf = item.bestOf?:0
             )
         }
         items(upcomingsMatchesValues) { item ->
@@ -88,7 +89,8 @@ fun MatchesScreen(onClickSingleTeam : (String?) -> Unit, onClickSingleMatch : (S
                 teamTwoIcon = rememberAsyncImagePainter(viewModel.awayTeamIcons[liveMatchesValues.size + upcomingsMatchesValues.indexOf(item)]),
                 matchDate = convertTimestampToDateClock(item.startTimestamp),
                 teamTwoOnClick = { onClickSingleTeam(item.awayTeam.id.toString()) },
-                tournamentIcon = rememberAsyncImagePainter(viewModel.tournamentIcons[tournamentValues.indexOf(item)])
+                tournamentIcon = rememberAsyncImagePainter(viewModel.tournamentIcons[tournamentValues.indexOf(item)]),
+                bestOf = item.bestOf?:0
             )
             //Log.i("tournamentLogo3","${viewModel.tournamentIcons.size}")
         }

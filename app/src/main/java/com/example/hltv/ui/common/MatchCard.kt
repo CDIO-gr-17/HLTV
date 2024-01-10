@@ -46,7 +46,8 @@ fun MatchCard(){
         teamTwoName = "Astralis2",
         teamTwoIcon = painterResource(id = R.drawable.astralis_logo),
         matchDate = "Tuesday 22/10 - 18:00",
-        tournamentIcon = painterResource(id = R.drawable.astralis_logo)
+        tournamentIcon = painterResource(id = R.drawable.astralis_logo),
+        bestOf = 3
     )
 
 
@@ -65,6 +66,7 @@ fun LiveMatchCard(
     teamTwoIcon: Painter,
     teamTwoScore: Int,
     teamTwoOnClick: () -> Unit,
+    bestOf: Int,
 
     ) {
     CommonCard(
@@ -129,6 +131,14 @@ fun LiveMatchCard(
                         fontSize = M.typography.displayLarge.fontSize
                     )
                 }
+                Text(
+                    text = bestOf.toString(),
+                    fontSize = M.typography.bodyLarge.fontSize,
+                    color = M.colorScheme.onSecondaryContainer,
+                    textAlign = TextAlign.Center,
+                    modifier = Modifier
+                        .padding(8.dp),
+                )
             }
 
         }
@@ -147,72 +157,85 @@ fun UpcomingMatchCard(
     teamTwoIcon: Painter,
     teamTwoOnClick: (() -> Unit?)? = null,
     matchDate: String,
-    tournamentIcon: Painter
+    tournamentIcon: Painter,
+    bestOf: Int
     ) {
     CommonCard(
         modifier = modifier.testTag("UpcomingMatchCard"),
         headText = matchDate,
         image = tournamentIcon,
         bottomBox = {
-            Row {
-                Column(horizontalAlignment = Alignment.CenterHorizontally,
-                    modifier = Modifier
-                        .fillMaxWidth(0.5f)
-                        .clickable {
-                            if (teamOneOnClick != null) {
-                                teamOneOnClick()
-                            }
-                        }) {
-                    Text(
-                        text = teamOneName,
+            Column (horizontalAlignment = Alignment.CenterHorizontally,
+                modifier = Modifier
+                    .fillMaxWidth()){
+                Row {
+                    Column(horizontalAlignment = Alignment.CenterHorizontally,
                         modifier = Modifier
-                            .padding(8.dp),
-                        fontSize = M.typography.bodyLarge.fontSize,
-                        color = M.colorScheme.onSecondaryContainer,
-                        textAlign = TextAlign.Center,
-                    )
-                    Image(
-                        painter = teamOneIcon,
-                        contentDescription = "teamOneIcon",
-                        modifier = Modifier
-                            .padding(4.dp)
-                            .size(50.dp, 50.dp),
-
-
+                            .fillMaxWidth(0.5f)
+                            .clickable {
+                                if (teamOneOnClick != null) {
+                                    teamOneOnClick()
+                                }
+                            }) {
+                        Text(
+                            text = teamOneName,
+                            modifier = Modifier
+                                .padding(8.dp),
+                            fontSize = M.typography.bodyLarge.fontSize,
+                            color = M.colorScheme.onSecondaryContainer,
+                            textAlign = TextAlign.Center,
                         )
-                }
+                        Image(
+                            painter = teamOneIcon,
+                            contentDescription = "teamOneIcon",
+                            modifier = Modifier
+                                .padding(4.dp)
+                                .size(50.dp, 50.dp),
 
-                Divider(
+
+                            )
+                    }
+
+                    Divider(
+                        modifier = Modifier
+                            .width(1.dp)
+                            .padding(vertical = 4.dp),
+                        color = M.colorScheme.onBackground
+                    )
+
+                    Column(horizontalAlignment = Alignment.CenterHorizontally,
+                        modifier = Modifier
+                            .fillMaxWidth(1f)
+                            .clickable {
+                                if (teamTwoOnClick != null) {
+                                    teamTwoOnClick()
+                                }
+                            }) {
+                        Text(
+                            text = teamTwoName,
+                            modifier = Modifier
+                                .padding(8.dp),
+                            fontSize = M.typography.bodyLarge.fontSize,
+                            color = M.colorScheme.onSecondaryContainer,
+                            textAlign = TextAlign.Center,
+                        )
+                        Image(
+                            painter = teamTwoIcon,
+                            contentDescription = "teamOneIcon",
+                            modifier = Modifier
+                                .padding(4.dp)
+                                .size(50.dp, 50.dp),
+                        )
+                    }
+                }
+                Text(
+                    text = "Best of $bestOf",
+                    fontSize = M.typography.bodyLarge.fontSize,
+                    color = M.colorScheme.onSecondaryContainer,
+                    textAlign = TextAlign.Center,
                     modifier = Modifier
-                        .width(1.dp)
-                        .padding(vertical = 4.dp),
-                    color = M.colorScheme.onBackground
+                        .padding(8.dp),
                 )
-
-                Column(horizontalAlignment = Alignment.CenterHorizontally,
-                    modifier = Modifier
-                        .fillMaxWidth(1f)
-                        .clickable {
-                            if (teamTwoOnClick != null) {
-                                teamTwoOnClick()
-                            }
-                        }) {
-                    Text(
-                        text = teamTwoName,
-                        modifier = Modifier
-                            .padding(8.dp),
-                        fontSize = M.typography.bodyLarge.fontSize,
-                        color = M.colorScheme.onSecondaryContainer,
-                        textAlign = TextAlign.Center,
-                    )
-                    Image(
-                        painter = teamTwoIcon,
-                        contentDescription = "teamOneIcon",
-                        modifier = Modifier
-                            .padding(4.dp)
-                            .size(50.dp, 50.dp),
-                    )
-                }
             }
 
         }
