@@ -36,6 +36,7 @@ import androidx.compose.foundation.lazy.itemsIndexed
 import com.example.hltv.R
 import com.example.hltv.data.remote.getMapImageFromMapID
 import com.example.hltv.data.remote.getTeamImage
+import com.example.hltv.ui.common.CommonCard
 import com.example.hltv.ui.screens.matchesScreen.MatchesScreenViewModel
 
 @Composable
@@ -49,13 +50,15 @@ fun SingleMatchScreen(matchID : String?, onClickSingleTeam : (String?) -> Unit){
     val games = viewModel.games
     Column {
         if (viewModel.LiveEvent.value != null) {
+            Log.i("SingleMatch","Drawing liveEvent")
             EventImage(
                 teamOneLogo = rememberAsyncImagePainter(viewModel.homeTeamIcon.value),
                 teamTwoLogo = rememberAsyncImagePainter(viewModel.awayTeamIcon.value),
                 teamOneScore = event?.homeScore?.display.toString(),
                 teamTwoScore = event?.awayScore?.display.toString(),
                 teamOneOnClick = { onClickSingleTeam(event?.homeTeam?.id.toString()) },
-                teamTwoOnClick = { onClickSingleTeam(event?.awayTeam?.id.toString()) }
+                teamTwoOnClick = { onClickSingleTeam(event?.awayTeam?.id.toString()) },
+                live = true,
             )
 
             PredictionCard(
@@ -65,13 +68,15 @@ fun SingleMatchScreen(matchID : String?, onClickSingleTeam : (String?) -> Unit){
             )
         }
         else if(viewModel.UpcomingEvent.value != null){
+            Log.i("SingleMatch","Drawing upcomingEvent")
             EventImage(
                 teamOneLogo = rememberAsyncImagePainter(viewModel.homeTeamIcon.value),
                 teamTwoLogo = rememberAsyncImagePainter(viewModel.awayTeamIcon.value),
                 teamOneScore = event?.homeScore?.display.toString(),
                 teamTwoScore = event?.awayScore?.display.toString(),
                 teamOneOnClick = { onClickSingleTeam(event?.homeTeam?.id.toString()) },
-                teamTwoOnClick = { onClickSingleTeam(event?.awayTeam?.id.toString()) }
+                teamTwoOnClick = { onClickSingleTeam(event?.awayTeam?.id.toString()) },
+                tournamentIcon = rememberAsyncImagePainter(viewModel.tournamentIcon.value),
             )
             PredictionCard(
                 teamOneIcon = rememberAsyncImagePainter(viewModel.homeTeamIcon.value),
@@ -79,8 +84,12 @@ fun SingleMatchScreen(matchID : String?, onClickSingleTeam : (String?) -> Unit){
                 viewModel = viewModel,
                 matchID = matchID,
             )
+            CommonCard (modifier = Modifier,bottomBox = {
+                Text(text = viewModel.description)
+            })
         }
         else {
+            Log.i("SingleMatch","Drawing finishedEvent")
             EventImage(
                 teamOneLogo = rememberAsyncImagePainter(viewModel.homeTeamIcon.value),
                 teamTwoLogo = rememberAsyncImagePainter(viewModel.awayTeamIcon.value),
@@ -122,6 +131,7 @@ fun EventImage(
     teamTwoScore: String,
     teamOneOnClick: () -> Unit,
     teamTwoOnClick: () -> Unit,
+    live: Boolean ?= false,
 ) {
     Box (modifier = Modifier.height(180.dp)){
         Image(
@@ -182,21 +192,23 @@ fun EventImage(
                         modifier = Modifier.align(Alignment.CenterVertically)
                     )
                 }
-                Spacer(modifier = Modifier.weight(1f))
-                Text(
-                    text = "Live",
-                    color = Color.White,
-                    fontSize = 20.sp,
-                    fontWeight = FontWeight.Medium,
-                    textAlign = TextAlign.Center,
-                    modifier = Modifier
-                        .clip(RoundedCornerShape(10.dp))
-                        .background(Color.Red)
-                        .padding(horizontal = 12.dp, vertical = 3.dp)
-                        .align(Alignment.CenterHorizontally)
+                if(live == true) {
+                    Spacer(modifier = Modifier.weight(1f))
+                    Text(
+                        text = "Live",
+                        color = Color.White,
+                        fontSize = 20.sp,
+                        fontWeight = FontWeight.Medium,
+                        textAlign = TextAlign.Center,
+                        modifier = Modifier
+                            .clip(RoundedCornerShape(10.dp))
+                            .background(Color.Red)
+                            .padding(horizontal = 12.dp, vertical = 3.dp)
+                            .align(Alignment.CenterHorizontally)
 
-                )
-                Spacer(modifier = Modifier.weight(1f))
+                    )
+                    Spacer(modifier = Modifier.weight(1f))
+                }
             }
             Spacer(modifier = Modifier.weight(1f))
             Image(

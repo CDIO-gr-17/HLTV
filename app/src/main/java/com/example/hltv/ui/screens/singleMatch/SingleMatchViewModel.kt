@@ -9,6 +9,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.hltv.data.remote.Event
 import androidx.lifecycle.viewModelScope
+import com.example.hltv.data.convertTimestampToDateClock
 import com.example.hltv.data.remote.Game
 import com.example.hltv.data.remote.Prediction
 import com.example.hltv.data.remote.getEvent
@@ -32,6 +33,7 @@ class SingleMatchViewModel() : ViewModel() {
     var awayTeamIcon = mutableStateOf<Bitmap?>(null)
     var homeTeamIcon = mutableStateOf<Bitmap?>(null)
     var tournamentIcon = mutableStateOf<Bitmap?>(null)
+    var description = ""
 
 
     fun calculateVotePercentage(prediction: Prediction) {
@@ -90,18 +92,23 @@ class SingleMatchViewModel() : ViewModel() {
                 awayTeamIcon.value = getTeamImage(event.value!!.awayTeam.id)
                 tournamentIcon.value = getTeamImage(event.value!!.tournament.id)
                 getPrediction(matchID)
-                if (event.value!!.startTimestamp?.toLong() != null &&
-                    event.value!!.status?.description == "Ended" //Match with description "ended" has finished
-                ) {
+                if (event.value!!.status?.type == "finished") { // Match with description "ended" has finished
                     FinishedEvent.value = event.value
-                } else if (event.value!!.startTimestamp!! > (System.currentTimeMillis() / 1000)) { //Matches where the startTimestamp has passed, but not ended (i.e it must be live)
+                    Log.i("SingleMatchViewModel", "${event.value!!.status?.description} match added to finished events")
+                } else if (event.value!!.status?.type == "inprogress") { // Match is not started
                     LiveEvent.value = event.value
-                } else { //Match must be upcoming
+                    Log.i("SingleMatchViewModel", "${event.value!!.startTimestamp!!} > ${System.currentTimeMillis() / 1000}. ${event.value!!.status?.description}. Match added to live events.")
+                } else { // Match must be upcoming
                     UpcomingEvent.value = event.value
+                    Log.i("SingleMatchViewModel", "Match added to upcoming events")
+                    description = "${event.value!!.homeTeam.name} will be playing against ${event.value!!.awayTeam.name}" +
+                            " at ${convertTimestampToDateClock(event.value!!.startTimestamp)} in the ${event.value!!.tournament.name} tournament." +
+                            " They will be playing in a best of ${event.value!!.bestOf} map format."
                 }
             }
         }
     }
+
     fun loadGames(matchID: String?) {
         val niceMatchID = matchID!!.toInt()
         viewModelScope.launch(Dispatchers.IO) {
