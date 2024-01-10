@@ -138,10 +138,11 @@ private fun SearchField(): String {
                 onValueChange = { text = it },
                 placeholder = {
                     Text(
-                        text = "Search for teams, players or tournaments",
-                        color = MaterialTheme.colorScheme.onPrimaryContainer
+                        text = "Search teams, players & events",
+                        color = MaterialTheme.colorScheme.onSecondaryContainer
                     )
                 },
+                maxLines = 1,
                 singleLine = true,
                 colors = TextFieldDefaults.textFieldColors(
 
