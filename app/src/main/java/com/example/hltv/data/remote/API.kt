@@ -372,11 +372,18 @@ private suspend fun getAPIResponse(apiURL: String, apiKEY: String, desiredClass:
 }
 
 suspend fun getTournamentMedia(uniqueTournamentID: String): APIResponse.MediaWrapper{
-    return getAPIResponse(
-        "tournament/$uniqueTournamentID/media",
-        APIKEY,
-        APIResponse.MediaWrapper::class.java
-    ) as APIResponse.MediaWrapper
+    try {
+        return getAPIResponse(
+            "tournament/$uniqueTournamentID/media",
+            APIKEY,
+            APIResponse.MediaWrapper::class.java
+        ) as APIResponse.MediaWrapper
+    }
+    catch (e: Exception){
+        Log.e("getTournamentMedia()", "$e")
+        return APIResponse.MediaWrapper(Media())
+    }
+
 }
 
 fun main() {
