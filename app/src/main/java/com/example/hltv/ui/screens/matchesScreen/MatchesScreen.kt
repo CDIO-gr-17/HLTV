@@ -1,7 +1,10 @@
 package com.example.hltv.ui.screens.matchesScreen
+import android.app.DatePickerDialog
+import android.content.Context
 import android.graphics.Bitmap
 import android.os.SystemClock.sleep
 import android.util.Log
+import android.widget.DatePicker
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
@@ -10,6 +13,7 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
@@ -31,9 +35,14 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.State
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.painter.Painter
+import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewModelScope
@@ -45,6 +54,8 @@ import com.example.hltv.data.convertTimestampToDateClock
 import com.example.hltv.ui.common.LiveMatchCard
 import com.example.hltv.ui.common.UpcomingMatchCard
 import kotlinx.coroutines.launch
+import java.util.Calendar
+import java.util.Date
 
 
 data class ListItem(val ranking: Int, val text1: String, val text2: String)
@@ -59,12 +70,16 @@ fun MatchesScreen(onClickSingleTeam : (String?) -> Unit, onClickSingleMatch : (S
     val upcomingsMatchesValues = viewModel.upcomingMatchesValues
     val tournamentValues = viewModel.tournamentValues
     val loadingState by viewModel.loadingState.collectAsState()
+    val context = LocalContext.current
 
 /*
     val allPlayerImages = viewModel.allPlayerImages.collectAsState()
     val playerbmap = viewModel.playerImage.collectAsState()*/
 
     LazyColumn {
+        item {
+            DatePicker(context = context, icon = painterResource(id = R.drawable.calendar_month_24px))
+        }
         items(liveMatchesValues) { item  ->
             LiveMatchCard(
                 modifier = Modifier.clickable { onClickSingleMatch(item.id.toString()) },
@@ -252,6 +267,52 @@ fun teamCard(
         }
     }
 
+@Composable
+fun DatePicker(context: Context, icon: Painter){
+    val year: Int
+    val month: Int
+    val day: Int
+
+    val calendar = Calendar.getInstance()
+    year = calendar.get(Calendar.YEAR)
+    month = calendar.get(Calendar.MONTH)
+    day = calendar.get(Calendar.DAY_OF_MONTH)
+    calendar.time = Date()
+
+    val date = remember{ mutableStateOf("") }
+    val datePickerDialog = DatePickerDialog(
+        context,{
+            _: DatePicker,
+            year: Int,
+            month: Int,
+            dayOfMonth: Int -> date.value = "$dayOfMonth/$month/$year"
+        }, year, month, day
+    )
+    Column (
+        modifier = Modifier.fillMaxSize(),
+        verticalArrangement = Arrangement.Center,
+        horizontalAlignment = Alignment.CenterHorizontally
+    ){
+        Button(onClick = {
+            datePickerDialog.show()
+        }) {
+            Image(painter = icon,
+                contentDescription = null,
+                modifier = Modifier
+                    .size(10.dp)
+                    .align(Alignment.CenterVertically)
+            )
+        }
+    }
+}
+
+/*
+@Composable
+fun DatePickerPreview() {
+    // Laver fake context så den kan ses i preview
+    DatePicker(context = LocalContext.current)
+}
+*/
 @Preview(showBackground = true)
 @Composable
 fun MatchesScreenPreview() {
