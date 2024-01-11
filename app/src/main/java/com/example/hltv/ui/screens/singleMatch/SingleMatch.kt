@@ -123,21 +123,28 @@ fun SingleMatchScreen(matchID: String?, onClickSingleTeam: (String?) -> Unit) {
                 changeTimeStamp = event?.changes?.changeTimestamp,
                 startTimeStamp = event?.startTimestamp
             )
-            LazyColumn() {
-                itemsIndexed(games) { gameNumber, game ->
-                    Log.i("games","${games.size}")
-                    EventImage(backgroundImage = if (gameNumber < viewModel.mapImages.size) {
-                        Log.i("mapImageGameNumber", "$gameNumber")
-                        Log.i("mapImageGameNumberImage", "${viewModel.mapImages[gameNumber]}")
-                        rememberAsyncImagePainter(viewModel.mapImages[gameNumber])
-                    } else rememberAsyncImagePainter(R.drawable.event_background),
-                        teamOneScore = game.homeScore?.display.toString(),
-                        teamTwoScore = game.awayScore?.display.toString(),
-                        teamOneOnClick = { onClickSingleTeam(event?.homeTeam?.id.toString()) },
-                        teamTwoOnClick = { onClickSingleTeam(event?.awayTeam?.id.toString()) })
-                }
+            CommonCard (
+                modifier = Modifier,
+                headText = "Maps",
+                bottomBox = {
+                    LazyColumn() {
+                        itemsIndexed(games) { gameNumber, game ->
+                            Log.i("games","${games.size}")
+                            EventImage(backgroundImage = if (gameNumber < viewModel.mapImages.size) {
+                                Log.i("mapImageGameNumber", "$gameNumber")
+                                Log.i("mapImageGameNumberImage", "${viewModel.mapImages[gameNumber]}")
+                                rememberAsyncImagePainter(viewModel.mapImages[gameNumber])
+                            } else rememberAsyncImagePainter(R.drawable.event_background),
+                                teamOneScore = game.homeScore?.display.toString(),
+                                teamTwoScore = game.awayScore?.display.toString(),
+                                teamOneOnClick = { onClickSingleTeam(event?.homeTeam?.id.toString()) },
+                                teamTwoOnClick = { onClickSingleTeam(event?.awayTeam?.id.toString()) },
+                                crop = true,
+                                mapName = game.map?.name)
+                        }
+                    }
+                })
             }
-        }
         if (mediaList.value.isNotEmpty()) ShowLiveStreams(mediaList.value)
 
     }
@@ -159,15 +166,63 @@ fun EventImage(
     eventStatusType: String? = null,
     changeTimeStamp: Int? = null,
     startTimeStamp: Int? = null,
+    crop: Boolean ?= false,
+    mapName: String?= null
 ) {
     val remainingTime by rememberUpdatedState(countdownTimer(startTimeStamp))
-    Box(modifier = Modifier.height(180.dp)) {
-        Image(
-            painter = backgroundImage,
-            contentDescription = null,
-            contentScale = ContentScale.FillBounds,
-            modifier = Modifier.fillMaxWidth()
-        )
+    Box(modifier = Modifier) {
+        if(crop==true) {
+            Image(
+                painter = backgroundImage,
+                contentDescription = null,
+                contentScale = ContentScale.Crop,
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .height(100.dp)
+                    .align(Alignment.TopCenter)
+            )
+            Column (verticalArrangement = Arrangement.Center){
+                if (mapName != null) {
+                    Text(
+                        text = mapName,
+                        color = Color.White,
+                        fontSize = 22.sp,
+                        fontWeight = FontWeight.Normal,
+                        textAlign = TextAlign.Right,
+                        modifier = Modifier.align(Alignment.CenterHorizontally)
+                    )
+                }
+                Row (
+                    modifier = Modifier.fillMaxWidth(),
+                    horizontalArrangement = Arrangement.SpaceBetween
+                ){
+                    Text(
+                        text = teamOneScore,
+                        color = Color.White,
+                        fontSize = 22.sp,
+                        fontWeight = FontWeight.Normal,
+                        textAlign = TextAlign.Right
+                    )
+                    Text(
+                        text = teamTwoScore,
+                        color = Color.White,
+                        fontSize = 22.sp,
+                        fontWeight = FontWeight.Normal,
+                        textAlign = TextAlign.Right
+                    )
+                }
+
+            }
+        } else{
+            Image(
+                painter = backgroundImage,
+                contentDescription = null,
+                contentScale = ContentScale.FillBounds,
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .height(180.dp)
+            )
+        }
         Column(
             modifier = Modifier
                 .fillMaxWidth()
@@ -184,7 +239,6 @@ fun EventImage(
                             color = Color.White,
                             fontSize = 22.sp,
                             fontWeight = FontWeight.Normal,
-                            textAlign = TextAlign.Right,
                             modifier = Modifier.align(Alignment.CenterHorizontally)
                         )
                         if (teamOneLogo != null) {
