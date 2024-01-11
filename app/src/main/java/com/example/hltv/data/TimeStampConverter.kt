@@ -1,5 +1,7 @@
 package com.example.hltv.data
 
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.runBlocking
 import java.text.DateFormat
 import java.text.SimpleDateFormat
 import java.time.LocalDate
@@ -59,4 +61,23 @@ fun convertYearToUnixTimestamp(stringWithYear: String): Int {
         throw NumberFormatException("String doesn't contain a year")
     }
 
+}
+
+fun countdownTimer(timeStamp: Int?): Int {
+    val currentTimeMillis = System.currentTimeMillis()
+    if(timeStamp!=null) {
+        var timeLeft = (timeStamp.toLong() - currentTimeMillis) / 1000
+
+        runBlocking {
+            while (timeLeft > 0) {
+                delay(1000L)
+                timeLeft--
+            }
+        }
+
+        return timeLeft.toInt()
+    }
+    else{
+        return 0
+    }
 }

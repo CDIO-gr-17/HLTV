@@ -18,6 +18,7 @@ import com.example.hltv.data.remote.getMapImageFromMapID
 import com.example.hltv.data.remote.getPredictionFromFirestore
 import com.example.hltv.data.remote.getTeamImage
 import com.example.hltv.data.remote.getTeamMedia
+import com.example.hltv.data.remote.getTournamentLogo
 import com.example.hltv.data.remote.sendPredictionToFirestore
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -36,6 +37,7 @@ class SingleMatchViewModel() : ViewModel() {
     var homeTeamIcon = mutableStateOf<Bitmap?>(null)
     var tournamentIcon = mutableStateOf<Bitmap?>(null)
     var description = ""
+    var attendingTeams = mutableStateListOf<String?>(null)
 
 
     private var _tournamentMedia = MutableStateFlow(ArrayList<Media>())
@@ -100,8 +102,10 @@ class SingleMatchViewModel() : ViewModel() {
                 )
                 homeTeamIcon.value = getTeamImage(event.value!!.homeTeam.id)
                 awayTeamIcon.value = getTeamImage(event.value!!.awayTeam.id)
-                tournamentIcon.value = getTeamImage(event.value!!.tournament.id)
+                tournamentIcon.value = getTournamentLogo(event.value!!.tournament.uniqueTournament?.id)
                 getPrediction(matchID)
+                attendingTeams.add(event.value!!.tournament.category?.flag)
+                Log.i("flag","")
                 if (event.value!!.status?.type == "finished") { // Match with description "ended" has finished
                     FinishedEvent.value = event.value
                     Log.i(
@@ -149,7 +153,6 @@ class SingleMatchViewModel() : ViewModel() {
                     "Map ID is null for game with ID ${game.id}"
                 )
             }
-            games.addAll(tempGames)
             getPrediction(niceMatchID.toString())
         }
     }
