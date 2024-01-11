@@ -152,36 +152,56 @@ fun SingleEventTopbox(viewModel: SingleEventViewModel,
                         //horizontalAlignment = Alignment.CenterHorizontally,
                         modifier = Modifier.fillMaxWidth()
                     ){
-                        Row(modifier = Modifier.fillMaxWidth(),
-                            horizontalArrangement = Arrangement.SpaceBetween)
-                        {
-                            val iconSize = 30.dp
-                            Spacer( //Ghetto but it puts it in the middle
-                                modifier = Modifier.size(iconSize)
-                            )
-                            Text(
-                                fontSize = 30.sp,
-                                modifier = Modifier,
-                                text = "Winner"
-                            )
-
-                            Image(
-                                modifier = Modifier.size(iconSize),
-                                painter = painterResource(id = R.drawable.diversity_3_24px),
-                                contentDescription = "Cup"
-                            )
-                        }
-
-                        Divider(
-                            color = Color.Black, //TODO: Decide on this
-                            thickness = 1.dp
-                        )
 
                         //COPY PASTE FROM SINGLETEAM
                         //I tried doing DI, but we cant because the lazycolumn needs an argument
                         //that you cant pass so wed need DI in the DI and that was too much work
 
                         LazyColumn (modifier = Modifier.fillParentMaxHeight()) {
+
+                            item {
+                                Row(
+                                    modifier = Modifier.fillMaxWidth(),
+                                    horizontalArrangement = Arrangement.SpaceBetween
+                                )
+                                {
+                                    val iconSize = 30.dp
+                                    Spacer( //Ghetto but it puts it in the middle
+                                        modifier = Modifier.size(iconSize)
+                                    )
+                                    Text(
+                                        fontSize = 30.sp,
+                                        modifier = Modifier,
+                                        text = "Winner"
+                                    )
+
+                                    Image(
+                                        modifier = Modifier.size(iconSize),
+                                        painter = painterResource(id = R.drawable.diversity_3_24px),
+                                        contentDescription = "Cup"
+                                    )
+                                }
+                            }
+
+                            item{
+                                Divider(
+                                    color = Color.Black, //TODO: Decide on this
+                                    thickness = 1.dp
+                                )
+                            }
+
+                            item{
+                                Image(
+                                    modifier = Modifier.size(100.dp).align(Alignment.CenterHorizontally),
+                                    painter = painterResource(R.drawable.astralis_logo),
+                                    contentDescription = "Team logo",
+
+                                )
+                            }
+
+
+
+
                             item {
                                 CommonCard(modifier = Modifier, bottomBox = {
                                     Column {
