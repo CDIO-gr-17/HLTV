@@ -9,6 +9,7 @@ import androidx.activity.compose.setContent
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowBack
+import androidx.compose.material.icons.filled.Favorite
 import androidx.compose.material.icons.filled.Settings
 import androidx.compose.material3.CenterAlignedTopAppBar
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -99,7 +100,7 @@ fun HLTVApp() {
                 actions = {
                     IconButton(onClick = { navController.navigate(Settings.route) }) {
                         Icon(
-                            imageVector = Icons.Default.Settings,
+                            imageVector = Icons.Default.Favorite,
                             contentDescription = "Settings Icon",
                             tint = MaterialTheme.colorScheme.onSurface
                         )
