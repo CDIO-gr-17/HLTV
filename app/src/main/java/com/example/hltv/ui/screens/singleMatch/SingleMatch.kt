@@ -172,6 +172,13 @@ fun SingleMatchScreen(matchID: String?, onClickSingleTeam: (String?) -> Unit) {
                         }
                     })
             }
+            PredictionCard(
+                teamOneIcon = rememberAsyncImagePainter(viewModel.homeTeamIcon.value),
+                teamTwoIcon = rememberAsyncImagePainter(viewModel.awayTeamIcon.value),
+                viewModel = viewModel,
+                matchID = matchID,
+                finished = true
+            )
         }
         item {
             if (mediaList.value.isNotEmpty())
