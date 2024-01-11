@@ -14,19 +14,20 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.itemsIndexed
+import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.ClickableText
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.rememberUpdatedState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.painter.Painter
 import androidx.compose.ui.layout.ContentScale
@@ -44,14 +45,18 @@ import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import coil.compose.rememberAsyncImagePainter
 import com.example.hltv.R
+import com.example.hltv.data.CountdownViewModel
 import com.example.hltv.data.convertTimestampToDateClock
-import com.example.hltv.data.countdownTimer
+import com.example.hltv.data.convertTimestampToWeekDateClock
+import com.example.hltv.data.formatTime
 import com.example.hltv.data.remote.Media
 import com.example.hltv.ui.common.CommonCard
+
 
 @Composable
 fun SingleMatchScreen(matchID: String?, onClickSingleTeam: (String?) -> Unit) {
     val viewModel: SingleMatchViewModel = viewModel()
+    val countdownViewModel = viewModel(CountdownViewModel::class.java)
     LaunchedEffect(Unit) {
         viewModel.loadData(matchID)
         viewModel.loadGames(matchID)
@@ -59,94 +64,119 @@ fun SingleMatchScreen(matchID: String?, onClickSingleTeam: (String?) -> Unit) {
     val event = viewModel.event.value
     val mediaList = viewModel.tournamentMedia.collectAsState()
     val games = viewModel.games
-    Column {
+    LazyColumn (){
         if (viewModel.LiveEvent.value != null) {
-            Log.i("SingleMatch", "Drawing liveEvent")
-            EventImage(
-                teamOneName = event?.homeTeam?.name,
-                teamTwoName = event?.awayTeam?.name,
-                teamOneLogo = rememberAsyncImagePainter(viewModel.homeTeamIcon.value),
-                teamTwoLogo = rememberAsyncImagePainter(viewModel.awayTeamIcon.value),
-                teamOneScore = event?.homeScore?.display.toString(),
-                teamTwoScore = event?.awayScore?.display.toString(),
-                teamOneOnClick = { onClickSingleTeam(event?.homeTeam?.id.toString()) },
-                teamTwoOnClick = { onClickSingleTeam(event?.awayTeam?.id.toString()) },
-                tournamentIcon = rememberAsyncImagePainter(viewModel.tournamentIcon.value),
-                eventStatusType = event?.status?.type,
-                changeTimeStamp = event?.changes?.changeTimestamp,
-                startTimeStamp = event?.startTimestamp
-            )
-            PredictionCard(
-                teamOneIcon = rememberAsyncImagePainter(viewModel.homeTeamIcon.value),
-                teamTwoIcon = rememberAsyncImagePainter(viewModel.awayTeamIcon.value),
-                viewModel = viewModel,
-                matchID = matchID
-            )
+            item {
+                Log.i("SingleMatch", "Drawing liveEvent")
+                EventImage(
+                    teamOneName = event?.homeTeam?.name,
+                    teamTwoName = event?.awayTeam?.name,
+                    teamOneLogo = rememberAsyncImagePainter(viewModel.homeTeamIcon.value),
+                    teamTwoLogo = rememberAsyncImagePainter(viewModel.awayTeamIcon.value),
+                    teamOneScore = event?.homeScore?.display.toString(),
+                    teamTwoScore = event?.awayScore?.display.toString(),
+                    teamOneOnClick = { onClickSingleTeam(event?.homeTeam?.id.toString()) },
+                    teamTwoOnClick = { onClickSingleTeam(event?.awayTeam?.id.toString()) },
+                    tournamentIcon = rememberAsyncImagePainter(viewModel.tournamentIcon.value),
+                    eventStatusType = event?.status?.type,
+                    changeTimeStamp = event?.changes?.changeTimestamp,
+                    startTimeStamp = event?.startTimestamp
+                )
+            }
+            item {
+                PredictionCard(
+                    teamOneIcon = rememberAsyncImagePainter(viewModel.homeTeamIcon.value),
+                    teamTwoIcon = rememberAsyncImagePainter(viewModel.awayTeamIcon.value),
+                    viewModel = viewModel,
+                    matchID = matchID
+                )
+            }
         } else if (viewModel.UpcomingEvent.value != null) {
-            Log.i("SingleMatch", "Drawing upcomingEvent")
-            EventImage(
-                teamOneName = event?.homeTeam?.name.toString(),
-                teamTwoName = event?.awayTeam?.name.toString(),
-                teamOneLogo = rememberAsyncImagePainter(viewModel.homeTeamIcon.value),
-                teamTwoLogo = rememberAsyncImagePainter(viewModel.awayTeamIcon.value),
-                teamOneScore = event?.homeScore?.display.toString(),
-                teamTwoScore = event?.awayScore?.display.toString(),
-                teamOneOnClick = { onClickSingleTeam(event?.homeTeam?.id.toString()) },
-                teamTwoOnClick = { onClickSingleTeam(event?.awayTeam?.id.toString()) },
-                tournamentIcon = rememberAsyncImagePainter(viewModel.tournamentIcon.value),
-                eventStatusType = event?.status?.type,
-                changeTimeStamp = event?.changes?.changeTimestamp,
-                startTimeStamp = event?.startTimestamp
-            )
-            CommonCard(modifier = Modifier, bottomBox = {
-                Text(text = viewModel.description)
-            })
-            PredictionCard(
-                teamOneIcon = rememberAsyncImagePainter(viewModel.homeTeamIcon.value),
-                teamTwoIcon = rememberAsyncImagePainter(viewModel.awayTeamIcon.value),
-                viewModel = viewModel,
-                matchID = matchID,
-            )
-        } else if (viewModel.FinishedEvent.value != null){
-            Log.i("SingleMatch", "Drawing finishedEvent")
-            EventImage(
-                teamOneName = event?.homeTeam?.name.toString(),
-                teamTwoName = event?.awayTeam?.name.toString(),
-                teamOneLogo = rememberAsyncImagePainter(viewModel.homeTeamIcon.value),
-                teamTwoLogo = rememberAsyncImagePainter(viewModel.awayTeamIcon.value),
-                teamOneScore = event?.homeScore?.display.toString(),
-                teamTwoScore = event?.awayScore?.display.toString(),
-                teamOneOnClick = { onClickSingleTeam(event?.homeTeam?.id.toString()) },
-                teamTwoOnClick = { onClickSingleTeam(event?.awayTeam?.id.toString()) },
-                tournamentIcon = rememberAsyncImagePainter(viewModel.tournamentIcon.value),
-                eventStatusType = event?.status?.type,
-                changeTimeStamp = event?.changes?.changeTimestamp,
-                startTimeStamp = event?.startTimestamp
-            )
-            CommonCard (
-                modifier = Modifier,
-                headText = "Maps",
-                bottomBox = {
-                    LazyColumn() {
-                        itemsIndexed(games) { gameNumber, game ->
-                            Log.i("games","${games.size}")
-                            EventImage(backgroundImage = if (gameNumber < viewModel.mapImages.size) {
-                                Log.i("mapImageGameNumber", "$gameNumber")
-                                Log.i("mapImageGameNumberImage", "${viewModel.mapImages[gameNumber]}")
-                                rememberAsyncImagePainter(viewModel.mapImages[gameNumber])
-                            } else rememberAsyncImagePainter(R.drawable.event_background),
-                                teamOneScore = game.homeScore?.display.toString(),
-                                teamTwoScore = game.awayScore?.display.toString(),
-                                teamOneOnClick = { onClickSingleTeam(event?.homeTeam?.id.toString()) },
-                                teamTwoOnClick = { onClickSingleTeam(event?.awayTeam?.id.toString()) },
-                                crop = true,
-                                mapName = game.map?.name)
-                        }
-                    }
+            item {
+                Log.i("SingleMatch", "Drawing upcomingEvent")
+                EventImage(
+                    teamOneName = event?.homeTeam?.name.toString(),
+                    teamTwoName = event?.awayTeam?.name.toString(),
+                    teamOneLogo = rememberAsyncImagePainter(viewModel.homeTeamIcon.value),
+                    teamTwoLogo = rememberAsyncImagePainter(viewModel.awayTeamIcon.value),
+                    teamOneScore = event?.homeScore?.display.toString(),
+                    teamTwoScore = event?.awayScore?.display.toString(),
+                    teamOneOnClick = { onClickSingleTeam(event?.homeTeam?.id.toString()) },
+                    teamTwoOnClick = { onClickSingleTeam(event?.awayTeam?.id.toString()) },
+                    tournamentIcon = rememberAsyncImagePainter(viewModel.tournamentIcon.value),
+                    eventStatusType = event?.status?.type,
+                    changeTimeStamp = event?.changes?.changeTimestamp,
+                    startTimeStamp = event?.startTimestamp,
+                    countdownViewModel = countdownViewModel
+                )
+            }
+            item {
+                CommonCard(modifier = Modifier, bottomBox = {
+                    Text(text = viewModel.description)
                 })
             }
-        if (mediaList.value.isNotEmpty()) ShowLiveStreams(mediaList.value)
-
+            item {
+                PredictionCard(
+                    teamOneIcon = rememberAsyncImagePainter(viewModel.homeTeamIcon.value),
+                    teamTwoIcon = rememberAsyncImagePainter(viewModel.awayTeamIcon.value),
+                    viewModel = viewModel,
+                    matchID = matchID,
+                )
+            }
+        } else if (viewModel.FinishedEvent.value != null) {
+            item {
+                Log.i("SingleMatch", "Drawing finishedEvent")
+                EventImage(
+                    teamOneName = event?.homeTeam?.name.toString(),
+                    teamTwoName = event?.awayTeam?.name.toString(),
+                    teamOneLogo = rememberAsyncImagePainter(viewModel.homeTeamIcon.value),
+                    teamTwoLogo = rememberAsyncImagePainter(viewModel.awayTeamIcon.value),
+                    teamOneScore = event?.homeScore?.display.toString(),
+                    teamTwoScore = event?.awayScore?.display.toString(),
+                    teamOneOnClick = { onClickSingleTeam(event?.homeTeam?.id.toString()) },
+                    teamTwoOnClick = { onClickSingleTeam(event?.awayTeam?.id.toString()) },
+                    tournamentIcon = rememberAsyncImagePainter(viewModel.tournamentIcon.value),
+                    eventStatusType = event?.status?.type,
+                    changeTimeStamp = event?.changes?.changeTimestamp,
+                    startTimeStamp = event?.startTimestamp
+                )
+            }
+            item {
+                CommonCard(
+                    modifier = Modifier,
+                    headText = "Maps",
+                    bottomBox = {
+                        Column() {
+                            games.forEachIndexed() { gameNumber, game ->
+                                Log.i("games", "${games.size}")
+                                EventImage(
+                                    backgroundImage = if (gameNumber < viewModel.mapImages.size) {
+                                        Log.i("mapImageGameNumber", "$gameNumber")
+                                        Log.i(
+                                            "mapImageGameNumberImage",
+                                            "${viewModel.mapImages[gameNumber]}"
+                                        )
+                                        rememberAsyncImagePainter(viewModel.mapImages[gameNumber])
+                                    } else rememberAsyncImagePainter(R.drawable.event_background),
+                                    teamOneScore = game.homeScore?.display.toString(),
+                                    teamTwoScore = game.awayScore?.display.toString(),
+                                    teamOneOnClick = { onClickSingleTeam(event?.homeTeam?.id.toString()) },
+                                    teamTwoOnClick = { onClickSingleTeam(event?.awayTeam?.id.toString()) },
+                                    crop = true,
+                                    mapName = game.map?.name
+                                )
+                                if (gameNumber < games.size - 1) {
+                                    Spacer(modifier = Modifier.height(8.dp))
+                                }
+                            }
+                        }
+                    })
+            }
+        }
+        item {
+            if (mediaList.value.isNotEmpty())
+                ShowLiveStreams(mediaList.value)
+        }
     }
 }
 
@@ -167,11 +197,28 @@ fun EventImage(
     changeTimeStamp: Int? = null,
     startTimeStamp: Int? = null,
     crop: Boolean ?= false,
-    mapName: String?= null
+    mapName: String?= null,
+    countdownViewModel: CountdownViewModel = viewModel()
 ) {
-    val remainingTime by rememberUpdatedState(countdownTimer(startTimeStamp))
+    LaunchedEffect(key1 = countdownViewModel) {
+        if (startTimeStamp != null) {
+            countdownViewModel.startCountdown(startTimeStamp)
+        }
+    }
+    val remainingTime by countdownViewModel.remainingTime.collectAsState()
+    DisposableEffect(Unit) {
+        if (startTimeStamp != null) {
+            countdownViewModel.startCountdown(startTimeStamp)
+        }
+        onDispose {
+            countdownViewModel.stopCountdown()
+        }
+    }
+    val formattedTime = remainingTime?.formatTime() ?: "00:00:00"
+
+
     Box(modifier = Modifier) {
-        if(crop==true) {
+        if (crop == true) {
             Image(
                 painter = backgroundImage,
                 contentDescription = null,
@@ -181,7 +228,7 @@ fun EventImage(
                     .height(100.dp)
                     .align(Alignment.TopCenter)
             )
-            Column (verticalArrangement = Arrangement.Center){
+            Column(verticalArrangement = Arrangement.Center) {
                 if (mapName != null) {
                     Text(
                         text = mapName,
@@ -189,31 +236,47 @@ fun EventImage(
                         fontSize = 22.sp,
                         fontWeight = FontWeight.Normal,
                         textAlign = TextAlign.Right,
-                        modifier = Modifier.align(Alignment.CenterHorizontally)
+                        modifier = Modifier
+                            .align(Alignment.CenterHorizontally)
+                            .clip(
+                                RoundedCornerShape(
+                                    topStart = 0.dp,
+                                    topEnd = 0.dp,
+                                    bottomEnd = 10.dp,
+                                    bottomStart = 10.dp
+                                )
+                            )
+                            .background(MaterialTheme.colorScheme.secondaryContainer)
+                            .padding(top = 0.dp, bottom = 3.dp, start = 4.dp, end = 4.dp)
                     )
                 }
-                Row (
+                Row(
                     modifier = Modifier.fillMaxWidth(),
-                    horizontalArrangement = Arrangement.SpaceBetween
-                ){
+                    horizontalArrangement = Arrangement.SpaceAround
+                ) {
                     Text(
                         text = teamOneScore,
                         color = Color.White,
-                        fontSize = 22.sp,
+                        fontSize = 40.sp,
                         fontWeight = FontWeight.Normal,
-                        textAlign = TextAlign.Right
+                        modifier = Modifier
+                            .align(alignment = Alignment.CenterVertically)
+                            .shadow(10.dp, shape = CircleShape) // Adjust the shadow size as needed
                     )
                     Text(
                         text = teamTwoScore,
                         color = Color.White,
-                        fontSize = 22.sp,
+                        fontSize = 40.sp,
                         fontWeight = FontWeight.Normal,
-                        textAlign = TextAlign.Right
+                        modifier = Modifier
+                            .align(alignment = Alignment.CenterVertically)
+                            .shadow(20.dp, shape = CircleShape) // Adjust the shadow size as needed
                     )
+
                 }
 
             }
-        } else{
+        } else {
             Image(
                 painter = backgroundImage,
                 contentDescription = null,
@@ -222,18 +285,14 @@ fun EventImage(
                     .fillMaxWidth()
                     .height(180.dp)
             )
-        }
-        Column(
-            modifier = Modifier
-                .fillMaxWidth()
-                .align(Alignment.Center)
-        ) {
             if (teamOneName != null && teamTwoName != null) {
                 Row(
-                    modifier = Modifier.fillMaxWidth(),
-                    horizontalArrangement = Arrangement.SpaceAround
+                    modifier = Modifier.fillMaxWidth()
+                        .height(180.dp),
+                    horizontalArrangement = Arrangement.SpaceAround,
+                    verticalAlignment = Alignment.CenterVertically
                 ) {
-                    Column(verticalArrangement = Arrangement.Center) {
+                    Column {
                         Text(
                             text = teamOneName.substring(0, minOf(10, teamOneName.length)),
                             color = Color.White,
@@ -249,80 +308,68 @@ fun EventImage(
                                     .clickable { teamOneOnClick() })
                         }
                     }
-                    Column(verticalArrangement = Arrangement.Center) {
-                        tournamentIcon?.let {
+                    Column{
+                        if (tournamentIcon != null) {
                             Image(
-                                painter = it,
+                                painter = tournamentIcon,
                                 contentDescription = null,
                                 modifier = Modifier
                                     .align(Alignment.CenterHorizontally)
                             )
-                            if(eventStatusType == "inprogress" || eventStatusType == "finished") {
-                                Text(
-                                    text = "$teamOneScore - $teamTwoScore",
-                                    color = Color.White,
-                                    fontSize = 24.sp,
-                                    fontWeight = FontWeight.Normal,
-                                    textAlign = TextAlign.Center,
-                                    modifier = Modifier.align(Alignment.CenterHorizontally)
-                                )
-                            }
-                            else{
-                                Text(
-                                    text = "Starting",
-                                    color = Color.White,
-                                    fontSize = 24.sp,
-                                    fontWeight = FontWeight.Normal,
-                                    textAlign = TextAlign.Center,
-                                    modifier = Modifier.align(Alignment.CenterHorizontally)
-                                )
-                            }
-                            Spacer(modifier = Modifier.height(15.dp))
-                            if (eventStatusType == "inprogress") {
-                                Text(
-                                    text = "Live",
-                                    color = Color.White,
-                                    fontSize = 20.sp,
-                                    fontWeight = FontWeight.Medium,
-                                    textAlign = TextAlign.Center,
-                                    modifier = Modifier
-                                        .clip(RoundedCornerShape(10.dp))
-                                        .background(Color.Red)
-                                        .padding(horizontal = 12.dp, vertical = 3.dp)
-                                        .align(Alignment.CenterHorizontally)
-                                )
-                            }
-                            else if (eventStatusType == "finished") {
-                                Text(
-                                    text = "Finished",
-                                    color = Color.White,
-                                    fontSize = 16.sp,
-                                    fontWeight = FontWeight.Normal,
-                                    textAlign = TextAlign.Center,
-                                    modifier = Modifier.align(Alignment.CenterHorizontally)
-                                )
-                                Text(
-                                    text = convertTimestampToDateClock(changeTimeStamp),
-                                    color = Color.White,
-                                    fontSize = 16.sp,
-                                    fontWeight = FontWeight.Normal,
-                                    textAlign = TextAlign.Center,
-                                    modifier = Modifier.align(Alignment.CenterHorizontally)
-                                )
-                            }
-                            else {
-                                Text(
-                                    text = remainingTime.toString(),
-                                    color = Color.White,
-                                    fontSize = 16.sp,
-                                    fontWeight = FontWeight.Normal,
-                                    textAlign = TextAlign.Center,
-                                    modifier = Modifier.align(Alignment.CenterHorizontally)
-                                )
-                            }
+                        }
+                        if (eventStatusType == "inprogress" || eventStatusType == "finished") {
+                            Text(
+                                text = "$teamOneScore - $teamTwoScore",
+                                color = Color.White,
+                                fontSize = 24.sp,
+                                fontWeight = FontWeight.Normal,
+                                textAlign = TextAlign.Center,
+                                modifier = Modifier.align(Alignment.CenterHorizontally)
+                            )
+                        }
+                        Spacer(modifier = Modifier.height(15.dp))
+                        if (eventStatusType == "inprogress") {
+                            Text(
+                                text = "Live",
+                                color = Color.White,
+                                fontSize = 20.sp,
+                                fontWeight = FontWeight.Medium,
+                                textAlign = TextAlign.Center,
+                                modifier = Modifier
+                                    .clip(RoundedCornerShape(10.dp))
+                                    .background(Color.Red)
+                                    .padding(horizontal = 12.dp, vertical = 3.dp)
+                                    .align(Alignment.CenterHorizontally)
+                            )
+                        } else if (eventStatusType == "finished") {
+                            Text(
+                                text = "Ended",
+                                color = Color.White,
+                                fontSize = 16.sp,
+                                fontWeight = FontWeight.Normal,
+                                textAlign = TextAlign.Center,
+                                modifier = Modifier.align(Alignment.CenterHorizontally)
+                            )
+                            Text(
+                                text = convertTimestampToDateClock(changeTimeStamp),
+                                color = Color.White,
+                                fontSize = 16.sp,
+                                fontWeight = FontWeight.Normal,
+                                textAlign = TextAlign.Center,
+                                modifier = Modifier.align(Alignment.CenterHorizontally)
+                            )
+                        } else {
+                            Text(
+                                text = formattedTime,
+                                color = Color.White,
+                                fontSize = 24.sp,
+                                fontWeight = FontWeight.Normal,
+                                textAlign = TextAlign.Center,
+                                modifier = Modifier.align(Alignment.CenterHorizontally)
+                            )
                         }
                     }
-                    Column(verticalArrangement = Arrangement.Center) {
+                    Column {
                         Text(
                             text = teamTwoName.substring(0, minOf(10, teamTwoName.length)),
                             color = Color.White,
@@ -344,6 +391,7 @@ fun EventImage(
         }
     }
 }
+
 
 @Composable
 fun ShowLiveStreams(mediaList: ArrayList<Media>) {
