@@ -83,12 +83,13 @@ fun SingleMatchScreen(matchID: String?, onClickSingleTeam: (String?) -> Unit) {
                     startTimeStamp = event?.startTimestamp
                 )
             }
-            item {
+            item{
                 PredictionCard(
                     teamOneIcon = rememberAsyncImagePainter(viewModel.homeTeamIcon.value),
                     teamTwoIcon = rememberAsyncImagePainter(viewModel.awayTeamIcon.value),
                     viewModel = viewModel,
-                    matchID = matchID
+                    matchID = matchID,
+                    finished = true
                 )
             }
         } else if (viewModel.UpcomingEvent.value != null) {
@@ -144,7 +145,7 @@ fun SingleMatchScreen(matchID: String?, onClickSingleTeam: (String?) -> Unit) {
             item {
                 CommonCard(
                     modifier = Modifier,
-                    headText = "Maps",
+                    headText = "Map results",
                     bottomBox = {
                         Column() {
                             games.forEachIndexed() { gameNumber, game ->
@@ -172,13 +173,15 @@ fun SingleMatchScreen(matchID: String?, onClickSingleTeam: (String?) -> Unit) {
                         }
                     })
             }
-            PredictionCard(
-                teamOneIcon = rememberAsyncImagePainter(viewModel.homeTeamIcon.value),
-                teamTwoIcon = rememberAsyncImagePainter(viewModel.awayTeamIcon.value),
-                viewModel = viewModel,
-                matchID = matchID,
-                finished = true
-            )
+            item{
+                PredictionCard(
+                    teamOneIcon = rememberAsyncImagePainter(viewModel.homeTeamIcon.value),
+                    teamTwoIcon = rememberAsyncImagePainter(viewModel.awayTeamIcon.value),
+                    viewModel = viewModel,
+                    matchID = matchID,
+                    finished = true
+                )
+            }
         }
         item {
             if (mediaList.value.isNotEmpty())
