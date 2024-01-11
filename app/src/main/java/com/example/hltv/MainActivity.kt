@@ -10,6 +10,7 @@ import androidx.activity.compose.setContent
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowBack
+import androidx.compose.material.icons.filled.Favorite
 import androidx.compose.material.icons.filled.Settings
 import androidx.compose.material3.CenterAlignedTopAppBar
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -42,6 +43,7 @@ import com.example.hltv.navigation.SingleMatch
 import com.example.hltv.navigation.SingleTeam
 import com.example.hltv.navigation.allAppScreens
 import com.example.hltv.navigation.bottomAppBarScreens
+import com.example.hltv.ui.common.FavoriteButton
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -67,6 +69,7 @@ fun HLTVApp() {
         val currentScreen =
             allAppScreens.find { currentDestination?.route?.startsWith(it.route) ?: false } ?: Home
 
+
         Scaffold(topBar = {
             CenterAlignedTopAppBar(
                 title = {
@@ -85,13 +88,16 @@ fun HLTVApp() {
                     {}
                 },
                 actions = {
-                    IconButton(onClick = { navController.navigate(Settings.route) }) {
-                        Icon(
-                            imageVector = Icons.Default.Settings,
-                            contentDescription = "Settings Icon",
-                            tint = MaterialTheme.colorScheme.onSurface
-                        )
-                    }
+                    if(currentScreen == SingleTeam)
+                        FavoriteButton()
+                    else
+                        IconButton(onClick = { navController.navigate(Settings.route) }) {
+                            Icon(
+                                imageVector =  Icons.Default.Settings,
+                                contentDescription = "Settings Icon",
+                                tint = MaterialTheme.colorScheme.onSurface
+                            )
+                        }
                 },
             )
         }, bottomBar = {
