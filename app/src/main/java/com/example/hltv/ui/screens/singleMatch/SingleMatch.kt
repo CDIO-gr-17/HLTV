@@ -280,7 +280,7 @@ fun EventImage(
                         fontWeight = FontWeight.Normal,
                         modifier = Modifier
                             .align(alignment = Alignment.CenterVertically)
-                            .shadow(20.dp, shape = CircleShape) // Adjust the shadow size as needed
+                            .shadow(20.dp, shape = CircleShape)
                     )
 
                 }
@@ -325,6 +325,7 @@ fun EventImage(
                                 contentDescription = null,
                                 modifier = Modifier
                                     .align(Alignment.CenterHorizontally)
+                                    .shadow(20.dp, shape = CircleShape)
                             )
                         }
                         if (eventStatusType == "inprogress" || eventStatusType == "finished") {
