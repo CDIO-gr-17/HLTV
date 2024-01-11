@@ -39,6 +39,7 @@ import com.example.hltv.navigation.SingleMatch
 import com.example.hltv.navigation.SingleTeam
 import com.example.hltv.navigation.allAppScreens
 import com.example.hltv.navigation.bottomAppBarScreens
+import com.example.hltv.ui.common.FavoriteButton
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -62,6 +63,7 @@ fun HLTVApp() {
         val currentDestination = currentBackStack?.destination
         val canNavigateBack = !bottomAppBarScreens.any { it.route == currentDestination?.route }
         val currentScreen = allAppScreens.find { currentDestination?.route?.startsWith(it.route) ?: false } ?: Home
+
 
 
 
@@ -98,13 +100,16 @@ fun HLTVApp() {
                     {}
                 },
                 actions = {
-                    IconButton(onClick = { navController.navigate(Settings.route) }) {
-                        Icon(
-                            imageVector = Icons.Default.Favorite,
-                            contentDescription = "Settings Icon",
-                            tint = MaterialTheme.colorScheme.onSurface
-                        )
-                    }
+                    if(currentScreen == SingleTeam)
+                        FavoriteButton()
+                    else
+                        IconButton(onClick = { navController.navigate(Settings.route) }) {
+                            Icon(
+                                imageVector =  Icons.Default.Settings,
+                                contentDescription = "Settings Icon",
+                                tint = MaterialTheme.colorScheme.onSurface
+                            )
+                        }
                 },
             )
         }, bottomBar = {
