@@ -10,7 +10,6 @@ import androidx.activity.compose.setContent
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowBack
-import androidx.compose.material.icons.filled.Favorite
 import androidx.compose.material.icons.filled.Settings
 import androidx.compose.material3.CenterAlignedTopAppBar
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -28,11 +27,13 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.vectorResource
 import androidx.navigation.NavBackStackEntry
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
 import com.example.compose.HLTVTheme
+import com.example.hltv.data.local.PrefDataKeyValueStore
 import com.example.hltv.data.remote.getEvent
 import com.example.hltv.data.remote.getTeamNameFromID
 import com.example.hltv.navigation.Destination
@@ -68,6 +69,8 @@ fun HLTVApp() {
         val canNavigateBack = !bottomAppBarScreens.any { it.route == currentDestination?.route }
         val currentScreen =
             allAppScreens.find { currentDestination?.route?.startsWith(it.route) ?: false } ?: Home
+        //val context : Context = getApplication<Application>().applicationContext
+        val dataStore = PrefDataKeyValueStore(LocalContext.current)
 
 
         Scaffold(topBar = {
@@ -89,7 +92,7 @@ fun HLTVApp() {
                 },
                 actions = {
                     if(currentScreen == SingleTeam)
-                        FavoriteButton()
+                        FavoriteButton(dataStore, currentBackStack?.arguments?.getString("teamID")?.toInt()!!)
                     else
                         IconButton(onClick = { navController.navigate(Settings.route) }) {
                             Icon(
@@ -122,6 +125,9 @@ fun HLTVApp() {
             )
         }
     }
+
+
+
 }
 @SuppressLint("CoroutineCreationDuringComposition")
 @Composable
