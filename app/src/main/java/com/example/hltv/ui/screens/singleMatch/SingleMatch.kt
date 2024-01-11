@@ -119,6 +119,13 @@ fun SingleMatchScreen(matchID: String?, onClickSingleTeam: (String?) -> Unit) {
                         teamTwoOnClick = { onClickSingleTeam(event?.awayTeam?.id.toString()) })
                 }
             }
+            PredictionCard(
+                teamOneIcon = rememberAsyncImagePainter(viewModel.homeTeamIcon.value),
+                teamTwoIcon = rememberAsyncImagePainter(viewModel.awayTeamIcon.value),
+                viewModel = viewModel,
+                matchID = matchID,
+                finished = true
+            )
         }
         if (mediaList.value.isNotEmpty()) ShowLiveStreams(mediaList.value)
 

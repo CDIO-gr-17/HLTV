@@ -1,7 +1,6 @@
 package com.example.hltv.ui.screens.singleMatch
 
 
-import android.graphics.BitmapFactory
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
@@ -32,16 +31,12 @@ import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.ImageBitmap
-import androidx.compose.ui.graphics.asImageBitmap
 import androidx.compose.ui.graphics.painter.Painter
-import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import com.example.hltv.R
 import com.example.hltv.ui.common.CommonCard
 
 
@@ -49,6 +44,7 @@ class PredictionCardState {
     var hasVoted by mutableStateOf(false)
     var isHomeTeamSelected by mutableStateOf(false)
 }
+
 @Composable
 fun PredictionCard(
     modifier: Modifier = Modifier,
@@ -56,11 +52,12 @@ fun PredictionCard(
     teamTwoIcon: Painter,
     teamOneColor: Color = Color.Blue,
     teamTwoColor: Color = Color.Red,
-    viewModel : SingleMatchViewModel,
-    matchID : String ?= null
+    viewModel: SingleMatchViewModel,
+    matchID: String? = null,
+    finished: Boolean = false
 ) {
-    var hasVoted by remember { mutableStateOf(false)}
-    var isHomeTeamSelected by remember {mutableStateOf(false)}
+    var hasVoted by remember { mutableStateOf(false) }
+    var isHomeTeamSelected by remember { mutableStateOf(false) }
     CommonCard(modifier = modifier, customInnerPadding = 0.dp, topBox = {
         Box(
             modifier = Modifier
@@ -108,9 +105,7 @@ fun PredictionCard(
                     .fillMaxWidth()
                     .align(Alignment.Center),
                 horizontalArrangement = Arrangement.SpaceAround
-
             ) {
-
                 drawCircle(
                     modifier = modifier,
                     teamIcon = teamOneIcon,
@@ -118,6 +113,7 @@ fun PredictionCard(
                     hometeam = true,
                     hasVoted = hasVoted,
                     isHomeTeamSelected = isHomeTeamSelected,
+                    finished = finished,
                     onClick = {
                         if (hasVoted) {
                             return@drawCircle
@@ -136,7 +132,7 @@ fun PredictionCard(
                     color = MaterialTheme.colorScheme.onPrimaryContainer,
                     textAlign = TextAlign.Center,
                     fontWeight = FontWeight.Bold,
-                    )
+                )
                 drawCircle(
                     modifier = modifier,
                     teamIcon = teamTwoIcon,
@@ -144,6 +140,7 @@ fun PredictionCard(
                     hometeam = false,
                     hasVoted = hasVoted,
                     isHomeTeamSelected = isHomeTeamSelected,
+                    finished = finished,
                     onClick = {
                         if (hasVoted) {
                             return@drawCircle
@@ -166,19 +163,27 @@ private fun drawCircle(
     hometeam: Boolean,
     hasVoted: Boolean,
     isHomeTeamSelected: Boolean,
+    finished: Boolean,
     onClick: () -> Unit
 ) {
     Column {
         Box(
             modifier =
-                modifier
-                    .size(100.dp)
-                    .border(when {hasVoted -> 4.dp else -> 2.dp}, if (hasVoted) Color.White else Color.Black, CircleShape)//here TODO
-                    .clip(CircleShape)
-                    .background(MaterialTheme.colorScheme.onPrimaryContainer)
-                    .clickable {
-                        onClick()
-                    }
+            modifier
+                .size(100.dp)
+                .border(
+                    when {
+                        hasVoted -> 4.dp
+                        finished -> 4.dp
+                        else -> 2.dp
+                    }, if (hasVoted || finished) Color.White else Color.Black, CircleShape
+                )//here TODO
+                .clip(CircleShape)
+                .background(MaterialTheme.colorScheme.onPrimaryContainer)
+                .clickable {
+                    if(!finished)
+                    onClick()
+                }
         ) {
             Image(
                 painter = teamIcon,
@@ -189,34 +194,41 @@ private fun drawCircle(
                     .padding(16.dp)
             )
         }
-        if (hasVoted){
-                Icon(
-                    imageVector = Icons.Default.CheckCircle,
-                    contentDescription = "mark",
-                    tint = Color.Black,
-                    modifier = Modifier
-                        .align(Alignment.CenterHorizontally)
-                        .offset(y = (-30).dp, x = (25).dp)
-                        .size(35.dp)
-                        .alpha(
-                            if ((isHomeTeamSelected && hometeam) || (!hometeam && !isHomeTeamSelected)) {
-                                1f
-                            } else {
-                                0f
-                            }
-                        )
-                )
-                Text(
-                    text = voteCount.toString() + "%",
-                    modifier = Modifier
-                        .align(Alignment.CenterHorizontally)
-                        .offset(y = (-25).dp),
-                    fontSize = 20.sp,
-                    textAlign = TextAlign.Center,
-                )
-            }
-    }}
+        if (hasVoted || finished) {
+            Icon(
+                imageVector = Icons.Default.CheckCircle,
+                contentDescription = "mark",
+                tint = Color.Black,
+                modifier = Modifier
+                    .align(Alignment.CenterHorizontally)
+                    .offset(y = (-30).dp, x = (25).dp)
+                    .size(35.dp)
+                    .alpha(
+                        if (!hasVoted) {
+                            0f
+                        } else if ((isHomeTeamSelected && hometeam) || (!hometeam && !isHomeTeamSelected)) {
+                            1f
+                        } else {
+                            0f
+                        }
+
+
+                    )
+            )
+            Text(
+                text = voteCount.toString() + "%",
+                modifier = Modifier
+                    .align(Alignment.CenterHorizontally)
+                    .offset(y = (-25).dp),
+                fontSize = 20.sp,
+                textAlign = TextAlign.Center,
+            )
+        }
+    }
+}
+
 @Preview
 @Composable
 fun PredictionCardPreview() {
+
 }
