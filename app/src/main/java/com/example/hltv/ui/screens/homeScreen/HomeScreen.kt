@@ -35,6 +35,7 @@ import coil.compose.rememberAsyncImagePainter
 import com.example.hltv.data.convertTimestampToDateClock
 import com.example.hltv.ui.common.LiveMatchCard
 import com.example.hltv.ui.common.UpcomingMatchCard
+import com.example.hltv.ui.screens.singleTeamScreen.SingleTeamScreen
 import kotlinx.coroutines.delay
 
 val M = MaterialTheme
@@ -192,7 +193,16 @@ fun HomeScreen(onClickSingleTeam : (String?) -> Unit, onClickSingleMatch : (Stri
                 }
             }
 
+            SingleTeamScreen(
+                teamID = "364378",
+                {},
+                {},
+                {})
+
         }
+
+
+
         Divider(modifier = Modifier.padding(horizontal = 8.dp), color = M.colorScheme.onBackground)
 
         Text(
@@ -202,6 +212,7 @@ fun HomeScreen(onClickSingleTeam : (String?) -> Unit, onClickSingleMatch : (Stri
 
         )
         Text(text = "Test")
+
 
     }
 }

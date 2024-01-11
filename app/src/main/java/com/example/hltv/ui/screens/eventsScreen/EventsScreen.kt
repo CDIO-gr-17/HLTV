@@ -81,7 +81,7 @@ fun EventsScreen(onclickSingleEvent: (String?) -> Unit) {
                         competitors = uniqueTournaments[map.get(index)!!].uniqueTournamentInfo.numberOfCompetitors,
                         prizePoolCurrency = uniqueTournaments[map.get(index)!!].uniqueTournamentInfo.totalPrizeMoneyCurrency,
                         modifier = Modifier
-                            .clickable { onclickSingleEvent(item.id.toString()) }
+                            .clickable { onclickSingleEvent(item.id.toString() + "/" + tournamentSeasons[map.get(index)!!][0].id) }
                     )
                 }
                 if (loadingState){

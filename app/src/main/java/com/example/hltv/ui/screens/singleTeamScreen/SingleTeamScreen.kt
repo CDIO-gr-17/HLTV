@@ -1,13 +1,15 @@
 package com.example.hltv.ui.screens.singleTeamScreen
 
-import android.util.Log
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.IntrinsicSize
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
@@ -18,10 +20,11 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.MutableState
+import androidx.compose.runtime.snapshots.SnapshotStateList
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.painter.Painter
-import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
@@ -29,14 +32,11 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
+import coil.compose.AsyncImagePainter
 import coil.compose.rememberAsyncImagePainter
-import coil.decode.SvgDecoder
-import coil.request.ImageRequest
-import coil.size.Size
 import com.example.hltv.R
 import com.example.hltv.data.getFlagFromCountryCode
 import com.example.hltv.ui.common.CommonCard
-import java.net.URL
 
 @Composable
 fun SingleTeamScreen(teamID : String? = "364378", onClickSinglePlayer: (String?) -> Unit, onClickSingleTeam: (String?) -> Unit, onClickSingleMatch: (String?) -> Unit){
@@ -50,6 +50,29 @@ fun SingleTeamScreen(teamID : String? = "364378", onClickSinglePlayer: (String?)
     val countryCode = statsOverview.value.countryCode
     val painter = getFlagFromCountryCode(countryCode = countryCode)
 
+
+    TeamOverview(
+        playerOverview = playerOverview,
+        statsOverview = statsOverview,
+        onClickSinglePlayer = onClickSinglePlayer,
+        onClickSingleTeam = onClickSingleTeam,
+        onClickSingleMatch = onClickSingleTeam,
+        painter = painter,
+        recentMatches = recentMatches
+    )
+}
+
+
+@Composable
+fun TeamOverview(
+    playerOverview : SnapshotStateList<Player>,
+    statsOverview : MutableState<Stats>,
+    onClickSinglePlayer: (String?) -> Unit,
+    onClickSingleTeam: (String?) -> Unit,
+    onClickSingleMatch: (String?) -> Unit,
+    painter : AsyncImagePainter,
+    recentMatches : SnapshotStateList<RecentMatch>
+    ){
     LazyColumn {
         item {
             CommonCard(modifier = Modifier, bottomBox = {
@@ -95,9 +118,13 @@ fun SingleTeamScreen(teamID : String? = "364378", onClickSinglePlayer: (String?)
                     }
                 }
             })
-            }
         }
     }
+}
+
+
+
+
 
 
 // Lige nu er der 'gap' mellem hver spiller. Det skal fjernes. Evt. Equal Weight i stedet for SpaceEvenly?
@@ -125,9 +152,9 @@ fun overviewPlayer(
             horizontalAlignment = Alignment.CenterHorizontally,
             modifier = Modifier
                 .width(70.dp)
-                    .clickable {
-                onClickSinglePlayer(player.playerId.toString())
-            }
+                .clickable {
+                    onClickSinglePlayer(player.playerId.toString())
+                }
         ){
             Image(
                 painter = if(player.image!=null) rememberAsyncImagePainter(player.image) else rememberAsyncImagePainter(
@@ -150,7 +177,7 @@ fun overviewPlayer(
                         modifier = Modifier.fillMaxWidth(),
                         fontWeight = FontWeight.Bold,
                         maxLines = 1,
-                        overflow = TextOverflow.Visible //TODO: Do we want ellipses?
+                        overflow = TextOverflow.Visible //TODO: Do we want ellipses
                     )
                 }
             )
