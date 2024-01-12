@@ -125,9 +125,9 @@ fun overviewPlayer(
             horizontalAlignment = Alignment.CenterHorizontally,
             modifier = Modifier
                 .width(70.dp)
-                    .clickable {
-                onClickSinglePlayer(player.playerId.toString())
-            }
+                .clickable {
+                    onClickSinglePlayer(player.playerId.toString())
+                }
         ){
             Image(
                 painter = if(player.image!=null) rememberAsyncImagePainter(player.image) else rememberAsyncImagePainter(
@@ -368,5 +368,5 @@ fun stats(
 @Composable
 @Preview
 fun SingleTeamPreview(){
-    //SingleTeam()
+    //SingleTeamScreen(onClickSinglePlayer = unit, onClickSingleTeam = item, onClickSingleMatch = )
 }
