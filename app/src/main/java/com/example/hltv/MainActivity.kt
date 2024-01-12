@@ -44,7 +44,7 @@ import com.example.hltv.navigation.SingleMatch
 import com.example.hltv.navigation.SingleTeam
 import com.example.hltv.navigation.allAppScreens
 import com.example.hltv.navigation.bottomAppBarScreens
-import com.example.hltv.ui.common.FavoriteButton
+import com.example.hltv.ui.screens.singleTeamScreen.FavoriteButton
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
