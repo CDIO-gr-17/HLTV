@@ -1,6 +1,5 @@
 package com.example.hltv.ui.screens.singleTeamScreen
 
-import android.util.Log
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
@@ -8,11 +7,11 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
-import androidx.compose.foundation.layout.wrapContentSize
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.material3.MaterialTheme
@@ -22,7 +21,6 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.painter.Painter
-import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
@@ -31,13 +29,9 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import coil.compose.rememberAsyncImagePainter
-import coil.decode.SvgDecoder
-import coil.request.ImageRequest
-import coil.size.Size
 import com.example.hltv.R
 import com.example.hltv.data.getFlagFromCountryCode
 import com.example.hltv.ui.common.CommonCard
-import java.net.URL
 
 @Composable
 fun SingleTeamScreen(teamID : String? = "364378", onClickSinglePlayer: (String?) -> Unit, onClickSingleTeam: (String?) -> Unit, onClickSingleMatch: (String?) -> Unit) {
@@ -55,20 +49,21 @@ fun SingleTeamScreen(teamID : String? = "364378", onClickSinglePlayer: (String?)
         item{
             CommonCard(modifier = Modifier, bottomBox = {
                 Column {
-                    LazyRow {
+                    LazyRow (modifier = Modifier.fillMaxWidth(),
+                        horizontalArrangement = Arrangement.SpaceEvenly){
                         items(playerOverview.size) { index ->
-                            overviewPlayer(
+                            OverviewPlayer(
                                 player = playerOverview[index],
                                 onClickSinglePlayer
                             )
                         }
                     }
-                    overviewInfo(
+                    OverviewInfo(
                         country = statsOverview.value.countryName,
                         countryImage = painter,
                         worldRank = "#"
                     )
-                    stats(
+                    Statistics(
                         coach = "Peter 'Castle' Ardenskjold",
                         points = "1000",
                         winRate = "61%",
@@ -82,7 +77,7 @@ fun SingleTeamScreen(teamID : String? = "364378", onClickSinglePlayer: (String?)
                         color = MaterialTheme.colorScheme.onPrimaryContainer
                     )
                     recentMatches.forEach { recentMatch ->
-                        recentMatches(
+                        RecentMatches(
                             modifier = Modifier.clickable { onClickSingleMatch(recentMatch.matchID.toString()) },
                             team1 = recentMatch.homeTeam?.name,
                             team2 = recentMatch.awayTeam?.name,
@@ -100,30 +95,14 @@ fun SingleTeamScreen(teamID : String? = "364378", onClickSinglePlayer: (String?)
 
 }
 
-
-// Lige nu er der 'gap' mellem hver spiller. Det skal fjernes. Evt. Equal Weight i stedet for SpaceEvenly?
 @Composable
-fun overviewPlayers(
-    players: List<Player>,
-    onClickSinglePlayer: (String?) -> Unit) {
-    Row (
-        modifier = Modifier.fillMaxWidth(),
-        horizontalArrangement = Arrangement.SpaceEvenly
-    ){
-        for (player in players) {
-            overviewPlayer(player = player, onClickSinglePlayer)
-        }
-    }
-}
-
-@Composable
-fun overviewPlayer(
+fun OverviewPlayer(
     player: Player,
     onClickSinglePlayer: (String?) -> Unit
 ){
-    Row {
-        Column(
-            horizontalAlignment = Alignment.CenterHorizontally,
+    Row (modifier = Modifier.height(100.dp)){
+        Box(
+            contentAlignment = Alignment.Center,
             modifier = Modifier
                 .width(70.dp)
                 .clickable {
@@ -138,9 +117,8 @@ fun overviewPlayer(
                 alignment = Alignment.CenterStart,
                 modifier = Modifier
                     .size(70.dp)
-                    .offset(y = 20.dp)
             )
-            CommonCard (modifier = Modifier,
+            CommonCard (modifier = Modifier.offset(y = 40.dp),
                 customOuterPadding = 0.dp,
                 topBox = {
                     Text(
@@ -160,7 +138,7 @@ fun overviewPlayer(
 }
 
 @Composable
-fun overviewInfo(
+fun OverviewInfo(
     country: String?,
     countryImage: Painter,
     worldRank: String
@@ -196,7 +174,7 @@ fun overviewInfo(
                 fontWeight = FontWeight.Bold
             )
             Text(
-                text = "#" + worldRank,
+                text = worldRank,
                 fontSize = MaterialTheme.typography.bodyLarge.fontSize,
                 color = MaterialTheme.colorScheme.onPrimaryContainer
             )
@@ -205,7 +183,7 @@ fun overviewInfo(
 }
 
 @Composable
-fun recentMatches(
+fun RecentMatches(
     modifier: Modifier = Modifier,
     team1: String ?= null,
     team2: String ?= null,
@@ -214,7 +192,6 @@ fun recentMatches(
     team2OnClick: () -> Unit,
     score: String ?= null,
     date: String ?= null,
-    matchID: Int ?= null
 ){
     CommonCard(
         modifier = Modifier.fillMaxWidth(),
@@ -287,7 +264,7 @@ fun recentMatches(
 
 
 @Composable
-fun stats(
+fun Statistics(
     coach: String,
     points: String,
     winRate: String,
