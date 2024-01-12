@@ -67,8 +67,6 @@ fun HLTVApp() {
         val currentScreen =
             allAppScreens.find { currentDestination?.route?.startsWith(it.route) ?: false } ?: Home
 
-
-
         Scaffold(topBar = {
             CenterAlignedTopAppBar(
                 title = {

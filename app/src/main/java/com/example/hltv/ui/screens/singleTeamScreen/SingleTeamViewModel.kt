@@ -94,10 +94,13 @@ class SingleTeamViewModel : ViewModel() {
         viewModelScope.launch(Dispatchers.IO) {
             Log.w(this.toString(), "Got previous matches of team with id: $teamID")
             val completedMatches = getPreviousMatches(teamID, 0)
+            val filteredMatches = completedMatches.events
+                .filter { it.status?.type=="finished" }
+                .filter { it.homeScore?.current != null || it.awayScore?.current != null && it.homeScore?.current != 0 && it.awayScore?.current != 0}
             recentMatches.clear()
             //recentMatches
             team1 = null
-            for ((index, event) in completedMatches.events.reversed().withIndex().take(6)) {
+            for ((index, event) in filteredMatches.reversed().withIndex().take(6)) {
                 if (teamID == event.homeTeam.id) {
                     team1 = event.homeTeam
                     team2 = event.awayTeam

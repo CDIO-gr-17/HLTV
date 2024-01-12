@@ -303,12 +303,13 @@ suspend fun getUniqueTournamentSeasons(tournamentID: Int? = 16137): APIResponse.
         APIResponse.SeasonsWrapper::class.java
     ) as APIResponse.SeasonsWrapper
 }
-/*
-private fun checkIfTournamentIsPast(timeStamp: TimeStamp): Boolean{
 
-    return false
+suspend fun getTournamentStandings(tournamentID: Int? = 16026, seasonID: Int? = 47832): APIResponse {
+    return getAPIResponse("tournament/$tournamentID/season/$seasonID/standings/total",
+        APIKEY,
+        Standings::class.java)
 }
-*/
+
 
 suspend fun checkRequestRate(jsonString: String?) : Boolean{
     if (jsonString != null) {

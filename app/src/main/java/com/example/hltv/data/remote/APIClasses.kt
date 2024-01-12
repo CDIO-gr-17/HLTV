@@ -452,3 +452,27 @@ data class Media (
     @SerializedName("sourceUrl"          ) var sourceUrl          : String?  = null
 
 )
+
+data class Standings (
+
+    @SerializedName("tournament"         ) var tournament         : Tournament?            = Tournament(),
+    @SerializedName("type"               ) var type               : String?                = null,
+    @SerializedName("name"               ) var name               : String?                = null,
+    @SerializedName("descriptions"       ) var descriptions       : ArrayList<String>      = arrayListOf(),
+    @SerializedName("rows"               ) var attending          : ArrayList<Attending>   = arrayListOf(),
+    @SerializedName("id"                 ) var id                 : Int?                   = null,
+    @SerializedName("updatedAtTimestamp" ) var updatedAtTimestamp : Int?                   = null
+
+)
+
+data class Attending (
+
+    @SerializedName("team"         ) var team         : Team?             = Team(),
+    @SerializedName("descriptions" ) var descriptions : ArrayList<String> = arrayListOf(),
+    @SerializedName("position"     ) var position     : Int?              = null,
+    @SerializedName("matches"      ) var matches      : Int?              = null,
+    @SerializedName("wins"         ) var wins         : Int?              = null,
+    @SerializedName("id"           ) var id           : Int?              = null,
+    @SerializedName("losses"       ) var losses       : Int?              = null
+
+)

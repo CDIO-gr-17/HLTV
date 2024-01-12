@@ -32,10 +32,9 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import coil.compose.rememberAsyncImagePainter
-import com.example.hltv.data.convertTimestampToDateClock
+import com.example.hltv.data.convertTimestampToWeekDateClock
 import com.example.hltv.ui.common.LiveMatchCard
 import com.example.hltv.ui.common.UpcomingMatchCard
-import com.example.hltv.ui.screens.singleTeamScreen.SingleTeamScreen
 import kotlinx.coroutines.delay
 
 val M = MaterialTheme
@@ -79,7 +78,7 @@ fun HomeScreen(onClickSingleTeam : (String?) -> Unit, onClickSingleMatch : (Stri
                 teamTwoName = viewModel.upcomingMatchValue.value!!.awayTeam.name?: "Unknown",
                 teamTwoIcon = rememberAsyncImagePainter(model = viewModel.awayTeamIcon.value),
                 teamTwoOnClick = { onClickSingleTeam(viewModel.upcomingMatchValue.value!!.awayTeam.id.toString()) },
-                matchDate = convertTimestampToDateClock(viewModel.upcomingMatchValue.value!!.startTimestamp),
+                matchDate = convertTimestampToWeekDateClock(viewModel.upcomingMatchValue.value!!.startTimestamp),
                 tournamentIcon = rememberAsyncImagePainter(model = viewModel.awayTeamIcon.value)
             )
 
