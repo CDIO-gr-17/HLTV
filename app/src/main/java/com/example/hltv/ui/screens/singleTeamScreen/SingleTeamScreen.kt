@@ -123,12 +123,6 @@ fun TeamOverview(
     }
 }
 
-
-
-
-
-}
-
 @Composable
 fun OverviewPlayer(
     player: Player,
