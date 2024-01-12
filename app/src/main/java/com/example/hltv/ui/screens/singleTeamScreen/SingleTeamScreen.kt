@@ -61,7 +61,8 @@ fun SingleTeamScreen(teamID : String? = "364378", onClickSinglePlayer: (String?)
                     OverviewInfo(
                         country = statsOverview.value.countryName,
                         countryImage = painter,
-                        worldRank = "#"
+                        teamLogo = recentMatches.getOrNull(0)?.homeTeamImage?.let { rememberAsyncImagePainter(it) }
+
                     )
                     Statistics(
                         coach = "Peter 'Castle' Ardenskjold",
@@ -141,7 +142,7 @@ fun OverviewPlayer(
 fun OverviewInfo(
     country: String?,
     countryImage: Painter,
-    worldRank: String
+    teamLogo: Painter ?= null,
 ){
     Row (
         modifier = Modifier.fillMaxWidth(),
@@ -159,7 +160,7 @@ fun OverviewInfo(
             Image(
                 painter = countryImage,
                 contentDescription = null,
-                alignment = Alignment.CenterStart,
+                alignment = Alignment.Center,
                 modifier = Modifier
                     .size(40.dp)
             )
@@ -168,16 +169,20 @@ fun OverviewInfo(
             horizontalAlignment = Alignment.CenterHorizontally
         ){
             Text(
-                text = "World Ranking",
+                text = "Logo",
                 fontSize = MaterialTheme.typography.bodyLarge.fontSize,
                 color = MaterialTheme.colorScheme.onPrimaryContainer,
                 fontWeight = FontWeight.Bold
             )
-            Text(
-                text = worldRank,
-                fontSize = MaterialTheme.typography.bodyLarge.fontSize,
-                color = MaterialTheme.colorScheme.onPrimaryContainer
-            )
+            if (teamLogo != null) {
+                Image(
+                    painter = teamLogo,
+                    contentDescription = null,
+                    alignment = Alignment.Center,
+                    modifier = Modifier
+                        .size(40.dp)
+                )
+            }
         }
     }
 }
