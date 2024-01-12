@@ -12,6 +12,7 @@ import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.layout.wrapContentSize
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.material3.MaterialTheme
@@ -39,9 +40,9 @@ import com.example.hltv.ui.common.CommonCard
 import java.net.URL
 
 @Composable
-fun SingleTeamScreen(teamID : String? = "364378", onClickSinglePlayer: (String?) -> Unit, onClickSingleTeam: (String?) -> Unit, onClickSingleMatch: (String?) -> Unit){
-    val viewModel : SingleTeamViewModel = viewModel()
-    LaunchedEffect(teamID){
+fun SingleTeamScreen(teamID : String? = "364378", onClickSinglePlayer: (String?) -> Unit, onClickSingleTeam: (String?) -> Unit, onClickSingleMatch: (String?) -> Unit) {
+    val viewModel: SingleTeamViewModel = viewModel()
+    LaunchedEffect(teamID) {
         viewModel.loadData(teamID!!)
     }
     val recentMatches = viewModel.recentMatches
@@ -51,11 +52,11 @@ fun SingleTeamScreen(teamID : String? = "364378", onClickSinglePlayer: (String?)
     val painter = getFlagFromCountryCode(countryCode = countryCode)
 
     LazyColumn {
-        item {
+        item{
             CommonCard(modifier = Modifier, bottomBox = {
                 Column {
-                    LazyRow{
-                        items(playerOverview.size){ index ->
+                    LazyRow {
+                        items(playerOverview.size) { index ->
                             overviewPlayer(
                                 player = playerOverview[index],
                                 onClickSinglePlayer
@@ -75,29 +76,29 @@ fun SingleTeamScreen(teamID : String? = "364378", onClickSinglePlayer: (String?)
                         averagePlayerAge = statsOverview.value.avgAgeofPlayers,
                         imageNat = painterResource(R.drawable.dk_flag)
                     )
-                    Text(text = "Recent Matches",
+                    Text(
+                        text = "Recent Matches",
                         fontWeight = FontWeight.Bold,
                         color = MaterialTheme.colorScheme.onPrimaryContainer
                     )
-                    LazyColumn (Modifier.fillParentMaxHeight()) {
-                        items(recentMatches.size) { index ->
-                            recentMatches(
-                                modifier = Modifier.clickable { onClickSingleMatch(recentMatches[index].matchID.toString()) },
-                                team1 = recentMatches[index].homeTeam?.name,
-                                team2 = recentMatches[index].awayTeam?.name,
-                                imageTeam1 = rememberAsyncImagePainter(recentMatches[index].homeTeamImage),
-                                imageTeam2 = rememberAsyncImagePainter(recentMatches[index].awayTeamImage),
-                                team2OnClick = { onClickSingleTeam(recentMatches[index].awayTeam?.id.toString()) },
-                                score = recentMatches[index].homeScore?.display.toString() + " - " + recentMatches[index].awayScore?.display.toString(),
-                                date = recentMatches[index].startTimestamp.toString()
-                            )
-                        }
+                    recentMatches.forEach { recentMatch ->
+                        recentMatches(
+                            modifier = Modifier.clickable { onClickSingleMatch(recentMatch.matchID.toString()) },
+                            team1 = recentMatch.homeTeam?.name,
+                            team2 = recentMatch.awayTeam?.name,
+                            imageTeam1 = rememberAsyncImagePainter(recentMatch.homeTeamImage),
+                            imageTeam2 = rememberAsyncImagePainter(recentMatch.awayTeamImage),
+                            team2OnClick = { onClickSingleTeam(recentMatch.awayTeam?.id.toString()) },
+                            score = recentMatch.homeScore?.display.toString() + " - " + recentMatch.awayScore?.display.toString(),
+                            date = recentMatch.startTimestamp.toString()
+                        )
                     }
                 }
             })
-            }
         }
     }
+
+}
 
 
 // Lige nu er der 'gap' mellem hver spiller. Det skal fjernes. Evt. Equal Weight i stedet for SpaceEvenly?
@@ -125,9 +126,9 @@ fun overviewPlayer(
             horizontalAlignment = Alignment.CenterHorizontally,
             modifier = Modifier
                 .width(70.dp)
-                    .clickable {
-                onClickSinglePlayer(player.playerId.toString())
-            }
+                .clickable {
+                    onClickSinglePlayer(player.playerId.toString())
+                }
         ){
             Image(
                 painter = if(player.image!=null) rememberAsyncImagePainter(player.image) else rememberAsyncImagePainter(
