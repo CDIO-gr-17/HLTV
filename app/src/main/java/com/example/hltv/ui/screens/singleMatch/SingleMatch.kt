@@ -41,6 +41,7 @@ import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.em
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import coil.compose.rememberAsyncImagePainter
@@ -264,24 +265,41 @@ fun EventImage(
                     modifier = Modifier.fillMaxWidth(),
                     horizontalArrangement = Arrangement.SpaceAround
                 ) {
-                    Text(
-                        text = teamOneScore,
-                        color = Color.White,
-                        fontSize = 40.sp,
-                        fontWeight = FontWeight.Normal,
-                        modifier = Modifier
-                            .align(alignment = Alignment.CenterVertically)
-                            .shadow(10.dp, shape = CircleShape) // Adjust the shadow size as needed
-                    )
-                    Text(
-                        text = teamTwoScore,
-                        color = Color.White,
-                        fontSize = 40.sp,
-                        fontWeight = FontWeight.Normal,
-                        modifier = Modifier
-                            .align(alignment = Alignment.CenterVertically)
-                            .shadow(20.dp, shape = CircleShape)
-                    )
+                    if(teamOneScore != "null" && teamTwoScore != "null") {
+                        Text(
+                            text = teamOneScore,
+                            color = Color.White,
+                            fontSize = 40.sp,
+                            fontWeight = FontWeight.Normal,
+                            modifier = Modifier
+                                .align(alignment = Alignment.CenterVertically)
+                                .shadow(
+                                    10.dp,
+                                    shape = CircleShape
+                                )
+                        )
+                        Text(
+                            text = teamTwoScore,
+                            color = Color.White,
+                            fontSize = 40.sp,
+                            fontWeight = FontWeight.Normal,
+                            modifier = Modifier
+                                .align(alignment = Alignment.CenterVertically)
+                                .shadow(20.dp, shape = CircleShape)
+                        )
+                    }
+                    else{
+                        Text(
+                            text = "N/A",
+                            letterSpacing = 0.6.em,
+                            color = Color.White,
+                            fontSize = 40.sp,
+                            fontWeight = FontWeight.Normal,
+                            modifier = Modifier
+                                .align(alignment = Alignment.CenterVertically)
+                                .shadow(20.dp, shape = CircleShape)
+                        )
+                    }
 
                 }
 
