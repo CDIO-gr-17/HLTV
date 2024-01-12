@@ -17,7 +17,6 @@ import androidx.compose.ui.graphics.graphicsLayer
 import com.example.hltv.data.local.PrefDataKeyValueStore
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.launch
 
 @Composable
@@ -33,14 +32,18 @@ fun FavoriteButton(
     IconToggleButton(
         checked = isFavorite,
         onCheckedChange = {
-            isFavorite = !isFavorite
+            isFavorite = it
             CoroutineScope(Dispatchers.IO).launch {
-                datastore.updateFavouriteTeam(teamID)
-                val temp = datastore.getFavouriteTeam().collect()
-                Log.d("FavoriteButton", "Favourite team is now: $temp vs  $teamID")
+                if (isFavorite) {
+                    datastore.updateFavouriteTeam(teamID)
+                    datastore.getFavouriteTeam().collect() {int ->
+                        Log.d("FavoriteButton", "Favourite team is now: $int vs  $teamID")
+                    }
+                } else {
+                    datastore.updateFavouriteTeam(0)
+                    Log.d("FavoriteButton", "Favourite team is now: 0")
+                }
             }
-
-
         }
     ) {
         Icon(

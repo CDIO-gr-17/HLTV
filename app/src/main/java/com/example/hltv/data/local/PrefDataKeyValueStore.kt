@@ -25,6 +25,5 @@ class PrefDataKeyValueStore(val context: Context) {
 
     fun getFavouriteTeam(): Flow<Int> = context.dataStore.data.map { preferences: Preferences ->
         return@map preferences[PreferenceKeys.FAVOURITETEAM] ?: 0
-
     }
 }
