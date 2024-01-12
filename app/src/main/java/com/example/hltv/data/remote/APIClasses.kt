@@ -70,6 +70,9 @@ sealed class APIResponse{
         @SerializedName("media") var media: ArrayList<Media>
     ) : APIResponse()
 
+    data class StandingsWrapper (
+        @SerializedName("standings" ) var standings : ArrayList<Standings> = arrayListOf()
+    ) : APIResponse()
 }
 
 
@@ -459,13 +462,13 @@ data class Standings (
     @SerializedName("type"               ) var type               : String?                = null,
     @SerializedName("name"               ) var name               : String?                = null,
     @SerializedName("descriptions"       ) var descriptions       : ArrayList<String>      = arrayListOf(),
-    @SerializedName("rows"               ) var attending          : ArrayList<Attending>   = arrayListOf(),
+    @SerializedName("rows"               ) var attending          : ArrayList<Rows>   = arrayListOf(),
     @SerializedName("id"                 ) var id                 : Int?                   = null,
     @SerializedName("updatedAtTimestamp" ) var updatedAtTimestamp : Int?                   = null
 
 )
 
-data class Attending (
+data class Rows (
 
     @SerializedName("team"         ) var team         : Team?             = Team(),
     @SerializedName("descriptions" ) var descriptions : ArrayList<String> = arrayListOf(),

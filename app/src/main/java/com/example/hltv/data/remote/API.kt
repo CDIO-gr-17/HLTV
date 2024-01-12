@@ -259,7 +259,7 @@ suspend fun getRelevantTournaments(): List<ThirdUniqueTournament> {
 
     var tournaments : List<Int> = getCSTournamentsID(getCSCategory())
 
-    val croppedTournaments = tournaments.take(3)
+    val croppedTournaments = tournaments.take(20)
 
     //TODO: This function needs to return things one at a time so we get dynamic loading of tournaments
     val deferreds = croppedTournaments.map { tournamentID ->
@@ -304,10 +304,18 @@ suspend fun getUniqueTournamentSeasons(tournamentID: Int? = 16137): APIResponse.
     ) as APIResponse.SeasonsWrapper
 }
 
-suspend fun getTournamentStandings(tournamentID: Int? = 16026, seasonID: Int? = 47832): APIResponse {
-    return getAPIResponse("tournament/$tournamentID/season/$seasonID/standings/total",
-        APIKEY,
-        Standings::class.java)
+suspend fun getTournamentStandings(tournamentID: Int? = 16137, seasonID: Int? = 49018): APIResponse.StandingsWrapper {
+    val apiURL = "tournament/$tournamentID/season/$seasonID/standings/total"
+    return try {
+        getAPIResponse(
+            apiURL,
+            APIKEY,
+            APIResponse.StandingsWrapper::class.java
+        ) as APIResponse.StandingsWrapper
+    } catch (e: Exception){
+        Log.e("tournamentStandings","No tournament standings found for tournamentID $tournamentID, seasonID $seasonID")
+        APIResponse.StandingsWrapper(arrayListOf())
+    }
 }
 
 

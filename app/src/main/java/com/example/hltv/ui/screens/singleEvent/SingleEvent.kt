@@ -42,15 +42,15 @@ import com.example.hltv.R
 import com.example.hltv.data.convertTimestampToDateClock
 import com.example.hltv.data.getFlagFromCountryCode
 import com.example.hltv.ui.common.CommonCard
+import com.example.hltv.ui.screens.singleTeamScreen.OverviewInfo
+import com.example.hltv.ui.screens.singleTeamScreen.OverviewPlayer
 import com.example.hltv.ui.screens.singleTeamScreen.Player
 import com.example.hltv.ui.screens.singleTeamScreen.RecentMatch
+import com.example.hltv.ui.screens.singleTeamScreen.RecentMatches
 import com.example.hltv.ui.screens.singleTeamScreen.SingleTeamViewModel
+import com.example.hltv.ui.screens.singleTeamScreen.Statistics
 import com.example.hltv.ui.screens.singleTeamScreen.Stats
 import com.example.hltv.ui.screens.singleTeamScreen.TeamOverview
-import com.example.hltv.ui.screens.singleTeamScreen.overviewInfo
-import com.example.hltv.ui.screens.singleTeamScreen.overviewPlayer
-import com.example.hltv.ui.screens.singleTeamScreen.recentMatches
-import com.example.hltv.ui.screens.singleTeamScreen.stats
 
 @Preview
 @Composable
@@ -80,22 +80,41 @@ fun SingleEventScreen (tournamentID: String?,
         }
     }
 
+
     val recentMatches = teamViewModel.recentMatches
     val playerOverview = teamViewModel.playerOverview
     val statsOverview = teamViewModel.statisticsOverview
     val countryCode = statsOverview.value.countryCode
     val countryFlag = getFlagFromCountryCode(countryCode = countryCode)
+    val standings = eventViewModel.standings
 
 
-    SingleEventTopbox(playerOverview = playerOverview,
-        statsOverview = statsOverview,
-        onClickSinglePlayer = {Log.i("SingleEventScreen", "Clicked onClickSinglePlayer")},
-        onClickSingleTeam = {Log.i("SingleEventScreen", "Clicked onClickSingleTeam")},
-        onClickSingleMatch = {Log.i("SingleEventScreen", "Clicked onClickSingleMatch")},
-        painter = countryFlag,
-        recentMatches = recentMatches,
-        viewModel = eventViewModel
+
+    Column {
+        if (standings.isNotEmpty()) {
+            val teamNames = standings.flatMap { standing ->
+                standing.attending.mapNotNull { it.team?.name }
+            }
+            Column {
+                teamNames.forEach { name ->
+                    Text(text = name, color = MaterialTheme.colorScheme.errorContainer)
+                    Log.i("tournamentStandings", name)
+                }
+            }
+        }
+        else Text(text = "No standings",  color = MaterialTheme.colorScheme.errorContainer)
+        SingleEventTopbox(
+            playerOverview = playerOverview,
+            statsOverview = statsOverview,
+            onClickSinglePlayer = { Log.i("SingleEventScreen", "Clicked onClickSinglePlayer") },
+            onClickSingleTeam = { Log.i("SingleEventScreen", "Clicked onClickSingleTeam") },
+            onClickSingleMatch = { Log.i("SingleEventScreen", "Clicked onClickSingleMatch") },
+            painter = countryFlag,
+            recentMatches = recentMatches,
+            viewModel = eventViewModel
         )
+    }
+
 
 
 
@@ -144,6 +163,7 @@ fun SingleEventTopbox(viewModel: SingleEventViewModel,
                         text = (viewModel.startTime.value + " - " + viewModel.endTime.value),
                         color = Color.White
                     )
+
                 }
             },
             bottomBox = {
@@ -192,7 +212,9 @@ fun SingleEventTopbox(viewModel: SingleEventViewModel,
 
                             item{
                                 Image(
-                                    modifier = Modifier.size(100.dp).align(Alignment.CenterHorizontally),
+                                    modifier = Modifier
+                                        .size(100.dp)
+                                        .align(Alignment.CenterHorizontally),
                                     painter = painterResource(R.drawable.astralis_logo),
                                     contentDescription = "Team logo",
 
@@ -207,18 +229,17 @@ fun SingleEventTopbox(viewModel: SingleEventViewModel,
                                     Column {
                                         LazyRow{
                                             items(playerOverview.size){ index ->
-                                                overviewPlayer(
+                                                OverviewPlayer(
                                                     player = playerOverview[index],
                                                     onClickSinglePlayer
                                                 )
                                             }
                                         }
-                                        overviewInfo(
+                                        OverviewInfo(
                                             country = statsOverview.value.countryName,
                                             countryImage = painter,
-                                            worldRank = "#"
                                         )
-                                        stats(
+                                        Statistics(
                                             coach = "Peter 'Castle' Ardenskjold",
                                             points = "1000",
                                             winRate = "61%",
@@ -232,7 +253,7 @@ fun SingleEventTopbox(viewModel: SingleEventViewModel,
                                         )
                                         LazyColumn (Modifier.fillParentMaxHeight()) {
                                             items(recentMatches.size) { index ->
-                                                recentMatches(
+                                                RecentMatches(
                                                     modifier = Modifier.clickable { onClickSingleMatch(recentMatches[index].matchID.toString()) },
                                                     team1 = recentMatches[index].homeTeam?.name,
                                                     team2 = recentMatches[index].awayTeam?.name,

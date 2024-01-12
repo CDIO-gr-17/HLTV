@@ -1,23 +1,21 @@
 package com.example.hltv.ui.screens.singleEvent
 
 import android.graphics.Bitmap
-import androidx.compose.runtime.getValue
+import android.util.Log
 import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.hltv.data.convertTimestampToDateClock
-import com.example.hltv.data.remote.APIResponse
 import com.example.hltv.data.remote.Season
+import com.example.hltv.data.remote.Standings
 import com.example.hltv.data.remote.ThirdUniqueTournament
-import com.example.hltv.data.remote.UniqueTournament
 import com.example.hltv.data.remote.UniqueTournamentInfo
 import com.example.hltv.data.remote.getTournamentInfo
 import com.example.hltv.data.remote.getTournamentLogo
+import com.example.hltv.data.remote.getTournamentStandings
 import com.example.hltv.data.remote.getUniqueTournamentDetails
 import com.example.hltv.data.remote.getUniqueTournamentSeasons
-import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 
@@ -29,6 +27,7 @@ class SingleEventViewModel: ViewModel() {
     val tournamentImage = mutableStateOf<Bitmap?>(null)
     var seasons = mutableListOf<Season>()
     var tournamentSeason = mutableStateOf<Season>(Season())
+    var standings = mutableStateListOf<Standings>()
 
     val startTime = mutableStateOf("")
     val endTime = mutableStateOf("")
@@ -38,6 +37,9 @@ class SingleEventViewModel: ViewModel() {
 
     fun loadData(tournamentID: Int, seasonID: Int){
         viewModelScope.launch(Dispatchers.IO) {
+            val tournamentStandings = getTournamentStandings(tournamentID, seasonID).standings
+            if(tournamentStandings.isNotEmpty())
+                standings.addAll(tournamentStandings)
             eventDetails.value = getUniqueTournamentDetails(tournamentID, seasonID).uniqueTournamentInfo
             seasons.addAll(getUniqueTournamentSeasons(tournamentID).seasons)
             event.value = getTournamentInfo(tournamentID).tournamentDetails
@@ -47,10 +49,9 @@ class SingleEventViewModel: ViewModel() {
                 tournamentSeason.value = season
             }
 
+
             startTime.value = convertTimestampToDateClock(event.value.startDateTimestamp)
             endTime.value = convertTimestampToDateClock(event.value.endDateTimestamp)
-
-
         }
     }
 }

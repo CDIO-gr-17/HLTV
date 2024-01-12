@@ -35,6 +35,7 @@ import coil.compose.rememberAsyncImagePainter
 import com.example.hltv.data.convertTimestampToWeekDateClock
 import com.example.hltv.ui.common.LiveMatchCard
 import com.example.hltv.ui.common.UpcomingMatchCard
+import com.example.hltv.ui.screens.singleTeamScreen.SingleTeamScreen
 import kotlinx.coroutines.delay
 
 val M = MaterialTheme
