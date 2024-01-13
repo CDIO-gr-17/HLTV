@@ -195,19 +195,22 @@ fun OverviewInfo(
         Column(
             horizontalAlignment = Alignment.CenterHorizontally
         ){
+            /*
             Text(
                 text = "Logo",
                 fontSize = MaterialTheme.typography.bodyLarge.fontSize,
                 color = MaterialTheme.colorScheme.onPrimaryContainer,
                 fontWeight = FontWeight.Bold
             )
+
+             */
             if (teamLogo != null) {
                 Image(
                     painter = teamLogo,
                     contentDescription = null,
                     alignment = Alignment.Center,
                     modifier = Modifier
-                        .size(40.dp)
+                        .size(60.dp)
                 )
             }
         }
