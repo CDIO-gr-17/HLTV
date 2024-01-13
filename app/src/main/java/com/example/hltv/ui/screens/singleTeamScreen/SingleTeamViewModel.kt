@@ -67,8 +67,10 @@ class SingleTeamViewModel : ViewModel() {
     val playerOverview = mutableStateListOf<Player>()
     //var lineup: PlayerGroup? = null
     var statisticsOverview = mutableStateOf<Stats>(Stats())
-    var team1: Team? = null
-    var team2: Team? = null
+    val teamImage = mutableStateOf<Bitmap?>(null)
+    private var team1: Team? = null
+    private var team2: Team? = null
+    val team = mutableStateOf<Team>(Team())
     var team1score: Score? = null
     var team2score: Score? = null
     var avgAgeofPlayers: Long = 0
@@ -92,6 +94,7 @@ class SingleTeamViewModel : ViewModel() {
         val lineup = CompletableDeferred<PlayerGroup?>()
 
         viewModelScope.launch(Dispatchers.IO) {
+            teamImage.value = getTeamImage(teamID)
             Log.w(this.toString(), "Got previous matches of team with id: $teamID")
             val completedMatches = getPreviousMatches(teamID, 0)
             val filteredMatches = completedMatches.events
@@ -107,6 +110,7 @@ class SingleTeamViewModel : ViewModel() {
                     team1score = event.homeScore
                     team2score = event.awayScore
                     if (index == 0){
+                        team.value = event.homeTeam
                         Log.i("asdasd", "Also loading here")
                         lineup.complete(getPlayersFromEvent(event.id).home)
                     }
@@ -117,12 +121,13 @@ class SingleTeamViewModel : ViewModel() {
                     team1score = event.awayScore
                     team2score = event.homeScore
                     if (index == 0){
+                        team.value = event.awayTeam
                         Log.i("asdasd", "Loading here")
                         lineup.complete(getPlayersFromEvent(event.id).away)
                     }
                 }
                 val date = Date(event.startTimestamp?.toLong()?.times(1000) ?: 0)
-                val dateFormat = SimpleDateFormat("dd MMM.")
+                val dateFormat = SimpleDateFormat("dd MMM.") //TODO: Fix this
                 val formattedDate = dateFormat.format(date)
                 val recentMatch = RecentMatch(
                     homeTeam = team1,
