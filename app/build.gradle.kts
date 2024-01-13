@@ -114,5 +114,15 @@ dependencies {
     implementation("io.coil-kt:coil-compose:2.5.0")
     implementation("io.coil-kt:coil-svg:2.0.0")
 
+// Datastore
+    dependencies {
+        implementation("androidx.datastore:datastore-preferences:1.0.0")
+
+        // optional - RxJava2 support
+        implementation("androidx.datastore:datastore-preferences-rxjava2:1.0.0")
+
+        // optional - RxJava3 support
+        implementation("androidx.datastore:datastore-preferences-rxjava3:1.0.0")}
+
 
 }
