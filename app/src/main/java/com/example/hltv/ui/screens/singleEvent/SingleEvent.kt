@@ -1,15 +1,10 @@
 package com.example.hltv.ui.screens.singleEvent
 
 
-import android.graphics.BitmapShader
-import android.graphics.Paint
-import android.graphics.Shader
+import android.graphics.Color.parseColor
 import android.util.Log
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.clickable
-import androidx.compose.foundation.gestures.Orientation
-import androidx.compose.foundation.gestures.ScrollableState
-import androidx.compose.foundation.gestures.scrollable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -18,8 +13,8 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.offset
+import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.material3.Divider
@@ -28,43 +23,33 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.MutableState
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
 import androidx.compose.runtime.snapshots.SnapshotStateList
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.clipToBounds
+import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.ImageBitmap
-import androidx.compose.ui.graphics.ShaderBrush
-import androidx.compose.ui.graphics.asAndroidBitmap
+import androidx.compose.ui.graphics.Shadow
 import androidx.compose.ui.layout.ContentScale
-import androidx.compose.ui.res.imageResource
 
 import androidx.compose.ui.res.painterResource
-import androidx.compose.ui.text.ParagraphStyle
 import androidx.compose.ui.text.SpanStyle
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.buildAnnotatedString
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
-import androidx.compose.ui.text.toUpperCase
 import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.tooling.preview.Preview
-import androidx.compose.ui.unit.TextUnit
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
-import androidx.palette.graphics.Palette
 import coil.compose.AsyncImagePainter
 import coil.compose.rememberAsyncImagePainter
 import com.example.hltv.R
-import com.example.hltv.data.convertTimestampToDateClock
+import com.example.hltv.data.getColorFromTier
 import com.example.hltv.data.getFlagFromCountryCode
 import com.example.hltv.ui.common.CommonCard
-import com.example.hltv.ui.screens.singleTeamScreen.OverviewInfo
+import com.example.hltv.ui.common.ResizingText
 import com.example.hltv.ui.screens.singleTeamScreen.OverviewPlayer
 import com.example.hltv.ui.screens.singleTeamScreen.Player
 import com.example.hltv.ui.screens.singleTeamScreen.RecentMatch
@@ -72,39 +57,31 @@ import com.example.hltv.ui.screens.singleTeamScreen.RecentMatches
 import com.example.hltv.ui.screens.singleTeamScreen.SingleTeamViewModel
 import com.example.hltv.ui.screens.singleTeamScreen.Statistics
 import com.example.hltv.ui.screens.singleTeamScreen.Stats
-import com.example.hltv.ui.screens.singleTeamScreen.TeamOverview
-
-@Preview
-@Composable
-fun Show(){
-    val viewModel: SingleEventViewModel = viewModel()
-    //SingleEventTopbox(viewModel, {})
-}
 
 @Composable
-fun SingleEventScreen (tournamentID: String?,
-                       seasonID: String?,
-                       onClickSingleTeam : (String) -> Unit,
-                       onClickSingleMatch : (String) -> Unit) {
+fun SingleEventScreen(
+    tournamentID: String?,
+    seasonID: String?,
+    onClickSingleTeam: (String) -> Unit,
+    onClickSingleMatch: (String) -> Unit
+) {
     Log.i("SingleEventScreen", "TournamentID: " + tournamentID)
     Log.i("SingleEventScreen", "seasonID: " + seasonID)
 
     val eventViewModel: SingleEventViewModel = viewModel()
-    val teamViewModel : SingleTeamViewModel = viewModel()
+    val teamViewModel: SingleTeamViewModel = viewModel()
 
     LaunchedEffect(Unit) {
         eventViewModel.loadData(tournamentID!!.toInt(), seasonID!!.toInt())
     }
-    LaunchedEffect(eventViewModel.eventDetails.value.winner?.id){
-        if(eventViewModel.eventDetails.value.winner?.id != null){
+    LaunchedEffect(eventViewModel.eventDetails.value.winner?.id) {
+        if (eventViewModel.eventDetails.value.winner?.id != null) {
             Log.i("SingleEventScreen", "The value: " + eventViewModel.eventDetails.value.toString())
-            teamViewModel.loadData(eventViewModel.eventDetails.value.winner?.id.toString())
+            teamViewModel.loadData(eventViewModel.eventDetails.value.winner?.id.toString(), 3)
         }
     }
 
     //TODO: Make this prettier?
-
-
 
     val recentMatches = teamViewModel.recentMatches
     val playerOverview = teamViewModel.playerOverview
@@ -112,10 +89,6 @@ fun SingleEventScreen (tournamentID: String?,
     val countryCode = statsOverview.value.countryCode
     val countryFlag = getFlagFromCountryCode(countryCode = countryCode)
     val standings = eventViewModel.standings
-
-
-
-
 
     Column {
 
@@ -129,8 +102,7 @@ fun SingleEventScreen (tournamentID: String?,
                     Log.i("tournamentStandings", name)
                 }
             }
-        }
-        else Text(text = "No standings",  color = MaterialTheme.colorScheme.errorContainer)
+        } else Text(text = "No standings", color = MaterialTheme.colorScheme.errorContainer)
         SingleEventTopbox(
             playerOverview = playerOverview,
             teamViewModel = teamViewModel,
@@ -145,22 +117,19 @@ fun SingleEventScreen (tournamentID: String?,
     }
 
 
-
-
-
 }
 
 @Composable
-fun SingleEventTopbox(viewModel: SingleEventViewModel,
-                      teamViewModel: SingleTeamViewModel,
-                      playerOverview : SnapshotStateList<Player>,
-                      statsOverview : MutableState<Stats>,
-                      onClickSinglePlayer: (String?) -> Unit,
-                      onClickSingleTeam: (String?) -> Unit,
-                      onClickSingleMatch: (String?) -> Unit,
-                      painter : AsyncImagePainter,
-                      recentMatches : SnapshotStateList<RecentMatch>,
-
+fun SingleEventTopbox(
+    viewModel: SingleEventViewModel,
+    teamViewModel: SingleTeamViewModel,
+    playerOverview: SnapshotStateList<Player>,
+    statsOverview: MutableState<Stats>,
+    onClickSinglePlayer: (String?) -> Unit,
+    onClickSingleTeam: (String?) -> Unit,
+    onClickSingleMatch: (String?) -> Unit,
+    painter: AsyncImagePainter,
+    recentMatches: SnapshotStateList<RecentMatch>
 ) {
 
     LazyColumn {
@@ -189,56 +158,95 @@ fun SingleEventTopbox(viewModel: SingleEventViewModel,
                         }
 
                         val tournamentColors = listOf(
-                            Color.White,
                             if (viewModel.palette.value?.vibrantSwatch?.rgb != null) Color(
                                 viewModel.palette.value?.vibrantSwatch?.rgb!!
-                            ) else Color.Black
+                            ) else Color.Black,
+                            Color.White,
                         )
 
-                        Text(//Tournament name
-                            textAlign = TextAlign.Center,
-                            //text = "${viewModel.event.value.name} ${viewModel.tournamentSeason.value.name}",
-                            text = buildAnnotatedString {
-                                withStyle(ParagraphStyle(lineHeight = 46.sp)) {
-                                    withStyle(
-                                        style = SpanStyle(
-                                            brush = Brush.verticalGradient(
-                                                colors = tournamentColors
-                                            ),
-                                            fontSize = 65.sp,
-                                            fontWeight = FontWeight.ExtraBold,
-                                        ),
-                                    ) {
-                                        append(viewModel.event.value.name.toString().uppercase())
-                                    }
-                                }
-                                withStyle(
 
+                        ResizingText(
+                            text = buildAnnotatedString {
+                                withStyle(
+                                    style = SpanStyle(
+                                        brush = Brush.verticalGradient(
+                                            colors = tournamentColors
+                                        ),
+                                        fontWeight = FontWeight.ExtraBold,
+
+                                        ),
+                                ) {
+                                    append(viewModel.event.value.name.toString().uppercase())
+                                }
+                            },
+                            maxFontSize = 70.sp,
+                            maxLines = 2
+                        )
+                        ResizingText(
+                            text = buildAnnotatedString {
+                                withStyle(
                                     style = SpanStyle(
                                         brush = Brush.verticalGradient(
                                             colors = tournamentColors.reversed()
                                         ),
-                                        fontSize = 30.sp,
+                                        fontSize = 35.sp,
                                         fontWeight = FontWeight.Bold,
                                     ),
                                 ) {
                                     append(
-                                        viewModel.tournamentSeason.value.name.toString().uppercase()
+                                        viewModel.tournamentSeason.value.name.toString()
+                                            .uppercase()
                                     )
                                 }
-                            }
+                            },
+                            modifier = Modifier.offset(y = (-20).dp),
+                            maxLines = 2,
+                            maxFontSize = 50.sp
                         )
 
-                        Text(
-                            textAlign = TextAlign.Center,
-                            text = viewModel.eventDetails.value.totalPrizeMoney.toString() + " " + viewModel.eventDetails.value.totalPrizeMoneyCurrency.toString(),
-                            color = Color.White
-                        )
+
+                        Row(
+                            horizontalArrangement = Arrangement.SpaceBetween,
+                            verticalAlignment = Alignment.Bottom,
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .padding(8.dp)
+                        ) {
+
+                            if (viewModel.eventDetails.value.tier != null) {
+                                Text(
+                                    text = viewModel.eventDetails.value.tier!!.uppercase() + "-tier",
+                                    color = getColorFromTier(viewModel.eventDetails.value.tier!!.uppercase()),
+                                    fontWeight = FontWeight.Bold,
+                                    fontSize = 18.sp
+                                )
+                            }
+
+                            Text(
+                                //textAlign = TextAlign.End,
+                                text = viewModel.eventDetails.value.totalPrizeMoney.toString() + " " + viewModel.eventDetails.value.totalPrizeMoneyCurrency.toString(),
+                                color = Color(parseColor("#ffbf00")),
+                                style = TextStyle(
+                                    shadow = Shadow(
+                                        color = Color(parseColor("#bf9b30")),
+                                        offset = Offset(2.0f, 2.0f),
+                                        blurRadius = 2f,
+                                    ),
+                                    fontSize = 18.sp
+                                ),
+                                fontWeight = FontWeight.Bold
+
+                            )
+                        }
+
                         Text(
                             textAlign = TextAlign.Center,
                             text = if (!viewModel.startTime.value.contains("Unknown")) (viewModel.startTime.value + " - " + viewModel.endTime.value) else "",
                             color = Color.White
                         )
+
+                        Divider(thickness = 1.dp)
+                        Spacer(modifier = Modifier.size(4.dp))
 
                         Column(
                             //horizontalAlignment = Alignment.CenterHorizontally,
@@ -267,15 +275,21 @@ fun SingleEventTopbox(viewModel: SingleEventViewModel,
                                     )
 
 
-                                    val gradientColors = listOf(
-                                        Color.White,
-                                        if (teamViewModel.palette.value?.vibrantSwatch?.rgb != null) Color(
-                                            teamViewModel.palette.value?.vibrantSwatch?.rgb!!
-                                        ) else Color.Black
-                                    )
 
+                                    val gradientColors = listOf<Color>(
+                                        if(teamViewModel.palette.value != null && teamViewModel.palette.value?.vibrantSwatch?.rgb != null) Color(teamViewModel.palette.value?.lightVibrantSwatch?.rgb!!) else Color.Black,
+                                        Color.White
+                                        )
+/*
+                                    if (teamViewModel.palette.value?.vibrantSwatch?.rgb != null) Color(
+                                        teamViewModel.palette.value?.vibrantSwatch?.rgb!!,
+                                    )
+                                    else Color.Black
+                                    */
+
+
+                                    //TODO: Make this resize, possibly with resisingText? Bit hard to do while keeping it pretty
                                     Text(
-                                        modifier = Modifier,
                                         text = buildAnnotatedString {
                                             append("Winner\n\n")
                                             withStyle(
@@ -284,12 +298,26 @@ fun SingleEventTopbox(viewModel: SingleEventViewModel,
                                                         colors = gradientColors
                                                     ),
                                                     fontSize = 65.sp,
-                                                    fontWeight = FontWeight.ExtraBold
+                                                    fontWeight = FontWeight.ExtraBold,
+
+
                                                 ),
                                             ) {
-                                                append(if (teamViewModel.team.value.name != null) teamViewModel.team.value.name else "")
+                                                append(
+
+                                                    if (teamViewModel.team.value.name != null) teamViewModel.team.value.name.toString()
+                                                        .substring(
+                                                            0,
+                                                            minOf(
+                                                                teamViewModel.team.value.name.toString().length,
+                                                                15
+                                                            )
+
+                                                        ) else ""
+                                                )
                                             }
-                                        }
+                                        },
+                                        maxLines = 3,
                                     )
                                 }
 
@@ -317,7 +345,7 @@ fun SingleEventTopbox(viewModel: SingleEventViewModel,
                                             fontWeight = FontWeight.Bold,
                                             color = MaterialTheme.colorScheme.onPrimaryContainer
                                         )
-                                        recentMatches.forEachIndexed{ index, match ->
+                                        recentMatches.forEachIndexed { index, match ->
                                             RecentMatches(
                                                 modifier = Modifier.clickable {
                                                     onClickSingleMatch(

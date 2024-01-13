@@ -7,20 +7,16 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import androidx.palette.graphics.Palette
-import com.example.hltv.R
 import com.example.hltv.data.remote.APIResponse
-import com.example.hltv.data.remote.Country
 import com.example.hltv.data.remote.Map
 import com.example.hltv.data.remote.PlayerGroup
 import com.example.hltv.data.remote.Score
 import com.example.hltv.data.remote.Team
-import com.example.hltv.data.remote.getGamesFromEvent
 import com.example.hltv.data.remote.getPlayerImage
 import com.example.hltv.data.remote.getPlayersFromEvent
 import com.example.hltv.data.remote.getPreviousMatches
 import com.example.hltv.data.remote.getTeamImage
 import kotlinx.coroutines.CompletableDeferred
-import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import java.math.RoundingMode
@@ -82,7 +78,7 @@ class SingleTeamViewModel : ViewModel() {
     val palette = mutableStateOf<Palette?>(null)
 
     var dataLoaded = false
-    fun loadData(teamIDString: String){
+    fun loadData(teamIDString: String, gamesToLoad: Int = 6){
 
         //I love how jank this is but it works, I think. Loading a new team loads a new viewmodel
         //where dataloaded will default to false, so I think it works?
@@ -108,7 +104,7 @@ class SingleTeamViewModel : ViewModel() {
             recentMatches.clear()
             //recentMatches
             team1 = null
-            for ((index, event) in filteredMatches.reversed().withIndex().take(6)) {
+            for ((index, event) in filteredMatches.reversed().withIndex().take(gamesToLoad)) {
                 if (teamID == event.homeTeam.id) {
                     team1 = event.homeTeam
                     team2 = event.awayTeam

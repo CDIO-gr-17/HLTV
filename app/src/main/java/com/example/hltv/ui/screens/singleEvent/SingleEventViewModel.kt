@@ -20,6 +20,7 @@ import com.example.hltv.data.remote.getUniqueTournamentDetails
 import com.example.hltv.data.remote.getUniqueTournamentSeasons
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
+import java.io.IOException
 
 class SingleEventViewModel: ViewModel() {
 
@@ -45,8 +46,17 @@ class SingleEventViewModel: ViewModel() {
             if(tournamentStandings.isNotEmpty())
                 standings.addAll(tournamentStandings)
             eventDetails.value = getUniqueTournamentDetails(tournamentID, seasonID).uniqueTournamentInfo
-            seasons.addAll(getUniqueTournamentSeasons(tournamentID).seasons)
-            event.value = getTournamentInfo(tournamentID).tournamentDetails
+            try{
+                seasons.addAll(getUniqueTournamentSeasons(tournamentID).seasons)
+            } catch (e : IOException){
+                Log.w("SingleEventViewModel.loadData", "There was no season info: " + e.toString())
+            }
+            try{
+                event.value = getTournamentInfo(tournamentID).tournamentDetails
+            } catch (e : IOException){
+                Log.w("SingleEventViewModel.loadData", "There was no tournament info: " + e.toString())
+            }
+
             tournamentImage.value = getTournamentLogo(tournamentID)
             palette.value =  Palette.from(tournamentImage.value!!).generate()
             val season = seasons.find {it.id == seasonID}

@@ -35,7 +35,7 @@ fun MainNavHost(navController: NavHostController, modifier: Modifier) {
 
         composable(route = Events.route) {
             EventsScreen(
-                onclickSingleEvent = { navController.navigate(SingleEvent.route + it) },
+                onclickSingleEvent = { navController.navigate(SingleEvent.route + it) }
             )
         }
 
