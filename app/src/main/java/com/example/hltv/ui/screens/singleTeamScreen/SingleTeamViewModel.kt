@@ -6,6 +6,7 @@ import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import androidx.palette.graphics.Palette
 import com.example.hltv.R
 import com.example.hltv.data.remote.APIResponse
 import com.example.hltv.data.remote.Country
@@ -78,6 +79,7 @@ class SingleTeamViewModel : ViewModel() {
     var playersWithAge : Int = 0
     var teamID = 0
     val playersDateOfBirthTimestamp = mutableStateListOf<Int>()
+    val palette = mutableStateOf<Palette?>(null)
 
     var dataLoaded = false
     fun loadData(teamIDString: String){
@@ -95,6 +97,9 @@ class SingleTeamViewModel : ViewModel() {
 
         viewModelScope.launch(Dispatchers.IO) {
             teamImage.value = getTeamImage(teamID)
+            palette.value =  Palette.from(teamImage.value!!).generate()
+            Log.i(this.toString(), "The palette is:" + palette.value!!.vibrantSwatch)
+
             Log.w(this.toString(), "Got previous matches of team with id: $teamID")
             val completedMatches = getPreviousMatches(teamID, 0)
             val filteredMatches = completedMatches.events

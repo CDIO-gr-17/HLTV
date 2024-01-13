@@ -6,6 +6,7 @@ import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import androidx.palette.graphics.Palette
 import com.example.hltv.data.convertTimestampToDateClock
 import com.example.hltv.data.convertTimestampToDateURL
 import com.example.hltv.data.remote.Season
@@ -29,6 +30,8 @@ class SingleEventViewModel: ViewModel() {
     var seasons = mutableListOf<Season>()
     var tournamentSeason = mutableStateOf<Season>(Season())
     var standings = mutableStateListOf<Standings>()
+    val palette = mutableStateOf<Palette?>(null)
+
 
     val startTime = mutableStateOf("")
     val endTime = mutableStateOf("")
@@ -45,6 +48,7 @@ class SingleEventViewModel: ViewModel() {
             seasons.addAll(getUniqueTournamentSeasons(tournamentID).seasons)
             event.value = getTournamentInfo(tournamentID).tournamentDetails
             tournamentImage.value = getTournamentLogo(tournamentID)
+            palette.value =  Palette.from(tournamentImage.value!!).generate()
             val season = seasons.find {it.id == seasonID}
             if (season != null){
                 tournamentSeason.value = season
