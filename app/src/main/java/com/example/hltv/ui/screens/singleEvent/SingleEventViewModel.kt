@@ -7,6 +7,7 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.hltv.data.convertTimestampToDateClock
+import com.example.hltv.data.convertTimestampToDateURL
 import com.example.hltv.data.remote.Season
 import com.example.hltv.data.remote.Standings
 import com.example.hltv.data.remote.ThirdUniqueTournament
@@ -50,8 +51,8 @@ class SingleEventViewModel: ViewModel() {
             }
 
 
-            startTime.value = convertTimestampToDateClock(event.value.startDateTimestamp)
-            endTime.value = convertTimestampToDateClock(event.value.endDateTimestamp)
+            startTime.value = convertTimestampToDateURL(event.value.startDateTimestamp)
+            endTime.value = convertTimestampToDateURL(event.value.endDateTimestamp)
         }
     }
 }
