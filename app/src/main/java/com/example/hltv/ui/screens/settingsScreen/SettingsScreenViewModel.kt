@@ -1,6 +1,7 @@
 package com.example.hltv.ui.screens.settingsScreen
 
 import android.graphics.Bitmap
+import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.hltv.data.local.PrefDataKeyValueStore
@@ -24,10 +25,12 @@ class SettingsScreenViewModel() : ViewModel() {
     fun loadData (dataStore : PrefDataKeyValueStore){
         viewModelScope.launch(Dispatchers.IO) {
             dataStore.getFavouriteTeam().collect() { int ->
-                _favoriteTeam.value = int}
+                _favoriteTeam.value = int
+                Log.d("SettingsScreenViewModel", "Favourite team is now: ${_favoriteTeam.value}")
+            }
             _favoriteTeamName.value = getTeamNameFromID(_favoriteTeam.value).toString()
+            Log.d("SettingsScreenViewModel", "Favourite team name is now: ${_favoriteTeamName.value}")
             _teamLogo.value = getTeamImage(_favoriteTeam.value)
         }
     }
-
 }

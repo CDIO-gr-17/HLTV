@@ -7,6 +7,7 @@ import androidx.compose.material.icons.filled.FavoriteBorder
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconToggleButton
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -28,6 +29,14 @@ fun FavoriteButton(
 ) {
 
     var isFavorite by remember { mutableStateOf(false) }
+
+    LaunchedEffect(isFavorite){
+        CoroutineScope(Dispatchers.IO).launch {
+            datastore.getFavouriteTeam().collect() {int ->
+                isFavorite = int == teamID
+            }
+        }
+    }
 
     IconToggleButton(
         checked = isFavorite,

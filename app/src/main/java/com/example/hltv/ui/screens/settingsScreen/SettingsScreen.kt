@@ -48,8 +48,10 @@ fun SettingsScreen(onClickSingleTeam: (String?) -> Unit) {
                 Row(horizontalArrangement = Arrangement.SpaceBetween) {
                     Column {
                         Text(
-                            text = if (teamName == "") "You have no favorite Team"
-                            else "Favorite Team: $teamName",
+                            text = "$teamName",
+
+        //                    if (teamName == "") "You have no favorite Team"
+          //                  else "Favorite Team: $teamName",
                             fontSize = 20.sp,
                             modifier = Modifier.padding(top = 16.dp, bottom = 4.dp, start = 8.dp, end = 8.dp)
                         )
@@ -69,7 +71,6 @@ fun SettingsScreen(onClickSingleTeam: (String?) -> Unit) {
                             .height(70.dp)
                     )
                 }
-
             },
         )
 

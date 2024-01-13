@@ -16,6 +16,7 @@ private val Context.dataStore: DataStore<Preferences> by preferencesDataStore(na
 class PrefDataKeyValueStore(val context: Context) {
     private object PreferenceKeys {
         val FAVOURITETEAM = intPreferencesKey("favouriteTeam")
+
     }
 
     suspend fun updateFavouriteTeam(teamID: Int) =
