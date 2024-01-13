@@ -1,6 +1,9 @@
 package com.example.hltv.ui.screens.singleEvent
 
 
+import android.graphics.BitmapShader
+import android.graphics.Paint
+import android.graphics.Shader
 import android.util.Log
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.clickable
@@ -13,7 +16,10 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.material3.Divider
@@ -28,14 +34,30 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.snapshots.SnapshotStateList
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clipToBounds
+import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.ImageBitmap
+import androidx.compose.ui.graphics.ShaderBrush
+import androidx.compose.ui.graphics.asAndroidBitmap
+import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.res.imageResource
+
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.text.ParagraphStyle
+import androidx.compose.ui.text.SpanStyle
+import androidx.compose.ui.text.TextStyle
+import androidx.compose.ui.text.buildAnnotatedString
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.text.toUpperCase
+import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.unit.TextUnit
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
+import androidx.palette.graphics.Palette
 import coil.compose.AsyncImagePainter
 import coil.compose.rememberAsyncImagePainter
 import com.example.hltv.R
@@ -80,6 +102,9 @@ fun SingleEventScreen (tournamentID: String?,
         }
     }
 
+    //TODO: Make this prettier?
+
+
 
     val recentMatches = teamViewModel.recentMatches
     val playerOverview = teamViewModel.playerOverview
@@ -90,7 +115,10 @@ fun SingleEventScreen (tournamentID: String?,
 
 
 
+
+
     Column {
+
         if (standings.isNotEmpty()) {
             val teamNames = standings.flatMap { standing ->
                 standing.attending.mapNotNull { it.team?.name }
@@ -105,6 +133,7 @@ fun SingleEventScreen (tournamentID: String?,
         else Text(text = "No standings",  color = MaterialTheme.colorScheme.errorContainer)
         SingleEventTopbox(
             playerOverview = playerOverview,
+            teamViewModel = teamViewModel,
             statsOverview = statsOverview,
             onClickSinglePlayer = { Log.i("SingleEventScreen", "Clicked onClickSinglePlayer") },
             onClickSingleTeam = { Log.i("SingleEventScreen", "Clicked onClickSingleTeam") },
@@ -123,122 +152,158 @@ fun SingleEventScreen (tournamentID: String?,
 
 @Composable
 fun SingleEventTopbox(viewModel: SingleEventViewModel,
+                      teamViewModel: SingleTeamViewModel,
                       playerOverview : SnapshotStateList<Player>,
                       statsOverview : MutableState<Stats>,
                       onClickSinglePlayer: (String?) -> Unit,
                       onClickSingleTeam: (String?) -> Unit,
                       onClickSingleMatch: (String?) -> Unit,
                       painter : AsyncImagePainter,
-                      recentMatches : SnapshotStateList<RecentMatch>
-){
+                      recentMatches : SnapshotStateList<RecentMatch>,
 
-    LazyColumn{
-        item{CommonCard (
-            modifier = Modifier,
-            customInnerPadding = 0.dp,
-            customOuterPadding = 0.dp,
-            topBox = {
-                Column(
-                    horizontalAlignment = Alignment.CenterHorizontally,
-                    modifier = Modifier.fillMaxWidth()
-                ) {
+) {
 
-                    Image(rememberAsyncImagePainter(model = R.drawable.person_24px/*viewModel.tournamentImage.value*/),
-                        contentDescription = "Team logo",
-                        modifier = Modifier.size(70.dp))
+    LazyColumn {
 
-                    Text( //Tournament name
-                        textAlign = TextAlign.Center,
-                        text = "${viewModel.event.value.name} ${viewModel.tournamentSeason.value.name}",
-                        color = Color.White
-                    )
-
-                    Text(
-                        textAlign = TextAlign.Center,
-                        text = viewModel.eventDetails.value.totalPrizeMoney.toString() + " " + viewModel.eventDetails.value.totalPrizeMoneyCurrency.toString(),
-                        color = Color.White
-                    )
-                    Text(
-                        textAlign = TextAlign.Center,
-                        text = (viewModel.startTime.value + " - " + viewModel.endTime.value),
-                        color = Color.White
-                    )
-
-                }
-            },
-            bottomBox = {
-                Box{
+        item {
+            CommonCard(
+                modifier = Modifier,
+                customInnerPadding = 0.dp,
+                customOuterPadding = 0.dp,
+                topBox = {
                     Column(
-                        //horizontalAlignment = Alignment.CenterHorizontally,
+                        horizontalAlignment = Alignment.CenterHorizontally,
                         modifier = Modifier.fillMaxWidth()
-                    ){
+                    ) {
+                        Spacer(Modifier.height(15.dp))
 
-                        //COPY PASTE FROM SINGLETEAM
-                        //I tried doing DI, but we cant because the lazycolumn needs an argument
-                        //that you cant pass so wed need DI in the DI and that was too much work
+                        Box(/*modifier = Modifier.height(200.dp)*/) {
+                            Image(
+                                painter = rememberAsyncImagePainter(viewModel.tournamentImage.value),
+                                contentDescription = "Event logo",
+                                modifier = Modifier.size(200.dp),
+                                //.clipToBounds(),/*offset(y = (-45).dp)*/
+                                //.size(300.dp)
+                                contentScale = ContentScale.Crop
+                            )
+                        }
 
-                        LazyColumn (modifier = Modifier.fillParentMaxHeight()) {
+                        val tournamentColors = listOf(
+                            Color.White,
+                            if (viewModel.palette.value?.vibrantSwatch?.rgb != null) Color(
+                                viewModel.palette.value?.vibrantSwatch?.rgb!!
+                            ) else Color.Black
+                        )
 
-                            item {
-                                Row(
-                                    modifier = Modifier.fillMaxWidth(),
-                                    horizontalArrangement = Arrangement.SpaceBetween
-                                )
-                                {
-                                    val iconSize = 30.dp
-                                    Spacer( //Ghetto but it puts it in the middle
-                                        modifier = Modifier.size(iconSize)
-                                    )
-                                    Text(
+                        Text(//Tournament name
+                            textAlign = TextAlign.Center,
+                            //text = "${viewModel.event.value.name} ${viewModel.tournamentSeason.value.name}",
+                            text = buildAnnotatedString {
+                                withStyle(ParagraphStyle(lineHeight = 46.sp)) {
+                                    withStyle(
+                                        style = SpanStyle(
+                                            brush = Brush.verticalGradient(
+                                                colors = tournamentColors
+                                            ),
+                                            fontSize = 65.sp,
+                                            fontWeight = FontWeight.ExtraBold,
+                                        ),
+                                    ) {
+                                        append(viewModel.event.value.name.toString().uppercase())
+                                    }
+                                }
+                                withStyle(
+
+                                    style = SpanStyle(
+                                        brush = Brush.verticalGradient(
+                                            colors = tournamentColors.reversed()
+                                        ),
                                         fontSize = 30.sp,
-                                        modifier = Modifier,
-                                        text = "Winner"
-                                    )
-
-                                    Image(
-                                        modifier = Modifier.size(iconSize),
-                                        painter = painterResource(id = R.drawable.diversity_3_24px),
-                                        contentDescription = "Cup"
+                                        fontWeight = FontWeight.Bold,
+                                    ),
+                                ) {
+                                    append(
+                                        viewModel.tournamentSeason.value.name.toString().uppercase()
                                     )
                                 }
                             }
+                        )
 
-                            item{
-                                Divider(
-                                    color = Color.Black, //TODO: Decide on this
-                                    thickness = 1.dp
-                                )
-                            }
+                        Text(
+                            textAlign = TextAlign.Center,
+                            text = viewModel.eventDetails.value.totalPrizeMoney.toString() + " " + viewModel.eventDetails.value.totalPrizeMoneyCurrency.toString(),
+                            color = Color.White
+                        )
+                        Text(
+                            textAlign = TextAlign.Center,
+                            text = if (!viewModel.startTime.value.contains("Unknown")) (viewModel.startTime.value + " - " + viewModel.endTime.value) else "",
+                            color = Color.White
+                        )
 
-                            item{
-                                Image(
-                                    modifier = Modifier
-                                        .size(100.dp)
-                                        .align(Alignment.CenterHorizontally),
-                                    painter = painterResource(R.drawable.astralis_logo),
-                                    contentDescription = "Team logo",
-
-                                )
-                            }
-
+                        Column(
+                            //horizontalAlignment = Alignment.CenterHorizontally,
+                            modifier = Modifier.fillMaxWidth()
+                        ) {
 
 
+                            //COPY PASTE FROM SINGLETEAM
+                            //I tried doing DI, but we cant because the lazycolumn needs an argument
+                            //that you cant pass so wed need DI in the DI and that was too much work
 
-                            item {
+                            Column(modifier = Modifier.fillParentMaxHeight()) {
+
+                                Row(
+                                    modifier = Modifier.fillMaxWidth(),
+                                    //horizontalArrangement = Arrangement.SpaceBetween
+                                ) {
+
+
+                                    Image(
+                                        rememberAsyncImagePainter(
+                                            teamViewModel.teamImage.value
+                                        ),
+                                        contentDescription = teamViewModel.team.value.name,
+                                        Modifier.size(69.dp)
+                                    )
+
+
+                                    val gradientColors = listOf(
+                                        Color.White,
+                                        if (teamViewModel.palette.value?.vibrantSwatch?.rgb != null) Color(
+                                            teamViewModel.palette.value?.vibrantSwatch?.rgb!!
+                                        ) else Color.Black
+                                    )
+
+                                    Text(
+                                        modifier = Modifier,
+                                        text = buildAnnotatedString {
+                                            append("Winner\n\n")
+                                            withStyle(
+                                                style = SpanStyle(
+                                                    brush = Brush.linearGradient(
+                                                        colors = gradientColors
+                                                    ),
+                                                    fontSize = 65.sp,
+                                                    fontWeight = FontWeight.ExtraBold
+                                                ),
+                                            ) {
+                                                append(if (teamViewModel.team.value.name != null) teamViewModel.team.value.name else "")
+                                            }
+                                        }
+                                    )
+                                }
+
+
                                 CommonCard(modifier = Modifier, bottomBox = {
                                     Column {
-                                        LazyRow{
-                                            items(playerOverview.size){ index ->
+                                        LazyRow {
+                                            items(playerOverview.size) { index ->
                                                 OverviewPlayer(
                                                     player = playerOverview[index],
                                                     onClickSinglePlayer
                                                 )
                                             }
                                         }
-                                        OverviewInfo(
-                                            country = statsOverview.value.countryName,
-                                            countryImage = painter,
-                                        )
                                         Statistics(
                                             coach = "Peter 'Castle' Ardenskjold",
                                             points = "1000",
@@ -247,59 +312,49 @@ fun SingleEventTopbox(viewModel: SingleEventViewModel,
                                             averagePlayerAge = statsOverview.value.avgAgeofPlayers,
                                             imageNat = painterResource(R.drawable.dk_flag)
                                         )
-                                        Text(text = "Recent Matches",
+                                        Text(
+                                            text = "Recent Matches",
                                             fontWeight = FontWeight.Bold,
                                             color = MaterialTheme.colorScheme.onPrimaryContainer
                                         )
-                                        LazyColumn (Modifier.fillParentMaxHeight()) {
-                                            items(recentMatches.size) { index ->
-                                                RecentMatches(
-                                                    modifier = Modifier.clickable { onClickSingleMatch(recentMatches[index].matchID.toString()) },
-                                                    team1 = recentMatches[index].homeTeam?.name,
-                                                    team2 = recentMatches[index].awayTeam?.name,
-                                                    imageTeam1 = rememberAsyncImagePainter(recentMatches[index].homeTeamImage),
-                                                    imageTeam2 = rememberAsyncImagePainter(recentMatches[index].awayTeamImage),
-                                                    team2OnClick = { onClickSingleTeam(recentMatches[index].awayTeam?.id.toString()) },
-                                                    score = recentMatches[index].homeScore?.display.toString() + " - " + recentMatches[index].awayScore?.display.toString(),
-                                                    date = recentMatches[index].startTimestamp.toString()
-                                                )
-                                            }
+                                        recentMatches.forEachIndexed{ index, match ->
+                                            RecentMatches(
+                                                modifier = Modifier.clickable {
+                                                    onClickSingleMatch(
+                                                        recentMatches[index].matchID.toString()
+                                                    )
+                                                },
+                                                team1 = recentMatches[index].homeTeam?.name,
+                                                team2 = recentMatches[index].awayTeam?.name,
+                                                imageTeam1 = rememberAsyncImagePainter(
+                                                    recentMatches[index].homeTeamImage
+                                                ),
+                                                imageTeam2 = rememberAsyncImagePainter(
+                                                    recentMatches[index].awayTeamImage
+                                                ),
+                                                team2OnClick = {
+                                                    onClickSingleTeam(
+                                                        recentMatches[index].awayTeam?.id.toString()
+                                                    )
+                                                },
+                                                score = recentMatches[index].homeScore?.display.toString() + " - " + recentMatches[index].awayScore?.display.toString(),
+                                                date = recentMatches[index].startTimestamp.toString()
+                                            )
                                         }
+
                                     }
                                 })
                             }
                         }
-
-                        ///END OF COPY PASTE
-
                     }
                 }
-            }
-        )
+            )
+        }
     }
 }
 
 
-    /*
 
-    CommonCard( modifier = Modifier,
-        bottomBox = {
-            Box(contentAlignment = Alignment.CenterEnd){
-                Row(modifier = Modifier.align(Alignment)){
-                    Text(
-                        textAlign = TextAlign.Center,
-                        text = "Horse",
-                        color = Color.White
-                    )
-                }
 
-            }
-
-        }
-    )
-
-     */
-
-}
 
 
