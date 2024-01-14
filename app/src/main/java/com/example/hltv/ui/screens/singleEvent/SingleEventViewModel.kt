@@ -42,7 +42,7 @@ class SingleEventViewModel: ViewModel() {
 
     fun loadData(tournamentID: Int, seasonID: Int){
         viewModelScope.launch(Dispatchers.IO) {
-            val tournamentStandings = getTournamentStandings(tournamentID, seasonID).standings
+            val tournamentStandings = getTournamentStandings().standings
             if(tournamentStandings.isNotEmpty())
                 standings.addAll(tournamentStandings)
             eventDetails.value = getUniqueTournamentDetails(tournamentID, seasonID).uniqueTournamentInfo
