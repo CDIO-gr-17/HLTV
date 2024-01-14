@@ -48,7 +48,6 @@ import coil.compose.rememberAsyncImagePainter
 import com.example.hltv.R
 import com.example.hltv.data.CountdownViewModel
 import com.example.hltv.data.convertTimestampToDateClock
-import com.example.hltv.data.convertTimestampToWeekDateClock
 import com.example.hltv.data.formatTime
 import com.example.hltv.data.remote.Media
 import com.example.hltv.ui.common.CommonCard

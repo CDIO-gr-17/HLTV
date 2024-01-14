@@ -1,5 +1,6 @@
 package com.example.hltv.ui.screens.settingsScreen
 
+import android.graphics.Bitmap
 import android.graphics.BitmapFactory
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Arrangement
@@ -41,39 +42,17 @@ fun SettingsScreen(onClickSingleTeam: (String?) -> Unit) {
     var darkModeEnabled by remember {
         mutableStateOf(false)
     }
+    var favoriteTeamOnHomeScreen by remember {
+        mutableStateOf(true)
+    }
 
     Column {
-        CommonCard(
-            modifier = Modifier,
-            topBox = {
-                Row(horizontalArrangement = Arrangement.SpaceBetween) {
-                    Column {
-                        Text(
-                            text = if (teamName == "") "You have no favorite Team"
-                            else "Favorite Team: $teamName",
-                            fontSize = 20.sp,
-                            modifier = Modifier.padding(top = 16.dp, bottom = 4.dp, start = 8.dp, end = 8.dp)
-                        )
-                        Text(
-                            text = "Select a new favorite team by searching",
-                            fontSize = 12.sp,
-                            modifier = Modifier.padding(horizontal = 8.dp)
-                        )
-                    }
-                    Spacer(modifier = Modifier.padding(8.dp),)
-                    val stdBitmap = BitmapFactory.decodeResource(
-                        LocalContext.current.resources, R.drawable.questionmark
-                    ).asImageBitmap()
-                    Image(
-                        bitmap = if (teamLogo != null) teamLogo!!.asImageBitmap() else stdBitmap,
-                        contentDescription = "Team Logo",
-                        modifier = Modifier
-                            .height(70.dp)
-                    )
-                }
-            },
-        )
-
+        favoriteTeamSection(teamName = teamName, teamLogo = teamLogo) {
+            SettingsToggle(
+                settingName = "Show team-info on homescreen",
+                isChecked = favoriteTeamOnHomeScreen,
+                onCheckedChange = { favoriteTeamOnHomeScreen = it })
+        }
 
         Surface(modifier = Modifier.padding(16.dp)) {
             SettingsToggle(settingName = "Dark mode",
@@ -86,6 +65,51 @@ fun SettingsScreen(onClickSingleTeam: (String?) -> Unit) {
 }
 
 @Composable
+private fun favoriteTeamSection(
+    teamName: String,
+    teamLogo: Bitmap?,
+    bottomBox: @Composable () -> Unit
+) {
+    CommonCard(
+        modifier = Modifier,
+        topBox = {
+            Row(horizontalArrangement = Arrangement.SpaceBetween) {
+                Column {
+                    Text(
+                        text = if (teamName == "") "You have no favorite Team"
+                        else "Favorite Team: $teamName",
+                        fontSize = 20.sp,
+                        modifier = Modifier.padding(
+                            top = 16.dp,
+                            bottom = 4.dp,
+                            start = 8.dp,
+                            end = 8.dp
+                        )
+                    )
+                    Text(
+                        text = "Select a new favorite team by searching",
+                        fontSize = 12.sp,
+                        modifier = Modifier.padding(horizontal = 8.dp)
+                    )
+                }
+                Spacer(modifier = Modifier.padding(8.dp))
+                val stdBitmap = BitmapFactory.decodeResource(
+                    LocalContext.current.resources, R.drawable.questionmark
+                ).asImageBitmap()
+                Image(
+                    bitmap = if (teamLogo != null) teamLogo!!.asImageBitmap() else stdBitmap,
+                    contentDescription = "Team Logo",
+                    modifier = Modifier
+                        .height(70.dp)
+                )
+            }
+        },
+        bottomBox ={bottomBox()}
+    )
+
+}
+
+@Composable
 fun SettingsToggle(
     settingName: String,
     isChecked: Boolean,
@@ -93,12 +117,13 @@ fun SettingsToggle(
 ) {
     Row(
         modifier = Modifier
-            .padding(16.dp)
             .fillMaxWidth(),
-        verticalAlignment = Alignment.CenterVertically
+        verticalAlignment = Alignment.CenterVertically,
+        horizontalArrangement = Arrangement.SpaceBetween
     )
     {
         Text(text = settingName)
+        Spacer(modifier = Modifier.weight(1f))
 
         Switch(checked = isChecked, onCheckedChange = onCheckedChange)
     }
