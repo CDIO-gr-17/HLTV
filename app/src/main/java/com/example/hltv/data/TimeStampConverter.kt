@@ -7,7 +7,9 @@ import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
+import java.math.RoundingMode
 import java.text.DateFormat
+import java.text.DecimalFormat
 import java.text.SimpleDateFormat
 import java.time.LocalDate
 import java.time.ZoneId
@@ -111,5 +113,25 @@ fun Long.formatTime(): String {
     val minutes = (this % 3600) / 60
     val remainingSeconds = this % 60
     return String.format("%02d:%02d:%02d", hours, minutes, remainingSeconds)
+}
+
+fun getAvgAgeFromTimestamp(dateOfBirthTimestampList: MutableList<Int>): Double {            //TODO: This should be moved to a more appropriate place
+    var totalAgeOfPlayers: Long = 0
+    for (dateOfBirthTimestamp in dateOfBirthTimestampList) {
+        totalAgeOfPlayers += ((System.currentTimeMillis() // Subtracts the current time in milliseconds from the players date of birth in milliseconds
+                - (dateOfBirthTimestamp.toLong() * 1000)))
+    }
+    if(dateOfBirthTimestampList.size!=0) {
+        val avgAgeOfPlayersInMillis: Long = totalAgeOfPlayers / dateOfBirthTimestampList.size
+        val df = DecimalFormat("#.#")
+        val avgAgeOfPlayersInYears = avgAgeOfPlayersInMillis/365.25/3600/24/1000
+        df.roundingMode = RoundingMode.CEILING
+        print(avgAgeOfPlayersInYears.toDouble())
+        return avgAgeOfPlayersInYears.toDouble()
+
+        // String.format("%.1f", TimeUnit.MILLISECONDS.toDays(avgAgeOfPlayersInMillis) / 365.25).toDouble()
+
+    }
+    else return 0.0
 }
 
