@@ -47,7 +47,7 @@ class SingleEventViewModel: ViewModel() {
         if (isLoaded) return
         isLoaded = true
         viewModelScope.launch(Dispatchers.IO) {
-            val tournamentStandings = getTournamentStandings(/*tournamentID,seasonID*/).standings //TODO(
+            val tournamentStandings = getTournamentStandings(tournamentID,seasonID).standings //There are like no standings but this works afaik. Pass no parameters to get standings
             if(tournamentStandings.isNotEmpty())
                 standings.addAll(tournamentStandings)
             eventDetails.value = getUniqueTournamentDetails(tournamentID, seasonID).uniqueTournamentInfo

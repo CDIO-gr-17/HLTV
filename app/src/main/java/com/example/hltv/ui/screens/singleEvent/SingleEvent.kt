@@ -63,7 +63,8 @@ fun SingleEventScreen(
     tournamentID: String?,
     seasonID: String?,
     onClickSingleTeam: (teamID: String?) -> Unit,
-    onClickSingleMatch: (matchID: String?) -> Unit
+    onClickSingleMatch: (matchID: String?) -> Unit,
+    onClickSinglePlayer: (playerID: String?) -> Unit
 ) {
     Log.i("SingleEventScreen", "TournamentID: " + tournamentID)
     Log.i("SingleEventScreen", "seasonID: " + seasonID)
@@ -94,7 +95,7 @@ fun SingleEventScreen(
                 playerOverview = playerOverview,
                 teamViewModel = teamViewModel,
                 statsOverview = statsOverview,
-                onClickSinglePlayer = onClickSingleMatch, //TODO
+                onClickSinglePlayer = onClickSinglePlayer,
                 onClickSingleTeam = onClickSingleTeam,
                 onClickSingleMatch = onClickSingleMatch,
                 recentMatches = recentMatches,
@@ -336,7 +337,7 @@ fun SingleEventTopbox(
                             //I tried doing DI, but we cant because the lazycolumn needs an argument
                             //that you cant pass so wed need DI in the DI and that was too much work
 
-                            Column(modifier = Modifier.clickable { onClickSingleTeam(teamViewModel.teamID.toString()) }) {
+                            Column(modifier = Modifier.clickable { onClickSingleTeam(teamViewModel.team.value.id.toString()) }) {
 
                                 CommonCard(modifier = Modifier, bottomBox = {
                                     Column {
@@ -393,7 +394,7 @@ fun SingleEventTopbox(
                                             items(playerOverview.size) { index ->
                                                 OverviewPlayer(
                                                     player = playerOverview[index],
-                                                    onClickSinglePlayer
+                                                    onClickSinglePlayer = onClickSinglePlayer
                                                 )
                                             }
                                         }

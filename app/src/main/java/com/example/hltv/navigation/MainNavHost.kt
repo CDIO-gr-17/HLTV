@@ -94,8 +94,8 @@ fun MainNavHost(navController: NavHostController, modifier: Modifier) {
                 tournamentID = backStackEntry.arguments?.getString("eventID"),
                 seasonID = backStackEntry.arguments?.getString("seasonID"),
                 onClickSingleTeam = { navController.navigate(SingleTeam.route + it) },
-                onClickSingleMatch = {navController.navigate(SingleMatch.route + it) }
-
+                onClickSingleMatch = {navController.navigate(SingleMatch.route + it) },
+                onClickSinglePlayer = {navController.navigate(SinglePlayer.route + it) }
             )
         }
     }
