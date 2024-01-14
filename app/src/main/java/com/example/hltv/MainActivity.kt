@@ -11,6 +11,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.material.icons.filled.Settings
+import androidx.compose.material.icons.outlined.Settings
 import androidx.compose.material3.CenterAlignedTopAppBar
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
@@ -98,10 +99,12 @@ fun HLTVApp(prefDataKeyValueStore: PrefDataKeyValueStore) {
                             currentBackStack?.arguments?.getString("teamID")?.toInt()!!
                         )
                     else {
-
-                        IconButton(onClick = { navController.navigate(Settings.route) }) {
+                        IconButton(
+                            onClick = { navController.navigate(Settings.route) },
+                            enabled = currentScreen != Settings
+                        ) {
                             Icon(
-                                imageVector = Icons.Default.Settings,
+                                imageVector = if (currentScreen != Settings) Icons.Outlined.Settings else Icons.Default.Settings,
                                 contentDescription = "Settings Icon",
                                 tint = MaterialTheme.colorScheme.onSurface
                             )
@@ -114,6 +117,7 @@ fun HLTVApp(prefDataKeyValueStore: PrefDataKeyValueStore) {
                 bottomAppBarScreens.forEach { item ->
                     NavigationBarItem(selected = currentScreen == item,
                         onClick = { navController.navigate(item.route) },
+                        enabled = item != currentScreen,
                         icon = {
                             Icon(
                                 imageVector = ImageVector.vectorResource(id = item.icon),
