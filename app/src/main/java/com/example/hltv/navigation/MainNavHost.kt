@@ -1,5 +1,6 @@
 package com.example.hltv.navigation
 
+import android.util.Log
 import androidx.compose.foundation.layout.padding
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
@@ -92,7 +93,7 @@ fun MainNavHost(navController: NavHostController, modifier: Modifier) {
             SingleEventScreen(
                 tournamentID = backStackEntry.arguments?.getString("eventID"),
                 seasonID = backStackEntry.arguments?.getString("seasonID"),
-                onClickSingleTeam = {navController.navigate(SingleTeam.route + it) },
+                onClickSingleTeam = { navController.navigate(SingleTeam.route + it) },
                 onClickSingleMatch = {navController.navigate(SingleMatch.route + it) }
 
             )

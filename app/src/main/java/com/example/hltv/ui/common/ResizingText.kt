@@ -1,5 +1,6 @@
 package com.example.hltv.ui.common
 
+import android.util.Log
 import androidx.compose.foundation.text.InlineTextContent
 import androidx.compose.material3.LocalTextStyle
 import androidx.compose.material3.Text
@@ -44,7 +45,7 @@ fun ResizingText(
     textAlign: TextAlign? = TextAlign.Center,
     lineHeight: TextUnit = TextUnit.Unspecified,
     overflow: TextOverflow = TextOverflow.Clip,
-    softWrap: Boolean = true,
+    softWrap: Boolean = false,
     maxLines: Int = Int.MAX_VALUE,
     inlineContent: Map<String, InlineTextContent> = mapOf(),
     style: TextStyle = LocalTextStyle.current
@@ -52,6 +53,7 @@ fun ResizingText(
 
     val textSize = remember { mutableStateOf(maxFontSize) }
     val readyToDraw = remember { mutableStateOf(false) }
+    //val text = remember { mutableStateOf(text.text) }
 
     Text(
 
@@ -75,7 +77,7 @@ fun ResizingText(
         fontSize = textSize.value,
 
         onTextLayout = { textLayoutResult: TextLayoutResult ->
-            if (textLayoutResult.lineCount > maxLines) {
+            if (textLayoutResult.lineCount > maxLines || textLayoutResult.didOverflowWidth) {
                 textSize.value = (textSize.value * 0.9)
             } else if (text.text != "NULL"){
                 readyToDraw.value = true

@@ -62,8 +62,8 @@ import com.example.hltv.ui.screens.singleTeamScreen.Stats
 fun SingleEventScreen(
     tournamentID: String?,
     seasonID: String?,
-    onClickSingleTeam: (String) -> Unit,
-    onClickSingleMatch: (String) -> Unit
+    onClickSingleTeam: (teamID: String?) -> Unit,
+    onClickSingleMatch: (matchID: String?) -> Unit
 ) {
     Log.i("SingleEventScreen", "TournamentID: " + tournamentID)
     Log.i("SingleEventScreen", "seasonID: " + seasonID)
@@ -107,16 +107,14 @@ fun SingleEventScreen(
             playerOverview = playerOverview,
             teamViewModel = teamViewModel,
             statsOverview = statsOverview,
-            onClickSinglePlayer = { Log.i("SingleEventScreen", "Clicked onClickSinglePlayer") },
-            onClickSingleTeam = { Log.i("SingleEventScreen", "Clicked onClickSingleTeam") },
-            onClickSingleMatch = { Log.i("SingleEventScreen", "Clicked onClickSingleMatch") },
+            onClickSinglePlayer = onClickSingleMatch, //TODO
+            onClickSingleTeam = onClickSingleTeam,
+            onClickSingleMatch =  onClickSingleMatch,
             painter = countryFlag,
             recentMatches = recentMatches,
             viewModel = eventViewModel
         )
     }
-
-
 }
 
 @Composable
@@ -125,9 +123,9 @@ fun SingleEventTopbox(
     teamViewModel: SingleTeamViewModel,
     playerOverview: SnapshotStateList<Player>,
     statsOverview: MutableState<Stats>,
-    onClickSinglePlayer: (String?) -> Unit,
-    onClickSingleTeam: (String?) -> Unit,
-    onClickSingleMatch: (String?) -> Unit,
+    onClickSinglePlayer: (playerID: String?) -> Unit,
+    onClickSingleTeam: (teamID: String?) -> Unit,
+    onClickSingleMatch: (matchID: String?) -> Unit,
     painter: AsyncImagePainter,
     recentMatches: SnapshotStateList<RecentMatch>
 ) {
@@ -146,13 +144,11 @@ fun SingleEventTopbox(
                     ) {
                         Spacer(Modifier.height(15.dp))
 
-                        Box(/*modifier = Modifier.height(200.dp)*/) {
+                        Box {
                             Image(
                                 painter = rememberAsyncImagePainter(viewModel.tournamentImage.value),
                                 contentDescription = "Event logo",
                                 modifier = Modifier.size(200.dp),
-                                //.clipToBounds(),/*offset(y = (-45).dp)*/
-                                //.size(300.dp)
                                 contentScale = ContentScale.Crop
                             )
                         }
@@ -348,8 +344,9 @@ fun SingleEventTopbox(
                                         recentMatches.forEachIndexed { index, match ->
                                             RecentMatches(
                                                 modifier = Modifier.clickable {
+                                                    Log.i("Ive been clicked", "Clicked left team")
                                                     onClickSingleMatch(
-                                                        recentMatches[index].matchID.toString()
+                                                        match.matchID.toString()
                                                     )
                                                 },
                                                 team1 = recentMatches[index].homeTeam?.name,
@@ -361,6 +358,7 @@ fun SingleEventTopbox(
                                                     recentMatches[index].awayTeamImage
                                                 ),
                                                 team2OnClick = {
+                                                    Log.i("Ive been clicked", "Clicked right team")
                                                     onClickSingleTeam(
                                                         recentMatches[index].awayTeam?.id.toString()
                                                     )
