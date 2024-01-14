@@ -61,7 +61,6 @@ fun SettingsScreen(onClickSingleTeam: (String?) -> Unit) {
 
         }
     }
-
 }
 
 @Composable
