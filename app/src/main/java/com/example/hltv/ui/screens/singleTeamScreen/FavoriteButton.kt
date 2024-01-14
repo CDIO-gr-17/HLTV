@@ -16,6 +16,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.graphicsLayer
 import com.example.hltv.data.local.PrefDataKeyValueStore
+import com.example.hltv.ui.common.showToast
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -29,6 +30,7 @@ fun FavoriteButton(
 ) {
 
     var isFavorite by remember { mutableStateOf(false) }
+    var localClickvar by remember { mutableStateOf(false)}
 
     LaunchedEffect(isFavorite){
         CoroutineScope(Dispatchers.IO).launch {
@@ -36,12 +38,14 @@ fun FavoriteButton(
                 isFavorite = int == teamID
             }
         }
+
     }
 
     IconToggleButton(
         checked = isFavorite,
         onCheckedChange = {
             isFavorite = it
+            localClickvar = it
             CoroutineScope(Dispatchers.IO).launch {
                 if (isFavorite) {
                     datastore.updateFavouriteTeam(teamID)
@@ -55,6 +59,9 @@ fun FavoriteButton(
             }
         }
     ) {
+        if (localClickvar)
+            showToast(message = "This team is now your favorite")
+
         Icon(
             tint = color,
             modifier = modifier.graphicsLayer {

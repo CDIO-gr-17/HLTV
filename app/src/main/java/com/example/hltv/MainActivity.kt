@@ -69,7 +69,6 @@ fun HLTVApp() {
         val canNavigateBack = !bottomAppBarScreens.any { it.route == currentDestination?.route }
         val currentScreen =
             allAppScreens.find { currentDestination?.route?.startsWith(it.route) ?: false } ?: Home
-        //val context : Context = getApplication<Application>().applicationContext
         val dataStore = PrefDataKeyValueStore(LocalContext.current)
 
 
@@ -91,16 +90,21 @@ fun HLTVApp() {
                     {}
                 },
                 actions = {
-                    if(currentScreen == SingleTeam)
-                        FavoriteButton(dataStore, currentBackStack?.arguments?.getString("teamID")?.toInt()!!)
-                    else
+                    if (currentScreen == SingleTeam)
+                        FavoriteButton(
+                            dataStore,
+                            currentBackStack?.arguments?.getString("teamID")?.toInt()!!
+                        )
+                    else {
+
                         IconButton(onClick = { navController.navigate(Settings.route) }) {
                             Icon(
-                                imageVector =  Icons.Default.Settings,
+                                imageVector = Icons.Default.Settings,
                                 contentDescription = "Settings Icon",
                                 tint = MaterialTheme.colorScheme.onSurface
                             )
                         }
+                    }
                 },
             )
         }, bottomBar = {
@@ -112,12 +116,10 @@ fun HLTVApp() {
                             Icon(
                                 imageVector = ImageVector.vectorResource(id = item.icon),
                                 contentDescription = item.route + "Icon",
-
-                                )
+                            )
                         },
                         label = { Text(text = item.route) })
                 }
-
             }
         }) {
             MainNavHost(
@@ -127,8 +129,8 @@ fun HLTVApp() {
     }
 
 
-
 }
+
 @SuppressLint("CoroutineCreationDuringComposition")
 @Composable
 private fun setTopAppBarTitle(currentScreen: Destination, currentBackStack: NavBackStackEntry?) {
