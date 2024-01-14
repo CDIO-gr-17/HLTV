@@ -5,6 +5,7 @@ import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
@@ -30,7 +31,7 @@ import com.example.hltv.ui.common.CommonCard
 
 @Composable
 fun SettingsScreen(onClickSingleTeam: (String?) -> Unit) {
-    val dataStore = PrefDataKeyValueStore(LocalContext.current)
+    val dataStore = PrefDataKeyValueStore.getInstance(LocalContext.current)
     val viewModel: SettingsScreenViewModel = viewModel()
     viewModel.loadData(dataStore)
 
@@ -48,10 +49,8 @@ fun SettingsScreen(onClickSingleTeam: (String?) -> Unit) {
                 Row(horizontalArrangement = Arrangement.SpaceBetween) {
                     Column {
                         Text(
-                            text = "$teamName",
-
-        //                    if (teamName == "") "You have no favorite Team"
-          //                  else "Favorite Team: $teamName",
+                            text = if (teamName == "") "You have no favorite Team"
+                            else "Favorite Team: $teamName",
                             fontSize = 20.sp,
                             modifier = Modifier.padding(top = 16.dp, bottom = 4.dp, start = 8.dp, end = 8.dp)
                         )
@@ -61,6 +60,7 @@ fun SettingsScreen(onClickSingleTeam: (String?) -> Unit) {
                             modifier = Modifier.padding(horizontal = 8.dp)
                         )
                     }
+                    Spacer(modifier = Modifier.padding(8.dp),)
                     val stdBitmap = BitmapFactory.decodeResource(
                         LocalContext.current.resources, R.drawable.questionmark
                     ).asImageBitmap()

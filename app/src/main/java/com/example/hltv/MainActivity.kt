@@ -27,7 +27,6 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.vector.ImageVector
-import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.vectorResource
 import androidx.navigation.NavBackStackEntry
 import androidx.navigation.compose.currentBackStackEntryAsState
@@ -53,7 +52,10 @@ class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContent {
-            HLTVApp()
+            // Initialize the singleton instance in your Application class or where appropriate
+            val prefDataKeyValueStore = PrefDataKeyValueStore.getInstance(applicationContext)
+
+            HLTVApp(prefDataKeyValueStore)
         }
     }
 }
@@ -61,7 +63,7 @@ class MainActivity : ComponentActivity() {
 @SuppressLint("CoroutineCreationDuringComposition", "UnrememberedMutableState")
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun HLTVApp() {
+fun HLTVApp(prefDataKeyValueStore: PrefDataKeyValueStore) {
     HLTVTheme {
         val navController = rememberNavController()
         val currentBackStack by navController.currentBackStackEntryAsState()
@@ -69,7 +71,7 @@ fun HLTVApp() {
         val canNavigateBack = !bottomAppBarScreens.any { it.route == currentDestination?.route }
         val currentScreen =
             allAppScreens.find { currentDestination?.route?.startsWith(it.route) ?: false } ?: Home
-        val dataStore = PrefDataKeyValueStore(LocalContext.current)
+
 
 
         Scaffold(topBar = {
@@ -92,7 +94,7 @@ fun HLTVApp() {
                 actions = {
                     if (currentScreen == SingleTeam)
                         FavoriteButton(
-                            dataStore,
+                            prefDataKeyValueStore,
                             currentBackStack?.arguments?.getString("teamID")?.toInt()!!
                         )
                     else {

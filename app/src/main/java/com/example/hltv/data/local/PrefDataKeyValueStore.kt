@@ -13,26 +13,27 @@ import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.map
 import java.io.IOException
 
-
 private val Context.dataStore: DataStore<Preferences> by preferencesDataStore(name = "settings")
 
-class PrefDataKeyValueStore(val context: Context) {
+class PrefDataKeyValueStore private constructor(context: Context) {
     private object PreferenceKeys {
-        val FAVOURITETEAM : Preferences.Key<Int> = intPreferencesKey("favouriteTeam")
-
+        val FAVOURITETEAM: Preferences.Key<Int> = intPreferencesKey("favouriteTeam")
     }
 
+    private val applicationContext = context.applicationContext
+
     suspend fun updateFavouriteTeam(teamID: Int) =
-        context.dataStore.edit { preferences: MutablePreferences ->
+        applicationContext.dataStore.edit { preferences: MutablePreferences ->
             preferences[PreferenceKeys.FAVOURITETEAM] = teamID
         }
 
-    fun getFavouriteTeam(): Flow<Int> = context.dataStore.data
+    fun getFavouriteTeam(): Flow<Int> = applicationContext.dataStore.data
         .catchAndHandleError()
         .map { preferences: Preferences ->
-        return@map preferences[PreferenceKeys.FAVOURITETEAM] ?: 0
-    }
-    private fun Flow<Preferences>.catchAndHandleError(): Flow<Preferences> {
+            return@map preferences[PreferenceKeys.FAVOURITETEAM] ?: 0
+        }
+
+    private fun Flow<Preferences>.catchAndHandleError(): Flow<Preferences> =
         this.catch { exception ->
             if (exception is IOException) {
                 emit(emptyPreferences())
@@ -40,6 +41,14 @@ class PrefDataKeyValueStore(val context: Context) {
                 throw exception
             }
         }
-        return this@catchAndHandleError
+
+    companion object {
+        @Volatile
+        private var INSTANCE: PrefDataKeyValueStore? = null
+
+        fun getInstance(context: Context): PrefDataKeyValueStore =
+            INSTANCE ?: synchronized(this) {
+                INSTANCE ?: PrefDataKeyValueStore(context.applicationContext).also { INSTANCE = it }
+            }
     }
 }
