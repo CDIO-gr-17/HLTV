@@ -84,6 +84,38 @@ fun PlayerScreen(
                         modifier = Modifier,
                         bottomBox = {
                             Column {
+                                Row {
+                                    Text(
+                                        modifier = Modifier.weight(1f),
+                                        text = "Full name:",
+                                        fontSize = MaterialTheme.typography.bodyLarge.fontSize,
+                                        color = MaterialTheme.colorScheme.onPrimaryContainer,
+                                    )
+                                    Text(
+                                        text = "${player?.firstName} ${player?.lastName}",
+                                        fontSize = MaterialTheme.typography.bodyLarge.fontSize,
+                                        color = MaterialTheme.colorScheme.onPrimaryContainer,
+                                    )
+                                }
+                                Divider(
+                                    color = MaterialTheme.colorScheme.primaryContainer
+                                )
+                                Row {
+                                    Text(
+                                        modifier = Modifier.weight(1f),
+                                        text = "Nickname:",
+                                        fontSize = MaterialTheme.typography.bodyLarge.fontSize,
+                                        color = MaterialTheme.colorScheme.onPrimaryContainer,
+                                    )
+                                    Text(
+                                        text = "${player?.name}",
+                                        fontSize = MaterialTheme.typography.bodyLarge.fontSize,
+                                        color = MaterialTheme.colorScheme.onPrimaryContainer,
+                                    )
+                                }
+                                Divider(
+                                    color = MaterialTheme.colorScheme.primaryContainer
+                                )
                                 Row (
                                     horizontalArrangement = Arrangement.Center
                                 ){
