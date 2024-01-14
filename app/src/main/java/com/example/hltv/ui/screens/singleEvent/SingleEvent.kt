@@ -90,118 +90,122 @@ fun SingleEventScreen(
     val countryFlag = getFlagFromCountryCode(countryCode = countryCode)
     val standings = eventViewModel.standings
 
-    Column {
-        SingleEventTopbox(
-            playerOverview = playerOverview,
-            teamViewModel = teamViewModel,
-            statsOverview = statsOverview,
-            onClickSinglePlayer = onClickSingleMatch, //TODO
-            onClickSingleTeam = onClickSingleTeam,
-            onClickSingleMatch = onClickSingleMatch,
-            painter = countryFlag,
-            recentMatches = recentMatches,
-            viewModel = eventViewModel
-        )
-        if (standings.isNotEmpty()) {
-            standings.reversed().forEach { standing ->
-                Column {
-                    CommonCard(
-                        modifier = Modifier,
-                        topBox = {
-                            Column {
-                                Row(modifier = Modifier.fillMaxWidth()) {
-                                    Text(
-                                        text = if (standings.size != 0) "Standings ${
-                                            standing.name?.removePrefix(
-                                                standing.tournament?.uniqueTournament?.name.toString() + " "
-                                            )
-                                                ?.removeSuffix(standing.tournament?.uniqueTournament?.name.toString() + " ")
-                                        }" else "Standings",
-                                        fontSize = 18.sp,
-                                        color = MaterialTheme.colorScheme.onSecondaryContainer,
-                                        fontWeight = FontWeight.Bold
-                                    )
-                                }
-                                Row(modifier = Modifier.fillMaxWidth()) {
-                                    Text(
-                                        text = "#",
-                                        modifier = Modifier.weight(0.05f),
-                                        fontSize = MaterialTheme.typography.bodyLarge.fontSize,
-                                        color = MaterialTheme.colorScheme.onSecondaryContainer,
-                                        fontWeight = FontWeight.Bold
-                                    )
-                                    Text(
-                                        text = "Team",
-                                        modifier = Modifier.weight(0.4f),
-                                        fontSize = MaterialTheme.typography.bodyLarge.fontSize,
-                                        color = MaterialTheme.colorScheme.onSecondaryContainer,
-                                        fontWeight = FontWeight.Bold
-                                    )
-                                    Spacer(modifier = Modifier.weight(0.2f))
-                                    Text(
-                                        text = "P",
-                                        modifier = Modifier.weight(0.075f),
-                                        fontSize = MaterialTheme.typography.bodyLarge.fontSize,
-                                        color = MaterialTheme.colorScheme.onSecondaryContainer,
-                                        fontWeight = FontWeight.Bold
-                                    )
-                                    Text(
-                                        text = "W",
-                                        modifier = Modifier.weight(0.075f),
-                                        fontSize = MaterialTheme.typography.bodyLarge.fontSize,
-                                        color = MaterialTheme.colorScheme.onSecondaryContainer,
-                                        fontWeight = FontWeight.Bold
-                                    )
-                                    Text(
-                                        text = "L",
-                                        fontSize = MaterialTheme.typography.bodyLarge.fontSize,
-                                        color = MaterialTheme.colorScheme.onSecondaryContainer,
-                                        fontWeight = FontWeight.Bold
-                                    )
-                                }
-                            }
-                        },
-                        bottomBox = {
-                            Column {
-                                standing.attending.forEachIndexed { placement, attending ->
-                                    Row {
+    LazyColumn {
+        item {
+            SingleEventTopbox(
+                playerOverview = playerOverview,
+                teamViewModel = teamViewModel,
+                statsOverview = statsOverview,
+                onClickSinglePlayer = onClickSingleMatch, //TODO
+                onClickSingleTeam = onClickSingleTeam,
+                onClickSingleMatch = onClickSingleMatch,
+                painter = countryFlag,
+                recentMatches = recentMatches,
+                viewModel = eventViewModel
+            )
+        }
+        item {
+            if (standings.isNotEmpty()) {
+                standings.reversed().forEach() { standing ->
+                    Column {
+                        CommonCard(
+                            modifier = Modifier,
+                            topBox = {
+                                Column {
+                                    Row(modifier = Modifier.fillMaxWidth()) {
                                         Text(
-                                            text = (placement + 1).toString(),
+                                            text = if (standings.size != 0) "Standings ${
+                                                standing.name?.removePrefix(
+                                                    standing.tournament?.uniqueTournament?.name.toString() + " "
+                                                )
+                                                    ?.removeSuffix(standing.tournament?.uniqueTournament?.name.toString() + " ")
+                                            }" else "Standings",
+                                            fontSize = 18.sp,
+                                            color = MaterialTheme.colorScheme.onSecondaryContainer,
+                                            fontWeight = FontWeight.Bold
+                                        )
+                                    }
+                                    Row(modifier = Modifier.fillMaxWidth()) {
+                                        Text(
+                                            text = "#",
                                             modifier = Modifier.weight(0.05f),
                                             fontSize = MaterialTheme.typography.bodyLarge.fontSize,
                                             color = MaterialTheme.colorScheme.onSecondaryContainer,
+                                            fontWeight = FontWeight.Bold
                                         )
-                                        attending.team?.name?.let {
+                                        Text(
+                                            text = "Team",
+                                            modifier = Modifier.weight(0.4f),
+                                            fontSize = MaterialTheme.typography.bodyLarge.fontSize,
+                                            color = MaterialTheme.colorScheme.onSecondaryContainer,
+                                            fontWeight = FontWeight.Bold
+                                        )
+                                        Spacer(modifier = Modifier.weight(0.2f))
+                                        Text(
+                                            text = "P",
+                                            modifier = Modifier.weight(0.075f),
+                                            fontSize = MaterialTheme.typography.bodyLarge.fontSize,
+                                            color = MaterialTheme.colorScheme.onSecondaryContainer,
+                                            fontWeight = FontWeight.Bold
+                                        )
+                                        Text(
+                                            text = "W",
+                                            modifier = Modifier.weight(0.075f),
+                                            fontSize = MaterialTheme.typography.bodyLarge.fontSize,
+                                            color = MaterialTheme.colorScheme.onSecondaryContainer,
+                                            fontWeight = FontWeight.Bold
+                                        )
+                                        Text(
+                                            text = "L",
+                                            fontSize = MaterialTheme.typography.bodyLarge.fontSize,
+                                            color = MaterialTheme.colorScheme.onSecondaryContainer,
+                                            fontWeight = FontWeight.Bold
+                                        )
+                                    }
+                                }
+                            },
+                            bottomBox = {
+                                Column {
+                                    standing.attending.forEachIndexed { placement, attending ->
+                                        Row {
                                             Text(
-                                                text = it,
-                                                modifier = Modifier.weight(0.4f),
+                                                text = (placement + 1).toString(),
+                                                modifier = Modifier.weight(0.05f),
+                                                fontSize = MaterialTheme.typography.bodyLarge.fontSize,
+                                                color = MaterialTheme.colorScheme.onSecondaryContainer,
+                                            )
+                                            attending.team?.name?.let {
+                                                Text(
+                                                    text = it,
+                                                    modifier = Modifier.weight(0.4f),
+                                                    fontSize = MaterialTheme.typography.bodyLarge.fontSize,
+                                                    color = MaterialTheme.colorScheme.onSecondaryContainer,
+                                                )
+                                            }
+                                            Spacer(modifier = Modifier.weight(0.2f))
+                                            Text(
+                                                text = attending.matches.toString(),
+                                                modifier = Modifier.weight(0.075f),
+                                                fontSize = MaterialTheme.typography.bodyLarge.fontSize,
+                                                color = MaterialTheme.colorScheme.onSecondaryContainer,
+                                            )
+                                            Text(
+                                                text = attending.wins.toString(),
+                                                modifier = Modifier.weight(0.075f),
+                                                fontSize = MaterialTheme.typography.bodyLarge.fontSize,
+                                                color = MaterialTheme.colorScheme.onSecondaryContainer,
+                                            )
+                                            Text(
+                                                text = attending.losses.toString(),
                                                 fontSize = MaterialTheme.typography.bodyLarge.fontSize,
                                                 color = MaterialTheme.colorScheme.onSecondaryContainer,
                                             )
                                         }
-                                        Spacer(modifier = Modifier.weight(0.2f))
-                                        Text(
-                                            text = attending.matches.toString(),
-                                            modifier = Modifier.weight(0.075f),
-                                            fontSize = MaterialTheme.typography.bodyLarge.fontSize,
-                                            color = MaterialTheme.colorScheme.onSecondaryContainer,
-                                        )
-                                        Text(
-                                            text = attending.wins.toString(),
-                                            modifier = Modifier.weight(0.075f),
-                                            fontSize = MaterialTheme.typography.bodyLarge.fontSize,
-                                            color = MaterialTheme.colorScheme.onSecondaryContainer,
-                                        )
-                                        Text(
-                                            text = attending.losses.toString(),
-                                            fontSize = MaterialTheme.typography.bodyLarge.fontSize,
-                                            color = MaterialTheme.colorScheme.onSecondaryContainer,
-                                        )
                                     }
                                 }
                             }
-                        }
-                    )
+                        )
+                    }
                 }
             }
         }
@@ -221,9 +225,7 @@ fun SingleEventTopbox(
     recentMatches: SnapshotStateList<RecentMatch>
 ) {
 
-    LazyColumn {
-
-        item {
+    Column {
             CommonCard(
                 modifier = Modifier,
                 customInnerPadding = 0.dp,
@@ -345,7 +347,7 @@ fun SingleEventTopbox(
                             //I tried doing DI, but we cant because the lazycolumn needs an argument
                             //that you cant pass so wed need DI in the DI and that was too much work
 
-                            Column(modifier = Modifier.fillParentMaxHeight()) {
+                            Column(modifier = Modifier) {
 
                                 Row(
                                     modifier = Modifier.fillMaxWidth(),
@@ -469,7 +471,6 @@ fun SingleEventTopbox(
             )
         }
     }
-}
 
 
 
