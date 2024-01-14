@@ -66,7 +66,7 @@ fun PlayerScreen(
                         .fillMaxHeight(),
                     horizontalAlignment = Alignment.CenterHorizontally
                 ) {
-                    PlayerImage(image = rememberAsyncImagePainter(model = viewModel.playerImage.value))
+                    PlayerImage(image = rememberAsyncImagePainter(if(viewModel.playerImage.value!=null)viewModel.playerImage.value else R.drawable.playersilouhette))
                     Row (
                         modifier = Modifier.fillMaxWidth(),
                         horizontalArrangement = Arrangement.Center

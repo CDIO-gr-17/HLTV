@@ -112,7 +112,7 @@ fun OverviewPlayer(
         ){
             Image(
                 painter = if(player.image!=null) rememberAsyncImagePainter(player.image) else rememberAsyncImagePainter(
-                    model = R.drawable.person_24px
+                    model = R.drawable.playersilouhette
                 ),
                 contentDescription = null,
                 alignment = Alignment.CenterStart,
@@ -168,19 +168,13 @@ fun OverviewInfo(
         Column(
             horizontalAlignment = Alignment.CenterHorizontally
         ){
-            Text(
-                text = "Logo",
-                fontSize = MaterialTheme.typography.bodyLarge.fontSize,
-                color = MaterialTheme.colorScheme.onPrimaryContainer,
-                fontWeight = FontWeight.Bold
-            )
             if (teamLogo != null) {
                 Image(
                     painter = teamLogo,
                     contentDescription = null,
                     alignment = Alignment.Center,
                     modifier = Modifier
-                        .size(40.dp)
+                        .size(50.dp)
                 )
             }
         }
