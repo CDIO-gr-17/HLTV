@@ -53,11 +53,12 @@ fun MainNavHost(navController: NavHostController, modifier: Modifier) {
         }
 
         composable(route = Settings.route) {
-            SettingsScreen()
+            SettingsScreen(
+                onClickSingleTeam = {navController.navigate(SingleTeam.route + it) }
+            )
         }
 
         composable(route = Ranking.route) {
-            SettingsScreen()
         }
 
         composable(route = SingleTeam.route + "{teamID}",

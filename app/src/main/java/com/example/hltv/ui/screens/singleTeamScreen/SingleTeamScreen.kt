@@ -351,5 +351,5 @@ fun Statistics(
 @Composable
 @Preview
 fun SingleTeamPreview(){
-    //SingleTeam()
+    //SingleTeamScreen(onClickSinglePlayer = unit, onClickSingleTeam = item, onClickSingleMatch = )
 }
