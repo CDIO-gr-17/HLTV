@@ -259,7 +259,7 @@ suspend fun getRelevantTournaments(): List<ThirdUniqueTournament> {
 
     var tournaments : List<Int> = getCSTournamentsID(getCSCategory())
 
-    val croppedTournaments = tournaments.take(1)
+    val croppedTournaments = tournaments.take(15)
 
     //TODO: This function needs to return things one at a time so we get dynamic loading of tournaments
     val deferreds = croppedTournaments.map { tournamentID ->
