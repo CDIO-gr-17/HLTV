@@ -203,6 +203,7 @@ fun RecentMatches(
         topBox = {
             Box {
                 Row (
+                    verticalAlignment = Alignment.CenterVertically,
                     modifier = modifier
                         .fillMaxWidth()
                 ){
@@ -220,6 +221,8 @@ fun RecentMatches(
                         )
                         Text(
                             text = team1 ?: "Team 1",
+                            maxLines = 2,
+                            overflow = TextOverflow.Ellipsis,
                             fontSize = MaterialTheme.typography.bodyLarge.fontSize,
                             color = MaterialTheme.colorScheme.onPrimaryContainer
                         )
@@ -249,8 +252,12 @@ fun RecentMatches(
                     ){
                         Text(
                             text = team2 ?: "Team 2",
+                            maxLines = 2,
+                            overflow = TextOverflow.Ellipsis,
                             fontSize = MaterialTheme.typography.bodyLarge.fontSize,
-                            color = MaterialTheme.colorScheme.onPrimaryContainer
+                            color = MaterialTheme.colorScheme.onPrimaryContainer,
+                            textAlign = TextAlign.End,
+                            modifier = Modifier.weight(1f)
                         )
                         Image(
                             painter = imageTeam2,
