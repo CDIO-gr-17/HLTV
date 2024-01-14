@@ -86,8 +86,6 @@ fun SingleEventScreen(
     val recentMatches = teamViewModel.recentMatches
     val playerOverview = teamViewModel.playerOverview
     val statsOverview = teamViewModel.statisticsOverview
-    val countryCode = statsOverview.value.countryCode
-    val countryFlag = getFlagFromCountryCode(countryCode = countryCode)
     val standings = eventViewModel.standings
 
     LazyColumn {
@@ -99,7 +97,6 @@ fun SingleEventScreen(
                 onClickSinglePlayer = onClickSingleMatch, //TODO
                 onClickSingleTeam = onClickSingleTeam,
                 onClickSingleMatch = onClickSingleMatch,
-                painter = countryFlag,
                 recentMatches = recentMatches,
                 eventViewModel = eventViewModel
             )
@@ -221,7 +218,6 @@ fun SingleEventTopbox(
     onClickSinglePlayer: (playerID: String?) -> Unit,
     onClickSingleTeam: (teamID: String?) -> Unit,
     onClickSingleMatch: (matchID: String?) -> Unit,
-    painter: AsyncImagePainter,
     recentMatches: SnapshotStateList<RecentMatch>
 ) {
 
@@ -237,7 +233,7 @@ fun SingleEventTopbox(
                     ) {
                         Spacer(Modifier.height(15.dp))
 
-                        Box {
+                        Box {//TODO: Can this box be removed?
                             Image(
                                 painter = rememberAsyncImagePainter(eventViewModel.tournamentImage.value),
                                 contentDescription = "Event logo",
@@ -245,53 +241,47 @@ fun SingleEventTopbox(
                                 contentScale = ContentScale.Crop
                             )
                         }
+                        Column(horizontalAlignment = Alignment.CenterHorizontally){
+                            ResizingText(
+                                text = buildAnnotatedString {
+                                    withStyle(
+                                        style = SpanStyle(
+                                            brush = Brush.verticalGradient(
+                                                colors = listOf(Color.White, eventViewModel.color.value)
+                                            ),
+                                            fontWeight = FontWeight.ExtraBold,
 
-                        val tournamentColors = listOf(
-                            if (eventViewModel.palette.value?.vibrantSwatch?.rgb != null) Color(
-                                eventViewModel.palette.value?.vibrantSwatch?.rgb!!
-                            ) else Color.Black,
-                            Color.White,
-                        )
-
-
-                        ResizingText(
-                            text = buildAnnotatedString {
-                                withStyle(
-                                    style = SpanStyle(
-                                        brush = Brush.verticalGradient(
-                                            colors = listOf(Color.White, eventViewModel.color.value)
+                                            ),
+                                    ) {
+                                        append(eventViewModel.event.value.name.toString().uppercase())
+                                    }
+                                },
+                                maxFontSize = 70.sp,
+                                maxLines = 2
+                            )
+                            ResizingText(
+                                text = buildAnnotatedString {
+                                    withStyle(
+                                        style = SpanStyle(
+                                            brush = Brush.verticalGradient(
+                                                colors = listOf(eventViewModel.color.value, Color.White)
+                                            ),
+                                            fontSize = 35.sp,
+                                            fontWeight = FontWeight.Bold,
                                         ),
-                                        fontWeight = FontWeight.ExtraBold,
+                                    ) {
+                                        append(
+                                            eventViewModel.tournamentSeason.value.name.toString()
+                                                .uppercase()
+                                        )
+                                    }
+                                },
+                                modifier = Modifier.offset(y = (-20).dp),
+                                maxLines = 2,
+                                maxFontSize = 50.sp
+                            )
+                        }
 
-                                        ),
-                                ) {
-                                    append(eventViewModel.event.value.name.toString().uppercase())
-                                }
-                            },
-                            maxFontSize = 70.sp,
-                            maxLines = 2
-                        )
-                        ResizingText(
-                            text = buildAnnotatedString {
-                                withStyle(
-                                    style = SpanStyle(
-                                        brush = Brush.verticalGradient(
-                                            colors = listOf(eventViewModel.color.value, Color.DarkGray)
-                                        ),
-                                        fontSize = 35.sp,
-                                        fontWeight = FontWeight.Bold,
-                                    ),
-                                ) {
-                                    append(
-                                        eventViewModel.tournamentSeason.value.name.toString()
-                                            .uppercase()
-                                    )
-                                }
-                            },
-                            modifier = Modifier.offset(y = (-20).dp),
-                            maxLines = 2,
-                            maxFontSize = 50.sp
-                        )
 
 
                         Row(
@@ -346,7 +336,7 @@ fun SingleEventTopbox(
                             //I tried doing DI, but we cant because the lazycolumn needs an argument
                             //that you cant pass so wed need DI in the DI and that was too much work
 
-                            Column(modifier = Modifier) {
+                            Column(modifier = Modifier.clickable { onClickSingleTeam(teamViewModel.teamID.toString()) }) {
 
                                 CommonCard(modifier = Modifier, bottomBox = {
                                     Column {
@@ -365,21 +355,6 @@ fun SingleEventTopbox(
                                                 contentDescription = teamViewModel.team.value.name,
                                                 Modifier.size(69.dp)
                                             )
-
-
-                                            val gradientColors = listOf<Color>(
-                                                if (teamViewModel.palette.value != null && teamViewModel.palette.value?.vibrantSwatch?.rgb != null) Color(
-                                                    teamViewModel.palette.value?.lightVibrantSwatch?.rgb!!
-                                                ) else Color.Black,
-                                                Color.White
-                                            )
-                                            /*
-                                                                                if (teamViewModel.palette.value?.vibrantSwatch?.rgb != null) Color(
-                                                                                    teamViewModel.palette.value?.vibrantSwatch?.rgb!!,
-                                                                                )
-                                                                                else Color.Black
-                                                                                */
-
 
                                             //TODO: Make this resize, possibly with resisingText? Bit hard to do while keeping it pretty
                                             Text(
@@ -400,7 +375,7 @@ fun SingleEventTopbox(
 
                                                             if (teamViewModel.team.value.name != null) teamViewModel.team.value.name.toString()
                                                                 .substring(
-                                                                    0,
+                                                                    0, //TODO: Temporary fix. pls no
                                                                     minOf(
                                                                         teamViewModel.team.value.name.toString().length,
                                                                         15
