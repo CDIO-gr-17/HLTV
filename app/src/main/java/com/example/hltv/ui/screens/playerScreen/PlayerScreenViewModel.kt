@@ -12,6 +12,7 @@ import com.example.hltv.data.remote.Team
 import com.example.hltv.data.remote.ThirdUniqueTournament
 import com.example.hltv.data.remote.getPlayerFromPlayerID
 import com.example.hltv.data.remote.getPlayerImage
+import com.example.hltv.data.remote.getTeamImage
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -30,16 +31,16 @@ class PlayerScreenViewModel():ViewModel() {
 
     var player = mutableStateOf<Player?>(null)
     var playerImage = mutableStateOf<Bitmap?>(null)
+    var teamImage = mutableStateOf<Bitmap?>(null)
 
     fun loadData(playerIDfullString: String?) {
         Log.i("PlayerScreenViewModel", "playerIDfullString is: $playerIDfullString")
         val playerID = playerIDfullString?.toInt()
         viewModelScope.launch {
             CoroutineScope(Dispatchers.IO).launch {
-                val data = getPlayerFromPlayerID(playerID)
-                val image = getPlayerImage(playerID)
-                player.value = data.player
-                playerImage.value = image
+                player.value = getPlayerFromPlayerID(playerID).player
+                playerImage.value = getPlayerImage(playerID)
+                teamImage.value = getTeamImage(player.value?.team?.id)
             }
         }
     }

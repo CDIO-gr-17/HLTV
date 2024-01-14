@@ -10,7 +10,11 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.offset
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
+import androidx.compose.material3.Divider
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -18,12 +22,20 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.painter.Painter
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import coil.compose.rememberAsyncImagePainter
 import com.example.hltv.R
 import com.example.hltv.data.convertTimestampToDateDisplay
+import com.example.hltv.data.convertTimestampToDateURL
+import com.example.hltv.data.getAvgAgeFromTimestamp
+import com.example.hltv.data.getFlagFromCountryCode
+import com.example.hltv.data.remote.getTeamImage
 import com.example.hltv.ui.common.CommonCard
 
 
@@ -31,109 +43,195 @@ import com.example.hltv.ui.common.CommonCard
 @Composable
 fun PlayerScreen(
     playerIDfullString: String? = "Name"
-){
+) {
 
-    val viewModel : PlayerScreenViewModel = viewModel()
-    LaunchedEffect(Unit){
+    val viewModel: PlayerScreenViewModel = viewModel()
+    LaunchedEffect(Unit) {
         viewModel.loadData(playerIDfullString)
     }
-
     Log.i("playerID", "Transferred player \"ID\": " + playerIDfullString)
-    Column (
-        horizontalAlignment = Alignment.CenterHorizontally,
-        modifier = Modifier
-            .fillMaxHeight()
-    ){
-        PlayerImage(image = rememberAsyncImagePainter(model = viewModel.playerImage.value))
-        Row(
-            modifier = Modifier,
-            horizontalArrangement = Arrangement.SpaceEvenly
-        ){
-            Box(modifier = Modifier
-                .fillMaxWidth()
-                .weight(1f)
-            ){
+    val player = viewModel.player.value
+    val teamImage = viewModel.teamImage.value
+    val playerAge = if (player?.dateOfBirthTimestamp != null)
+        getAvgAgeFromTimestamp(mutableListOf(player.dateOfBirthTimestamp!!.toInt())).toInt() else 0
+    val playerBorn = if (player?.dateOfBirthTimestamp != null)
+        convertTimestampToDateURL(player.dateOfBirthTimestamp) else 0
 
-                    TeamBox(
-                        team = viewModel.player.value?.team?.name,
-                        teamWorldRank = "",
-                        teamNationality = if (viewModel.player.value?.country?.name!=null) viewModel.player.value!!.country?.name!! else "no team",
+    Column {
+        CommonCard(
+            modifier = Modifier,
+            topBox = {
+                Column (
+                    modifier = Modifier
+                        .fillMaxHeight(),
+                    horizontalAlignment = Alignment.CenterHorizontally
+                ) {
+                    PlayerImage(image = rememberAsyncImagePainter(model = viewModel.playerImage.value))
+                    Row (
+                        modifier = Modifier.fillMaxWidth(),
+                        horizontalArrangement = Arrangement.Center
+                    ){
+                        Text(
+                            text = "${player?.firstName} '${player?.name}' ${player?.lastName}",
+                            fontSize = 24.sp,
+                            color = MaterialTheme.colorScheme.onSecondaryContainer,
+                            textAlign = TextAlign.Center,
+                            modifier = Modifier.fillMaxWidth(),
+                            fontWeight = FontWeight.Bold,
+                        )
+                    }
+                    CommonCard (
+                        modifier = Modifier,
+                        bottomBox = {
+                            Column {
+                                Row (
+                                    horizontalArrangement = Arrangement.Center
+                                ){
+                                    Text(
+                                        modifier = Modifier.weight(1f),
+                                        text = "Country:",
+                                        fontSize = MaterialTheme.typography.bodyLarge.fontSize,
+                                        color = MaterialTheme.colorScheme.onPrimaryContainer,
+                                    )
+                                    Text(
+                                        text = "${player?.country?.name} ",
+                                        fontSize = MaterialTheme.typography.bodyLarge.fontSize,
+                                        color = MaterialTheme.colorScheme.onPrimaryContainer,
+                                    )
+                                    Image(
+                                        modifier = Modifier.size(25.dp),
+                                        painter = getFlagFromCountryCode(player?.country?.alpha2),
+                                        contentDescription = null,
+                                        alignment = Alignment.CenterEnd
+                                    )
+                                }
+                                Divider(
+                                    color = MaterialTheme.colorScheme.primaryContainer
+                                )
+                                Row {
+                                    Text(
+                                        modifier = Modifier.weight(1f),
+                                        text = "Age:",
+                                        fontSize = MaterialTheme.typography.bodyLarge.fontSize,
+                                        color = MaterialTheme.colorScheme.onPrimaryContainer,
+                                    )
+                                    Text(
+                                        text = "$playerAge years old",
+                                        fontSize = MaterialTheme.typography.bodyLarge.fontSize,
+                                        color = MaterialTheme.colorScheme.onPrimaryContainer,
+                                    )
+                                }
+                                Divider(
+                                    color = MaterialTheme.colorScheme.primaryContainer
+                                )
+                                Row {
+                                    Text(
+                                        modifier = Modifier.weight(1f),
+                                        text = "Born:",
+                                        fontSize = MaterialTheme.typography.bodyLarge.fontSize,
+                                        color = MaterialTheme.colorScheme.onPrimaryContainer,
+                                    )
+                                    Text(
+                                        text = "$playerBorn",
+                                        fontSize = MaterialTheme.typography.bodyLarge.fontSize,
+                                        color = MaterialTheme.colorScheme.onPrimaryContainer,
+                                    )
+                                }
+                                Divider(
+                                    color = MaterialTheme.colorScheme.primaryContainer
+                                )
+                                Row (
+                                    horizontalArrangement = Arrangement.Center
+                                ) {
+                                    Text(
+                                        modifier = Modifier.weight(1f),
+                                        text = "Team:",
+                                        fontSize = MaterialTheme.typography.bodyLarge.fontSize,
+                                        color = MaterialTheme.colorScheme.onPrimaryContainer,
+                                    )
+                                    Text(
+                                        text = "${player?.team?.name} ",
+                                        fontSize = MaterialTheme.typography.bodyLarge.fontSize,
+                                        color = MaterialTheme.colorScheme.onPrimaryContainer,
+                                    )
+                                    Image(
+                                        modifier = Modifier.size(25.dp),
+                                        painter = rememberAsyncImagePainter(teamImage),
+                                        contentDescription = null,
+                                        alignment = Alignment.CenterEnd
+                                    )
+                                }
+                                Divider(
+                                    color = MaterialTheme.colorScheme.primaryContainer
+                                )
+                                Row (
+                                    horizontalArrangement = Arrangement.Center
+                                ){
+                                    Text(
+                                        modifier = Modifier.weight(1f),
+                                        text = "Team country:",
+                                        fontSize = MaterialTheme.typography.bodyLarge.fontSize,
+                                        color = MaterialTheme.colorScheme.onPrimaryContainer,
+                                    )
+                                    Text(
+                                        text = "${player?.team?.country?.name} ",
+                                        fontSize = MaterialTheme.typography.bodyLarge.fontSize,
+                                        color = MaterialTheme.colorScheme.onPrimaryContainer,
+                                    )
+                                    Image(
+                                        modifier = Modifier.size(25.dp),
+                                        painter = getFlagFromCountryCode(player?.team?.country?.alpha2),
+                                        contentDescription = null,
+                                        alignment = Alignment.CenterEnd
+                                    )
+                                }
+                            }
+                        }
                     )
+
                 }
             }
-            Box (modifier = Modifier
-                .fillMaxWidth()
-                .weight(1f))
-            {
-                StatsBox(
-                    name = viewModel.player.value?.name,
-                    age =  convertTimestampToDateDisplay(viewModel.player.value?.dateOfBirthTimestamp),
-                    position =viewModel.player.value?.position)
-            }
-
-        }
+        )
     }
+}
 
 
 @Composable
 fun PlayerImage(
-    image: Painter ?= null,
-){
+    image: Painter? = null,
+) {
     Image(
         painter = image ?: painterResource(id = R.drawable.person_24px),
         contentDescription = null,
         modifier = Modifier
-            .width(300.dp)
-            .height(300.dp)
+            .size(250.dp)
     )
 }
 
 @Composable
-fun TeamBox(
-    team: String?,
-    teamWorldRank: String,
-    teamNationality: String,
-){
-    CommonCard (
-        modifier = Modifier.fillMaxWidth(),
-        headText = "Team",
-        bottomBox = {
-            Column {
-                Text(text = "$team: #$teamWorldRank")
-                Text(text = "Nationality: $teamNationality")
-            }
+fun InformationBox(
+    name: String,
+    age: Int,
+) {
+    CommonCard(modifier = Modifier.fillMaxWidth(), headText = "Statistics", bottomBox = {
+        Column {
+            Text(
+                text = "Full name: $name",
+                fontSize = MaterialTheme.typography.bodyLarge.fontSize,
+                color = MaterialTheme.colorScheme.onPrimaryContainer,
+            )
+            Text(
+                text = "Age: $age",
+                fontSize = MaterialTheme.typography.bodyLarge.fontSize,
+                color = MaterialTheme.colorScheme.onPrimaryContainer,
+            )
         }
-    )
-}
-
-@Composable
-fun StatsBox(
-    name: String ?= null,
-    age: String ?= null,
-    position: String ?= null
-){
-    CommonCard (
-        modifier = Modifier.fillMaxWidth(),
-        headText = "Statistics",
-        bottomBox = {
-            Column {
-                name?.let {
-                    Text(text = "Name: $name")
-                }
-                age?.let{
-                    Text(text = "Age: $age")
-                }
-                position?.let{
-                    Text(text = "Position: $position")
-                }
-            }
-        }
-    )
+    })
 }
 
 
 @Preview
 @Composable
-fun PlayerScreenPreview(){
+fun PlayerScreenPreview() {
     PlayerScreen("OBAMNA")
 }
