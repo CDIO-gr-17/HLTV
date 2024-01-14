@@ -34,12 +34,14 @@ import androidx.navigation.compose.rememberNavController
 import com.example.compose.HLTVTheme
 import com.example.hltv.data.local.PrefDataKeyValueStore
 import com.example.hltv.data.remote.getEvent
+import com.example.hltv.data.remote.getPlayerFromPlayerID
 import com.example.hltv.data.remote.getTeamNameFromID
 import com.example.hltv.navigation.Destination
 import com.example.hltv.navigation.Home
 import com.example.hltv.navigation.MainNavHost
 import com.example.hltv.navigation.Settings
 import com.example.hltv.navigation.SingleMatch
+import com.example.hltv.navigation.SinglePlayer
 import com.example.hltv.navigation.SingleTeam
 import com.example.hltv.navigation.allAppScreens
 import com.example.hltv.navigation.bottomAppBarScreens
@@ -157,6 +159,18 @@ private fun setTopAppBarTitle(currentScreen: Destination, currentBackStack: NavB
                 val homeTeamName = event!!.homeTeam.shortName
                 val awayTeamName = event.awayTeam.shortName
                 topAppBarTitle = "$homeTeamName vs $awayTeamName"
+            }
+        }
+        Text(text = topAppBarTitle)
+    } else if (currentScreen == SinglePlayer) {
+        var topAppBarTitle by remember { mutableStateOf("Player info") }
+        CoroutineScope(Dispatchers.IO).launch {
+            val playerID = currentBackStack?.arguments?.getString("playerID")
+            val playerIDInt = playerID?.toInt()
+            if (playerID != null) {
+                val player = getPlayerFromPlayerID(playerIDInt).player
+                Log.d("Topbar","Got player")
+                topAppBarTitle = player.name.toString()
             }
         }
         Text(text = topAppBarTitle)
