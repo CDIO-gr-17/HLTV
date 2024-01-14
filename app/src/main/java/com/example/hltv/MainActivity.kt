@@ -29,6 +29,7 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.res.vectorResource
+import androidx.compose.ui.text.style.TextAlign
 import androidx.navigation.NavBackStackEntry
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
@@ -165,7 +166,7 @@ private fun setTopAppBarTitle(currentScreen: Destination, currentBackStack: NavB
                 topAppBarTitle = "$homeTeamName vs $awayTeamName"
             }
         }
-        Text(text = topAppBarTitle)
+        Text(text = topAppBarTitle, textAlign = TextAlign.Center)
     } else if (currentScreen == SinglePlayer) {
         var topAppBarTitle by remember { mutableStateOf("Player info") }
         CoroutineScope(Dispatchers.IO).launch {
