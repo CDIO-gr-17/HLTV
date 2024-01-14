@@ -180,6 +180,21 @@ fun CommonCard(
     }
 
 
+
+
+
+
+
+/*@Composable
+fun FavoriteButton(isFavorite: Boolean) {
+    Icon(
+        imageVector = if (isFavorite) Icons.Default.Favorite else Icons.Outlined.Favorite,
+      contentDescription = if (isFavorite) ("Favorited") else ("Not favorited"),
+        tint = if (isFavorite) Color.Red else Color.Gray
+    )
+}
+
+*/
 @Preview
 @Composable
 fun CommonComposablePreview() {

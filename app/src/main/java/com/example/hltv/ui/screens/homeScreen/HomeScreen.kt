@@ -42,12 +42,10 @@ val M = MaterialTheme
 
 @Composable
 fun HomeScreen(onClickSingleTeam : (String?) -> Unit, onClickSingleMatch : (String?) -> Unit) {
-
     val viewModel : HomeScreenViewModel = viewModel()
     LaunchedEffect(Unit) {
         viewModel.loadData()
     }
-
 
 
     Column(
@@ -80,9 +78,8 @@ fun HomeScreen(onClickSingleTeam : (String?) -> Unit, onClickSingleMatch : (Stri
                 teamTwoIcon = rememberAsyncImagePainter(model = viewModel.awayTeamIcon.value),
                 teamTwoOnClick = { onClickSingleTeam(viewModel.upcomingMatchValue.value!!.awayTeam.id.toString()) },
                 matchDate = convertTimestampToWeekDateClock(viewModel.upcomingMatchValue.value!!.startTimestamp),
-                tournamentIcon = rememberAsyncImagePainter(model = viewModel.awayTeamIcon.value)
+                tournamentIcon = rememberAsyncImagePainter(model = viewModel.tournamentIcon.value)
             )
-
          }
 
         Divider(modifier = Modifier.padding(horizontal = 8.dp), color = M.colorScheme.onBackground)

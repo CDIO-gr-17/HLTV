@@ -13,6 +13,7 @@ import com.example.hltv.data.remote.Team
 import com.example.hltv.data.remote.getLiveMatches
 import com.example.hltv.data.remote.getMatchesFromDay
 import com.example.hltv.data.remote.getTeamImage
+import com.example.hltv.data.remote.getTournamentLogo
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -28,6 +29,7 @@ class HomeScreenViewModel: ViewModel() {
 
     val awayTeamIcon = mutableStateOf<Bitmap?>(null)
     var homeTeamIcon = mutableStateOf<Bitmap?>(null)
+    var tournamentIcon = mutableStateOf<Bitmap?>(null)
 
     private var dataLoaded = false
 
@@ -43,6 +45,7 @@ class HomeScreenViewModel: ViewModel() {
                     liveMatchValue.value = event
                     homeTeamIcon.value = getTeamImage(event.homeTeam.id)
                     awayTeamIcon.value = getTeamImage(event.awayTeam.id)
+                    tournamentIcon.value = getTournamentLogo(event.tournament.uniqueTournament?.id)
                 }
                 else {
                     loadUpcomingMatch()
@@ -69,6 +72,7 @@ class HomeScreenViewModel: ViewModel() {
             upcomingMatchValue.value = goodevent
             homeTeamIcon.value = getTeamImage(upcomingMatchValue.value?.homeTeam?.id)
             awayTeamIcon.value = getTeamImage(upcomingMatchValue.value?.awayTeam?.id)
+            tournamentIcon.value = getTournamentLogo(upcomingMatchValue.value?.tournament?.uniqueTournament?.id)
 
             }
         }

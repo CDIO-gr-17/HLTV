@@ -2,13 +2,16 @@ package com.example.hltv.ui.screens.searchScreen
 
 import android.util.Log
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Search
+import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.Divider
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
@@ -51,9 +54,13 @@ fun SearchScreen(
 
     Column(modifier = Modifier.fillMaxSize(), horizontalAlignment = Alignment.CenterHorizontally) {
         viewModel.setQuery(SearchField())
-
-        if (isSearching) {
-            Text(text = "Searching...", color = MaterialTheme.colorScheme.onPrimaryContainer)
+        androidx.compose.animation.AnimatedVisibility(visible = isSearching) {
+            Row(
+                modifier = Modifier.fillMaxWidth(),
+                horizontalArrangement = Arrangement.Center
+            ) {
+                CircularProgressIndicator(color = MaterialTheme.colorScheme.secondaryContainer)
+            }
         }
         LaunchedEffect(searchText) {
             delay(300) // Adjust the delay as needed

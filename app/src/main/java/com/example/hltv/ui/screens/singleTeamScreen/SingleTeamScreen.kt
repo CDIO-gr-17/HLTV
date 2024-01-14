@@ -48,29 +48,6 @@ fun SingleTeamScreen(teamID : String? = "364378", onClickSinglePlayer: (String?)
     val countryCode = statsOverview.value.countryCode
     val painter = getFlagFromCountryCode(countryCode = countryCode)
 
-
-    TeamOverview(
-        playerOverview = playerOverview,
-        statsOverview = statsOverview,
-        onClickSinglePlayer = onClickSinglePlayer,
-        onClickSingleTeam = onClickSingleTeam,
-        onClickSingleMatch = onClickSingleTeam,
-        painter = painter,
-        recentMatches = recentMatches
-    )
-}
-
-
-@Composable
-fun TeamOverview(
-    playerOverview : SnapshotStateList<Player>,
-    statsOverview : MutableState<Stats>,
-    onClickSinglePlayer: (String?) -> Unit,
-    onClickSingleTeam: (String?) -> Unit,
-    onClickSingleMatch: (String?) -> Unit,
-    painter : AsyncImagePainter,
-    recentMatches : SnapshotStateList<RecentMatch>
-    ){
     LazyColumn {
         item{
             CommonCard(modifier = Modifier, bottomBox = {
@@ -137,7 +114,7 @@ fun OverviewPlayer(
         ){
             Image(
                 painter = if(player.image!=null) rememberAsyncImagePainter(player.image) else rememberAsyncImagePainter(
-                    model = R.drawable.person_24px
+                    model = R.drawable.playersilouhette
                 ),
                 contentDescription = null,
                 alignment = Alignment.CenterStart,
@@ -193,22 +170,13 @@ fun OverviewInfo(
         Column(
             horizontalAlignment = Alignment.CenterHorizontally
         ){
-            /*
-            Text(
-                text = "Logo",
-                fontSize = MaterialTheme.typography.bodyLarge.fontSize,
-                color = MaterialTheme.colorScheme.onPrimaryContainer,
-                fontWeight = FontWeight.Bold
-            )
-
-             */
             if (teamLogo != null) {
                 Image(
                     painter = teamLogo,
                     contentDescription = null,
                     alignment = Alignment.Center,
                     modifier = Modifier
-                        .size(60.dp)
+                        .size(50.dp)
                 )
             }
         }
@@ -231,6 +199,7 @@ fun RecentMatches(
         topBox = {
             Box {
                 Row (
+                    verticalAlignment = Alignment.CenterVertically,
                     modifier = modifier
                         .fillMaxWidth()
                 ){
@@ -248,6 +217,8 @@ fun RecentMatches(
                         )
                         Text(
                             text = team1 ?: "Team 1",
+                            maxLines = 2,
+                            overflow = TextOverflow.Ellipsis,
                             fontSize = MaterialTheme.typography.bodyLarge.fontSize,
                             color = MaterialTheme.colorScheme.onPrimaryContainer
                         )
@@ -277,8 +248,12 @@ fun RecentMatches(
                     ){
                         Text(
                             text = team2 ?: "Team 2",
+                            maxLines = 2,
+                            overflow = TextOverflow.Ellipsis,
                             fontSize = MaterialTheme.typography.bodyLarge.fontSize,
-                            color = MaterialTheme.colorScheme.onPrimaryContainer
+                            color = MaterialTheme.colorScheme.onPrimaryContainer,
+                            textAlign = TextAlign.End,
+                            modifier = Modifier.weight(1f)
                         )
                         Image(
                             painter = imageTeam2,
@@ -379,5 +354,5 @@ fun Statistics(
 @Composable
 @Preview
 fun SingleTeamPreview(){
-    //SingleTeam()
+    //SingleTeamScreen(onClickSinglePlayer = unit, onClickSingleTeam = item, onClickSingleMatch = )
 }

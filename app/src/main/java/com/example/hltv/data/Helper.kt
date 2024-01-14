@@ -15,7 +15,6 @@ import com.example.hltv.R
 @Composable
 fun getFlagFromCountryCode(countryCode: String?): AsyncImagePainter {
     if ( countryCode != null) {
-        Log.i("getFlagFromCountryCode", "Getting flag with country code: " + countryCode)
         return rememberAsyncImagePainter(
             model = ImageRequest.Builder(LocalContext.current)
                 .decoderFactory(SvgDecoder.Factory()) //TODO HLTV-144 Crash may be caused here although doesn't seem to be a bitmap?

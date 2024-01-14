@@ -7,6 +7,8 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.ui.graphics.Color
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.example.hltv.R
+import com.example.hltv.data.getAvgAgeFromTimestamp
 import androidx.palette.graphics.Palette
 import com.example.hltv.data.remote.APIResponse
 import com.example.hltv.data.remote.Map
@@ -120,7 +122,6 @@ class SingleTeamViewModel : ViewModel() {
                     team2score = event.awayScore
                     if (index == 0){
                         team.value = event.homeTeam
-                        Log.i("asdasd", "Also loading here")
                         lineup.complete(getPlayersFromEvent(event.id).home)
                     }
                 }
@@ -131,7 +132,6 @@ class SingleTeamViewModel : ViewModel() {
                     team2score = event.homeScore
                     if (index == 0){
                         team.value = event.awayTeam
-                        Log.i("asdasd", "Loading here")
                         lineup.complete(getPlayersFromEvent(event.id).away)
                     }
                 }
