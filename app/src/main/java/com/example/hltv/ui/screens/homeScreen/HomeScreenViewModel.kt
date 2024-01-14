@@ -10,9 +10,12 @@ import com.example.hltv.data.convertTimestampToDateURL
 import com.example.hltv.data.remote.Event
 import com.example.hltv.data.remote.Score
 import com.example.hltv.data.remote.Team
+import com.example.hltv.data.remote.ThirdUniqueTournament
 import com.example.hltv.data.remote.getLiveMatches
 import com.example.hltv.data.remote.getMatchesFromDay
+import com.example.hltv.data.remote.getRelevantTournaments
 import com.example.hltv.data.remote.getTeamImage
+import com.example.hltv.data.remote.getTournamentLogo
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -23,6 +26,9 @@ class HomeScreenViewModel: ViewModel() {
 
     val liveMatchValue = mutableStateOf<Event?>(null)
     val upcomingMatchValue = mutableStateOf<Event?>(null)
+
+    val upcomingTournament = mutableStateOf<ThirdUniqueTournament?>(null)
+    val upcomingTournamentlogo = mutableStateOf<Bitmap?>(null)
 
     val upcomingMatchesValue = mutableStateOf<Event>(Event())
 
@@ -37,6 +43,8 @@ class HomeScreenViewModel: ViewModel() {
         }
         viewModelScope.launch(Dispatchers.IO) {
                 val liveMatches = getLiveMatches()
+                val tournaments = getRelevantTournaments()
+
 
                 if (liveMatches.events.isNotEmpty()) {
                     val event = liveMatches.events[0]
@@ -47,6 +55,12 @@ class HomeScreenViewModel: ViewModel() {
                 else {
                     loadUpcomingMatch()
                 }
+            if (tournaments.isNotEmpty())
+            {
+                val tournament = tournaments[0]
+                upcomingTournament.value = tournament
+                upcomingTournamentlogo.value = getTournamentLogo(tournament.id)
+            }
             dataLoaded = true
         }
 

@@ -31,9 +31,11 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import coil.compose.rememberAsyncImagePainter
+import com.example.hltv.data.convertTimestampToDateDisplay
 import com.example.hltv.data.convertTimestampToWeekDateClock
 import com.example.hltv.ui.common.LiveMatchCard
 import com.example.hltv.ui.common.UpcomingMatchCard
+import com.example.hltv.ui.screens.eventsScreen.SingleEventCard
 
 val M = MaterialTheme
 
@@ -83,6 +85,22 @@ fun HomeScreen(onClickSingleTeam : (String?) -> Unit, onClickSingleMatch : (Stri
          }
 
         Divider(modifier = Modifier.padding(horizontal = 8.dp), color = M.colorScheme.onBackground)
+        
+        if (viewModel.upcomingTournament.value != null){
+
+        SingleEventCard(modifier = Modifier.clickable { onClickSingleTeam(viewModel.upcomingMatchValue.value!!.id.toString()) },
+            eventTitle = viewModel.upcomingTournament.value!!.name.toString(),
+            eventDate = convertTimestampToDateDisplay(viewModel.upcomingTournament.value!!.startDateTimestamp),
+            eventLogo = rememberAsyncImagePainter(model = viewModel.upcomingTournamentlogo.value),
+
+
+
+            )
+            
+        }
+
+        else
+
         Card(
 
             modifier = Modifier
