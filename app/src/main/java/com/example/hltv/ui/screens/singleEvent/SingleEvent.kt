@@ -379,7 +379,7 @@ fun SingleEventTopbox(
                                                                     0, //TODO: Temporary fix. pls no
                                                                     minOf(
                                                                         teamViewModel.team.value.name.toString().length,
-                                                                        15
+                                                                        10
                                                                     )
 
                                                                 ) else ""
