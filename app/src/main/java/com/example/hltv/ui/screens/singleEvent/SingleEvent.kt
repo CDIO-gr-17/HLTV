@@ -93,23 +93,112 @@ fun SingleEventScreen(
     Column {
 
         if (standings.isNotEmpty()) {
-            val teamNames = standings.flatMap { standing ->
-                standing.attending.mapNotNull { it.team?.name }
-            }
-            Column {
-                teamNames.forEach { name ->
-                    Text(text = name, color = MaterialTheme.colorScheme.errorContainer)
-                    Log.i("tournamentStandings", name)
+            standings.forEach { standing ->
+                Column {
+                    CommonCard(
+                        modifier = Modifier,
+                        topBox = {
+                                 Column {
+                                     Row (modifier = Modifier.fillMaxWidth(),
+                                         horizontalArrangement = Arrangement.Center){
+                                         Text(
+                                             text = "Standings",
+                                             fontSize = 18.sp,
+                                             color = MaterialTheme.colorScheme.onSecondaryContainer,
+                                             fontWeight = FontWeight.Bold
+                                         )
+                                     }
+                                     Row (modifier = Modifier.fillMaxWidth()){
+                                         Text(
+                                             text = "#",
+                                             modifier = Modifier.weight(0.05f),
+                                             fontSize = MaterialTheme.typography.bodyLarge.fontSize,
+                                             color = MaterialTheme.colorScheme.onSecondaryContainer,
+                                             fontWeight = FontWeight.Bold
+                                         )
+                                         Text(
+                                             text = "Team",
+                                             modifier = Modifier.weight(0.4f),
+                                             fontSize = MaterialTheme.typography.bodyLarge.fontSize,
+                                             color = MaterialTheme.colorScheme.onSecondaryContainer,
+                                             fontWeight = FontWeight.Bold
+                                         )
+                                         Spacer(modifier = Modifier.weight(0.2f))
+                                         Text(
+                                             text = "P",
+                                             modifier = Modifier.weight(0.075f),
+                                             fontSize = MaterialTheme.typography.bodyLarge.fontSize,
+                                             color = MaterialTheme.colorScheme.onSecondaryContainer,
+                                             fontWeight = FontWeight.Bold
+                                         )
+                                         Text(
+                                             text = "W",
+                                             modifier = Modifier.weight(0.075f),
+                                             fontSize = MaterialTheme.typography.bodyLarge.fontSize,
+                                             color = MaterialTheme.colorScheme.onSecondaryContainer,
+                                             fontWeight = FontWeight.Bold
+                                         )
+                                         Text(
+                                             text = "L",
+                                             fontSize = MaterialTheme.typography.bodyLarge.fontSize,
+                                             color = MaterialTheme.colorScheme.onSecondaryContainer,
+                                             fontWeight = FontWeight.Bold
+                                         )
+                                     }
+                                 }
+                        },
+                        bottomBox = {
+                            Column {
+                                standing.attending.forEachIndexed { placement, attending ->
+                                    Row {
+                                        Text(
+                                            text = (placement+1).toString(),
+                                            modifier = Modifier.weight(0.05f),
+                                            fontSize = MaterialTheme.typography.bodyLarge.fontSize,
+                                            color = MaterialTheme.colorScheme.onSecondaryContainer,
+                                        )
+                                        attending.team?.name?.let {
+                                            Text(
+                                                text = it,
+                                                modifier = Modifier.weight(0.4f),
+                                                fontSize = MaterialTheme.typography.bodyLarge.fontSize,
+                                                color = MaterialTheme.colorScheme.onSecondaryContainer,
+                                            )
+                                        }
+                                        Spacer(modifier = Modifier.weight(0.2f))
+                                        Text(
+                                            text = attending.matches.toString(),
+                                            modifier = Modifier.weight(0.075f),
+                                            fontSize = MaterialTheme.typography.bodyLarge.fontSize,
+                                            color = MaterialTheme.colorScheme.onSecondaryContainer,
+                                        )
+                                        Text(
+                                            text = attending.wins.toString(),
+                                            modifier = Modifier.weight(0.075f),
+                                            fontSize = MaterialTheme.typography.bodyLarge.fontSize,
+                                            color = MaterialTheme.colorScheme.onSecondaryContainer,
+                                        )
+                                        Text(
+                                            text = attending.losses.toString(),
+                                            fontSize = MaterialTheme.typography.bodyLarge.fontSize,
+                                            color = MaterialTheme.colorScheme.onSecondaryContainer,
+                                        )
+                                    }
+                                }
+                            }
+                        }
+                    )
                 }
             }
         } else Text(text = "No standings", color = MaterialTheme.colorScheme.errorContainer)
+
         SingleEventTopbox(
             playerOverview = playerOverview,
             teamViewModel = teamViewModel,
             statsOverview = statsOverview,
             onClickSinglePlayer = onClickSingleMatch, //TODO
             onClickSingleTeam = onClickSingleTeam,
-            onClickSingleMatch =  onClickSingleMatch,
+            onClickSingleMatch = onClickSingleMatch,
             painter = countryFlag,
             recentMatches = recentMatches,
             viewModel = eventViewModel
@@ -271,17 +360,18 @@ fun SingleEventTopbox(
                                     )
 
 
-
                                     val gradientColors = listOf<Color>(
-                                        if(teamViewModel.palette.value != null && teamViewModel.palette.value?.vibrantSwatch?.rgb != null) Color(teamViewModel.palette.value?.lightVibrantSwatch?.rgb!!) else Color.Black,
+                                        if (teamViewModel.palette.value != null && teamViewModel.palette.value?.vibrantSwatch?.rgb != null) Color(
+                                            teamViewModel.palette.value?.lightVibrantSwatch?.rgb!!
+                                        ) else Color.Black,
                                         Color.White
-                                        )
-/*
-                                    if (teamViewModel.palette.value?.vibrantSwatch?.rgb != null) Color(
-                                        teamViewModel.palette.value?.vibrantSwatch?.rgb!!,
                                     )
-                                    else Color.Black
-                                    */
+                                    /*
+                                                                        if (teamViewModel.palette.value?.vibrantSwatch?.rgb != null) Color(
+                                                                            teamViewModel.palette.value?.vibrantSwatch?.rgb!!,
+                                                                        )
+                                                                        else Color.Black
+                                                                        */
 
 
                                     //TODO: Make this resize, possibly with resisingText? Bit hard to do while keeping it pretty
@@ -297,7 +387,7 @@ fun SingleEventTopbox(
                                                     fontWeight = FontWeight.ExtraBold,
 
 
-                                                ),
+                                                    ),
                                             ) {
                                                 append(
 
