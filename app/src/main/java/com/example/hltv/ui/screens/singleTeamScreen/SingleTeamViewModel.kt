@@ -4,6 +4,7 @@ import android.graphics.Bitmap
 import android.util.Log
 import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.mutableStateOf
+import androidx.compose.ui.graphics.Color
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import androidx.palette.graphics.Palette
@@ -60,6 +61,7 @@ data class Stats(
 )
 class SingleTeamViewModel : ViewModel() {
 
+
     val recentMatches = mutableStateListOf<RecentMatch>()
     val playerOverview = mutableStateListOf<Player>()
     //var lineup: PlayerGroup? = null
@@ -76,6 +78,7 @@ class SingleTeamViewModel : ViewModel() {
     var teamID = 0
     val playersDateOfBirthTimestamp = mutableStateListOf<Int>()
     val palette = mutableStateOf<Palette?>(null)
+    val color = mutableStateOf<Color>(Color.White)
 
     var dataLoaded = false
     fun loadData(teamIDString: String, gamesToLoad: Int = 6){
@@ -93,8 +96,13 @@ class SingleTeamViewModel : ViewModel() {
 
         viewModelScope.launch(Dispatchers.IO) {
             teamImage.value = getTeamImage(teamID)
-            palette.value =  Palette.from(teamImage.value!!).generate()
-            Log.i(this.toString(), "The palette is:" + palette.value!!.vibrantSwatch)
+            //palette.value =  Palette.from(teamImage.value!!).generate()
+            //color.value = Color(Palette.from(teamImage.value!!).generate().vibrantSwatch!!.rgb)
+
+            val palette = Palette.from(teamImage.value!!).generate()
+            if (teamImage.value != null && palette.vibrantSwatch?.rgb != null){
+                color.value = Color(palette.vibrantSwatch?.rgb!!)
+            } else color.value = Color.White
 
             Log.w(this.toString(), "Got previous matches of team with id: $teamID")
             val completedMatches = getPreviousMatches(teamID, 0)

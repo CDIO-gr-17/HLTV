@@ -101,7 +101,7 @@ fun SingleEventScreen(
                 onClickSingleMatch = onClickSingleMatch,
                 painter = countryFlag,
                 recentMatches = recentMatches,
-                viewModel = eventViewModel
+                eventViewModel = eventViewModel
             )
         }
         item {
@@ -207,14 +207,14 @@ fun SingleEventScreen(
                         )
                     }
                 }
-            }
+            } else Log.i("SingleEvent", "There were no standings for the event")
         }
     }
 }
 
 @Composable
 fun SingleEventTopbox(
-    viewModel: SingleEventViewModel,
+    eventViewModel: SingleEventViewModel,
     teamViewModel: SingleTeamViewModel,
     playerOverview: SnapshotStateList<Player>,
     statsOverview: MutableState<Stats>,
@@ -239,7 +239,7 @@ fun SingleEventTopbox(
 
                         Box {
                             Image(
-                                painter = rememberAsyncImagePainter(viewModel.tournamentImage.value),
+                                painter = rememberAsyncImagePainter(eventViewModel.tournamentImage.value),
                                 contentDescription = "Event logo",
                                 modifier = Modifier.size(200.dp),
                                 contentScale = ContentScale.Crop
@@ -247,8 +247,8 @@ fun SingleEventTopbox(
                         }
 
                         val tournamentColors = listOf(
-                            if (viewModel.palette.value?.vibrantSwatch?.rgb != null) Color(
-                                viewModel.palette.value?.vibrantSwatch?.rgb!!
+                            if (eventViewModel.palette.value?.vibrantSwatch?.rgb != null) Color(
+                                eventViewModel.palette.value?.vibrantSwatch?.rgb!!
                             ) else Color.Black,
                             Color.White,
                         )
@@ -259,13 +259,13 @@ fun SingleEventTopbox(
                                 withStyle(
                                     style = SpanStyle(
                                         brush = Brush.verticalGradient(
-                                            colors = tournamentColors
+                                            colors = listOf(Color.White, eventViewModel.color.value)
                                         ),
                                         fontWeight = FontWeight.ExtraBold,
 
                                         ),
                                 ) {
-                                    append(viewModel.event.value.name.toString().uppercase())
+                                    append(eventViewModel.event.value.name.toString().uppercase())
                                 }
                             },
                             maxFontSize = 70.sp,
@@ -276,14 +276,14 @@ fun SingleEventTopbox(
                                 withStyle(
                                     style = SpanStyle(
                                         brush = Brush.verticalGradient(
-                                            colors = tournamentColors.reversed()
+                                            colors = listOf(eventViewModel.color.value, Color.DarkGray)
                                         ),
                                         fontSize = 35.sp,
                                         fontWeight = FontWeight.Bold,
                                     ),
                                 ) {
                                     append(
-                                        viewModel.tournamentSeason.value.name.toString()
+                                        eventViewModel.tournamentSeason.value.name.toString()
                                             .uppercase()
                                     )
                                 }
@@ -302,18 +302,18 @@ fun SingleEventTopbox(
                                 .padding(8.dp)
                         ) {
 
-                            if (viewModel.eventDetails.value.tier != null) {
+                            if (eventViewModel.eventDetails.value.tier != null) {
                                 Text(
-                                    text = viewModel.eventDetails.value.tier!!.uppercase() + "-tier",
-                                    color = getColorFromTier(viewModel.eventDetails.value.tier!!.uppercase()),
+                                    text = eventViewModel.eventDetails.value.tier!!.uppercase() + "-tier",
+                                    color = getColorFromTier(eventViewModel.eventDetails.value.tier!!.uppercase()),
                                     fontWeight = FontWeight.Bold,
-                                    fontSize = 18.sp
+                                    fontSize = 22.sp
                                 )
                             }
 
                             Text(
-                                //textAlign = TextAlign.End,
-                                text = viewModel.eventDetails.value.totalPrizeMoney.toString() + " " + viewModel.eventDetails.value.totalPrizeMoneyCurrency.toString(),
+                                textAlign = TextAlign.End, //This doesn't do anything, the lord knows why
+                                text = eventViewModel.eventDetails.value.totalPrizeMoney.toString() + " " + eventViewModel.eventDetails.value.totalPrizeMoneyCurrency.toString(),
                                 color = Color(parseColor("#ffbf00")),
                                 style = TextStyle(
                                     shadow = Shadow(
@@ -321,16 +321,15 @@ fun SingleEventTopbox(
                                         offset = Offset(2.0f, 2.0f),
                                         blurRadius = 2f,
                                     ),
-                                    fontSize = 18.sp
+                                    fontSize = 22.sp
                                 ),
                                 fontWeight = FontWeight.Bold
-
                             )
                         }
 
                         Text(
                             textAlign = TextAlign.Center,
-                            text = if (!viewModel.startTime.value.contains("Unknown")) (viewModel.startTime.value + " - " + viewModel.endTime.value) else "",
+                            text = if (!eventViewModel.startTime.value.contains("Unknown")) (eventViewModel.startTime.value + " - " + eventViewModel.endTime.value) else "",
                             color = Color.White
                         )
 
@@ -349,71 +348,72 @@ fun SingleEventTopbox(
 
                             Column(modifier = Modifier) {
 
-                                Row(
-                                    modifier = Modifier.fillMaxWidth(),
-                                    //horizontalArrangement = Arrangement.SpaceBetween
-                                ) {
-
-
-                                    Image(
-                                        rememberAsyncImagePainter(
-                                            teamViewModel.teamImage.value
-                                        ),
-                                        contentDescription = teamViewModel.team.value.name,
-                                        Modifier.size(69.dp)
-                                    )
-
-
-                                    val gradientColors = listOf<Color>(
-                                        if (teamViewModel.palette.value != null && teamViewModel.palette.value?.vibrantSwatch?.rgb != null) Color(
-                                            teamViewModel.palette.value?.lightVibrantSwatch?.rgb!!
-                                        ) else Color.Black,
-                                        Color.White
-                                    )
-                                    /*
-                                                                        if (teamViewModel.palette.value?.vibrantSwatch?.rgb != null) Color(
-                                                                            teamViewModel.palette.value?.vibrantSwatch?.rgb!!,
-                                                                        )
-                                                                        else Color.Black
-                                                                        */
-
-
-                                    //TODO: Make this resize, possibly with resisingText? Bit hard to do while keeping it pretty
-                                    Text(
-                                        text = buildAnnotatedString {
-                                            append("Winner\n\n")
-                                            withStyle(
-                                                style = SpanStyle(
-                                                    brush = Brush.linearGradient(
-                                                        colors = gradientColors
-                                                    ),
-                                                    fontSize = 65.sp,
-                                                    fontWeight = FontWeight.ExtraBold,
-
-
-                                                    ),
-                                            ) {
-                                                append(
-
-                                                    if (teamViewModel.team.value.name != null) teamViewModel.team.value.name.toString()
-                                                        .substring(
-                                                            0,
-                                                            minOf(
-                                                                teamViewModel.team.value.name.toString().length,
-                                                                15
-                                                            )
-
-                                                        ) else ""
-                                                )
-                                            }
-                                        },
-                                        maxLines = 3,
-                                    )
-                                }
-
-
                                 CommonCard(modifier = Modifier, bottomBox = {
                                     Column {
+
+                                        /////////
+                                        Row(
+                                            modifier = Modifier.fillMaxWidth(),
+                                            //horizontalArrangement = Arrangement.SpaceBetween
+                                        ) {
+
+
+                                            Image(
+                                                rememberAsyncImagePainter(
+                                                    teamViewModel.teamImage.value
+                                                ),
+                                                contentDescription = teamViewModel.team.value.name,
+                                                Modifier.size(69.dp)
+                                            )
+
+
+                                            val gradientColors = listOf<Color>(
+                                                if (teamViewModel.palette.value != null && teamViewModel.palette.value?.vibrantSwatch?.rgb != null) Color(
+                                                    teamViewModel.palette.value?.lightVibrantSwatch?.rgb!!
+                                                ) else Color.Black,
+                                                Color.White
+                                            )
+                                            /*
+                                                                                if (teamViewModel.palette.value?.vibrantSwatch?.rgb != null) Color(
+                                                                                    teamViewModel.palette.value?.vibrantSwatch?.rgb!!,
+                                                                                )
+                                                                                else Color.Black
+                                                                                */
+
+
+                                            //TODO: Make this resize, possibly with resisingText? Bit hard to do while keeping it pretty
+                                            Text(
+                                                text = buildAnnotatedString {
+                                                    append("Winner\n\n")
+                                                    withStyle(
+                                                        style = SpanStyle(
+                                                            brush = Brush.linearGradient(
+                                                                colors = listOf(teamViewModel.color.value, Color.White)
+                                                            ),
+                                                            fontSize = 65.sp,
+                                                            fontWeight = FontWeight.ExtraBold,
+
+
+                                                            ),
+                                                    ) {
+                                                        append(
+
+                                                            if (teamViewModel.team.value.name != null) teamViewModel.team.value.name.toString()
+                                                                .substring(
+                                                                    0,
+                                                                    minOf(
+                                                                        teamViewModel.team.value.name.toString().length,
+                                                                        15
+                                                                    )
+
+                                                                ) else ""
+                                                        )
+                                                    }
+                                                },
+                                                maxLines = 3,
+                                            )
+                                        }
+                                        //////
                                         LazyRow {
                                             items(playerOverview.size) { index ->
                                                 OverviewPlayer(
