@@ -1,4 +1,5 @@
 package com.example.hltv.ui.screens.matchesScreen
+
 import android.app.DatePickerDialog
 import android.content.Context
 import android.graphics.Bitmap
@@ -13,7 +14,6 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
@@ -28,7 +28,6 @@ import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Card
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.Shapes
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -36,12 +35,9 @@ import androidx.compose.runtime.State
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.painter.Painter
-import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
@@ -55,37 +51,49 @@ import com.example.hltv.ui.common.LiveMatchCard
 import com.example.hltv.ui.common.UpcomingMatchCard
 import kotlinx.coroutines.launch
 import java.util.Calendar
-import java.util.Date
 
 
-data class ListItem(val ranking: Int, val text1: String, val text2: String)
+val date = mutableStateOf<Long>(0)
 
 @Composable
-fun MatchesScreen(onClickSingleTeam : (String?) -> Unit, onClickSingleMatch : (String?) -> Unit, onClickSingleEvent : (String?) -> Unit) {
-    val viewModel : MatchesScreenViewModel = viewModel()
-    LaunchedEffect(Unit){
-        viewModel.loadData()
+fun MatchesScreen(
+    onClickSingleTeam: (String?) -> Unit,
+    onClickSingleMatch: (String?) -> Unit,
+    onClickSingleEvent: (String?) -> Unit
+) {
+    val viewModel: MatchesScreenViewModel = viewModel()
+    LaunchedEffect(date) {
+        viewModel.loadData(date.value)
     }
+
+
     val liveMatchesValues = viewModel.liveMatchesValues
     val upcomingsMatchesValues = viewModel.upcomingMatchesValues
     val tournamentValues = viewModel.tournamentValues
     val loadingState by viewModel.loadingState.collectAsState()
-    val context = LocalContext.current
 
-/*
-    val allPlayerImages = viewModel.allPlayerImages.collectAsState()
-    val playerbmap = viewModel.playerImage.collectAsState()*/
+    /*
+        val allPlayerImages = viewModel.allPlayerImages.collectAsState()
+        val playerbmap = viewModel.playerImage.collectAsState()*/
 
     LazyColumn {
-        items(liveMatchesValues) { item  ->
+        items(liveMatchesValues) { item ->
             LiveMatchCard(
                 modifier = Modifier.clickable { onClickSingleMatch(item.id.toString()) },
                 teamOneName = item.homeTeam.name.toString(),
-                teamOneIcon =  rememberAsyncImagePainter(viewModel.homeTeamIcons[liveMatchesValues.indexOf(item)]),
+                teamOneIcon = rememberAsyncImagePainter(
+                    viewModel.homeTeamIcons[liveMatchesValues.indexOf(
+                        item
+                    )]
+                ),
                 teamOneScore = item.homeScore!!.display!!.toInt(),
                 teamOneOnClick = { onClickSingleTeam(item.homeTeam.id.toString()) },
                 teamTwoName = item.awayTeam.name.toString(),
-                teamTwoIcon = rememberAsyncImagePainter(viewModel.awayTeamIcons[liveMatchesValues.indexOf(item)]),
+                teamTwoIcon = rememberAsyncImagePainter(
+                    viewModel.awayTeamIcons[liveMatchesValues.indexOf(
+                        item
+                    )]
+                ),
                 teamTwoScore = item.awayScore!!.current!!.toInt(),
             ) { onClickSingleTeam(item.awayTeam.id.toString()) }
         }
@@ -93,24 +101,36 @@ fun MatchesScreen(onClickSingleTeam : (String?) -> Unit, onClickSingleMatch : (S
             UpcomingMatchCard(
                 modifier = Modifier.clickable { onClickSingleMatch(item.id.toString()) },
                 teamOneName = item.homeTeam.name.toString(),
-                teamOneIcon = rememberAsyncImagePainter(viewModel.homeTeamIcons[liveMatchesValues.size + upcomingsMatchesValues.indexOf(item)]),
+                teamOneIcon = rememberAsyncImagePainter(
+                    viewModel.homeTeamIcons[liveMatchesValues.size + upcomingsMatchesValues.indexOf(
+                        item
+                    )]
+                ),
                 teamOneOnClick = { onClickSingleTeam(item.homeTeam.id.toString()) },
                 teamTwoName = item.awayTeam.name.toString(),
-                teamTwoIcon = rememberAsyncImagePainter(viewModel.awayTeamIcons[liveMatchesValues.size + upcomingsMatchesValues.indexOf(item)]),
+                teamTwoIcon = rememberAsyncImagePainter(
+                    viewModel.awayTeamIcons[liveMatchesValues.size + upcomingsMatchesValues.indexOf(
+                        item
+                    )]
+                ),
                 matchDate = convertTimestampToWeekDateClock(item.startTimestamp),
                 teamTwoOnClick = { onClickSingleTeam(item.awayTeam.id.toString()) },
-                tournamentIcon = rememberAsyncImagePainter(viewModel.tournamentIcons[tournamentValues.indexOf(item)]),
+                tournamentIcon = rememberAsyncImagePainter(
+                    viewModel.tournamentIcons[tournamentValues.indexOf(
+                        item
+                    )]
+                ),
                 tournamentOnClick = { onClickSingleEvent(item.tournament.uniqueTournament?.id.toString() + "/" + item.season.id) }
             )
             //Log.i("tournamentLogo3","${viewModel.tournamentIcons.size}")
         }
         //Log.i("loadingState", "$loadingState")
-        item{
+        item {
             AnimatedVisibility(visible = !loadingState) {  //maybe make this a loading bar instead?
-                Row (
+                Row(
                     modifier = Modifier.fillMaxWidth(),
                     horizontalArrangement = Arrangement.Center
-                ){
+                ) {
                     loadMatchesButton {
                         viewModel.viewModelScope.launch {
                             viewModel.loadUpcomingMatches()
@@ -149,26 +169,6 @@ fun loadMatchesButton(function: () -> Unit) {
         }
     }
 }
-           /* if (index < viewModel.teamNames.size - 1) {
-                Spacer(modifier = Modifier.height(1.dp))*/
-        /*
-        CoroutineScope(Dispatchers.IO).launch {
-            // Simulate loading data
-            val liveMatches = getLiveMatches();
-            if (liveMatches != null) {
-                Log.i("RankingScreen", "Size of liveMatches is: " + liveMatches.events.size.toString())
-                teamNames.removeAt(0)
-
-                for ((index, event) in liveMatches.events.withIndex()) {
-                    Log.i("RankingScreen","Adding string with event" + index.toString() + ". Name is: " + event.homeTeam.name + " VS " + event.awayTeam.name)
-                    teamNames.add(event.homeTeam.name + " VS " + event.awayTeam.name)
-                }
-            }
-
-
-        }
-         */
-
 
 
 @Composable
@@ -179,18 +179,19 @@ fun teamCard(
     text2: String,
     singleImgState: State<img>,
     teamPlayerImages: TeamPlayerImages?
-    ) =
+) =
 
-    Card (
+    Card(
         modifier = modifier
             .fillMaxWidth()
             .padding(8.dp)
             .height(131.dp)
-    ){
-        Box(modifier = Modifier
-            .background(color = Color.DarkGray)
-            .fillMaxWidth()
-            .height(42.dp)
+    ) {
+        Box(
+            modifier = Modifier
+                .background(color = Color.DarkGray)
+                .fillMaxWidth()
+                .height(42.dp)
         ) {
             Text(
                 text = text1,
@@ -202,7 +203,7 @@ fun teamCard(
             )
 
         }
-        Row (modifier = Modifier.padding(start = 10.dp)) {
+        Row(modifier = Modifier.padding(start = 10.dp)) {
 
             for (i in 1..5) {
                 var bitmap: Bitmap? = null
@@ -221,14 +222,16 @@ fun teamCard(
 
                 }
 
-                val painter: AsyncImagePainter = if (bitmap == null){
+                val painter: AsyncImagePainter = if (bitmap == null) {
                     rememberAsyncImagePainter(R.drawable.playersilouhette)
-                } else{
+                } else {
                     rememberAsyncImagePainter(bitmap)
                 }
-                Column (modifier = Modifier
-                    .fillMaxSize()
-                    .weight(1f)){
+                Column(
+                    modifier = Modifier
+                        .fillMaxSize()
+                        .weight(1f)
+                ) {
                     Image(
 
                         painter = painter,
@@ -238,15 +241,16 @@ fun teamCard(
                             .size(69.dp)
                             .offset(y = 10.dp)
                     )
-                    Card (
+                    Card(
                         modifier = modifier
                             .fillMaxWidth()
                             .height(12.dp)
                             .padding(end = 10.dp)
                     ) {
-                        Box(modifier = Modifier
-                            .background(color = Color.LightGray)
-                            .fillMaxWidth()
+                        Box(
+                            modifier = Modifier
+                                .background(color = Color.LightGray)
+                                .fillMaxWidth()
                         ) {
                             Text(
                                 text = "Name",
@@ -264,31 +268,28 @@ fun teamCard(
         }
     }
 
+
 @Composable
-fun DatePicker(context: Context){
-    val year: Int
-    val month: Int
-    val day: Int
-
+fun DatePicker(context: Context) {
     val calendar = Calendar.getInstance()
-    year = calendar.get(Calendar.YEAR)
-    month = calendar.get(Calendar.MONTH)
-    day = calendar.get(Calendar.DAY_OF_MONTH)
-    calendar.time = Date()
+    date.value = calendar.timeInMillis
 
-    val date = remember{ mutableStateOf("") }
+    // Initialize with current timestamp
+
     val datePickerDialog = DatePickerDialog(
-        context,{
-            _: DatePicker,
-            year: Int,
-            month: Int,
-            dayOfMonth: Int -> date.value = "$dayOfMonth/$month/$year"
-        }, year, month, day
+        context, { _: DatePicker, year: Int, month: Int, dayOfMonth: Int ->
+            calendar.set(year, month, dayOfMonth)
+            date.value = calendar.timeInMillis // Update the timestamp
+        },
+        calendar.get(Calendar.YEAR),
+        calendar.get(Calendar.MONTH),
+        calendar.get(Calendar.DAY_OF_MONTH)
     )
-    Column (
+
+    Column(
         verticalArrangement = Arrangement.Center,
         horizontalAlignment = Alignment.End
-    ){
+    ) {
         Button(onClick = {
             datePickerDialog.show()
         }, colors = ButtonDefaults.buttonColors(containerColor = Color.Transparent)) {
@@ -312,5 +313,5 @@ fun DatePickerPreview() {
 @Preview(showBackground = true)
 @Composable
 fun MatchesScreenPreview() {
-   //MatchesScreen(onClickSingleTeam = { /*TODO*/ })
+    //MatchesScreen(onClickSingleTeam = { /*TODO*/ })
 }
