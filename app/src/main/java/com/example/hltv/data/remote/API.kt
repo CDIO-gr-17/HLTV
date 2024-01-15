@@ -174,7 +174,7 @@ suspend fun getEvent(eventID: Int?): APIResponse.EventWrapper {
 private suspend fun getAPIImage(apiURL: String, apiKEY: String): Bitmap? {
 
     Log.i(
-        "getAPIResponse",
+        "getAPIImage",
         "Attempting to get: https://allsportsapi2.p.rapidapi.com/api/esport/$apiURL"
     )
 
@@ -392,11 +392,11 @@ private suspend fun getAPIResponse(
     var apiInUse: Boolean
     val gson = GsonSingleton.instance
 
-    Log.i(
-        "getAPIResponse",
-        "Attempting to get: https://allsportsapi2.p.rapidapi.com/api/esport/$apiURL"
-    )
     do {
+        Log.i(
+            "getAPIResponse",
+            "Attempting to get: https://allsportsapi2.p.rapidapi.com/api/esport/$apiURL"
+        )
         val request = Request.Builder()
             .url("https://allsportsapi2.p.rapidapi.com/api/esport/$apiURL")
             .get()
