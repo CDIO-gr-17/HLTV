@@ -173,16 +173,16 @@ private fun drawCircle(
                 .size(100.dp)
                 .border(
                     when {
-                        hasVoted -> 4.dp
-                        finished -> 4.dp
-                        else -> 2.dp
+                        hasVoted -> 6.dp
+                        finished -> 6.dp
+                        else -> 4.dp
                     }, if (hasVoted || finished) Color.White else Color.Black, CircleShape
                 )//here TODO
                 .clip(CircleShape)
-                .background(color = Color(0xFF787BAA))
+                .background(color = Color(0xFF8991A1))
                 .clickable {
-                    if(!finished)
-                    onClick()
+                    if (!finished)
+                        onClick()
                 }
         ) {
             Image(
@@ -211,16 +211,14 @@ private fun drawCircle(
                         } else {
                             0f
                         }
-
-
                     )
             )
             Text(
                 text = voteCount.toString() + "%",
                 modifier = Modifier
                     .align(Alignment.CenterHorizontally)
-                    .offset(y = (-25).dp),
-                fontSize = 20.sp,
+                    .offset(y = (-15).dp),
+                fontSize = 25.sp,
                 textAlign = TextAlign.Center,
             )
         }
