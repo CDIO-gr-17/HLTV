@@ -3,7 +3,6 @@
 package com.example.hltv
 
 import android.annotation.SuppressLint
-import android.content.Context
 import android.os.Bundle
 import android.util.Log
 import androidx.activity.ComponentActivity
@@ -60,7 +59,7 @@ class MainActivity : ComponentActivity() {
         super.onCreate(savedInstanceState)
         setContent {
             // Initialize the singleton instance in your Application class or where appropriate
-            HLTVApp(applicationContext)
+            HLTVApp(context = applicationContext)
         }
     }
 }
@@ -68,7 +67,7 @@ class MainActivity : ComponentActivity() {
 @SuppressLint("CoroutineCreationDuringComposition", "UnrememberedMutableState")
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun HLTVApp(context: Context) {
+fun HLTVApp(context: android.content.Context) {
     HLTVTheme {
         val prefDataKeyValueStore = PrefDataKeyValueStore.getInstance(context)
         val navController = rememberNavController()
