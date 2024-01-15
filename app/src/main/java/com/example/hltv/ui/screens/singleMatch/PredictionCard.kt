@@ -179,7 +179,7 @@ private fun drawCircle(
                     }, if (hasVoted || finished) Color.White else Color.Black, CircleShape
                 )//here TODO
                 .clip(CircleShape)
-                .background(MaterialTheme.colorScheme.onPrimaryContainer)
+                .background(color = Color(0xFF787BAA))
                 .clickable {
                     if(!finished)
                     onClick()
