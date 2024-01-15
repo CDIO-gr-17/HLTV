@@ -84,7 +84,8 @@ suspend fun getPlayersFromEvent(eventID: Int? = 10945127): APIResponse.Lineup {
     return getAPIResponse(
         "event/" + eventID.toString() + "/lineups",
         APIKEY,
-        APIResponse.Lineup::class.java
+        APIResponse.Lineup::class.java,
+        1
     ) as APIResponse.Lineup
 }
 
@@ -384,11 +385,12 @@ suspend fun checkRequestRate(jsonString: String?): Boolean {
 private suspend fun getAPIResponse(
     apiURL: String,
     apiKEY: String,
-    desiredClass: Class<*>
+    desiredClass: Class<*>,
+    tries : Int = 3
 ): APIResponse {
 
     var jsonString: String?
-    var tries = 3
+    var tries = tries
     var apiInUse: Boolean
     val gson = GsonSingleton.instance
 
