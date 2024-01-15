@@ -4,6 +4,7 @@ package com.example.hltv
 
 import android.annotation.SuppressLint
 import android.os.Bundle
+import android.service.autofill.FieldClassification.Match
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.compose.foundation.layout.padding
@@ -27,6 +28,8 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.vectorResource
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
@@ -34,15 +37,19 @@ import com.example.compose.HLTVTheme
 import com.example.hltv.data.remote.getTeamNameFromID
 import com.example.hltv.navigation.Home
 import com.example.hltv.navigation.MainNavHost
+import com.example.hltv.navigation.Matches
 import com.example.hltv.navigation.Settings
 import com.example.hltv.navigation.SingleMatch
 import com.example.hltv.navigation.SingleTeam
 import com.example.hltv.navigation.allAppScreens
 import com.example.hltv.navigation.bottomAppBarScreens
 import com.example.hltv.ui.common.FavoriteButton
+import com.example.hltv.ui.screens.matchesScreen.DatePicker
+import io.grpc.Context
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
+import java.util.Date
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -63,7 +70,7 @@ fun HLTVApp() {
         val currentDestination = currentBackStack?.destination
         val canNavigateBack = !bottomAppBarScreens.any { it.route == currentDestination?.route }
         val currentScreen = allAppScreens.find { currentDestination?.route?.startsWith(it.route) ?: false } ?: Home
-
+        val context = LocalContext.current
 
 
 
@@ -102,6 +109,9 @@ fun HLTVApp() {
                 actions = {
                     if(currentScreen == SingleTeam)
                         FavoriteButton()
+
+                    else if (currentScreen == Matches)
+                        DatePicker(context = context)
                     else
                         IconButton(onClick = { navController.navigate(Settings.route) }) {
                             Icon(
@@ -111,6 +121,7 @@ fun HLTVApp() {
                             )
                         }
                 },
+
             )
         }, bottomBar = {
             NavigationBar {

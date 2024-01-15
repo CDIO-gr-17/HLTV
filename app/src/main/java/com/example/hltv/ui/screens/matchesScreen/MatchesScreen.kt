@@ -29,6 +29,7 @@ import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Card
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Shapes
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -77,9 +78,6 @@ fun MatchesScreen(onClickSingleTeam : (String?) -> Unit, onClickSingleMatch : (S
     val playerbmap = viewModel.playerImage.collectAsState()*/
 
     LazyColumn {
-        item {
-            DatePicker(context = context, icon = painterResource(id = R.drawable.calendar_month_24px))
-        }
         items(liveMatchesValues) { item  ->
             LiveMatchCard(
                 modifier = Modifier.clickable { onClickSingleMatch(item.id.toString()) },
@@ -268,7 +266,7 @@ fun teamCard(
     }
 
 @Composable
-fun DatePicker(context: Context, icon: Painter){
+fun DatePicker(context: Context){
     val year: Int
     val month: Int
     val day: Int
@@ -289,17 +287,16 @@ fun DatePicker(context: Context, icon: Painter){
         }, year, month, day
     )
     Column (
-        modifier = Modifier.fillMaxSize(),
         verticalArrangement = Arrangement.Center,
-        horizontalAlignment = Alignment.CenterHorizontally
+        horizontalAlignment = Alignment.End
     ){
         Button(onClick = {
             datePickerDialog.show()
-        }) {
-            Image(painter = icon,
+        }, colors = ButtonDefaults.buttonColors(containerColor = Color.Transparent)) {
+            Image(
+                painter = painterResource(id = R.drawable.calendar_month_24px),
                 contentDescription = null,
                 modifier = Modifier
-                    .size(10.dp)
                     .align(Alignment.CenterVertically)
             )
         }
