@@ -97,7 +97,8 @@ fun SingleEventScreen(
                 onClickSingleTeam = onClickSingleTeam,
                 onClickSingleMatch = onClickSingleMatch,
                 recentMatches = recentMatches,
-                eventViewModel = eventViewModel
+                eventViewModel = eventViewModel,
+                winRate = teamViewModel.winRate.collectAsState().value
             )
         }
         item {
@@ -216,7 +217,8 @@ fun SingleEventTopbox(
     onClickSinglePlayer: (playerID: String?) -> Unit,
     onClickSingleTeam: (teamID: String?) -> Unit,
     onClickSingleMatch: (matchID: String?) -> Unit,
-    recentMatches: SnapshotStateList<RecentMatch>
+    recentMatches: SnapshotStateList<RecentMatch>,
+    winRate: Double,
 ) {
 
     Column {
@@ -399,6 +401,7 @@ fun SingleEventTopbox(
                                             }
                                         }
                                         Statistics(
+                                            winRate = winRate,
                                             averagePlayerAge = statsOverview.value.avgAgeofPlayers,
                                         )
                                         Text(
