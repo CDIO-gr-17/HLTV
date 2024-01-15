@@ -7,11 +7,8 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.ui.graphics.Color
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.example.hltv.R
 import com.example.hltv.data.getAvgAgeFromTimestamp
 import androidx.palette.graphics.Palette
-import com.example.hltv.data.remote.APIResponse
-import com.example.hltv.data.remote.Map
 import com.example.hltv.data.remote.PlayerGroup
 import com.example.hltv.data.remote.Score
 import com.example.hltv.data.remote.Team
@@ -23,8 +20,6 @@ import kotlinx.coroutines.CompletableDeferred
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.launch
-import java.math.RoundingMode
-import java.text.DecimalFormat
 import java.text.SimpleDateFormat
 import java.util.Date
 
@@ -101,15 +96,22 @@ class SingleTeamViewModel : ViewModel() {
             team1 = null
             var totalMatches = 0
             var totalWins = 0
+            var lineupIncomplete = true
             for ((index, event) in filteredMatches.reversed().withIndex().take(gamesToLoad)) {
                 if (teamID == event.homeTeam.id) {
                     team1 = event.homeTeam
                     team2 = event.awayTeam
                     team1score = event.homeScore
                     team2score = event.awayScore
-                    if (index == 0) {
-                        team.value = event.homeTeam
-                        lineup.complete(getPlayersFromEvent(event.id).home)
+                    if (lineupIncomplete) {
+                        team.value = event.homeTeam //TODO: Maybe? move this into the try, after the other thing
+                        try{
+                            lineup.complete(getPlayersFromEvent(event.id).home)
+                            lineupIncomplete = false
+                        } catch (e : ClassCastException){
+                            Log.w("SingleTeamViewModel", "There was no lineup available, attempting to get lineup from next event")
+                        }
+
                     }
                 }
                 if (teamID != event.homeTeam.id) {
@@ -117,9 +119,14 @@ class SingleTeamViewModel : ViewModel() {
                     team2 = event.homeTeam
                     team1score = event.awayScore
                     team2score = event.homeScore
-                    if (index == 0) {
+                    if (lineupIncomplete) {
                         team.value = event.awayTeam
-                        lineup.complete(getPlayersFromEvent(event.id).away)
+                        try{
+                            lineup.complete(getPlayersFromEvent(event.id).home)
+                            lineupIncomplete = false
+                        } catch (e : ClassCastException){
+                            Log.w("SingleTeamViewModel", "There was no lineup available, attempting to get lineup from next event")
+                        }
                     }
                 }
                 val date = Date(event.startTimestamp?.toLong()?.times(1000) ?: 0)
