@@ -3,8 +3,8 @@
 package com.example.hltv
 
 import android.annotation.SuppressLint
+import android.content.Context
 import android.os.Bundle
-import android.service.autofill.FieldClassification.Match
 import android.util.Log
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
@@ -29,8 +29,6 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.vector.ImageVector
-import androidx.compose.ui.platform.LocalContext
-import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.vectorResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.navigation.NavBackStackEntry
@@ -51,23 +49,18 @@ import com.example.hltv.navigation.SinglePlayer
 import com.example.hltv.navigation.SingleTeam
 import com.example.hltv.navigation.allAppScreens
 import com.example.hltv.navigation.bottomAppBarScreens
-import com.example.hltv.ui.common.FavoriteButton
 import com.example.hltv.ui.screens.matchesScreen.DatePicker
-import io.grpc.Context
 import com.example.hltv.ui.screens.singleTeamScreen.FavoriteButton
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
-import java.util.Date
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContent {
             // Initialize the singleton instance in your Application class or where appropriate
-            val prefDataKeyValueStore = PrefDataKeyValueStore.getInstance(applicationContext)
-
-            HLTVApp(prefDataKeyValueStore)
+            HLTVApp(applicationContext)
         }
     }
 }
@@ -75,16 +68,15 @@ class MainActivity : ComponentActivity() {
 @SuppressLint("CoroutineCreationDuringComposition", "UnrememberedMutableState")
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun HLTVApp(prefDataKeyValueStore: PrefDataKeyValueStore) {
+fun HLTVApp(context: Context) {
     HLTVTheme {
+        val prefDataKeyValueStore = PrefDataKeyValueStore.getInstance(context)
         val navController = rememberNavController()
         val currentBackStack by navController.currentBackStackEntryAsState()
         val currentDestination = currentBackStack?.destination
         val canNavigateBack = !bottomAppBarScreens.any { it.route == currentDestination?.route }
         val currentScreen =
             allAppScreens.find { currentDestination?.route?.startsWith(it.route) ?: false } ?: Home
-        val currentScreen = allAppScreens.find { currentDestination?.route?.startsWith(it.route) ?: false } ?: Home
-        val context = LocalContext.current
 
 
 
