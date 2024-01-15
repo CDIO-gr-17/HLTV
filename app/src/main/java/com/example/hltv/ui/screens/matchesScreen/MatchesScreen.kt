@@ -23,6 +23,7 @@ import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Card
 import androidx.compose.material3.CircularProgressIndicator
+import androidx.compose.material3.Divider
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -62,7 +63,6 @@ fun MatchesScreen(onClickSingleTeam : (String?) -> Unit, onClickSingleMatch : (S
 /*
     val allPlayerImages = viewModel.allPlayerImages.collectAsState()
     val playerbmap = viewModel.playerImage.collectAsState()*/
-
     LazyColumn {
         items(liveMatchesValues) { item  ->
             LiveMatchCard(
@@ -76,6 +76,10 @@ fun MatchesScreen(onClickSingleTeam : (String?) -> Unit, onClickSingleMatch : (S
                 teamTwoScore = item.awayScore!!.current!!.toInt(),
             ) { onClickSingleTeam(item.awayTeam.id.toString()) }
         }
+        if(liveMatchesValues.size !=0){
+        item { Divider(modifier = Modifier
+            .padding(top = 4.dp, bottom = 4.dp,start = 12.dp, end = 12.dp),
+            thickness = 4.dp,) }}
         items(upcomingsMatchesValues) { item ->
             UpcomingMatchCard(
                 modifier = Modifier.clickable { onClickSingleMatch(item.id.toString()) },
@@ -89,6 +93,7 @@ fun MatchesScreen(onClickSingleTeam : (String?) -> Unit, onClickSingleMatch : (S
                 tournamentIcon = rememberAsyncImagePainter(viewModel.tournamentIcons[tournamentValues.indexOf(item)]),
                 tournamentOnClick = { onClickSingleEvent(item.tournament.uniqueTournament?.id.toString() + "/" + item.season.id) }
             )
+
             //Log.i("tournamentLogo3","${viewModel.tournamentIcons.size}")
         }
         //Log.i("loadingState", "$loadingState")
