@@ -24,15 +24,20 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import coil.compose.rememberAsyncImagePainter
+import com.example.hltv.data.convertTimestampToDateDisplay
 import com.example.hltv.data.convertTimestampToWeekDateClock
+import com.example.hltv.data.local.PrefDataKeyValueStore
 import com.example.hltv.ui.common.LiveMatchCard
 import com.example.hltv.ui.common.UpcomingMatchCard
 import com.example.hltv.ui.screens.singleTeamScreen.SingleTeamScreen
@@ -43,12 +48,15 @@ import com.example.hltv.ui.screens.singleTeamScreen.SingleTeamScreen
 val M = MaterialTheme
 
 @Composable
-fun HomeScreen(onClickSingleTeam : (String?) -> Unit, onClickSingleMatch : (String?) -> Unit, onClickSingleEvent : (String?)->Unit) {
+fun HomeScreen(onClickSingleTeam : (String?) -> Unit, onClickSingleMatch : (String?) -> Unit, onClickSingleEvent : (String?)->Unit, onClickSinglePlayer: (String?)->Unit) {
+    val dataStore = PrefDataKeyValueStore.getInstance(LocalContext.current)
 
     val viewModel : HomeScreenViewModel = viewModel()
     LaunchedEffect(Unit) {
         viewModel.loadData()
+        viewModel.loadFavoriteTeam(dataStore)
     }
+    val favoritteamID by viewModel.favoriteTeam.collectAsState()
 
 
     Column(
@@ -93,7 +101,7 @@ fun HomeScreen(onClickSingleTeam : (String?) -> Unit, onClickSingleMatch : (Stri
 
             SingleEventCard(
                 eventTitle = viewModel.upcomingTournament.value!!.name.toString(),
-                eventDate = convertTimestampToDateDisplay(viewModel.upcomingTournament.value!!.startDateTimestamp),
+                eventDate =  convertTimestampToDateDisplay(viewModel.upcomingTournament.value!!.startDateTimestamp),
                 eventLogo = rememberAsyncImagePainter(model = viewModel.upcomingTournamentlogo.value),
                 tier = "No Tier",
                 /*if (viewModel.uniqueTournament.value!!.uniqueTournamentInfo.tier != null)
@@ -104,11 +112,14 @@ fun HomeScreen(onClickSingleTeam : (String?) -> Unit, onClickSingleMatch : (Stri
                 modifier = Modifier.clickable { onClickSingleEvent(viewModel.upcomingTournament.value!!.id.toString()) },
             )
         }
-
-
         Divider(modifier = Modifier.padding(horizontal = 8.dp), color = M.colorScheme.onBackground)
 
-       SingleTeamScreen(teamID = , onClickSinglePlayer = , onClickSingleTeam = , onClickSingleMatch = )
+        if (favoritteamID != 0 && favoritteamID != null){
+       SingleTeamScreen(teamID = favoritteamID.toString(),
+           onClickSinglePlayer = onClickSinglePlayer ,
+           onClickSingleTeam = onClickSingleTeam,
+           onClickSingleMatch = onClickSingleMatch)
+        }
 
 
 

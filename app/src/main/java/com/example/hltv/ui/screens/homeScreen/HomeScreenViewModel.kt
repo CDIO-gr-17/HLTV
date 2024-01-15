@@ -7,12 +7,20 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.hltv.data.convertTimestampToDateURL
+import com.example.hltv.data.local.PrefDataKeyValueStore
+import com.example.hltv.data.remote.APIResponse
 import com.example.hltv.data.remote.Event
 import com.example.hltv.data.remote.Score
+import com.example.hltv.data.remote.Season
 import com.example.hltv.data.remote.Team
+import com.example.hltv.data.remote.ThirdUniqueTournament
 import com.example.hltv.data.remote.getLiveMatches
 import com.example.hltv.data.remote.getMatchesFromDay
+import com.example.hltv.data.remote.getRelevantTournaments
 import com.example.hltv.data.remote.getTeamImage
+import com.example.hltv.data.remote.getTournamentLogo
+import com.example.hltv.data.remote.getUniqueTournamentDetails
+import com.example.hltv.data.remote.getUniqueTournamentSeasons
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -35,6 +43,9 @@ class HomeScreenViewModel: ViewModel() {
     val awayTeamIcon = mutableStateOf<Bitmap?>(null)
     var homeTeamIcon = mutableStateOf<Bitmap?>(null)
     var tournamentIcon = mutableStateOf<Bitmap?>(null)
+
+    private val _favoriteTeam = MutableStateFlow(0)
+    val favoriteTeam: StateFlow<Int> = _favoriteTeam
 
     private var dataLoaded = false
 
@@ -63,6 +74,14 @@ class HomeScreenViewModel: ViewModel() {
 
     }
 
+     fun loadFavoriteTeam(dataStore : PrefDataKeyValueStore){
+        viewModelScope.launch(Dispatchers.IO) {
+            dataStore.getFavouriteTeam().collect { int ->
+                _favoriteTeam.value = int
+            }
+        }
+    }
+
     private suspend fun loadUpcomingTournament(){
         val tournaments = getRelevantTournaments()
         if (tournaments.isNotEmpty())
@@ -75,7 +94,7 @@ class HomeScreenViewModel: ViewModel() {
             upcomingTournamentlogo.value = getTournamentLogo(upcomingTournament.value!!.id) // gets the logo for the same tournament
             Log.i("TournamentInfo","Logo   "+ upcomingTournament.value!!.id)
 
-            val seasonID =  getUniqueTournamentSeasons(tournament.id).seasons[0].id
+            val seasonID =  getUniqueTournamentSeasons(upcomingTournament.value!!.id).seasons[0].id
 
             //val seasonID = tournamentSeason.value!!.id // Gets a Season ID
             Log.i("TournamentInfo","Season ID  "+ seasonID)
