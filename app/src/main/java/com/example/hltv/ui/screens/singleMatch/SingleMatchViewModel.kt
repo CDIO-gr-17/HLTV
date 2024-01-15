@@ -2,11 +2,14 @@ package com.example.hltv.ui.screens.singleMatch
 
 import android.graphics.Bitmap
 import android.util.Log
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.mutableStateOf
+import androidx.compose.ui.graphics.Color
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import androidx.palette.graphics.Palette
 import com.example.hltv.data.convertTimestampToWeekDateClock
 import com.example.hltv.data.remote.Event
 import com.example.hltv.data.remote.Game
@@ -37,6 +40,8 @@ class SingleMatchViewModel() : ViewModel() {
     var homeTeamIcon = mutableStateOf<Bitmap?>(null)
     var tournamentIcon = mutableStateOf<Bitmap?>(null)
     var description = ""
+    val homeTeamColor = mutableStateOf(Color.White)
+    val awayTeamColor = mutableStateOf(Color.White)
 
 
     private var _tournamentMedia = MutableStateFlow(ArrayList<Media>())
@@ -92,28 +97,38 @@ class SingleMatchViewModel() : ViewModel() {
 
     fun loadData(matchID: String?) {
         val niceMatchID = matchID!!.toInt()
-        viewModelScope.launch {
-            CoroutineScope(Dispatchers.IO).launch {
-                event.value = getEvent(niceMatchID).event!!
-                homeTeamIcon.value = getTeamImage(event.value!!.homeTeam.id)
-                awayTeamIcon.value = getTeamImage(event.value!!.awayTeam.id)
-                tournamentIcon.value = getTournamentLogo(event.value!!.tournament.uniqueTournament?.id)
-                Log.i("tournamentIcon","tournamentIcon added ${tournamentIcon.value}")
-                getPrediction(matchID)
-                if (event.value!!.status?.type == "finished") { // Match with description "ended" has finished
-                    FinishedEvent.value = event.value
-                } else if (event.value!!.status?.type == "inprogress") { // Match is not started
-                    LiveEvent.value = event.value
-                } else { // Match must be upcoming
-                    UpcomingEvent.value = event.value
-                    description =
-                        "${event.value!!.homeTeam.name} will be playing against ${event.value!!.awayTeam.name}" +
-                                " at ${convertTimestampToWeekDateClock(event.value!!.startTimestamp)} in the ${event.value!!.tournament.name} tournament." +
-                                " They will be playing in a best of ${event.value!!.bestOf} map format."
-                }
-                _tournamentMedia.value =
-                    getMedia(event.value!!.homeTeam.id, event.value!!.awayTeam.id)
+        viewModelScope.launch(Dispatchers.IO) {
+            event.value = getEvent(niceMatchID).event!!
+            homeTeamIcon.value = getTeamImage(event.value!!.homeTeam.id)
+            awayTeamIcon.value = getTeamImage(event.value!!.awayTeam.id)
+
+            val homeTeamPalette = Palette.from(homeTeamIcon.value!!).generate()
+            val awayTeamPalette = Palette.from(awayTeamIcon.value!!).generate()
+
+            if (homeTeamIcon.value != null && homeTeamPalette.vibrantSwatch?.rgb != null) {
+                homeTeamColor.value = Color(homeTeamPalette.vibrantSwatch?.rgb!!)
+            } else homeTeamColor.value = Color.Blue
+
+            if (awayTeamIcon.value != null && awayTeamPalette.vibrantSwatch?.rgb != null) {
+                awayTeamColor.value = Color(awayTeamPalette.vibrantSwatch?.rgb!!)
+            } else awayTeamColor.value = Color.Red
+
+            tournamentIcon.value = getTournamentLogo(event.value!!.tournament.uniqueTournament?.id)
+            Log.i("tournamentIcon", "tournamentIcon added ${tournamentIcon.value}")
+            getPrediction(matchID)
+            if (event.value!!.status?.type == "finished") { // Match with description "ended" has finished
+                FinishedEvent.value = event.value
+            } else if (event.value!!.status?.type == "inprogress") { // Match is not started
+                LiveEvent.value = event.value
+            } else { // Match must be upcoming
+                UpcomingEvent.value = event.value
+                description =
+                    "${event.value!!.homeTeam.name} will be playing against ${event.value!!.awayTeam.name}" +
+                            " at ${convertTimestampToWeekDateClock(event.value!!.startTimestamp)} in the ${event.value!!.tournament.name} tournament." +
+                            " They will be playing in a best of ${event.value!!.bestOf} map format."
             }
+            _tournamentMedia.value =
+                getMedia(event.value!!.homeTeam.id, event.value!!.awayTeam.id)
         }
     }
 

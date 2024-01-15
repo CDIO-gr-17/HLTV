@@ -85,6 +85,8 @@ fun SingleMatchScreen(matchID: String?, onClickSingleTeam: (String?) -> Unit) {
             }
             item{
                 PredictionCard(
+                    teamOneColor = viewModel.homeTeamColor.value,
+                    teamTwoColor = viewModel.awayTeamColor.value,
                     teamOneIcon = rememberAsyncImagePainter(viewModel.homeTeamIcon.value),
                     teamTwoIcon = rememberAsyncImagePainter(viewModel.awayTeamIcon.value),
                     viewModel = viewModel,
@@ -118,6 +120,8 @@ fun SingleMatchScreen(matchID: String?, onClickSingleTeam: (String?) -> Unit) {
             }
             item {
                 PredictionCard(
+                    teamOneColor = viewModel.homeTeamColor.value,
+                    teamTwoColor = viewModel.awayTeamColor.value,
                     teamOneIcon = rememberAsyncImagePainter(viewModel.homeTeamIcon.value),
                     teamTwoIcon = rememberAsyncImagePainter(viewModel.awayTeamIcon.value),
                     viewModel = viewModel,
@@ -175,6 +179,8 @@ fun SingleMatchScreen(matchID: String?, onClickSingleTeam: (String?) -> Unit) {
             }
             item{
                 PredictionCard(
+                    teamOneColor = viewModel.homeTeamColor.value,
+                    teamTwoColor = viewModel.awayTeamColor.value,
                     teamOneIcon = rememberAsyncImagePainter(viewModel.homeTeamIcon.value),
                     teamTwoIcon = rememberAsyncImagePainter(viewModel.awayTeamIcon.value),
                     viewModel = viewModel,
