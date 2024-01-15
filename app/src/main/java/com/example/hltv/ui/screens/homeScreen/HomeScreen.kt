@@ -29,6 +29,7 @@ import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.datastore.dataStore
 import androidx.lifecycle.viewmodel.compose.viewModel
 import coil.compose.rememberAsyncImagePainter
 import com.example.hltv.data.convertTimestampToDateDisplay
@@ -40,7 +41,7 @@ import com.example.hltv.ui.screens.eventsScreen.SingleEventCard
 val M = MaterialTheme
 
 @Composable
-fun HomeScreen(onClickSingleTeam : (String?) -> Unit, onClickSingleMatch : (String?) -> Unit) {
+fun HomeScreen(onClickSingleTeam : (String?) -> Unit, onClickSingleMatch : (String?) -> Unit, onClickSingleEvent : (String?)->Unit) {
 
     val viewModel : HomeScreenViewModel = viewModel()
     LaunchedEffect(Unit) {
@@ -85,18 +86,26 @@ fun HomeScreen(onClickSingleTeam : (String?) -> Unit, onClickSingleMatch : (Stri
          }
 
         Divider(modifier = Modifier.padding(horizontal = 8.dp), color = M.colorScheme.onBackground)
-        
-        if (viewModel.upcomingTournament.value != null){
 
-        SingleEventCard(modifier = Modifier.clickable { onClickSingleTeam(viewModel.upcomingMatchValue.value!!.id.toString()) },
-            eventTitle = viewModel.upcomingTournament.value!!.name.toString(),
-            eventDate = convertTimestampToDateDisplay(viewModel.upcomingTournament.value!!.startDateTimestamp),
-            eventLogo = rememberAsyncImagePainter(model = viewModel.upcomingTournamentlogo.value),
-           // tier = viewModel.upcomingTournament.value!!.linkedUniqueTournaments[viewModel.upcomingTournament.value!!.id!!
-            // Need to add Unique tournament info
+        if (viewModel.upcomingTournament.value != null) {
 
+            SingleEventCard(
+                eventTitle = viewModel.upcomingTournament.value!!.name.toString(),
+                eventDate = convertTimestampToDateDisplay(viewModel.upcomingTournament.value!!.startDateTimestamp),
+                eventLogo = rememberAsyncImagePainter(model = viewModel.upcomingTournamentlogo.value),
+                tier = "No Tier",
+                /*if (viewModel.uniqueTournament.value!!.uniqueTournamentInfo.tier != null)
+                    viewModel.uniqueTournament.value!!.uniqueTournamentInfo.tier?.uppercase() else "Not Tier",
+                prizePool = viewModel.uniqueTournament.value!!.uniqueTournamentInfo.totalPrizeMoney,
+                competitors = viewModel.uniqueTournament.value!!.uniqueTournamentInfo.numberOfCompetitors,
+                prizePoolCurrency = viewModel.uniqueTournament.value!!.uniqueTournamentInfo.totalPrizeMoneyCurrency,*/
+                modifier = Modifier.clickable { onClickSingleEvent(viewModel.upcomingTournament.value!!.id.toString()) },
             )
         }
+
+
+        Divider(modifier = Modifier.padding(horizontal = 8.dp), color = M.colorScheme.onBackground)
+
 
 
 

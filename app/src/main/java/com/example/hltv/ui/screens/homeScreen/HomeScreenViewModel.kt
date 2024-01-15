@@ -7,6 +7,7 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.hltv.data.convertTimestampToDateURL
+import com.example.hltv.data.remote.APIResponse
 import com.example.hltv.data.remote.Event
 import com.example.hltv.data.remote.Score
 import com.example.hltv.data.remote.Season
@@ -32,9 +33,10 @@ class HomeScreenViewModel: ViewModel() {
     val upcomingMatchValue = mutableStateOf<Event?>(null)
 
     val upcomingTournament = mutableStateOf<ThirdUniqueTournament?>(null)
-    val uniqueTournament = mutableStateOf<UniqueTournamentInfo?>(null)
+    val uniqueTournament = mutableStateOf<APIResponse.UniqueTournamentInfoWrapper?>(null)
     val upcomingTournamentlogo = mutableStateOf<Bitmap?>(null)
     val tournamentSeason = mutableStateOf<Season?>(null)
+
 
     val upcomingMatchesValue = mutableStateOf<Event>(Event())
 
@@ -49,8 +51,6 @@ class HomeScreenViewModel: ViewModel() {
         }
         viewModelScope.launch(Dispatchers.IO) {
                 val liveMatches = getLiveMatches()
-                val tournaments = getRelevantTournaments()
-
 
                 if (liveMatches.events.isNotEmpty()) {
                     val event = liveMatches.events[0]
@@ -61,16 +61,32 @@ class HomeScreenViewModel: ViewModel() {
                 else {
                     loadUpcomingMatch()
                 }
-            if (tournaments.isNotEmpty())
-            {
-                val tournament = tournaments[0]
-                upcomingTournament.value = tournament //gets the specific tournament data
-                upcomingTournamentlogo.value = getTournamentLogo(tournament.id) // gets the logo for the same tournament
-                tournamentSeason.value =  getUniqueTournamentSeasons(tournament.id).seasons[0]
-                //val seasonID = tournamentSeason.value.id //
-               // uniqueTournament.value = getUniqueTournamentDetails(tournament.id, seasonID)
+            viewModelScope.launch (Dispatchers.IO){
+                loadUpcomingTournament()
             }
+
             dataLoaded = true
+        }
+
+    }
+
+    private suspend fun loadUpcomingTournament(){
+        val tournaments = getRelevantTournaments()
+        if (tournaments.isNotEmpty())
+        {
+            Log.i("TournamentInfo", "Tournament  0 ID: "+ tournaments[0].id)
+            val tournament = tournaments[1] // Should be remade so it doesnt take number 2 but something else
+            upcomingTournament.value = tournament //gets the specific tournament data
+
+            Log.i("TournamentInfo","Tournament name"+ upcomingTournament.value!!.name)
+            upcomingTournamentlogo.value = getTournamentLogo(upcomingTournament.value!!.id) // gets the logo for the same tournament
+            Log.i("TournamentInfo","Logo   "+ upcomingTournament.value!!.id)
+
+            val seasonID =  getUniqueTournamentSeasons(tournament.id).seasons[0].id
+
+            //val seasonID = tournamentSeason.value!!.id // Gets a Season ID
+            Log.i("TournamentInfo","Season ID  "+ seasonID)
+            uniqueTournament.value = getUniqueTournamentDetails(tournament.id, seasonID)
         }
 
     }

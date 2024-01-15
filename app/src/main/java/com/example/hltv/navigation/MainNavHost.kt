@@ -29,7 +29,8 @@ fun MainNavHost(navController: NavHostController, modifier: Modifier) {
         composable(route = Home.route) {
             HomeScreen(
                 onClickSingleTeam = {navController.navigate(SingleTeam.route + it) },
-                onClickSingleMatch = {navController.navigate(SingleMatch.route + it) }
+                onClickSingleMatch = {navController.navigate(SingleMatch.route + it) },
+                onClickSingleEvent = {navController.navigate(SingleEvent.route+it)}
             )
         }
 
