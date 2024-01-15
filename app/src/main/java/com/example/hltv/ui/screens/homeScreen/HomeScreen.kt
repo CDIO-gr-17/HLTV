@@ -37,6 +37,7 @@ import com.example.hltv.data.convertTimestampToWeekDateClock
 import com.example.hltv.ui.common.LiveMatchCard
 import com.example.hltv.ui.common.UpcomingMatchCard
 import com.example.hltv.ui.screens.eventsScreen.SingleEventCard
+import com.example.hltv.ui.screens.singleTeamScreen.SingleTeamScreen
 
 val M = MaterialTheme
 
@@ -106,6 +107,7 @@ fun HomeScreen(onClickSingleTeam : (String?) -> Unit, onClickSingleMatch : (Stri
 
         Divider(modifier = Modifier.padding(horizontal = 8.dp), color = M.colorScheme.onBackground)
 
+       SingleTeamScreen(teamID = , onClickSinglePlayer = , onClickSingleTeam = , onClickSingleMatch = )
 
 
 
