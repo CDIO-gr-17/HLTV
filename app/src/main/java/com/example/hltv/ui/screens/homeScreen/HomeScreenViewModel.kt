@@ -7,20 +7,12 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.hltv.data.convertTimestampToDateURL
-import com.example.hltv.data.remote.APIResponse
 import com.example.hltv.data.remote.Event
 import com.example.hltv.data.remote.Score
-import com.example.hltv.data.remote.Season
 import com.example.hltv.data.remote.Team
-import com.example.hltv.data.remote.ThirdUniqueTournament
-import com.example.hltv.data.remote.UniqueTournamentInfo
 import com.example.hltv.data.remote.getLiveMatches
 import com.example.hltv.data.remote.getMatchesFromDay
-import com.example.hltv.data.remote.getRelevantTournaments
 import com.example.hltv.data.remote.getTeamImage
-import com.example.hltv.data.remote.getTournamentLogo
-import com.example.hltv.data.remote.getUniqueTournamentDetails
-import com.example.hltv.data.remote.getUniqueTournamentSeasons
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -42,6 +34,7 @@ class HomeScreenViewModel: ViewModel() {
 
     val awayTeamIcon = mutableStateOf<Bitmap?>(null)
     var homeTeamIcon = mutableStateOf<Bitmap?>(null)
+    var tournamentIcon = mutableStateOf<Bitmap?>(null)
 
     private var dataLoaded = false
 
@@ -108,6 +101,7 @@ class HomeScreenViewModel: ViewModel() {
             upcomingMatchValue.value = goodevent
             homeTeamIcon.value = getTeamImage(upcomingMatchValue.value?.homeTeam?.id)
             awayTeamIcon.value = getTeamImage(upcomingMatchValue.value?.awayTeam?.id)
+            tournamentIcon.value = getTournamentLogo(upcomingMatchValue.value?.tournament?.uniqueTournament?.id)
 
             }
         }

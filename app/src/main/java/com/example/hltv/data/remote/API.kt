@@ -1,4 +1,5 @@
 package com.example.hltv.data.remote
+
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
 import android.os.ConditionVariable
@@ -16,8 +17,10 @@ import java.io.ByteArrayOutputStream
 import java.io.IOException
 
 const val APIKEY = "24b0f292d5mshdf7eb12b4760333p19075ajsncc1561769190"
-var MILISBETWEENREQUESTS : Long = 200
-var CURRENTMILISBETWEENREQUEST : Long = MILISBETWEENREQUESTS //If this is set to 167 then some images disappear,
+var MILISBETWEENREQUESTS: Long = 200
+var CURRENTMILISBETWEENREQUEST: Long =
+    MILISBETWEENREQUESTS //If this is set to 167 then some images disappear,
+
 // not sure why. Maybe API counts time from when it stopped sending the last request?
 const val ONLYCS = true
 var currentRequestCount = 0
@@ -25,7 +28,7 @@ val cond = ConditionVariable()
 var lastAPIPull: Long = 0
 val mutexForAPI = Mutex()
 var totalSaved = 0.0
-suspend fun waitForAPI(){
+suspend fun waitForAPI() {
 
 
     mutexForAPI.withLock {
@@ -35,16 +38,16 @@ suspend fun waitForAPI(){
         delay(delta)
         lastAPIPull = java.util.Date().time
 
-/*
-        val saved = minOf(CURRENTMILISBETWEENREQUEST - delta, CURRENTMILISBETWEENREQUEST)
-        totalSaved += saved
+        /*
+                val saved = minOf(CURRENTMILISBETWEENREQUEST - delta, CURRENTMILISBETWEENREQUEST)
+                totalSaved += saved
 
-        Log.i(
-            "waitForAPI",
-            "New wait implementation saved: " + saved.toString() + "ms, in total " + totalSaved.toString() + "ms"
-        )
+                Log.i(
+                    "waitForAPI",
+                    "New wait implementation saved: " + saved.toString() + "ms, in total " + totalSaved.toString() + "ms"
+                )
 
- */
+         */
 
 
     }
@@ -56,11 +59,15 @@ suspend fun waitForAPI(){
 suspend fun getLiveMatches(): APIResponse.EventsWrapper {
 
 
-    val eventsWrapper = getAPIResponse("matches/live", APIKEY, APIResponse.EventsWrapper::class.java) as APIResponse.EventsWrapper
-    if (ONLYCS){
+    val eventsWrapper = getAPIResponse(
+        "matches/live",
+        APIKEY,
+        APIResponse.EventsWrapper::class.java
+    ) as APIResponse.EventsWrapper
+    if (ONLYCS) {
         val csEvents: MutableList<Event> = mutableListOf()
-        for (event in eventsWrapper.events){//We should also be able to use slug or flag instead of name
-            if(event.tournament?.category?.name.equals("Counter Strike")){
+        for (event in eventsWrapper.events) {//We should also be able to use slug or flag instead of name
+            if (event.tournament?.category?.name.equals("Counter Strike")) {
                 csEvents.add(event)
             }
         }
@@ -74,11 +81,20 @@ suspend fun getLiveMatches(): APIResponse.EventsWrapper {
  */
 suspend fun getPlayersFromEvent(eventID: Int? = 10945127): APIResponse.Lineup {
     print(eventID)
-    return getAPIResponse("event/" + eventID.toString() + "/lineups", APIKEY, APIResponse.Lineup::class.java) as APIResponse.Lineup
+    return getAPIResponse(
+        "event/" + eventID.toString() + "/lineups",
+        APIKEY,
+        APIResponse.Lineup::class.java
+    ) as APIResponse.Lineup
 }
-suspend fun searchInAPIFromString(searchQuery : String) : APIResponse.ResultsWrapper {
+
+suspend fun searchInAPIFromString(searchQuery: String): APIResponse.ResultsWrapper {
     try {
-        return getAPIResponse("search/$searchQuery", APIKEY, APIResponse.ResultsWrapper::class.java) as APIResponse.ResultsWrapper
+        return getAPIResponse(
+            "search/$searchQuery",
+            APIKEY,
+            APIResponse.ResultsWrapper::class.java
+        ) as APIResponse.ResultsWrapper
 
     } catch (e: Exception) {
         // handling empty response
@@ -89,11 +105,13 @@ suspend fun searchInAPIFromString(searchQuery : String) : APIResponse.ResultsWra
 }
 
 
-
 suspend fun getPlayerFromPlayerID(playerID: Int? = 1078255): APIResponse.PlayerWrapper {
-    return getAPIResponse("player/" + playerID.toString(), APIKEY, APIResponse.PlayerWrapper::class.java) as APIResponse.PlayerWrapper
+    return getAPIResponse(
+        "player/" + playerID.toString(),
+        APIKEY,
+        APIResponse.PlayerWrapper::class.java
+    ) as APIResponse.PlayerWrapper
 }
-
 
 
 //Doesnt use the reusable function because of the return type
@@ -114,33 +132,49 @@ suspend fun getTeamImage(teamID: Int? = 372647): Bitmap? {
     return getAPIImage(apiURL, APIKEY)
 }
 
-suspend fun getPreviousMatches(teamID: Int, pageID: Int = 0):APIResponse.EventsWrapper{
-    return getAPIResponse("team/"+teamID.toString()+"/matches/previous/"+ pageID, APIKEY, APIResponse.EventsWrapper::class.java) as APIResponse.EventsWrapper
+suspend fun getPreviousMatches(teamID: Int, pageID: Int = 0): APIResponse.EventsWrapper {
+    return getAPIResponse(
+        "team/" + teamID.toString() + "/matches/previous/" + pageID,
+        APIKEY,
+        APIResponse.EventsWrapper::class.java
+    ) as APIResponse.EventsWrapper
 }
 
-suspend fun getGamesFromEvent(eventID: Int?) : APIResponse.GameWrapper{
+suspend fun getGamesFromEvent(eventID: Int?): APIResponse.GameWrapper {
     try {
-        return getAPIResponse("event/$eventID/games", APIKEY, APIResponse.GameWrapper::class.java) as APIResponse.GameWrapper
-    } catch (e: Exception){
-        Log.e("getGamesFromEvent","No games found for match $eventID")
+        return getAPIResponse(
+            "event/$eventID/games",
+            APIKEY,
+            APIResponse.GameWrapper::class.java
+        ) as APIResponse.GameWrapper
+    } catch (e: Exception) {
+        Log.e("getGamesFromEvent", "No games found for match $eventID")
         return APIResponse.GameWrapper(emptyList())
     }
 }
-suspend fun getMapImageFromMapID(mapID : Int): Bitmap? {
+
+suspend fun getMapImageFromMapID(mapID: Int): Bitmap? {
     val apiURL = "map/$mapID/image"
     return getAPIImage(apiURL, APIKEY)
 
 }
-suspend fun getEvent(eventID: Int?) : APIResponse.EventWrapper{
-    return getAPIResponse("event/$eventID", APIKEY, APIResponse.EventWrapper::class.java) as APIResponse.EventWrapper
+
+suspend fun getEvent(eventID: Int?): APIResponse.EventWrapper {
+    return getAPIResponse(
+        "event/$eventID",
+        APIKEY,
+        APIResponse.EventWrapper::class.java
+    ) as APIResponse.EventWrapper
 }
+
 /**
  * I couldn't get coil to work with the whole APIkey, MVVM model and stuff
  * If you can, feel free to, but this slightly convoluted thing works
  */
-private suspend fun getAPIImage(apiURL: String, apiKEY: String): Bitmap?{
+private suspend fun getAPIImage(apiURL: String, apiKEY: String): Bitmap? {
 
-    Log.i("getAPIResponse",
+    Log.i(
+        "getAPIResponse",
         "Attempting to get: https://allsportsapi2.p.rapidapi.com/api/esport/$apiURL"
     )
 
@@ -166,7 +200,7 @@ private suspend fun getAPIImage(apiURL: String, apiKEY: String): Bitmap?{
             output.write(buffer, 0, bytesRead)
             bytesRead = inputStream2.read(buffer)
         }
-    }else{
+    } else {
         Log.i("getAPIImage", "inputStream2 is null")
     }
 
@@ -179,7 +213,7 @@ private suspend fun getAPIImage(apiURL: String, apiKEY: String): Bitmap?{
     val decodedImage: ByteArray = Base64.decode(base64String, 0)
     val bitmap = BitmapFactory.decodeByteArray(decodedImage, 0, decodedImage.size)
 
-    if (bitmap == null){
+    if (bitmap == null) {
         Log.d("getAPIImage", "Bitmap is null, probably because player image does not exist")
     }
     return bitmap
@@ -187,7 +221,7 @@ private suspend fun getAPIImage(apiURL: String, apiKEY: String): Bitmap?{
 }
 
 suspend fun getTeamNameFromID(teamID: Int): String? {
-val team = getAPIResponse(
+    val team = getAPIResponse(
         "team/$teamID",
         APIKEY,
         APIResponse.TeamContainer::class.java
@@ -257,9 +291,9 @@ suspend fun getTournamentInfo(tournamentID: Int): APIResponse.ThirdTournamentWra
 suspend fun getRelevantTournaments(): List<ThirdUniqueTournament> {
     var finalTournamentDetailList: MutableList<ThirdUniqueTournament> = mutableListOf()
 
-    var tournaments : List<Int> = getCSTournamentsID(getCSCategory())
+    var tournaments: List<Int> = getCSTournamentsID(getCSCategory())
 
-    val croppedTournaments = tournaments.take(30)
+    val croppedTournaments = tournaments.take(10)
 
     //TODO: This function needs to return things one at a time so we get dynamic loading of tournaments
     val deferreds = croppedTournaments.map { tournamentID ->
@@ -273,48 +307,68 @@ suspend fun getRelevantTournaments(): List<ThirdUniqueTournament> {
     finalTournamentDetailList = finalTournamentDetailList.reversed().toMutableList()
     return finalTournamentDetailList
 }
+
 suspend fun getMatchesFromDay(timestamp: String): APIResponse.EventsWrapper {
     val matchesFromDay = getAPIResponse(
         "category/1572/events/$timestamp",
         APIKEY,
         APIResponse.EventsWrapper::class.java
     ) as APIResponse.EventsWrapper
-    if (matchesFromDay.events.size == 0){
-        Log.i("getMatchesFromDay","There are no more matches to load")
+    if (matchesFromDay.events.size == 0) {
+        Log.i("getMatchesFromDay", "There are no more matches to load")
     }
-    matchesFromDay.events = matchesFromDay.events.subList(0,(maxOf(matchesFromDay.events.size-1,0)))
+    matchesFromDay.events =
+        matchesFromDay.events.subList(0, (maxOf(matchesFromDay.events.size - 1, 0)))
     return matchesFromDay
 }
-suspend fun getTournamentLogo(tournamentID: Int? = 16026): Bitmap?{
+
+suspend fun getTournamentLogo(tournamentID: Int? = 16026): Bitmap? {
     val apiURL = "tournament/" + tournamentID.toString() + "/image"
     Log.i("tournamentLogo", "Getting tournamentlogo with URL: $apiURL")
     return getAPIImage(apiURL, APIKEY)
 }
 
 
-suspend fun getUniqueTournamentDetails(tournamentID: Int? = 16026, seasonID: Int? = 47832): APIResponse.UniqueTournamentInfoWrapper{
-    return getAPIResponse("tournament/${tournamentID.toString()}/season/${seasonID.toString()}/info", APIKEY,
-        APIResponse.UniqueTournamentInfoWrapper::class.java) as APIResponse.UniqueTournamentInfoWrapper
+suspend fun getUniqueTournamentDetails(
+    tournamentID: Int? = 16026,
+    seasonID: Int? = 47832
+): APIResponse.UniqueTournamentInfoWrapper {
+    return getAPIResponse(
+        "tournament/${tournamentID.toString()}/season/${seasonID.toString()}/info", APIKEY,
+        APIResponse.UniqueTournamentInfoWrapper::class.java
+    ) as APIResponse.UniqueTournamentInfoWrapper
 }
 
-suspend fun getUniqueTournamentSeasons(tournamentID: Int? = 16137): APIResponse.SeasonsWrapper{
-    return getAPIResponse("tournament/${tournamentID.toString()}/seasons",
+suspend fun getUniqueTournamentSeasons(tournamentID: Int? = 16137): APIResponse.SeasonsWrapper {
+    return getAPIResponse(
+        "tournament/${tournamentID.toString()}/seasons",
         APIKEY,
         APIResponse.SeasonsWrapper::class.java
     ) as APIResponse.SeasonsWrapper
 }
 
-suspend fun getTournamentStandings(tournamentID: Int? = 16026, seasonID: Int? = 47832): APIResponse {
-    return getAPIResponse("tournament/$tournamentID/season/$seasonID/standings/total",
-        APIKEY,
-        Standings::class.java)
+suspend fun getTournamentStandings(tournamentID: Int? = 16137, seasonID: Int? = 51868): APIResponse.StandingsWrapper {
+    val apiURL = "tournament/$tournamentID/season/$seasonID/standings/total"
+    return try {
+        getAPIResponse(
+            apiURL,
+            APIKEY,
+            APIResponse.StandingsWrapper::class.java
+        ) as APIResponse.StandingsWrapper
+    } catch (e: Exception){
+        Log.e("tournamentStandings","No tournament standings found for tournamentID $tournamentID, seasonID $seasonID")
+        APIResponse.StandingsWrapper(arrayListOf())
+    }
 }
 
 
-suspend fun checkRequestRate(jsonString: String?) : Boolean{
+suspend fun checkRequestRate(jsonString: String?): Boolean {
     if (jsonString != null) {
-        if (jsonString.contains("You have exceeded the rate limit per second for your plan")){
-            Log.e("getAPIResponse", "You have exceeded the rate limit per second for your plan. Allowing less requests/second to allow for multiple app instances")
+        if (jsonString.contains("You have exceeded the rate limit per second for your plan")) {
+            Log.e(
+                "getAPIResponse",
+                "You have exceeded the rate limit per second for your plan. Allowing less requests/second to allow for multiple app instances"
+            )
             CURRENTMILISBETWEENREQUEST += MILISBETWEENREQUESTS
             delay(CURRENTMILISBETWEENREQUEST)
             return true
@@ -327,17 +381,22 @@ suspend fun checkRequestRate(jsonString: String?) : Boolean{
  * @param desiredClass The class to pass to gson. This is the same as your return class, e.g. APIResponse.Lineup::class.java
  */
 
-private suspend fun getAPIResponse(apiURL: String, apiKEY: String, desiredClass:Class<*>): APIResponse {
+private suspend fun getAPIResponse(
+    apiURL: String,
+    apiKEY: String,
+    desiredClass: Class<*>
+): APIResponse {
 
-    var jsonString : String?
+    var jsonString: String?
     var tries = 3
     var apiInUse: Boolean
     val gson = GsonSingleton.instance
 
-    Log.i("getAPIResponse",
+    Log.i(
+        "getAPIResponse",
         "Attempting to get: https://allsportsapi2.p.rapidapi.com/api/esport/$apiURL"
     )
-    do{
+    do {
         val request = Request.Builder()
             .url("https://allsportsapi2.p.rapidapi.com/api/esport/$apiURL")
             .get()
@@ -354,24 +413,24 @@ private suspend fun getAPIResponse(apiURL: String, apiKEY: String, desiredClass:
         response.close()
 
         if (jsonString != null) {
-            if (jsonString.contains("You have exceeded the rate limit per second for your plan")){
+            if (jsonString.contains("You have exceeded the rate limit per second for your plan")) {
                 Log.e("getAPIResponse", "You have exceeded the rate limit per second for your plan")
                 apiInUse = true
             }
-        }else {
+        } else {
             Log.i("getAPIResponse", "jsonString is null")
         }
         tries--
-    }while (jsonString?.compareTo("") == 0 && tries > 0 || apiInUse)
+    } while (jsonString?.compareTo("") == 0 && tries > 0 || apiInUse)
 
-    if (jsonString?.compareTo("") == 0){
+    if (jsonString?.compareTo("") == 0) {
         Log.e("getAPIResponse", "jsonString is repeatedly null", IOException("STRING IS NULL"))
     }
 
     if (jsonString != null) {
-        if (jsonString.length > 100){
-            Log.i("getAPIResponse", "JSON IS: " + jsonString.substring(0,100) + "...")
-        } else{
+        if (jsonString.length > 100) {
+            Log.i("getAPIResponse", "JSON IS: " + jsonString.substring(0, 100) + "...")
+        } else {
             Log.i("getAPIResponse", "JSON IS: " + jsonString)
 
         }
@@ -380,6 +439,7 @@ private suspend fun getAPIResponse(apiURL: String, apiKEY: String, desiredClass:
 
     return gson.fromJson(jsonString, desiredClass) as APIResponse
 }
+
 /* NOt needed anymore we are using teamMedia
 suspend fun getTournamentMedia(uniqueTournamentID: String): APIResponse.MediaWrapper{
     try {
@@ -394,15 +454,14 @@ suspend fun getTournamentMedia(uniqueTournamentID: String): APIResponse.MediaWra
         return APIResponse.MediaWrapper(Media())
     }
 }*/
-suspend fun getTeamMedia (teamID: Int?) : APIResponse.MediaWrapper {
+suspend fun getTeamMedia(teamID: Int?): APIResponse.MediaWrapper {
     try {
         return getAPIResponse(
             "team/$teamID/media",
             APIKEY,
             APIResponse.MediaWrapper::class.java
         ) as APIResponse.MediaWrapper
-    }
-    catch (e: Exception){
+    } catch (e: Exception) {
         //handling when response is empty
         Log.e("getTeamMedia()", "$e")
         return APIResponse.MediaWrapper(ArrayList())
@@ -413,9 +472,5 @@ suspend fun getTeamMedia (teamID: Int?) : APIResponse.MediaWrapper {
 
 fun main() {
 
-    //val a = getPreviousMatches(364425,0)
-    //val b = getLiveMatches()
-    //val c = getPlayersFromEvent(b?.events?.get(0)?.id)
-    //val d = getPlayerImage()
 
 }

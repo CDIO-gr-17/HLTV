@@ -36,14 +36,15 @@ fun MainNavHost(navController: NavHostController, modifier: Modifier) {
 
         composable(route = Events.route) {
             EventsScreen(
-                onclickSingleEvent = { navController.navigate(SingleEvent.route + it) },
+                onclickSingleEvent = { navController.navigate(SingleEvent.route + it) }
             )
         }
 
         composable(route = Matches.route) {
             MatchesScreen(
                 onClickSingleMatch = { navController.navigate(SingleMatch.route + it)},
-                onClickSingleTeam = { navController.navigate(SingleTeam.route + it)})
+                onClickSingleTeam = { navController.navigate(SingleTeam.route + it)},
+                onClickSingleEvent = { navController.navigate(SingleEvent.route + it)})
         }
 
         composable(route = Search.route) {
@@ -88,13 +89,15 @@ fun MainNavHost(navController: NavHostController, modifier: Modifier) {
         { backStackEntry ->
             PlayerScreen(backStackEntry.arguments?.getString("playerID"))
         }
-        composable(route = SingleEvent.route + "{eventID}",
-            arguments = listOf(navArgument("eventID") { type = NavType.StringType }))
+        composable(route = SingleEvent.route + "{eventID}"+"/"+"{seasonID}",
+            arguments = listOf(navArgument("eventID") { type = NavType.StringType }, navArgument("seasonID") { type = NavType.StringType }))
         { backStackEntry ->
             SingleEventScreen(
-                onClickSingleTeam = {navController.navigate(SingleTeam.route + it) },
-                onClickSingleMatch = {navController.navigate(SingleMatch.route + it) }
-
+                tournamentID = backStackEntry.arguments?.getString("eventID"),
+                seasonID = backStackEntry.arguments?.getString("seasonID"),
+                onClickSingleTeam = { navController.navigate(SingleTeam.route + it) },
+                onClickSingleMatch = {navController.navigate(SingleMatch.route + it) },
+                onClickSinglePlayer = {navController.navigate(SinglePlayer.route + it) }
             )
         }
     }

@@ -55,6 +55,7 @@ android {
 
 dependencies {
 
+    implementation("androidx.palette:palette-ktx:1.0.0")
     implementation("androidx.core:core-ktx:1.12.0")
     // https://mvnrepository.com/artifact/com.google.code.gson/gson
     implementation("com.google.code.gson:gson:2.10.1")

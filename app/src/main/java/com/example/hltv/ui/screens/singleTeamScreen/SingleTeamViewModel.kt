@@ -4,22 +4,22 @@ import android.graphics.Bitmap
 import android.util.Log
 import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.mutableStateOf
+import androidx.compose.ui.graphics.Color
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.hltv.R
+import com.example.hltv.data.getAvgAgeFromTimestamp
+import androidx.palette.graphics.Palette
 import com.example.hltv.data.remote.APIResponse
-import com.example.hltv.data.remote.Country
 import com.example.hltv.data.remote.Map
 import com.example.hltv.data.remote.PlayerGroup
 import com.example.hltv.data.remote.Score
 import com.example.hltv.data.remote.Team
-import com.example.hltv.data.remote.getGamesFromEvent
 import com.example.hltv.data.remote.getPlayerImage
 import com.example.hltv.data.remote.getPlayersFromEvent
 import com.example.hltv.data.remote.getPreviousMatches
 import com.example.hltv.data.remote.getTeamImage
 import kotlinx.coroutines.CompletableDeferred
-import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import java.math.RoundingMode
@@ -63,12 +63,15 @@ data class Stats(
 )
 class SingleTeamViewModel : ViewModel() {
 
+
     val recentMatches = mutableStateListOf<RecentMatch>()
     val playerOverview = mutableStateListOf<Player>()
     //var lineup: PlayerGroup? = null
     var statisticsOverview = mutableStateOf<Stats>(Stats())
-    var team1: Team? = null
-    var team2: Team? = null
+    val teamImage = mutableStateOf<Bitmap?>(null)
+    private var team1: Team? = null
+    private var team2: Team? = null
+    val team = mutableStateOf<Team>(Team())
     var team1score: Score? = null
     var team2score: Score? = null
     var avgAgeofPlayers: Long = 0
@@ -76,9 +79,11 @@ class SingleTeamViewModel : ViewModel() {
     var playersWithAge : Int = 0
     var teamID = 0
     val playersDateOfBirthTimestamp = mutableStateListOf<Int>()
+    val palette = mutableStateOf<Palette?>(null)
+    val color = mutableStateOf<Color>(Color.White)
 
     var dataLoaded = false
-    fun loadData(teamIDString: String){
+    fun loadData(teamIDString: String, gamesToLoad: Int = 6){
 
         //I love how jank this is but it works, I think. Loading a new team loads a new viewmodel
         //where dataloaded will default to false, so I think it works?
@@ -92,6 +97,15 @@ class SingleTeamViewModel : ViewModel() {
         val lineup = CompletableDeferred<PlayerGroup?>()
 
         viewModelScope.launch(Dispatchers.IO) {
+            teamImage.value = getTeamImage(teamID)
+            //palette.value =  Palette.from(teamImage.value!!).generate()
+            //color.value = Color(Palette.from(teamImage.value!!).generate().vibrantSwatch!!.rgb)
+
+            val palette = Palette.from(teamImage.value!!).generate()
+            if (teamImage.value != null && palette.vibrantSwatch?.rgb != null){
+                color.value = Color(palette.vibrantSwatch?.rgb!!)
+            } else color.value = Color.White
+
             Log.w(this.toString(), "Got previous matches of team with id: $teamID")
             val completedMatches = getPreviousMatches(teamID, 0)
             val filteredMatches = completedMatches.events
@@ -100,14 +114,14 @@ class SingleTeamViewModel : ViewModel() {
             recentMatches.clear()
             //recentMatches
             team1 = null
-            for ((index, event) in filteredMatches.reversed().withIndex().take(6)) {
+            for ((index, event) in filteredMatches.reversed().withIndex().take(gamesToLoad)) {
                 if (teamID == event.homeTeam.id) {
                     team1 = event.homeTeam
                     team2 = event.awayTeam
                     team1score = event.homeScore
                     team2score = event.awayScore
                     if (index == 0){
-                        Log.i("asdasd", "Also loading here")
+                        team.value = event.homeTeam
                         lineup.complete(getPlayersFromEvent(event.id).home)
                     }
                 }
@@ -117,12 +131,12 @@ class SingleTeamViewModel : ViewModel() {
                     team1score = event.awayScore
                     team2score = event.homeScore
                     if (index == 0){
-                        Log.i("asdasd", "Loading here")
+                        team.value = event.awayTeam
                         lineup.complete(getPlayersFromEvent(event.id).away)
                     }
                 }
                 val date = Date(event.startTimestamp?.toLong()?.times(1000) ?: 0)
-                val dateFormat = SimpleDateFormat("dd MMM.")
+                val dateFormat = SimpleDateFormat("dd MMM.") //TODO: Fix this
                 val formattedDate = dateFormat.format(date)
                 val recentMatch = RecentMatch(
                     homeTeam = team1,

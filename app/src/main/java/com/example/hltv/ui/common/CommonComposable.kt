@@ -2,6 +2,7 @@ package com.example.hltv.ui.common
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.BoxScope
 import androidx.compose.foundation.layout.Column
@@ -32,19 +33,18 @@ fun CommonComposable() {
                modifier = Modifier.fillMaxWidth(),
                headText = "Blast Premier world final 2023", //Valgfri - Erstatning for topBox
                subText = "Oct. 13 - Nov. 13", //Valgfri - Erstatning for topBox
-               image = painterResource(id = com.example.hltv.R.drawable.astralis_logo),
-               bottomBox = {
-                   Box {
-                       Text(
-                           text = "Eventinformation",
-                           fontSize = MaterialTheme.typography.bodyLarge.fontSize,
-                           color = MaterialTheme.colorScheme.onSecondaryContainer,
-                           modifier = Modifier
-                               .align(Alignment.CenterStart)
-                       )
-                   }
+               image = painterResource(id = com.example.hltv.R.drawable.astralis_logo)
+           ) {
+               Box {
+                   Text(
+                       text = "Eventinformation",
+                       fontSize = MaterialTheme.typography.bodyLarge.fontSize,
+                       color = MaterialTheme.colorScheme.onSecondaryContainer,
+                       modifier = Modifier
+                           .align(Alignment.CenterStart)
+                   )
                }
-           )
+           }
             //Eksempel med brug af topBox og bottomBox
             CommonCard(
                 modifier = Modifier.fillMaxWidth(),
@@ -58,19 +58,18 @@ fun CommonComposable() {
                                 .align(Alignment.CenterStart)
                         )
                     }
-                },
-                bottomBox = {
-                    Box {
-                        Text(
-                            text = "bottomBox information",
-                            fontSize = MaterialTheme.typography.bodyLarge.fontSize,
-                            color = MaterialTheme.colorScheme.onSecondaryContainer,
-                            modifier = Modifier
-                                .align(Alignment.CenterStart)
-                        )
-                    }
                 }
-            )
+            ) {
+                Box {
+                    Text(
+                        text = "bottomBox information",
+                        fontSize = MaterialTheme.typography.bodyLarge.fontSize,
+                        color = MaterialTheme.colorScheme.onSecondaryContainer,
+                        modifier = Modifier
+                            .align(Alignment.CenterStart)
+                    )
+                }
+            }
             //Eksempel med brug af topBox uden bottomBox
             CommonCard(
                 modifier = Modifier.fillMaxWidth(),
@@ -87,19 +86,18 @@ fun CommonComposable() {
                 }
             )
             CommonCard (
-                modifier = Modifier.fillMaxWidth(),
-                bottomBox = {
-                    Box{
-                        Text(
-                            text = "bottomBox information",
-                            fontSize = MaterialTheme.typography.bodyLarge.fontSize,
-                            color = MaterialTheme.colorScheme.onSecondaryContainer,
-                            modifier = Modifier
-                                .align(Alignment.CenterStart)
-                        )
-                    }
+                modifier = Modifier.fillMaxWidth()
+            ) {
+                Box {
+                    Text(
+                        text = "bottomBox information",
+                        fontSize = MaterialTheme.typography.bodyLarge.fontSize,
+                        color = MaterialTheme.colorScheme.onSecondaryContainer,
+                        modifier = Modifier
+                            .align(Alignment.CenterStart)
+                    )
                 }
-            )
+            }
         }
     }
 }
@@ -110,6 +108,7 @@ fun CommonCard(
     headText: String ?= null,
     subText: String ?= null,
     image: Painter?= null,
+    imageOnClick: (() -> Unit?)? = null,
     customOuterPadding: Dp ?= null,
     customInnerPadding: Dp ?= null,
     topBox: @Composable (BoxScope.() -> Unit?)? = null,
@@ -144,6 +143,7 @@ fun CommonCard(
                                     text = it,
                                     fontSize = MaterialTheme.typography.bodyLarge.fontSize,
                                     color = MaterialTheme.colorScheme.onPrimaryContainer,
+                                    maxLines = 1
                                 )
                             }
                             subText?.let {
@@ -161,6 +161,11 @@ fun CommonCard(
                                 alignment = Alignment.CenterEnd,
                                 modifier = Modifier
                                     .size(40.dp)
+                                    .clickable {
+                                        if(imageOnClick!=null)
+                                            imageOnClick()
+                                    }
+
 
                             )
                         }

@@ -18,6 +18,8 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.MutableState
+import androidx.compose.runtime.snapshots.SnapshotStateList
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.painter.Painter
@@ -28,6 +30,7 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
+import coil.compose.AsyncImagePainter
 import coil.compose.rememberAsyncImagePainter
 import com.example.hltv.R
 import com.example.hltv.data.getFlagFromCountryCode
@@ -93,7 +96,6 @@ fun SingleTeamScreen(teamID : String? = "364378", onClickSinglePlayer: (String?)
             })
         }
     }
-
 }
 
 @Composable
@@ -112,7 +114,7 @@ fun OverviewPlayer(
         ){
             Image(
                 painter = if(player.image!=null) rememberAsyncImagePainter(player.image) else rememberAsyncImagePainter(
-                    model = R.drawable.person_24px
+                    model = R.drawable.playersilouhette
                 ),
                 contentDescription = null,
                 alignment = Alignment.CenterStart,
@@ -130,7 +132,7 @@ fun OverviewPlayer(
                         modifier = Modifier.fillMaxWidth(),
                         fontWeight = FontWeight.Bold,
                         maxLines = 1,
-                        overflow = TextOverflow.Visible //TODO: Do we want ellipses?
+                        overflow = TextOverflow.Visible //TODO: Do we want ellipses
                     )
                 }
             )
@@ -168,19 +170,13 @@ fun OverviewInfo(
         Column(
             horizontalAlignment = Alignment.CenterHorizontally
         ){
-            Text(
-                text = "Logo",
-                fontSize = MaterialTheme.typography.bodyLarge.fontSize,
-                color = MaterialTheme.colorScheme.onPrimaryContainer,
-                fontWeight = FontWeight.Bold
-            )
             if (teamLogo != null) {
                 Image(
                     painter = teamLogo,
                     contentDescription = null,
                     alignment = Alignment.Center,
                     modifier = Modifier
-                        .size(40.dp)
+                        .size(50.dp)
                 )
             }
         }
@@ -203,6 +199,7 @@ fun RecentMatches(
         topBox = {
             Box {
                 Row (
+                    verticalAlignment = Alignment.CenterVertically,
                     modifier = modifier
                         .fillMaxWidth()
                 ){
@@ -220,6 +217,8 @@ fun RecentMatches(
                         )
                         Text(
                             text = team1 ?: "Team 1",
+                            maxLines = 2,
+                            overflow = TextOverflow.Ellipsis,
                             fontSize = MaterialTheme.typography.bodyLarge.fontSize,
                             color = MaterialTheme.colorScheme.onPrimaryContainer
                         )
@@ -249,8 +248,12 @@ fun RecentMatches(
                     ){
                         Text(
                             text = team2 ?: "Team 2",
+                            maxLines = 2,
+                            overflow = TextOverflow.Ellipsis,
                             fontSize = MaterialTheme.typography.bodyLarge.fontSize,
-                            color = MaterialTheme.colorScheme.onPrimaryContainer
+                            color = MaterialTheme.colorScheme.onPrimaryContainer,
+                            textAlign = TextAlign.End,
+                            modifier = Modifier.weight(1f)
                         )
                         Image(
                             painter = imageTeam2,
