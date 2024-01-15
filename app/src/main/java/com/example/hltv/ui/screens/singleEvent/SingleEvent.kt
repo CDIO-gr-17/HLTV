@@ -247,7 +247,7 @@ fun SingleEventTopbox(
                                     withStyle(
                                         style = SpanStyle(
                                             brush = Brush.verticalGradient(
-                                                colors = listOf(Color.White, eventViewModel.color.value)
+                                                colors = listOf(MaterialTheme.colorScheme.onSecondaryContainer, eventViewModel.color.value)
                                             ),
                                             fontWeight = FontWeight.ExtraBold,
 
@@ -264,7 +264,7 @@ fun SingleEventTopbox(
                                     withStyle(
                                         style = SpanStyle(
                                             brush = Brush.verticalGradient(
-                                                colors = listOf(eventViewModel.color.value, Color.White)
+                                                colors = listOf(eventViewModel.color.value, MaterialTheme.colorScheme.onSecondaryContainer)
                                             ),
                                             fontSize = 35.sp,
                                             fontWeight = FontWeight.Bold,
@@ -320,7 +320,7 @@ fun SingleEventTopbox(
                         Text(
                             textAlign = TextAlign.Center,
                             text = if (!eventViewModel.startTime.value.contains("Unknown")) (eventViewModel.startTime.value + " - " + eventViewModel.endTime.value) else "",
-                            color = Color.White
+                            color = MaterialTheme.colorScheme.onSecondaryContainer
                         )
 
                         Divider(thickness = 1.dp)
@@ -365,7 +365,7 @@ fun SingleEventTopbox(
                                                             brush = Brush.linearGradient(
                                                                 colors = listOf(
                                                                     teamViewModel.color.value,
-                                                                    Color.White
+                                                                    MaterialTheme.colorScheme.onSecondaryContainer
                                                                 )
                                                             ),
                                                             fontSize = 65.sp,

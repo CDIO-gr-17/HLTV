@@ -78,13 +78,13 @@ fun HLTVTheme(
   content: @Composable() () -> Unit
 ) {
   val colors = if (!useDarkTheme) {
-    DarkColors
+    LightColors
   } else {
     DarkColors
   }
 
   MaterialTheme(
-    colorScheme = DarkColors,
+    colorScheme = colors,
     content = content
   )
 }
