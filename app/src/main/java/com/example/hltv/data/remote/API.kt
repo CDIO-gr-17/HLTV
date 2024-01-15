@@ -425,6 +425,7 @@ private suspend fun getAPIResponse(
 
     if (jsonString?.compareTo("") == 0) {
         Log.e("getAPIResponse", "jsonString is repeatedly null", IOException("STRING IS NULL"))
+        return APIResponse.Error //tried this
     }
 
     if (jsonString != null) {

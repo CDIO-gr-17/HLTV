@@ -143,6 +143,7 @@ fun CommonCard(
                                     text = it,
                                     fontSize = MaterialTheme.typography.bodyLarge.fontSize,
                                     color = MaterialTheme.colorScheme.onPrimaryContainer,
+                                    maxLines = 1
                                 )
                             }
                             subText?.let {

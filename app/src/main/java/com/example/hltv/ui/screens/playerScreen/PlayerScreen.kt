@@ -4,15 +4,11 @@ import android.annotation.SuppressLint
 import android.util.Log
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.layout.width
 import androidx.compose.material3.Divider
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
@@ -24,18 +20,15 @@ import androidx.compose.ui.graphics.painter.Painter
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
-import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import coil.compose.rememberAsyncImagePainter
 import com.example.hltv.R
-import com.example.hltv.data.convertTimestampToDateDisplay
 import com.example.hltv.data.convertTimestampToDateURL
 import com.example.hltv.data.getAvgAgeFromTimestamp
 import com.example.hltv.data.getFlagFromCountryCode
-import com.example.hltv.data.remote.getTeamImage
 import com.example.hltv.ui.common.CommonCard
 
 
@@ -81,145 +74,144 @@ fun PlayerScreen(
                         )
                     }
                     CommonCard (
-                        modifier = Modifier,
-                        bottomBox = {
-                            Column {
-                                Row {
-                                    Text(
-                                        modifier = Modifier.weight(1f),
-                                        text = "Full name:",
-                                        fontSize = MaterialTheme.typography.bodyLarge.fontSize,
-                                        color = MaterialTheme.colorScheme.onPrimaryContainer,
-                                    )
-                                    Text(
-                                        text = "${player?.firstName} ${player?.lastName}",
-                                        fontSize = MaterialTheme.typography.bodyLarge.fontSize,
-                                        color = MaterialTheme.colorScheme.onPrimaryContainer,
-                                    )
-                                }
-                                Divider(
-                                    color = MaterialTheme.colorScheme.primaryContainer
+                        modifier = Modifier
+                    ) {
+                        Column {
+                            Row {
+                                Text(
+                                    modifier = Modifier.weight(1f),
+                                    text = "Full name:",
+                                    fontSize = MaterialTheme.typography.bodyLarge.fontSize,
+                                    color = MaterialTheme.colorScheme.onPrimaryContainer,
                                 )
-                                Row {
-                                    Text(
-                                        modifier = Modifier.weight(1f),
-                                        text = "Nickname:",
-                                        fontSize = MaterialTheme.typography.bodyLarge.fontSize,
-                                        color = MaterialTheme.colorScheme.onPrimaryContainer,
-                                    )
-                                    Text(
-                                        text = "${player?.name}",
-                                        fontSize = MaterialTheme.typography.bodyLarge.fontSize,
-                                        color = MaterialTheme.colorScheme.onPrimaryContainer,
-                                    )
-                                }
-                                Divider(
-                                    color = MaterialTheme.colorScheme.primaryContainer
+                                Text(
+                                    text = "${player?.firstName} ${player?.lastName}",
+                                    fontSize = MaterialTheme.typography.bodyLarge.fontSize,
+                                    color = MaterialTheme.colorScheme.onPrimaryContainer,
                                 )
-                                Row (
-                                    horizontalArrangement = Arrangement.Center
-                                ){
-                                    Text(
-                                        modifier = Modifier.weight(1f),
-                                        text = "Country:",
-                                        fontSize = MaterialTheme.typography.bodyLarge.fontSize,
-                                        color = MaterialTheme.colorScheme.onPrimaryContainer,
-                                    )
-                                    Text(
-                                        text = "${player?.country?.name} ",
-                                        fontSize = MaterialTheme.typography.bodyLarge.fontSize,
-                                        color = MaterialTheme.colorScheme.onPrimaryContainer,
-                                    )
-                                    Image(
-                                        modifier = Modifier.size(25.dp),
-                                        painter = getFlagFromCountryCode(player?.country?.alpha2),
-                                        contentDescription = null,
-                                        alignment = Alignment.CenterEnd
-                                    )
-                                }
-                                Divider(
-                                    color = MaterialTheme.colorScheme.primaryContainer
+                            }
+                            Divider(
+                                color = MaterialTheme.colorScheme.primaryContainer
+                            )
+                            Row {
+                                Text(
+                                    modifier = Modifier.weight(1f),
+                                    text = "Nickname:",
+                                    fontSize = MaterialTheme.typography.bodyLarge.fontSize,
+                                    color = MaterialTheme.colorScheme.onPrimaryContainer,
                                 )
-                                Row {
-                                    Text(
-                                        modifier = Modifier.weight(1f),
-                                        text = "Age:",
-                                        fontSize = MaterialTheme.typography.bodyLarge.fontSize,
-                                        color = MaterialTheme.colorScheme.onPrimaryContainer,
-                                    )
-                                    Text(
-                                        text = "$playerAge years old",
-                                        fontSize = MaterialTheme.typography.bodyLarge.fontSize,
-                                        color = MaterialTheme.colorScheme.onPrimaryContainer,
-                                    )
-                                }
-                                Divider(
-                                    color = MaterialTheme.colorScheme.primaryContainer
+                                Text(
+                                    text = "${player?.name}",
+                                    fontSize = MaterialTheme.typography.bodyLarge.fontSize,
+                                    color = MaterialTheme.colorScheme.onPrimaryContainer,
                                 )
-                                Row {
-                                    Text(
-                                        modifier = Modifier.weight(1f),
-                                        text = "Born:",
-                                        fontSize = MaterialTheme.typography.bodyLarge.fontSize,
-                                        color = MaterialTheme.colorScheme.onPrimaryContainer,
-                                    )
-                                    Text(
-                                        text = "$playerBorn",
-                                        fontSize = MaterialTheme.typography.bodyLarge.fontSize,
-                                        color = MaterialTheme.colorScheme.onPrimaryContainer,
-                                    )
-                                }
-                                Divider(
-                                    color = MaterialTheme.colorScheme.primaryContainer
+                            }
+                            Divider(
+                                color = MaterialTheme.colorScheme.primaryContainer
+                            )
+                            Row(
+                                horizontalArrangement = Arrangement.Center
+                            ) {
+                                Text(
+                                    modifier = Modifier.weight(1f),
+                                    text = "Country:",
+                                    fontSize = MaterialTheme.typography.bodyLarge.fontSize,
+                                    color = MaterialTheme.colorScheme.onPrimaryContainer,
                                 )
-                                Row (
-                                    horizontalArrangement = Arrangement.Center
-                                ) {
-                                    Text(
-                                        modifier = Modifier.weight(1f),
-                                        text = "Team:",
-                                        fontSize = MaterialTheme.typography.bodyLarge.fontSize,
-                                        color = MaterialTheme.colorScheme.onPrimaryContainer,
-                                    )
-                                    Text(
-                                        text = "${player?.team?.name} ",
-                                        fontSize = MaterialTheme.typography.bodyLarge.fontSize,
-                                        color = MaterialTheme.colorScheme.onPrimaryContainer,
-                                    )
-                                    Image(
-                                        modifier = Modifier.size(25.dp),
-                                        painter = rememberAsyncImagePainter(teamImage),
-                                        contentDescription = null,
-                                        alignment = Alignment.CenterEnd
-                                    )
-                                }
-                                Divider(
-                                    color = MaterialTheme.colorScheme.primaryContainer
+                                Text(
+                                    text = "${player?.country?.name} ",
+                                    fontSize = MaterialTheme.typography.bodyLarge.fontSize,
+                                    color = MaterialTheme.colorScheme.onPrimaryContainer,
                                 )
-                                Row (
-                                    horizontalArrangement = Arrangement.Center
-                                ){
-                                    Text(
-                                        modifier = Modifier.weight(1f),
-                                        text = "Team country:",
-                                        fontSize = MaterialTheme.typography.bodyLarge.fontSize,
-                                        color = MaterialTheme.colorScheme.onPrimaryContainer,
-                                    )
-                                    Text(
-                                        text = "${player?.team?.country?.name} ",
-                                        fontSize = MaterialTheme.typography.bodyLarge.fontSize,
-                                        color = MaterialTheme.colorScheme.onPrimaryContainer,
-                                    )
-                                    Image(
-                                        modifier = Modifier.size(25.dp),
-                                        painter = getFlagFromCountryCode(player?.team?.country?.alpha2),
-                                        contentDescription = null,
-                                        alignment = Alignment.CenterEnd
-                                    )
-                                }
+                                Image(
+                                    modifier = Modifier.size(25.dp),
+                                    painter = getFlagFromCountryCode(player?.country?.alpha2),
+                                    contentDescription = null,
+                                    alignment = Alignment.CenterEnd
+                                )
+                            }
+                            Divider(
+                                color = MaterialTheme.colorScheme.primaryContainer
+                            )
+                            Row {
+                                Text(
+                                    modifier = Modifier.weight(1f),
+                                    text = "Age:",
+                                    fontSize = MaterialTheme.typography.bodyLarge.fontSize,
+                                    color = MaterialTheme.colorScheme.onPrimaryContainer,
+                                )
+                                Text(
+                                    text = "$playerAge years old",
+                                    fontSize = MaterialTheme.typography.bodyLarge.fontSize,
+                                    color = MaterialTheme.colorScheme.onPrimaryContainer,
+                                )
+                            }
+                            Divider(
+                                color = MaterialTheme.colorScheme.primaryContainer
+                            )
+                            Row {
+                                Text(
+                                    modifier = Modifier.weight(1f),
+                                    text = "Born:",
+                                    fontSize = MaterialTheme.typography.bodyLarge.fontSize,
+                                    color = MaterialTheme.colorScheme.onPrimaryContainer,
+                                )
+                                Text(
+                                    text = "$playerBorn",
+                                    fontSize = MaterialTheme.typography.bodyLarge.fontSize,
+                                    color = MaterialTheme.colorScheme.onPrimaryContainer,
+                                )
+                            }
+                            Divider(
+                                color = MaterialTheme.colorScheme.primaryContainer
+                            )
+                            Row(
+                                horizontalArrangement = Arrangement.Center
+                            ) {
+                                Text(
+                                    modifier = Modifier.weight(1f),
+                                    text = "Team:",
+                                    fontSize = MaterialTheme.typography.bodyLarge.fontSize,
+                                    color = MaterialTheme.colorScheme.onPrimaryContainer,
+                                )
+                                Text(
+                                    text = "${player?.team?.name} ",
+                                    fontSize = MaterialTheme.typography.bodyLarge.fontSize,
+                                    color = MaterialTheme.colorScheme.onPrimaryContainer,
+                                )
+                                Image(
+                                    modifier = Modifier.size(25.dp),
+                                    painter = rememberAsyncImagePainter(teamImage),
+                                    contentDescription = null,
+                                    alignment = Alignment.CenterEnd
+                                )
+                            }
+                            Divider(
+                                color = MaterialTheme.colorScheme.primaryContainer
+                            )
+                            Row(
+                                horizontalArrangement = Arrangement.Center
+                            ) {
+                                Text(
+                                    modifier = Modifier.weight(1f),
+                                    text = "Team country:",
+                                    fontSize = MaterialTheme.typography.bodyLarge.fontSize,
+                                    color = MaterialTheme.colorScheme.onPrimaryContainer,
+                                )
+                                Text(
+                                    text = "${player?.team?.country?.name} ",
+                                    fontSize = MaterialTheme.typography.bodyLarge.fontSize,
+                                    color = MaterialTheme.colorScheme.onPrimaryContainer,
+                                )
+                                Image(
+                                    modifier = Modifier.size(25.dp),
+                                    painter = getFlagFromCountryCode(player?.team?.country?.alpha2),
+                                    contentDescription = null,
+                                    alignment = Alignment.CenterEnd
+                                )
                             }
                         }
-                    )
+                    }
 
                 }
             }
@@ -245,7 +237,7 @@ fun InformationBox(
     name: String,
     age: Int,
 ) {
-    CommonCard(modifier = Modifier.fillMaxWidth(), headText = "Statistics", bottomBox = {
+    CommonCard(modifier = Modifier.fillMaxWidth(), headText = "Statistics") {
         Column {
             Text(
                 text = "Full name: $name",
@@ -258,7 +250,7 @@ fun InformationBox(
                 color = MaterialTheme.colorScheme.onPrimaryContainer,
             )
         }
-    })
+    }
 }
 
 
