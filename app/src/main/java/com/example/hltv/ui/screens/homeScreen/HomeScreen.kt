@@ -32,21 +32,20 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import coil.compose.rememberAsyncImagePainter
-import com.example.hltv.data.convertTimestampToDateClock
+import com.example.hltv.data.convertTimestampToWeekDateClock
 import com.example.hltv.ui.common.LiveMatchCard
 import com.example.hltv.ui.common.UpcomingMatchCard
+import com.example.hltv.ui.screens.singleTeamScreen.SingleTeamScreen
 import kotlinx.coroutines.delay
 
 val M = MaterialTheme
 
 @Composable
-fun HomeScreen(onClickSingleTeam : (String?) -> Unit, onClickSingleMatch : (String?) -> Unit) {
-
+fun HomeScreen(onClickSingleTeam : (String?) -> Unit, onClickSingleMatch : (String?) -> Unit, onClickSingleEvent : (String?) -> Unit) {
     val viewModel : HomeScreenViewModel = viewModel()
     LaunchedEffect(Unit) {
         viewModel.loadData()
     }
-
 
 
     Column(
@@ -78,10 +77,10 @@ fun HomeScreen(onClickSingleTeam : (String?) -> Unit, onClickSingleMatch : (Stri
                 teamTwoName = viewModel.upcomingMatchValue.value!!.awayTeam.name?: "Unknown",
                 teamTwoIcon = rememberAsyncImagePainter(model = viewModel.awayTeamIcon.value),
                 teamTwoOnClick = { onClickSingleTeam(viewModel.upcomingMatchValue.value!!.awayTeam.id.toString()) },
-                matchDate = convertTimestampToDateClock(viewModel.upcomingMatchValue.value!!.startTimestamp),
-                tournamentIcon = rememberAsyncImagePainter(model = viewModel.awayTeamIcon.value)
+                matchDate = convertTimestampToWeekDateClock(viewModel.upcomingMatchValue.value!!.startTimestamp),
+                tournamentIcon = rememberAsyncImagePainter(model = viewModel.tournamentIcon.value),
+                tournamentOnClick = { onClickSingleEvent(viewModel.upcomingMatchValue.value!!.tournament.uniqueTournament?.id.toString() + "/" + viewModel.upcomingMatchValue.value!!.season.id) }
             )
-
          }
 
         Divider(modifier = Modifier.padding(horizontal = 8.dp), color = M.colorScheme.onBackground)
@@ -192,7 +191,16 @@ fun HomeScreen(onClickSingleTeam : (String?) -> Unit, onClickSingleMatch : (Stri
                 }
             }
 
+            SingleTeamScreen(
+                teamID = "364378",
+                {},
+                {},
+                {})
+
         }
+
+
+
         Divider(modifier = Modifier.padding(horizontal = 8.dp), color = M.colorScheme.onBackground)
 
         Text(
@@ -202,6 +210,7 @@ fun HomeScreen(onClickSingleTeam : (String?) -> Unit, onClickSingleMatch : (Stri
 
         )
         Text(text = "Test")
+
 
     }
 }

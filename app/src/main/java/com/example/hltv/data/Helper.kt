@@ -1,6 +1,9 @@
 package com.example.hltv.data
 
+import android.graphics.Color.parseColor
+import android.util.Log
 import androidx.compose.runtime.Composable
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import coil.compose.AsyncImagePainter
 import coil.compose.rememberAsyncImagePainter
@@ -34,3 +37,16 @@ fun capitalizeFirstLetter(input: String): String {
         input
     }
 }
+
+
+fun getColorFromTier(input: String): Color {
+    return when (input) {
+        "S" -> Color(parseColor("#CAAC05"))
+        "A" -> Color(parseColor("#EB4C4B"))
+        "B" -> Color(parseColor("#B12FC1"))
+        "C" -> Color(parseColor("#4B69FE"))
+        "D" -> Color(parseColor("#5E98D9"))
+        else -> Color(parseColor("#AFC4D8"))
+    }
+}
+

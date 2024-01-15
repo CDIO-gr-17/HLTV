@@ -24,7 +24,6 @@ import androidx.compose.foundation.layout.wrapContentSize
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material3.Button
-import androidx.compose.material3.ButtonColors
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Card
 import androidx.compose.material3.CircularProgressIndicator
@@ -51,7 +50,7 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import coil.compose.AsyncImagePainter
 import coil.compose.rememberAsyncImagePainter
 import com.example.hltv.R
-import com.example.hltv.data.convertTimestampToDateClock
+import com.example.hltv.data.convertTimestampToWeekDateClock
 import com.example.hltv.ui.common.LiveMatchCard
 import com.example.hltv.ui.common.UpcomingMatchCard
 import kotlinx.coroutines.launch
@@ -62,7 +61,7 @@ import java.util.Date
 data class ListItem(val ranking: Int, val text1: String, val text2: String)
 
 @Composable
-fun MatchesScreen(onClickSingleTeam : (String?) -> Unit, onClickSingleMatch : (String?) -> Unit) {
+fun MatchesScreen(onClickSingleTeam : (String?) -> Unit, onClickSingleMatch : (String?) -> Unit, onClickSingleEvent : (String?) -> Unit) {
     val viewModel : MatchesScreenViewModel = viewModel()
     LaunchedEffect(Unit){
         viewModel.loadData()
@@ -88,8 +87,7 @@ fun MatchesScreen(onClickSingleTeam : (String?) -> Unit, onClickSingleMatch : (S
                 teamTwoName = item.awayTeam.name.toString(),
                 teamTwoIcon = rememberAsyncImagePainter(viewModel.awayTeamIcons[liveMatchesValues.indexOf(item)]),
                 teamTwoScore = item.awayScore!!.current!!.toInt(),
-                teamTwoOnClick = { onClickSingleTeam(item.awayTeam.id.toString()) },
-            )
+            ) { onClickSingleTeam(item.awayTeam.id.toString()) }
         }
         items(upcomingsMatchesValues) { item ->
             UpcomingMatchCard(
@@ -99,9 +97,10 @@ fun MatchesScreen(onClickSingleTeam : (String?) -> Unit, onClickSingleMatch : (S
                 teamOneOnClick = { onClickSingleTeam(item.homeTeam.id.toString()) },
                 teamTwoName = item.awayTeam.name.toString(),
                 teamTwoIcon = rememberAsyncImagePainter(viewModel.awayTeamIcons[liveMatchesValues.size + upcomingsMatchesValues.indexOf(item)]),
-                matchDate = convertTimestampToDateClock(item.startTimestamp),
+                matchDate = convertTimestampToWeekDateClock(item.startTimestamp),
                 teamTwoOnClick = { onClickSingleTeam(item.awayTeam.id.toString()) },
-                tournamentIcon = rememberAsyncImagePainter(viewModel.tournamentIcons[tournamentValues.indexOf(item)])
+                tournamentIcon = rememberAsyncImagePainter(viewModel.tournamentIcons[tournamentValues.indexOf(item)]),
+                tournamentOnClick = { onClickSingleEvent(item.tournament.uniqueTournament?.id.toString() + "/" + item.season.id) }
             )
             //Log.i("tournamentLogo3","${viewModel.tournamentIcons.size}")
         }

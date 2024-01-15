@@ -55,6 +55,7 @@ android {
 
 dependencies {
 
+    implementation("androidx.palette:palette-ktx:1.0.0")
     implementation("androidx.core:core-ktx:1.12.0")
     // https://mvnrepository.com/artifact/com.google.code.gson/gson
     implementation("com.google.code.gson:gson:2.10.1")
@@ -96,6 +97,8 @@ dependencies {
     debugImplementation("androidx.compose.ui:ui-test-manifest:1.5.4")
     testImplementation("androidx.test:monitor:1.4.0")
     implementation("androidx.test:core:1.4.0")
+    implementation("androidx.datastore:datastore-preferences:1.0.0")
+    implementation("androidx.hilt:hilt-navigation-compose:1.0.0")
 
 
     androidTestImplementation("androidx.test.ext:junit:1.1.5")

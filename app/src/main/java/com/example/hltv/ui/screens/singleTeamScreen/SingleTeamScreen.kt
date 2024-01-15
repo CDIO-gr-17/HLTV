@@ -1,6 +1,5 @@
 package com.example.hltv.ui.screens.singleTeamScreen
 
-import android.util.Log
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
@@ -8,6 +7,7 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
@@ -18,10 +18,11 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.MutableState
+import androidx.compose.runtime.snapshots.SnapshotStateList
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.painter.Painter
-import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
@@ -29,19 +30,16 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
+import coil.compose.AsyncImagePainter
 import coil.compose.rememberAsyncImagePainter
-import coil.decode.SvgDecoder
-import coil.request.ImageRequest
-import coil.size.Size
 import com.example.hltv.R
 import com.example.hltv.data.getFlagFromCountryCode
 import com.example.hltv.ui.common.CommonCard
-import java.net.URL
 
 @Composable
-fun SingleTeamScreen(teamID : String? = "364378", onClickSinglePlayer: (String?) -> Unit, onClickSingleTeam: (String?) -> Unit, onClickSingleMatch: (String?) -> Unit){
-    val viewModel : SingleTeamViewModel = viewModel()
-    LaunchedEffect(teamID){
+fun SingleTeamScreen(teamID : String? = "364378", onClickSinglePlayer: (String?) -> Unit, onClickSingleTeam: (String?) -> Unit, onClickSingleMatch: (String?) -> Unit) {
+    val viewModel: SingleTeamViewModel = viewModel()
+    LaunchedEffect(teamID) {
         viewModel.loadData(teamID!!)
     }
     val recentMatches = viewModel.recentMatches
@@ -51,23 +49,25 @@ fun SingleTeamScreen(teamID : String? = "364378", onClickSinglePlayer: (String?)
     val painter = getFlagFromCountryCode(countryCode = countryCode)
 
     LazyColumn {
-        item {
+        item{
             CommonCard(modifier = Modifier, bottomBox = {
                 Column {
-                    LazyRow{
-                        items(playerOverview.size){ index ->
-                            overviewPlayer(
+                    LazyRow (modifier = Modifier.fillMaxWidth(),
+                        horizontalArrangement = Arrangement.SpaceEvenly){
+                        items(playerOverview.size) { index ->
+                            OverviewPlayer(
                                 player = playerOverview[index],
                                 onClickSinglePlayer
                             )
                         }
                     }
-                    overviewInfo(
+                    OverviewInfo(
                         country = statsOverview.value.countryName,
                         countryImage = painter,
-                        worldRank = "#"
+                        teamLogo = recentMatches.getOrNull(0)?.homeTeamImage?.let { rememberAsyncImagePainter(it) }
+
                     )
-                    stats(
+                    Statistics(
                         coach = "Peter 'Castle' Ardenskjold",
                         points = "1000",
                         winRate = "61%",
@@ -75,54 +75,37 @@ fun SingleTeamScreen(teamID : String? = "364378", onClickSinglePlayer: (String?)
                         averagePlayerAge = statsOverview.value.avgAgeofPlayers,
                         imageNat = painterResource(R.drawable.dk_flag)
                     )
-                    Text(text = "Recent Matches",
+                    Text(
+                        text = "Recent Matches",
                         fontWeight = FontWeight.Bold,
                         color = MaterialTheme.colorScheme.onPrimaryContainer
                     )
-                    LazyColumn (Modifier.fillParentMaxHeight()) {
-                        items(recentMatches.size) { index ->
-                            recentMatches(
-                                modifier = Modifier.clickable { onClickSingleMatch(recentMatches[index].matchID.toString()) },
-                                team1 = recentMatches[index].homeTeam?.name,
-                                team2 = recentMatches[index].awayTeam?.name,
-                                imageTeam1 = rememberAsyncImagePainter(recentMatches[index].homeTeamImage),
-                                imageTeam2 = rememberAsyncImagePainter(recentMatches[index].awayTeamImage),
-                                team2OnClick = { onClickSingleTeam(recentMatches[index].awayTeam?.id.toString()) },
-                                score = recentMatches[index].homeScore?.display.toString() + " - " + recentMatches[index].awayScore?.display.toString(),
-                                date = recentMatches[index].startTimestamp.toString()
-                            )
-                        }
+                    recentMatches.forEach { recentMatch ->
+                        RecentMatches(
+                            modifier = Modifier.clickable { onClickSingleMatch(recentMatch.matchID.toString()) },
+                            team1 = recentMatch.homeTeam?.name,
+                            team2 = recentMatch.awayTeam?.name,
+                            imageTeam1 = rememberAsyncImagePainter(recentMatch.homeTeamImage),
+                            imageTeam2 = rememberAsyncImagePainter(recentMatch.awayTeamImage),
+                            team2OnClick = { onClickSingleTeam(recentMatch.awayTeam?.id.toString()) },
+                            score = recentMatch.homeScore?.display.toString() + " - " + recentMatch.awayScore?.display.toString(),
+                            date = recentMatch.startTimestamp.toString()
+                        )
                     }
                 }
             })
-            }
-        }
-    }
-
-
-// Lige nu er der 'gap' mellem hver spiller. Det skal fjernes. Evt. Equal Weight i stedet for SpaceEvenly?
-@Composable
-fun overviewPlayers(
-    players: List<Player>,
-    onClickSinglePlayer: (String?) -> Unit) {
-    Row (
-        modifier = Modifier.fillMaxWidth(),
-        horizontalArrangement = Arrangement.SpaceEvenly
-    ){
-        for (player in players) {
-            overviewPlayer(player = player, onClickSinglePlayer)
         }
     }
 }
 
 @Composable
-fun overviewPlayer(
+fun OverviewPlayer(
     player: Player,
     onClickSinglePlayer: (String?) -> Unit
 ){
-    Row {
-        Column(
-            horizontalAlignment = Alignment.CenterHorizontally,
+    Row (modifier = Modifier.height(100.dp)){
+        Box(
+            contentAlignment = Alignment.Center,
             modifier = Modifier
                 .width(70.dp)
                 .clickable {
@@ -131,15 +114,14 @@ fun overviewPlayer(
         ){
             Image(
                 painter = if(player.image!=null) rememberAsyncImagePainter(player.image) else rememberAsyncImagePainter(
-                    model = R.drawable.person_24px
+                    model = R.drawable.playersilouhette
                 ),
                 contentDescription = null,
                 alignment = Alignment.CenterStart,
                 modifier = Modifier
                     .size(70.dp)
-                    .offset(y = 20.dp)
             )
-            CommonCard (modifier = Modifier,
+            CommonCard (modifier = Modifier.offset(y = 40.dp),
                 customOuterPadding = 0.dp,
                 topBox = {
                     Text(
@@ -150,7 +132,7 @@ fun overviewPlayer(
                         modifier = Modifier.fillMaxWidth(),
                         fontWeight = FontWeight.Bold,
                         maxLines = 1,
-                        overflow = TextOverflow.Visible //TODO: Do we want ellipses?
+                        overflow = TextOverflow.Visible //TODO: Do we want ellipses
                     )
                 }
             )
@@ -159,10 +141,10 @@ fun overviewPlayer(
 }
 
 @Composable
-fun overviewInfo(
+fun OverviewInfo(
     country: String?,
     countryImage: Painter,
-    worldRank: String
+    teamLogo: Painter ?= null,
 ){
     Row (
         modifier = Modifier.fillMaxWidth(),
@@ -180,7 +162,7 @@ fun overviewInfo(
             Image(
                 painter = countryImage,
                 contentDescription = null,
-                alignment = Alignment.CenterStart,
+                alignment = Alignment.Center,
                 modifier = Modifier
                     .size(40.dp)
             )
@@ -188,23 +170,21 @@ fun overviewInfo(
         Column(
             horizontalAlignment = Alignment.CenterHorizontally
         ){
-            Text(
-                text = "World Ranking",
-                fontSize = MaterialTheme.typography.bodyLarge.fontSize,
-                color = MaterialTheme.colorScheme.onPrimaryContainer,
-                fontWeight = FontWeight.Bold
-            )
-            Text(
-                text = "#" + worldRank,
-                fontSize = MaterialTheme.typography.bodyLarge.fontSize,
-                color = MaterialTheme.colorScheme.onPrimaryContainer
-            )
+            if (teamLogo != null) {
+                Image(
+                    painter = teamLogo,
+                    contentDescription = null,
+                    alignment = Alignment.Center,
+                    modifier = Modifier
+                        .size(50.dp)
+                )
+            }
         }
     }
 }
 
 @Composable
-fun recentMatches(
+fun RecentMatches(
     modifier: Modifier = Modifier,
     team1: String ?= null,
     team2: String ?= null,
@@ -213,13 +193,13 @@ fun recentMatches(
     team2OnClick: () -> Unit,
     score: String ?= null,
     date: String ?= null,
-    matchID: Int ?= null
 ){
     CommonCard(
         modifier = Modifier.fillMaxWidth(),
         topBox = {
             Box {
                 Row (
+                    verticalAlignment = Alignment.CenterVertically,
                     modifier = modifier
                         .fillMaxWidth()
                 ){
@@ -237,6 +217,8 @@ fun recentMatches(
                         )
                         Text(
                             text = team1 ?: "Team 1",
+                            maxLines = 2,
+                            overflow = TextOverflow.Ellipsis,
                             fontSize = MaterialTheme.typography.bodyLarge.fontSize,
                             color = MaterialTheme.colorScheme.onPrimaryContainer
                         )
@@ -266,8 +248,12 @@ fun recentMatches(
                     ){
                         Text(
                             text = team2 ?: "Team 2",
+                            maxLines = 2,
+                            overflow = TextOverflow.Ellipsis,
                             fontSize = MaterialTheme.typography.bodyLarge.fontSize,
-                            color = MaterialTheme.colorScheme.onPrimaryContainer
+                            color = MaterialTheme.colorScheme.onPrimaryContainer,
+                            textAlign = TextAlign.End,
+                            modifier = Modifier.weight(1f)
                         )
                         Image(
                             painter = imageTeam2,
@@ -286,7 +272,7 @@ fun recentMatches(
 
 
 @Composable
-fun stats(
+fun Statistics(
     coach: String,
     points: String,
     winRate: String,

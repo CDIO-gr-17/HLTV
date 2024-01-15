@@ -1,8 +1,6 @@
 package com.example.hltv.data.remote
 //import okhttp4.OkHttpClient
-import android.annotation.SuppressLint
-import com.google.firebase.Firebase
-import com.google.firebase.firestore.firestore
+import com.google.firebase.firestore.FirebaseFirestore
 import com.google.gson.Gson
 import okhttp3.OkHttpClient
 
@@ -18,6 +16,11 @@ object OkHttpClientSingleton {
 }
 
 object DatabaseSingleton {
+    val db : FirebaseFirestore by lazy {
+        FirebaseFirestore.getInstance()
+    }
+    /* OLD
     @SuppressLint("StaticFieldLeak")
     val db = Firebase.firestore
+*/
 }
