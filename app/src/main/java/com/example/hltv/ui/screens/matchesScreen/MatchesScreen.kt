@@ -49,7 +49,7 @@ import kotlinx.coroutines.launch
 data class ListItem(val ranking: Int, val text1: String, val text2: String)
 
 @Composable
-fun MatchesScreen(onClickSingleTeam : (String?) -> Unit, onClickSingleMatch : (String?) -> Unit) {
+fun MatchesScreen(onClickSingleTeam : (String?) -> Unit, onClickSingleMatch : (String?) -> Unit, onClickSingleEvent : (String?) -> Unit) {
     val viewModel : MatchesScreenViewModel = viewModel()
     LaunchedEffect(Unit){
         viewModel.loadData()
@@ -74,8 +74,7 @@ fun MatchesScreen(onClickSingleTeam : (String?) -> Unit, onClickSingleMatch : (S
                 teamTwoName = item.awayTeam.name.toString(),
                 teamTwoIcon = rememberAsyncImagePainter(viewModel.awayTeamIcons[liveMatchesValues.indexOf(item)]),
                 teamTwoScore = item.awayScore!!.current!!.toInt(),
-                teamTwoOnClick = { onClickSingleTeam(item.awayTeam.id.toString()) },
-            )
+            ) { onClickSingleTeam(item.awayTeam.id.toString()) }
         }
         items(upcomingsMatchesValues) { item ->
             UpcomingMatchCard(
@@ -87,7 +86,8 @@ fun MatchesScreen(onClickSingleTeam : (String?) -> Unit, onClickSingleMatch : (S
                 teamTwoIcon = rememberAsyncImagePainter(viewModel.awayTeamIcons[liveMatchesValues.size + upcomingsMatchesValues.indexOf(item)]),
                 matchDate = convertTimestampToWeekDateClock(item.startTimestamp),
                 teamTwoOnClick = { onClickSingleTeam(item.awayTeam.id.toString()) },
-                tournamentIcon = rememberAsyncImagePainter(viewModel.tournamentIcons[tournamentValues.indexOf(item)])
+                tournamentIcon = rememberAsyncImagePainter(viewModel.tournamentIcons[tournamentValues.indexOf(item)]),
+                tournamentOnClick = { onClickSingleEvent(item.tournament.uniqueTournament?.id.toString() + "/" + item.season.id) }
             )
             //Log.i("tournamentLogo3","${viewModel.tournamentIcons.size}")
         }

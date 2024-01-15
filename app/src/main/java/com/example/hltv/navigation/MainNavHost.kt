@@ -1,6 +1,5 @@
 package com.example.hltv.navigation
 
-import android.util.Log
 import androidx.compose.foundation.layout.padding
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
@@ -30,8 +29,8 @@ fun MainNavHost(navController: NavHostController, modifier: Modifier) {
         composable(route = Home.route) {
             HomeScreen(
                 onClickSingleTeam = {navController.navigate(SingleTeam.route + it) },
-                onClickSingleMatch = {navController.navigate(SingleMatch.route + it) }
-            )
+                onClickSingleMatch = {navController.navigate(SingleMatch.route + it) },
+                onClickSingleEvent = { navController.navigate(SingleEvent.route + it)})
         }
 
         composable(route = Events.route) {
@@ -43,7 +42,8 @@ fun MainNavHost(navController: NavHostController, modifier: Modifier) {
         composable(route = Matches.route) {
             MatchesScreen(
                 onClickSingleMatch = { navController.navigate(SingleMatch.route + it)},
-                onClickSingleTeam = { navController.navigate(SingleTeam.route + it)})
+                onClickSingleTeam = { navController.navigate(SingleTeam.route + it)},
+                onClickSingleEvent = { navController.navigate(SingleEvent.route + it)})
         }
 
         composable(route = Search.route) {

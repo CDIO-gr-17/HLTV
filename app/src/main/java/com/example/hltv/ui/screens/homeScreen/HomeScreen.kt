@@ -41,7 +41,7 @@ import kotlinx.coroutines.delay
 val M = MaterialTheme
 
 @Composable
-fun HomeScreen(onClickSingleTeam : (String?) -> Unit, onClickSingleMatch : (String?) -> Unit) {
+fun HomeScreen(onClickSingleTeam : (String?) -> Unit, onClickSingleMatch : (String?) -> Unit, onClickSingleEvent : (String?) -> Unit) {
     val viewModel : HomeScreenViewModel = viewModel()
     LaunchedEffect(Unit) {
         viewModel.loadData()
@@ -78,7 +78,8 @@ fun HomeScreen(onClickSingleTeam : (String?) -> Unit, onClickSingleMatch : (Stri
                 teamTwoIcon = rememberAsyncImagePainter(model = viewModel.awayTeamIcon.value),
                 teamTwoOnClick = { onClickSingleTeam(viewModel.upcomingMatchValue.value!!.awayTeam.id.toString()) },
                 matchDate = convertTimestampToWeekDateClock(viewModel.upcomingMatchValue.value!!.startTimestamp),
-                tournamentIcon = rememberAsyncImagePainter(model = viewModel.tournamentIcon.value)
+                tournamentIcon = rememberAsyncImagePainter(model = viewModel.tournamentIcon.value),
+                tournamentOnClick = { onClickSingleEvent(viewModel.upcomingMatchValue.value!!.tournament.uniqueTournament?.id.toString() + "/" + viewModel.upcomingMatchValue.value!!.season.id) }
             )
          }
 

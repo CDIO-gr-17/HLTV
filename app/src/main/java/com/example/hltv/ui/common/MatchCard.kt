@@ -46,7 +46,7 @@ fun MatchCard(){
         teamTwoName = "Astralis2",
         teamTwoIcon = painterResource(id = R.drawable.astralis_logo),
         matchDate = "Tuesday 22/10 - 18:00",
-        tournamentIcon = painterResource(id = R.drawable.astralis_logo)
+        tournamentIcon = painterResource(id = R.drawable.astralis_logo),
     )
 
 
@@ -70,70 +70,69 @@ fun LiveMatchCard(
     CommonCard(
         modifier = modifier.testTag("LiveMatchCard"),
         headText = title,
-        image = painterResource(id = R.drawable.pngtree_icon_live_streaming_vector_png_image_4643886),
-        bottomBox = {
-            Row {
-                Column(horizontalAlignment = Alignment.CenterHorizontally,
-                    modifier = Modifier
-                        .fillMaxWidth(0.5f)
-                        .clickable { teamOneOnClick() }) {
-                    Text(
-                        text = teamOneName,
-                        modifier = Modifier
-                            .padding(8.dp),
-                        fontSize = M.typography.bodyLarge.fontSize,
-                        color = M.colorScheme.onSecondaryContainer,
-                        textAlign = TextAlign.Center,
-                    )
-                    Image(
-                        painter = teamOneIcon,
-                        contentDescription = "teamOneIcon",
-                        modifier = Modifier
-                            .padding(4.dp)
-                            .size(50.dp, 50.dp),
-                        )
-                    Text(
-                        text = teamOneScore.toString(),
-                        fontSize = M.typography.displayLarge.fontSize
-                    )
-                }
+        image = painterResource(id = R.drawable.pngtree_icon_live_streaming_vector_png_image_4643886)
 
-                Divider(
+    ) {
+        Row {
+            Column(horizontalAlignment = Alignment.CenterHorizontally,
+                modifier = Modifier
+                    .fillMaxWidth(0.5f)
+                    .clickable { teamOneOnClick() }) {
+                Text(
+                    text = teamOneName,
                     modifier = Modifier
-                        .width(1.dp)
-                        .padding(vertical = 4.dp),
-                    color = M.colorScheme.onBackground
+                        .padding(8.dp),
+                    fontSize = M.typography.bodyLarge.fontSize,
+                    color = M.colorScheme.onSecondaryContainer,
+                    textAlign = TextAlign.Center,
                 )
-
-                Column(horizontalAlignment = Alignment.CenterHorizontally,
+                Image(
+                    painter = teamOneIcon,
+                    contentDescription = "teamOneIcon",
                     modifier = Modifier
-                        .fillMaxWidth()
-                        .clickable { teamTwoOnClick() }) {
-                    Text(
-                        text = teamTwoName,
-                        modifier = Modifier
-                            .padding(8.dp),
-                        fontSize = M.typography.bodyLarge.fontSize,
-                        color = M.colorScheme.onSecondaryContainer,
-                        textAlign = TextAlign.Center,
-                    )
-                    Image(
-                        painter = teamTwoIcon,
-                        contentDescription = "teamOneIcon",
-                        modifier = Modifier
-                            .padding(4.dp)
-                            .size(50.dp, 50.dp),
-                    )
-                    Text(
-                        text = teamTwoScore.toString(),
-                        fontSize = M.typography.displayLarge.fontSize
-                    )
-                }
+                        .padding(4.dp)
+                        .size(50.dp, 50.dp),
+                )
+                Text(
+                    text = teamOneScore.toString(),
+                    fontSize = M.typography.displayLarge.fontSize
+                )
             }
 
+            Divider(
+                modifier = Modifier
+                    .width(1.dp)
+                    .padding(vertical = 4.dp),
+                color = M.colorScheme.onBackground
+            )
+
+            Column(horizontalAlignment = Alignment.CenterHorizontally,
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .clickable { teamTwoOnClick() }) {
+                Text(
+                    text = teamTwoName,
+                    modifier = Modifier
+                        .padding(8.dp),
+                    fontSize = M.typography.bodyLarge.fontSize,
+                    color = M.colorScheme.onSecondaryContainer,
+                    textAlign = TextAlign.Center,
+                )
+                Image(
+                    painter = teamTwoIcon,
+                    contentDescription = "teamOneIcon",
+                    modifier = Modifier
+                        .padding(4.dp)
+                        .size(50.dp, 50.dp),
+                )
+                Text(
+                    text = teamTwoScore.toString(),
+                    fontSize = M.typography.displayLarge.fontSize
+                )
+            }
         }
 
-    )
+    }
 
 }
 
@@ -147,77 +146,78 @@ fun UpcomingMatchCard(
     teamTwoIcon: Painter,
     teamTwoOnClick: (() -> Unit?)? = null,
     matchDate: String,
-    tournamentIcon: Painter
+    tournamentIcon: Painter,
+    tournamentOnClick: (() -> Unit?)? = null,
     ) {
     CommonCard(
         modifier = modifier.testTag("UpcomingMatchCard"),
         headText = matchDate,
         image = tournamentIcon,
-        bottomBox = {
-            Row {
-                Column(horizontalAlignment = Alignment.CenterHorizontally,
+        imageOnClick = tournamentOnClick
+
+    ) {
+        Row {
+            Column(horizontalAlignment = Alignment.CenterHorizontally,
+                modifier = Modifier
+                    .fillMaxWidth(0.5f)
+                    .clickable {
+                        if (teamOneOnClick != null) {
+                            teamOneOnClick()
+                        }
+                    }) {
+                Text(
+                    text = teamOneName,
                     modifier = Modifier
-                        .fillMaxWidth(0.5f)
-                        .clickable {
-                            if (teamOneOnClick != null) {
-                                teamOneOnClick()
-                            }
-                        }) {
-                    Text(
-                        text = teamOneName,
-                        modifier = Modifier
-                            .padding(8.dp),
-                        fontSize = M.typography.bodyLarge.fontSize,
-                        color = M.colorScheme.onSecondaryContainer,
-                        textAlign = TextAlign.Center,
-                    )
-                    Image(
-                        painter = teamOneIcon,
-                        contentDescription = "teamOneIcon",
-                        modifier = Modifier
-                            .padding(4.dp)
-                            .size(50.dp, 50.dp),
-
-
-                        )
-                }
-
-                Divider(
-                    modifier = Modifier
-                        .width(1.dp)
-                        .padding(vertical = 4.dp),
-                    color = M.colorScheme.onBackground
+                        .padding(8.dp),
+                    fontSize = M.typography.bodyLarge.fontSize,
+                    color = M.colorScheme.onSecondaryContainer,
+                    textAlign = TextAlign.Center,
                 )
-
-                Column(horizontalAlignment = Alignment.CenterHorizontally,
+                Image(
+                    painter = teamOneIcon,
+                    contentDescription = "teamOneIcon",
                     modifier = Modifier
-                        .fillMaxWidth(1f)
-                        .clickable {
-                            if (teamTwoOnClick != null) {
-                                teamTwoOnClick()
-                            }
-                        }) {
-                    Text(
-                        text = teamTwoName,
-                        modifier = Modifier
-                            .padding(8.dp),
-                        fontSize = M.typography.bodyLarge.fontSize,
-                        color = M.colorScheme.onSecondaryContainer,
-                        textAlign = TextAlign.Center,
+                        .padding(4.dp)
+                        .size(50.dp, 50.dp),
+
+
                     )
-                    Image(
-                        painter = teamTwoIcon,
-                        contentDescription = "teamOneIcon",
-                        modifier = Modifier
-                            .padding(4.dp)
-                            .size(50.dp, 50.dp),
-                    )
-                }
             }
 
+            Divider(
+                modifier = Modifier
+                    .width(1.dp)
+                    .padding(vertical = 4.dp),
+                color = M.colorScheme.onBackground
+            )
+
+            Column(horizontalAlignment = Alignment.CenterHorizontally,
+                modifier = Modifier
+                    .fillMaxWidth(1f)
+                    .clickable {
+                        if (teamTwoOnClick != null) {
+                            teamTwoOnClick()
+                        }
+                    }) {
+                Text(
+                    text = teamTwoName,
+                    modifier = Modifier
+                        .padding(8.dp),
+                    fontSize = M.typography.bodyLarge.fontSize,
+                    color = M.colorScheme.onSecondaryContainer,
+                    textAlign = TextAlign.Center,
+                )
+                Image(
+                    painter = teamTwoIcon,
+                    contentDescription = "teamOneIcon",
+                    modifier = Modifier
+                        .padding(4.dp)
+                        .size(50.dp, 50.dp),
+                )
+            }
         }
 
-    )
+    }
 
 }
 
