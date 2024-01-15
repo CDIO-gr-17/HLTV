@@ -92,14 +92,13 @@ fun HomeScreen(onClickSingleTeam : (String?) -> Unit, onClickSingleMatch : (Stri
             eventTitle = viewModel.upcomingTournament.value!!.name.toString(),
             eventDate = convertTimestampToDateDisplay(viewModel.upcomingTournament.value!!.startDateTimestamp),
             eventLogo = rememberAsyncImagePainter(model = viewModel.upcomingTournamentlogo.value),
-
-
+           // tier = viewModel.upcomingTournament.value!!.linkedUniqueTournaments[viewModel.upcomingTournament.value!!.id!!
+            // Need to add Unique tournament info
 
             )
-            
         }
 
-        else
+
 
         Card(
 

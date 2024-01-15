@@ -9,13 +9,17 @@ import androidx.lifecycle.viewModelScope
 import com.example.hltv.data.convertTimestampToDateURL
 import com.example.hltv.data.remote.Event
 import com.example.hltv.data.remote.Score
+import com.example.hltv.data.remote.Season
 import com.example.hltv.data.remote.Team
 import com.example.hltv.data.remote.ThirdUniqueTournament
+import com.example.hltv.data.remote.UniqueTournamentInfo
 import com.example.hltv.data.remote.getLiveMatches
 import com.example.hltv.data.remote.getMatchesFromDay
 import com.example.hltv.data.remote.getRelevantTournaments
 import com.example.hltv.data.remote.getTeamImage
 import com.example.hltv.data.remote.getTournamentLogo
+import com.example.hltv.data.remote.getUniqueTournamentDetails
+import com.example.hltv.data.remote.getUniqueTournamentSeasons
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -28,7 +32,9 @@ class HomeScreenViewModel: ViewModel() {
     val upcomingMatchValue = mutableStateOf<Event?>(null)
 
     val upcomingTournament = mutableStateOf<ThirdUniqueTournament?>(null)
+    val uniqueTournament = mutableStateOf<UniqueTournamentInfo?>(null)
     val upcomingTournamentlogo = mutableStateOf<Bitmap?>(null)
+    val tournamentSeason = mutableStateOf<Season?>(null)
 
     val upcomingMatchesValue = mutableStateOf<Event>(Event())
 
@@ -58,8 +64,11 @@ class HomeScreenViewModel: ViewModel() {
             if (tournaments.isNotEmpty())
             {
                 val tournament = tournaments[0]
-                upcomingTournament.value = tournament
-                upcomingTournamentlogo.value = getTournamentLogo(tournament.id)
+                upcomingTournament.value = tournament //gets the specific tournament data
+                upcomingTournamentlogo.value = getTournamentLogo(tournament.id) // gets the logo for the same tournament
+                tournamentSeason.value =  getUniqueTournamentSeasons(tournament.id).seasons[0]
+                //val seasonID = tournamentSeason.value.id //
+               // uniqueTournament.value = getUniqueTournamentDetails(tournament.id, seasonID)
             }
             dataLoaded = true
         }
