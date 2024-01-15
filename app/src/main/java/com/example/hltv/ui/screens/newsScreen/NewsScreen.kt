@@ -1,7 +1,6 @@
 package com.example.hltv.ui.screens.newsScreen
 
 import androidx.compose.runtime.Composable
-import com.example.hltv.ui.screens.singleTeamScreen.SingleTeam
 import com.example.hltv.ui.screens.singleTeamScreen.SingleTeamScreen
 
 @Composable

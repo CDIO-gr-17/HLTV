@@ -23,6 +23,7 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.MutableState
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.snapshots.SnapshotStateList
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -399,12 +400,7 @@ fun SingleEventTopbox(
                                             }
                                         }
                                         Statistics(
-                                            coach = "Peter 'Castle' Ardenskjold",
-                                            points = "1000",
-                                            winRate = "61%",
-                                            bestMap = "Overpass",
                                             averagePlayerAge = statsOverview.value.avgAgeofPlayers,
-                                            imageNat = painterResource(R.drawable.dk_flag)
                                         )
                                         Text(
                                             text = "Recent Matches",
