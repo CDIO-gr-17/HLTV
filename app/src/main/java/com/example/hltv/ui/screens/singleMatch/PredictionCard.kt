@@ -87,7 +87,7 @@ fun PredictionCard(
                 }
             }
         }
-    }, bottomBox = {
+    }) {
         Box(
             modifier = modifier
                 .fillMaxWidth()
@@ -152,7 +152,7 @@ fun PredictionCard(
                 )
             }
         }
-    })
+    }
 }
 
 @Composable

@@ -39,15 +39,12 @@ import androidx.compose.ui.text.buildAnnotatedString
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.withStyle
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
-import coil.compose.AsyncImagePainter
 import coil.compose.rememberAsyncImagePainter
 import com.example.hltv.R
 import com.example.hltv.data.getColorFromTier
-import com.example.hltv.data.getFlagFromCountryCode
 import com.example.hltv.ui.common.CommonCard
 import com.example.hltv.ui.common.ResizingText
 import com.example.hltv.ui.screens.singleTeamScreen.OverviewPlayer
@@ -161,48 +158,47 @@ fun SingleEventScreen(
                                         )
                                     }
                                 }
-                            },
-                            bottomBox = {
-                                Column {
-                                    standing.attending.forEachIndexed { placement, attending ->
-                                        Row {
+                            }
+                        ) {
+                            Column {
+                                standing.attending.forEachIndexed { placement, attending ->
+                                    Row {
+                                        Text(
+                                            text = (placement + 1).toString(),
+                                            modifier = Modifier.weight(0.05f),
+                                            fontSize = MaterialTheme.typography.bodyLarge.fontSize,
+                                            color = MaterialTheme.colorScheme.onSecondaryContainer,
+                                        )
+                                        attending.team?.name?.let {
                                             Text(
-                                                text = (placement + 1).toString(),
-                                                modifier = Modifier.weight(0.05f),
-                                                fontSize = MaterialTheme.typography.bodyLarge.fontSize,
-                                                color = MaterialTheme.colorScheme.onSecondaryContainer,
-                                            )
-                                            attending.team?.name?.let {
-                                                Text(
-                                                    text = it,
-                                                    modifier = Modifier.weight(0.4f),
-                                                    fontSize = MaterialTheme.typography.bodyLarge.fontSize,
-                                                    color = MaterialTheme.colorScheme.onSecondaryContainer,
-                                                )
-                                            }
-                                            Spacer(modifier = Modifier.weight(0.2f))
-                                            Text(
-                                                text = attending.matches.toString(),
-                                                modifier = Modifier.weight(0.075f),
-                                                fontSize = MaterialTheme.typography.bodyLarge.fontSize,
-                                                color = MaterialTheme.colorScheme.onSecondaryContainer,
-                                            )
-                                            Text(
-                                                text = attending.wins.toString(),
-                                                modifier = Modifier.weight(0.075f),
-                                                fontSize = MaterialTheme.typography.bodyLarge.fontSize,
-                                                color = MaterialTheme.colorScheme.onSecondaryContainer,
-                                            )
-                                            Text(
-                                                text = attending.losses.toString(),
+                                                text = it,
+                                                modifier = Modifier.weight(0.4f),
                                                 fontSize = MaterialTheme.typography.bodyLarge.fontSize,
                                                 color = MaterialTheme.colorScheme.onSecondaryContainer,
                                             )
                                         }
+                                        Spacer(modifier = Modifier.weight(0.2f))
+                                        Text(
+                                            text = attending.matches.toString(),
+                                            modifier = Modifier.weight(0.075f),
+                                            fontSize = MaterialTheme.typography.bodyLarge.fontSize,
+                                            color = MaterialTheme.colorScheme.onSecondaryContainer,
+                                        )
+                                        Text(
+                                            text = attending.wins.toString(),
+                                            modifier = Modifier.weight(0.075f),
+                                            fontSize = MaterialTheme.typography.bodyLarge.fontSize,
+                                            color = MaterialTheme.colorScheme.onSecondaryContainer,
+                                        )
+                                        Text(
+                                            text = attending.losses.toString(),
+                                            fontSize = MaterialTheme.typography.bodyLarge.fontSize,
+                                            color = MaterialTheme.colorScheme.onSecondaryContainer,
+                                        )
                                     }
                                 }
                             }
-                        )
+                        }
                     }
                 }
             } else Log.i("SingleEvent", "There were no standings for the event")
@@ -339,7 +335,7 @@ fun SingleEventTopbox(
 
                             Column(modifier = Modifier.clickable { onClickSingleTeam(teamViewModel.team.value.id.toString()) }) {
 
-                                CommonCard(modifier = Modifier, bottomBox = {
+                                CommonCard(modifier = Modifier) {
                                     Column {
 
                                         /////////
@@ -364,7 +360,10 @@ fun SingleEventTopbox(
                                                     withStyle(
                                                         style = SpanStyle(
                                                             brush = Brush.linearGradient(
-                                                                colors = listOf(teamViewModel.color.value, Color.White)
+                                                                colors = listOf(
+                                                                    teamViewModel.color.value,
+                                                                    Color.White
+                                                                )
                                                             ),
                                                             fontSize = 65.sp,
                                                             fontWeight = FontWeight.ExtraBold,
@@ -439,7 +438,7 @@ fun SingleEventTopbox(
                                         }
 
                                     }
-                                })
+                                }
                             }
                         }
                     }

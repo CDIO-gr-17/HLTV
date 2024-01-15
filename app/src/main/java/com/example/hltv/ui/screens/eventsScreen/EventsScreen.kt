@@ -127,68 +127,68 @@ fun SingleEventCard(
         modifier = modifier,
         headText = eventTitle,
         subText = eventDate,
-        image = eventLogo,
-        bottomBox = {
-            Row {
-                Column(
-                    modifier = Modifier
-                        .weight(0.6f)
-                ) {
-                    tier?.let {
-                        Text(
-                            text = "Tier",
-                            modifier = Modifier
-                                .padding(all = 8.dp)
-                        )
-                    }
-                    prizePool?.let {
-                        Text(
-                            text = "PrizePool",
-                            modifier = Modifier
-                                .padding(all = 8.dp)
-                        )
-                    }
-                    competitors?.let {
-                        Text(
-                            text = "Number of competitors",
-                            modifier = Modifier
-                                .padding(all = 8.dp)
-                        )
-                    }
+        image = eventLogo
+    ) {
+        Row {
+            Column(
+                modifier = Modifier
+                    .weight(0.6f)
+            ) {
+                tier?.let {
+                    Text(
+                        text = "Tier",
+                        modifier = Modifier
+                            .padding(all = 8.dp)
+                    )
                 }
-                Column(
-                    modifier = Modifier
-                        .weight(0.4f),
-                    horizontalAlignment = Alignment.End
-                ) {
-                    tier?.let {
-                        Text(
-                            text = tier,
-                            textAlign = TextAlign.End,
-                            modifier = Modifier
-                                .padding(8.dp)
-                        )
-                    }
-                    prizePool?.let {
-                        Text(
-                            text = NumberFormat.getNumberInstance(Locale.getDefault()).format(prizePool) +
-                                    " ${prizePoolCurrency}",
-                            textAlign = TextAlign.End,
-                            modifier = Modifier
-                                .padding(8.dp)
-                        )
-                    }
-                    competitors?.let {
-                        Text(
-                            text = competitors.toString(),
-                            textAlign = TextAlign.End,
-                            modifier = Modifier
-                                .padding(8.dp)
-                        )
-                    }
+                prizePool?.let {
+                    Text(
+                        text = "PrizePool",
+                        modifier = Modifier
+                            .padding(all = 8.dp)
+                    )
+                }
+                competitors?.let {
+                    Text(
+                        text = "Number of competitors",
+                        modifier = Modifier
+                            .padding(all = 8.dp)
+                    )
+                }
+            }
+            Column(
+                modifier = Modifier
+                    .weight(0.4f),
+                horizontalAlignment = Alignment.End
+            ) {
+                tier?.let {
+                    Text(
+                        text = tier,
+                        textAlign = TextAlign.End,
+                        modifier = Modifier
+                            .padding(8.dp)
+                    )
+                }
+                prizePool?.let {
+                    Text(
+                        text = NumberFormat.getNumberInstance(Locale.getDefault())
+                            .format(prizePool) +
+                                " ${prizePoolCurrency}",
+                        textAlign = TextAlign.End,
+                        modifier = Modifier
+                            .padding(8.dp)
+                    )
+                }
+                competitors?.let {
+                    Text(
+                        text = competitors.toString(),
+                        textAlign = TextAlign.End,
+                        modifier = Modifier
+                            .padding(8.dp)
+                    )
                 }
             }
         }
-    )
+    }
 }
 

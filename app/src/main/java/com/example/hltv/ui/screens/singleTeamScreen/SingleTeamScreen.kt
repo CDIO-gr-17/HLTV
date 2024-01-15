@@ -18,8 +18,6 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.MutableState
-import androidx.compose.runtime.snapshots.SnapshotStateList
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.painter.Painter
@@ -30,7 +28,6 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
-import coil.compose.AsyncImagePainter
 import coil.compose.rememberAsyncImagePainter
 import com.example.hltv.R
 import com.example.hltv.data.getFlagFromCountryCode
@@ -50,10 +47,12 @@ fun SingleTeamScreen(teamID : String? = "364378", onClickSinglePlayer: (String?)
 
     LazyColumn {
         item{
-            CommonCard(modifier = Modifier, bottomBox = {
+            CommonCard(modifier = Modifier) {
                 Column {
-                    LazyRow (modifier = Modifier.fillMaxWidth(),
-                        horizontalArrangement = Arrangement.SpaceEvenly){
+                    LazyRow(
+                        modifier = Modifier.fillMaxWidth(),
+                        horizontalArrangement = Arrangement.SpaceEvenly
+                    ) {
                         items(playerOverview.size) { index ->
                             OverviewPlayer(
                                 player = playerOverview[index],
@@ -64,7 +63,11 @@ fun SingleTeamScreen(teamID : String? = "364378", onClickSinglePlayer: (String?)
                     OverviewInfo(
                         country = statsOverview.value.countryName,
                         countryImage = painter,
-                        teamLogo = recentMatches.getOrNull(0)?.homeTeamImage?.let { rememberAsyncImagePainter(it) }
+                        teamLogo = recentMatches.getOrNull(0)?.homeTeamImage?.let {
+                            rememberAsyncImagePainter(
+                                it
+                            )
+                        }
 
                     )
                     Statistics(
@@ -93,7 +96,7 @@ fun SingleTeamScreen(teamID : String? = "364378", onClickSinglePlayer: (String?)
                         )
                     }
                 }
-            })
+            }
         }
     }
 }
@@ -121,7 +124,8 @@ fun OverviewPlayer(
                 modifier = Modifier
                     .size(70.dp)
             )
-            CommonCard (modifier = Modifier.offset(y = 40.dp),
+            CommonCard (
+                modifier = Modifier.offset(y = 40.dp),
                 customOuterPadding = 0.dp,
                 topBox = {
                     Text(

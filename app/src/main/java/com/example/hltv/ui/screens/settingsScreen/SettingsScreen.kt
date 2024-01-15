@@ -102,9 +102,8 @@ private fun favoriteTeamSection(
                         .height(70.dp)
                 )
             }
-        },
-        bottomBox ={bottomBox()}
-    )
+        }
+    ) { bottomBox() }
 
 }
 

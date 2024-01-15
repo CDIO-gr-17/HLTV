@@ -112,9 +112,9 @@ fun SingleMatchScreen(matchID: String?, onClickSingleTeam: (String?) -> Unit) {
                 )
             }
             item {
-                CommonCard(modifier = Modifier, bottomBox = {
+                CommonCard(modifier = Modifier) {
                     Text(text = viewModel.description)
-                })
+                }
             }
             item {
                 PredictionCard(
@@ -145,33 +145,33 @@ fun SingleMatchScreen(matchID: String?, onClickSingleTeam: (String?) -> Unit) {
             item {
                 CommonCard(
                     modifier = Modifier,
-                    headText = "Map results",
-                    bottomBox = {
-                        Column() {
-                            games.forEachIndexed() { gameNumber, game ->
-                                Log.i("games", "${games.size}")
-                                EventImage(
-                                    backgroundImage = if (gameNumber < viewModel.mapImages.size) {
-                                        Log.i("mapImageGameNumber", "$gameNumber")
-                                        Log.i(
-                                            "mapImageGameNumberImage",
-                                            "${viewModel.mapImages[gameNumber]}"
-                                        )
-                                        rememberAsyncImagePainter(viewModel.mapImages[gameNumber])
-                                    } else rememberAsyncImagePainter(R.drawable.event_background),
-                                    teamOneScore = game.homeScore?.display.toString(),
-                                    teamTwoScore = game.awayScore?.display.toString(),
-                                    teamOneOnClick = { onClickSingleTeam(event?.homeTeam?.id.toString()) },
-                                    teamTwoOnClick = { onClickSingleTeam(event?.awayTeam?.id.toString()) },
-                                    crop = true,
-                                    mapName = game.map?.name
-                                )
-                                if (gameNumber < games.size - 1) {
-                                    Spacer(modifier = Modifier.height(8.dp))
-                                }
+                    headText = "Map results"
+                ) {
+                    Column() {
+                        games.forEachIndexed() { gameNumber, game ->
+                            Log.i("games", "${games.size}")
+                            EventImage(
+                                backgroundImage = if (gameNumber < viewModel.mapImages.size) {
+                                    Log.i("mapImageGameNumber", "$gameNumber")
+                                    Log.i(
+                                        "mapImageGameNumberImage",
+                                        "${viewModel.mapImages[gameNumber]}"
+                                    )
+                                    rememberAsyncImagePainter(viewModel.mapImages[gameNumber])
+                                } else rememberAsyncImagePainter(R.drawable.event_background),
+                                teamOneScore = game.homeScore?.display.toString(),
+                                teamTwoScore = game.awayScore?.display.toString(),
+                                teamOneOnClick = { onClickSingleTeam(event?.homeTeam?.id.toString()) },
+                                teamTwoOnClick = { onClickSingleTeam(event?.awayTeam?.id.toString()) },
+                                crop = true,
+                                mapName = game.map?.name
+                            )
+                            if (gameNumber < games.size - 1) {
+                                Spacer(modifier = Modifier.height(8.dp))
                             }
                         }
-                    })
+                    }
+                }
             }
             item{
                 PredictionCard(
@@ -423,42 +423,43 @@ fun EventImage(
 
 @Composable
 fun ShowLiveStreams(mediaList: ArrayList<Media>) {
-    CommonCard(modifier = Modifier.fillMaxWidth(),
+    CommonCard(
+        modifier = Modifier.fillMaxWidth(),
         headText = "Livestreams",
-        subText = "May or may not have the game",
-        bottomBox = {
-            Column {
-                mediaList.distinctBy { it.url }.forEach { media ->
-                    if (media.url != null) {
-                        val annotatedString = buildAnnotatedString {
-                            withStyle(
-                                style = SpanStyle(
-                                    color = MaterialTheme.colorScheme.onSecondaryContainer,
-                                    textDecoration = TextDecoration.Underline,
-                                    fontSize = MaterialTheme.typography.bodyMedium.fontSize
-                                )
-                            ) {
-                                append(media.url.toString())
-                                addStringAnnotation(
-                                    "URL", media.url.toString(), 0, media.url!!.length
-                                )
-                            }
+        subText = "May or may not have the game"
+    ) {
+        Column {
+            mediaList.distinctBy { it.url }.forEach { media ->
+                if (media.url != null) {
+                    val annotatedString = buildAnnotatedString {
+                        withStyle(
+                            style = SpanStyle(
+                                color = MaterialTheme.colorScheme.onSecondaryContainer,
+                                textDecoration = TextDecoration.Underline,
+                                fontSize = MaterialTheme.typography.bodyMedium.fontSize
+                            )
+                        ) {
+                            append(media.url.toString())
+                            addStringAnnotation(
+                                "URL", media.url.toString(), 0, media.url!!.length
+                            )
                         }
-
-                        val uriHandler = LocalUriHandler.current
-
-                        ClickableText(modifier = Modifier.padding(vertical = 4.dp),
-                            text = annotatedString,
-                            onClick = { offset ->
-                                annotatedString.getStringAnnotations("URL", offset, offset)
-                                    .firstOrNull()?.let { annotation ->
-                                        uriHandler.openUri(annotation.item)
-                                    }
-                            })
                     }
+
+                    val uriHandler = LocalUriHandler.current
+
+                    ClickableText(modifier = Modifier.padding(vertical = 4.dp),
+                        text = annotatedString,
+                        onClick = { offset ->
+                            annotatedString.getStringAnnotations("URL", offset, offset)
+                                .firstOrNull()?.let { annotation ->
+                                    uriHandler.openUri(annotation.item)
+                                }
+                        })
                 }
             }
-        })
+        }
+    }
 }
 
 
