@@ -10,10 +10,8 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.async
 import kotlinx.coroutines.awaitAll
 import kotlinx.coroutines.delay
-import kotlinx.coroutines.isActive
 import kotlinx.coroutines.sync.Mutex
 import kotlinx.coroutines.sync.withLock
-import kotlinx.coroutines.withContext
 import okhttp3.Request
 import java.io.ByteArrayOutputStream
 import java.io.IOException
@@ -34,16 +32,14 @@ suspend fun waitForAPI() {
 
 
 
-    mutexForAPI.withLock {
-
-        /*
+    mutexForAPI.withLock {/*
         withContext(Dispatchers.IO){ //IDK if this works
             if (!isActive){
                 return@withContext
             }
         }
+*/
 
-         */
 
 
 
@@ -442,7 +438,6 @@ private suspend fun getAPIResponse(
 
     if (jsonString?.compareTo("") == 0) {
         Log.e("getAPIResponse", "jsonString is repeatedly null", IOException("STRING IS NULL"))
-        return APIResponse.Error //tried this
     }
 
     if (jsonString != null) {

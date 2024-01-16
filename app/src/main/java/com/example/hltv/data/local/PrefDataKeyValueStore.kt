@@ -4,6 +4,7 @@ import android.content.Context
 import androidx.datastore.core.DataStore
 import androidx.datastore.preferences.core.MutablePreferences
 import androidx.datastore.preferences.core.Preferences
+import androidx.datastore.preferences.core.booleanPreferencesKey
 import androidx.datastore.preferences.core.edit
 import androidx.datastore.preferences.core.emptyPreferences
 import androidx.datastore.preferences.core.intPreferencesKey
@@ -18,6 +19,7 @@ private val Context.dataStore: DataStore<Preferences> by preferencesDataStore(na
 class PrefDataKeyValueStore private constructor(context: Context) {
     private object PreferenceKeys {
         val FAVOURITETEAM: Preferences.Key<Int> = intPreferencesKey("favouriteTeam")
+        val SHOWONHOMESCREEN: Preferences.Key<Boolean> = booleanPreferencesKey("showOnHomeScreen")
     }
 
     private val applicationContext = context.applicationContext
@@ -40,6 +42,17 @@ class PrefDataKeyValueStore private constructor(context: Context) {
             } else {
                 throw exception
             }
+        }
+
+    suspend fun updateHomepagePreference(value: Boolean) {
+        applicationContext.dataStore.edit { preferences: MutablePreferences ->
+            preferences[PreferenceKeys.SHOWONHOMESCREEN] = value
+        }
+    }
+    fun getHomepagePreference() : Flow<Boolean> = applicationContext.dataStore.data
+        .catchAndHandleError()
+        .map { preferences: Preferences ->
+            return@map preferences[PreferenceKeys.SHOWONHOMESCREEN] ?: true
         }
 
     companion object {

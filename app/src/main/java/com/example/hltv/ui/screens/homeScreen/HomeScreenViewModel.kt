@@ -2,7 +2,6 @@ package com.example.hltv.ui.screens.homeScreen
 
 import android.graphics.Bitmap
 import android.util.Log
-import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
@@ -10,9 +9,7 @@ import com.example.hltv.data.convertTimestampToDateURL
 import com.example.hltv.data.local.PrefDataKeyValueStore
 import com.example.hltv.data.remote.APIResponse
 import com.example.hltv.data.remote.Event
-import com.example.hltv.data.remote.Score
 import com.example.hltv.data.remote.Season
-import com.example.hltv.data.remote.Team
 import com.example.hltv.data.remote.ThirdUniqueTournament
 import com.example.hltv.data.remote.getLiveMatches
 import com.example.hltv.data.remote.getMatchesFromDay
@@ -21,13 +18,13 @@ import com.example.hltv.data.remote.getTeamImage
 import com.example.hltv.data.remote.getTournamentLogo
 import com.example.hltv.data.remote.getUniqueTournamentDetails
 import com.example.hltv.data.remote.getUniqueTournamentSeasons
-import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
 
 class HomeScreenViewModel: ViewModel() {
+
 
     val liveMatchValue = mutableStateOf<Event?>(null)
     val upcomingMatchValue = mutableStateOf<Event?>(null)
@@ -46,6 +43,8 @@ class HomeScreenViewModel: ViewModel() {
 
     private val _favoriteTeam = MutableStateFlow(0)
     val favoriteTeam: StateFlow<Int> = _favoriteTeam
+    private val _showFavoriteTeam = MutableStateFlow(true)
+    val showFavoriteTeam: StateFlow<Boolean> = _showFavoriteTeam
 
     private var dataLoaded = false
 
@@ -75,9 +74,16 @@ class HomeScreenViewModel: ViewModel() {
     }
 
      fun loadFavoriteTeam(dataStore : PrefDataKeyValueStore){
+         viewModelScope.launch(Dispatchers.IO){
+             dataStore.getHomepagePreference().collect() { boolean ->
+                 _showFavoriteTeam.value = boolean
+                 return@collect
+             }
+         }
         viewModelScope.launch(Dispatchers.IO) {
             dataStore.getFavouriteTeam().collect { int ->
                 _favoriteTeam.value = int
+                return@collect
             }
         }
     }

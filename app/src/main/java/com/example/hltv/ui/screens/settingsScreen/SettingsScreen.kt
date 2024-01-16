@@ -38,20 +38,19 @@ fun SettingsScreen(onClickSingleTeam: (String?) -> Unit) {
 
     val teamName by viewModel.favoriteTeamName.collectAsState()
     val teamLogo by viewModel.teamLogo.collectAsState()
+    val favoriteTeamOnHomeScreen by viewModel.favoriteTeamOnHomeScreen.collectAsState()
 
     var darkModeEnabled by remember {
         mutableStateOf(false)
     }
-    var favoriteTeamOnHomeScreen by remember {
-        mutableStateOf(true)
-    }
+
 
     Column {
         favoriteTeamSection(teamName = teamName, teamLogo = teamLogo) {
             SettingsToggle(
                 settingName = "Show team-info on homescreen",
                 isChecked = favoriteTeamOnHomeScreen,
-                onCheckedChange = { favoriteTeamOnHomeScreen = it })
+                onCheckedChange = { viewModel.setFavoriteTeamPreference(dataStore,it) })
         }
 
         Surface(modifier = Modifier.padding(16.dp)) {
@@ -72,7 +71,7 @@ private fun favoriteTeamSection(
     CommonCard(
         modifier = Modifier,
         topBox = {
-            Row(horizontalArrangement = Arrangement.SpaceBetween) {
+            Row(horizontalArrangement = Arrangement.SpaceBetween, modifier = Modifier.fillMaxWidth()) {
                 Column {
                     Text(
                         text = if (teamName == "") "You have no favorite Team"

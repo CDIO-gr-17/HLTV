@@ -74,12 +74,15 @@ class SingleTeamViewModel : ViewModel() {
             return
         }
         dataLoaded = true
+        clearData()
+
 
 
         val teamID = teamIDString.toInt()
         val lineup = CompletableDeferred<PlayerGroup?>()
 
         viewModelScope.launch(Dispatchers.IO) {
+
             teamImage.value = getTeamImage(teamID)
             //palette.value =  Palette.from(teamImage.value!!).generate()
             //color.value = Color(Palette.from(teamImage.value!!).generate().vibrantSwatch!!.rgb)
@@ -205,6 +208,22 @@ class SingleTeamViewModel : ViewModel() {
                 )
             }
         }
+    }
+    private fun clearData() {
+        recentMatches.clear()
+        playerOverview.clear()
+        statisticsOverview.value = Stats()
+        teamImage.value = null
+        team1 = null
+        team2 = null
+        team.value = Team()
+        team1score = null
+        team2score = null
+        teamID = 0
+        playersDateOfBirthTimestamp.clear()
+        color.value = Color.White
+        winRate.value = 0.0
+        noInfoOnTeam.value = false
     }
 }
 

@@ -50,12 +50,14 @@ fun HomeScreen(
     val viewModel: HomeScreenViewModel = viewModel()
     val dataStore = PrefDataKeyValueStore.getInstance(LocalContext.current)
     val favoritteamID by viewModel.favoriteTeam.collectAsState()
-    viewModel.loadFavoriteTeam(dataStore)
-
+    val showFavoriteTeam by viewModel.showFavoriteTeam.collectAsState()
+    LaunchedEffect(favoritteamID) {
+        viewModel.loadFavoriteTeam(dataStore)
+    }
     LaunchedEffect(Unit) {
+
         viewModel.loadData()
     }
-
 
 
     LazyColumn(
@@ -122,43 +124,51 @@ fun HomeScreen(
             )
         }
         item {
-            if (favoritteamID != 0 && favoritteamID != null) {
-                SingleTeamScreenComposable(
-                    teamID = favoritteamID.toString(),
-                    onClickSinglePlayer = onClickSinglePlayer,
-                    onClickSingleTeam = onClickSingleTeam,
-                    onClickSingleMatch = onClickSingleMatch,
-                    calledFromHomeScreen = true
-                )
-            } else {
-                val stdBitmap = BitmapFactory.decodeResource(
-                    LocalContext.current.resources, R.drawable.questionmark
-                ).asImageBitmap()
-                CommonCard(
-                    modifier = Modifier,
-                    topBox = {
-                        Text(text = "No favorite team selected",
-                            textAlign = TextAlign.Center,
-                            modifier = Modifier.fillMaxWidth())
-                    },
-                    bottomBox = {
-                        Column(horizontalAlignment = Alignment.CenterHorizontally,
-                            verticalArrangement = Arrangement.Center,
-                            modifier = Modifier.fillMaxWidth()) {
-                            Text(text = "Your favorite team will be shown here",
-                                textAlign = TextAlign.Center,)
-                            Image(
-                                modifier = Modifier
-                                    .size(80.dp),
-                                bitmap = stdBitmap,
-                                contentDescription = "No favorite team selected",
-                                alignment = Alignment.Center
+            if(showFavoriteTeam) {
+                if (favoritteamID != 0 && favoritteamID != null) {
+                    SingleTeamScreenComposable(
+                        teamID = favoritteamID.toString(),
+                        onClickSinglePlayer = onClickSinglePlayer,
+                        onClickSingleTeam = onClickSingleTeam,
+                        onClickSingleMatch = onClickSingleMatch,
+                        calledFromHomeScreen = true
+                    )
+                } else {
+                    val stdBitmap = BitmapFactory.decodeResource(
+                        LocalContext.current.resources, R.drawable.questionmark
+                    ).asImageBitmap()
+                    CommonCard(
+                        modifier = Modifier,
+                        topBox = {
+                            Text(
+                                text = "No favorite team selected",
+                                textAlign = TextAlign.Center,
+                                modifier = Modifier.fillMaxWidth()
                             )
+                        },
+                        bottomBox = {
+                            Column(
+                                horizontalAlignment = Alignment.CenterHorizontally,
+                                verticalArrangement = Arrangement.Center,
+                                modifier = Modifier.fillMaxWidth()
+                            ) {
+                                Text(
+                                    text = "Your favorite team will be shown here",
+                                    textAlign = TextAlign.Center,
+                                )
+                                Image(
+                                    modifier = Modifier
+                                        .size(80.dp),
+                                    bitmap = stdBitmap,
+                                    contentDescription = "No favorite team selected",
+                                    alignment = Alignment.Center
+                                )
+                            }
+
                         }
+                    )
 
-                    }
-                )
-
+                }
             }
         }
     }
