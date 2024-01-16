@@ -7,8 +7,6 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.ui.graphics.Color
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.example.hltv.R
-import com.example.hltv.data.getAvgAgeFromTimestamp
 import androidx.palette.graphics.Palette
 import com.example.hltv.data.remote.APIResponse
 import com.example.hltv.data.remote.Map
@@ -100,7 +98,7 @@ class SingleTeamViewModel : ViewModel() {
             teamImage.value = getTeamImage(teamID)
             //palette.value =  Palette.from(teamImage.value!!).generate()
             //color.value = Color(Palette.from(teamImage.value!!).generate().vibrantSwatch!!.rgb)
-
+            Log.d("SingleTeamViewModel", "Team image is now: ${teamImage.value}")
             val palette = Palette.from(teamImage.value!!).generate()
             if (teamImage.value != null && palette.vibrantSwatch?.rgb != null){
                 color.value = Color(palette.vibrantSwatch?.rgb!!)

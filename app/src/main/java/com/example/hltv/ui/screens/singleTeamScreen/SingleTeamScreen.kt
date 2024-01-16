@@ -18,8 +18,6 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.MutableState
-import androidx.compose.runtime.snapshots.SnapshotStateList
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.painter.Painter
@@ -30,14 +28,18 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
-import coil.compose.AsyncImagePainter
 import coil.compose.rememberAsyncImagePainter
 import com.example.hltv.R
 import com.example.hltv.data.getFlagFromCountryCode
 import com.example.hltv.ui.common.CommonCard
 
 @Composable
-fun SingleTeamScreen(teamID : String? = "364378", onClickSinglePlayer: (String?) -> Unit, onClickSingleTeam: (String?) -> Unit, onClickSingleMatch: (String?) -> Unit) {
+fun SingleTeamScreen(
+    teamID: String?,
+    onClickSinglePlayer: (String?) -> Unit,
+    onClickSingleTeam: (String?) -> Unit,
+    onClickSingleMatch: (String?) -> Unit
+) {
     val viewModel: SingleTeamViewModel = viewModel()
     LaunchedEffect(teamID) {
         viewModel.loadData(teamID!!)
@@ -49,11 +51,13 @@ fun SingleTeamScreen(teamID : String? = "364378", onClickSinglePlayer: (String?)
     val painter = getFlagFromCountryCode(countryCode = countryCode)
 
     LazyColumn {
-        item{
+        item {
             CommonCard(modifier = Modifier, bottomBox = {
                 Column {
-                    LazyRow (modifier = Modifier.fillMaxWidth(),
-                        horizontalArrangement = Arrangement.SpaceEvenly){
+                    LazyRow(
+                        modifier = Modifier.fillMaxWidth(),
+                        horizontalArrangement = Arrangement.SpaceEvenly
+                    ) {
                         items(playerOverview.size) { index ->
                             OverviewPlayer(
                                 player = playerOverview[index],
@@ -64,7 +68,11 @@ fun SingleTeamScreen(teamID : String? = "364378", onClickSinglePlayer: (String?)
                     OverviewInfo(
                         country = statsOverview.value.countryName,
                         countryImage = painter,
-                        teamLogo = recentMatches.getOrNull(0)?.homeTeamImage?.let { rememberAsyncImagePainter(it) }
+                        teamLogo = recentMatches.getOrNull(0)?.homeTeamImage?.let {
+                            rememberAsyncImagePainter(
+                                it
+                            )
+                        }
 
                     )
                     Statistics(
@@ -102,8 +110,8 @@ fun SingleTeamScreen(teamID : String? = "364378", onClickSinglePlayer: (String?)
 fun OverviewPlayer(
     player: Player,
     onClickSinglePlayer: (String?) -> Unit
-){
-    Row (modifier = Modifier.height(100.dp)){
+) {
+    Row(modifier = Modifier.height(100.dp)) {
         Box(
             contentAlignment = Alignment.Center,
             modifier = Modifier
@@ -111,9 +119,9 @@ fun OverviewPlayer(
                 .clickable {
                     onClickSinglePlayer(player.playerId.toString())
                 }
-        ){
+        ) {
             Image(
-                painter = if(player.image!=null) rememberAsyncImagePainter(player.image) else rememberAsyncImagePainter(
+                painter = if (player.image != null) rememberAsyncImagePainter(player.image) else rememberAsyncImagePainter(
                     model = R.drawable.playersilouhette
                 ),
                 contentDescription = null,
@@ -121,11 +129,14 @@ fun OverviewPlayer(
                 modifier = Modifier
                     .size(70.dp)
             )
-            CommonCard (modifier = Modifier.offset(y = 40.dp),
+            CommonCard(modifier = Modifier.offset(y = 40.dp),
                 customOuterPadding = 0.dp,
                 topBox = {
                     Text(
-                        text = if (player.name!=null) player.name.substring(0, minOf(6, player.name.length)) else "Player",
+                        text = if (player.name != null) player.name.substring(
+                            0,
+                            minOf(6, player.name.length)
+                        ) else "Player",
                         fontSize = MaterialTheme.typography.bodyMedium.fontSize,
                         color = MaterialTheme.colorScheme.onPrimaryContainer,
                         textAlign = TextAlign.Center,
@@ -144,15 +155,15 @@ fun OverviewPlayer(
 fun OverviewInfo(
     country: String?,
     countryImage: Painter,
-    teamLogo: Painter ?= null,
-){
-    Row (
+    teamLogo: Painter? = null,
+) {
+    Row(
         modifier = Modifier.fillMaxWidth(),
         horizontalArrangement = Arrangement.SpaceAround,
-    ){
+    ) {
         Column(
             horizontalAlignment = Alignment.CenterHorizontally
-        ){
+        ) {
             Text(
                 text = country ?: "Unknown",
                 fontSize = MaterialTheme.typography.bodyLarge.fontSize,
@@ -169,7 +180,7 @@ fun OverviewInfo(
         }
         Column(
             horizontalAlignment = Alignment.CenterHorizontally
-        ){
+        ) {
             if (teamLogo != null) {
                 Image(
                     painter = teamLogo,
@@ -186,27 +197,27 @@ fun OverviewInfo(
 @Composable
 fun RecentMatches(
     modifier: Modifier = Modifier,
-    team1: String ?= null,
-    team2: String ?= null,
+    team1: String? = null,
+    team2: String? = null,
     imageTeam1: Painter,
     imageTeam2: Painter,
     team2OnClick: () -> Unit,
-    score: String ?= null,
-    date: String ?= null,
-){
+    score: String? = null,
+    date: String? = null,
+) {
     CommonCard(
         modifier = Modifier.fillMaxWidth(),
         topBox = {
             Box {
-                Row (
+                Row(
                     verticalAlignment = Alignment.CenterVertically,
                     modifier = modifier
                         .fillMaxWidth()
-                ){
-                    Row (
+                ) {
+                    Row(
                         verticalAlignment = Alignment.CenterVertically,
                         modifier = Modifier.weight(0.4f)
-                    ){
+                    ) {
                         Image(
                             painter = imageTeam1,
                             contentDescription = null,
@@ -223,10 +234,10 @@ fun RecentMatches(
                             color = MaterialTheme.colorScheme.onPrimaryContainer
                         )
                     }
-                    Column (
+                    Column(
                         horizontalAlignment = Alignment.CenterHorizontally,
                         modifier = Modifier.weight(0.2f)
-                    ){
+                    ) {
                         Text(
                             text = score ?: "/",
                             fontSize = MaterialTheme.typography.bodyLarge.fontSize,
@@ -239,13 +250,13 @@ fun RecentMatches(
                             color = MaterialTheme.colorScheme.onPrimaryContainer
                         )
                     }
-                    Row (
+                    Row(
                         verticalAlignment = Alignment.CenterVertically,
                         horizontalArrangement = Arrangement.End,
                         modifier = Modifier
                             .weight(0.4f)
                             .clickable { team2OnClick() }
-                    ){
+                    ) {
                         Text(
                             text = team2 ?: "Team 2",
                             maxLines = 2,
@@ -278,81 +289,89 @@ fun Statistics(
     winRate: String,
     bestMap: String,
     averagePlayerAge: Double?,
-    imageNat: Painter){
+    imageNat: Painter
+) {
 
-            Box{
+    Box {
+        Row(
+            modifier = Modifier
+                .fillMaxWidth(),
+            horizontalArrangement = Arrangement.SpaceBetween
+        ) {
+            Column(
+                horizontalAlignment = Alignment.Start
+            ) {
+                Text(
+                    text = "Statistics",
+                    fontWeight = FontWeight.Bold,
+                    color = MaterialTheme.colorScheme.onPrimaryContainer
+                )
+                Text(
+                    text = "Coach:",
+                    color = MaterialTheme.colorScheme.onPrimaryContainer
+                )
+                Text(
+                    text = "Points:",
+                    color = MaterialTheme.colorScheme.onPrimaryContainer
+                )
+                Text(
+                    text = "Win Rate:",
+                    color = MaterialTheme.colorScheme.onPrimaryContainer
+                )
+                Text(
+                    text = "Best Map:",
+                    color = MaterialTheme.colorScheme.onPrimaryContainer
+                )
+                Text(
+                    text = "Average Player Age:",
+                    color = MaterialTheme.colorScheme.onPrimaryContainer
+                )
+            }
+            Column(
+                horizontalAlignment = Alignment.End
+            ) {
+                Text(text = "")
                 Row(
-                    modifier = Modifier
-                        .fillMaxWidth(),
-                    horizontalArrangement = Arrangement.SpaceBetween
-                ){
-                    Column (
-                        horizontalAlignment = Alignment.Start
-                    ){
-                        Text(text = "Statistics",
-                            fontWeight = FontWeight.Bold,
-                            color = MaterialTheme.colorScheme.onPrimaryContainer
-                        )
-                        Text(
-                            text = "Coach:",
-                            color = MaterialTheme.colorScheme.onPrimaryContainer
-                        )
-                        Text(
-                            text = "Points:",
-                            color = MaterialTheme.colorScheme.onPrimaryContainer
-                        )
-                        Text(
-                            text = "Win Rate:",
-                            color = MaterialTheme.colorScheme.onPrimaryContainer
-                        )
-                        Text(
-                            text = "Best Map:",
-                            color = MaterialTheme.colorScheme.onPrimaryContainer
-                        )
-                        Text(
-                            text = "Average Player Age:",
-                            color = MaterialTheme.colorScheme.onPrimaryContainer
-                        )
-                    }
-                    Column (
-                        horizontalAlignment = Alignment.End
-                    ){
-                        Text(text = "")
-                        Row (verticalAlignment = Alignment.CenterVertically
-                        ){
-                            Text(
-                                text = coach,
-                                color = MaterialTheme.colorScheme.onPrimaryContainer)
-                            Image(
-                                painter = imageNat,
-                                contentDescription = null,
-                                alignment = Alignment.CenterEnd,
-                                modifier = Modifier
-                                    .size(20.dp)
-                                    .padding(1.dp)
-                                )
-                        }
-                        Text(
-                            text = points,
-                            color = MaterialTheme.colorScheme.onPrimaryContainer)
-                        Text(
-                            text = winRate,
-                            color = MaterialTheme.colorScheme.onPrimaryContainer)
-                        Text(
-                            text = bestMap,
-                            color = MaterialTheme.colorScheme.onPrimaryContainer)
-                        Text(
-                            text = averagePlayerAge.toString().substring(0,minOf(4, averagePlayerAge.toString().length)),
-                            color = MaterialTheme.colorScheme.onPrimaryContainer)
-                    }
+                    verticalAlignment = Alignment.CenterVertically
+                ) {
+                    Text(
+                        text = coach,
+                        color = MaterialTheme.colorScheme.onPrimaryContainer
+                    )
+                    Image(
+                        painter = imageNat,
+                        contentDescription = null,
+                        alignment = Alignment.CenterEnd,
+                        modifier = Modifier
+                            .size(20.dp)
+                            .padding(1.dp)
+                    )
                 }
+                Text(
+                    text = points,
+                    color = MaterialTheme.colorScheme.onPrimaryContainer
+                )
+                Text(
+                    text = winRate,
+                    color = MaterialTheme.colorScheme.onPrimaryContainer
+                )
+                Text(
+                    text = bestMap,
+                    color = MaterialTheme.colorScheme.onPrimaryContainer
+                )
+                Text(
+                    text = averagePlayerAge.toString()
+                        .substring(0, minOf(4, averagePlayerAge.toString().length)),
+                    color = MaterialTheme.colorScheme.onPrimaryContainer
+                )
             }
         }
-
+    }
+}
 
 
 @Composable
 @Preview
-fun SingleTeamPreview(){
+fun SingleTeamPreview() {
     //SingleTeamScreen(onClickSinglePlayer = unit, onClickSingleTeam = item, onClickSingleMatch = )
 }

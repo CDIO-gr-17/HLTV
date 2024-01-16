@@ -30,8 +30,8 @@ fun MainNavHost(navController: NavHostController, modifier: Modifier) {
             HomeScreen(
                 onClickSingleTeam = {navController.navigate(SingleTeam.route + it) },
                 onClickSingleMatch = {navController.navigate(SingleMatch.route + it) },
-                onClickSingleEvent = {navController.navigate(SingleEvent.route+it)},
-                onClickSinglePlayer = {navController.navigate(SinglePlayer.route+it)}
+                onClickSingleEvent = {navController.navigate(SingleEvent.route + it)},
+                onClickSinglePlayer = {navController.navigate(SinglePlayer.route + it)}
             )
         }
 

@@ -2,7 +2,6 @@
 
 package com.example.hltv.ui.screens.homeScreen
 
-import android.util.Log
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
@@ -40,23 +39,27 @@ import com.example.hltv.data.convertTimestampToWeekDateClock
 import com.example.hltv.data.local.PrefDataKeyValueStore
 import com.example.hltv.ui.common.LiveMatchCard
 import com.example.hltv.ui.common.UpcomingMatchCard
-import com.example.hltv.ui.screens.singleTeamScreen.SingleTeamScreen
-import kotlinx.coroutines.delay
 import com.example.hltv.ui.screens.eventsScreen.SingleEventCard
 import com.example.hltv.ui.screens.singleTeamScreen.SingleTeamScreen
 
 val M = MaterialTheme
 
 @Composable
-fun HomeScreen(onClickSingleTeam : (String?) -> Unit, onClickSingleMatch : (String?) -> Unit, onClickSingleEvent : (String?)->Unit, onClickSinglePlayer: (String?)->Unit) {
+fun HomeScreen(
+    onClickSingleTeam: (String?) -> Unit,
+    onClickSingleMatch: (String?) -> Unit,
+    onClickSingleEvent: (String?) -> Unit,
+    onClickSinglePlayer: (String?) -> Unit
+) {
+    val viewModel: HomeScreenViewModel = viewModel()
     val dataStore = PrefDataKeyValueStore.getInstance(LocalContext.current)
+    val favoritteamID by viewModel.favoriteTeam.collectAsState()
+    viewModel.loadFavoriteTeam(dataStore)
 
-    val viewModel : HomeScreenViewModel = viewModel()
     LaunchedEffect(Unit) {
         viewModel.loadData()
-        viewModel.loadFavoriteTeam(dataStore)
     }
-    val favoritteamID by viewModel.favoriteTeam.collectAsState()
+
 
 
     Column(
@@ -66,26 +69,26 @@ fun HomeScreen(onClickSingleTeam : (String?) -> Unit, onClickSingleMatch : (Stri
             .testTag("HomeScreen")
     ) {
 
-         if (viewModel.liveMatchValue.value != null){
+        if (viewModel.liveMatchValue.value != null) {
             LiveMatchCard(
                 title = "Highlighted match",
                 modifier = Modifier.clickable { onClickSingleMatch(viewModel.liveMatchValue.value!!.id.toString()) },
-                teamOneName = viewModel.liveMatchValue.value!!.homeTeam.name?:"Unknown",
+                teamOneName = viewModel.liveMatchValue.value!!.homeTeam.name ?: "Unknown",
                 teamOneIcon = rememberAsyncImagePainter(model = viewModel.homeTeamIcon.value),
                 teamOneScore = viewModel.liveMatchValue.value!!.homeScore?.current ?: 0,
                 teamOneOnClick = { onClickSingleTeam(viewModel.liveMatchValue.value!!.homeTeam.id.toString()) },
-                teamTwoName = viewModel.liveMatchValue.value!!.awayTeam.name?:"Unknown",
+                teamTwoName = viewModel.liveMatchValue.value!!.awayTeam.name ?: "Unknown",
                 teamTwoIcon = rememberAsyncImagePainter(model = viewModel.awayTeamIcon.value),
                 teamTwoScore = viewModel.liveMatchValue.value!!.awayScore?.current ?: 0,
                 teamTwoOnClick = { onClickSingleTeam(viewModel.liveMatchValue.value!!.awayTeam.id.toString()) },
             )
-        } else if (viewModel.upcomingMatchValue.value != null){
+        } else if (viewModel.upcomingMatchValue.value != null) {
             UpcomingMatchCard(
                 modifier = Modifier.clickable { onClickSingleMatch(viewModel.upcomingMatchValue.value!!.id.toString()) },
-                teamOneName = viewModel.upcomingMatchValue.value!!.homeTeam.name?: "Unknown",
+                teamOneName = viewModel.upcomingMatchValue.value!!.homeTeam.name ?: "Unknown",
                 teamOneIcon = rememberAsyncImagePainter(model = viewModel.homeTeamIcon.value),
                 teamOneOnClick = { onClickSingleTeam(viewModel.upcomingMatchValue.value!!.homeTeam.id.toString()) },
-                teamTwoName = viewModel.upcomingMatchValue.value!!.awayTeam.name?: "Unknown",
+                teamTwoName = viewModel.upcomingMatchValue.value!!.awayTeam.name ?: "Unknown",
                 teamTwoIcon = rememberAsyncImagePainter(model = viewModel.awayTeamIcon.value),
                 teamTwoOnClick = { onClickSingleTeam(viewModel.upcomingMatchValue.value!!.awayTeam.id.toString()) },
                 matchDate = convertTimestampToWeekDateClock(viewModel.upcomingMatchValue.value!!.startTimestamp),
@@ -93,7 +96,7 @@ fun HomeScreen(onClickSingleTeam : (String?) -> Unit, onClickSingleMatch : (Stri
                 tournamentOnClick = { onClickSingleEvent(viewModel.upcomingMatchValue.value!!.tournament.uniqueTournament?.id.toString() + "/" + viewModel.upcomingMatchValue.value!!.season.id) }
             )
 
-         }
+        }
 
         Divider(modifier = Modifier.padding(horizontal = 8.dp), color = M.colorScheme.onBackground)
 
@@ -101,7 +104,7 @@ fun HomeScreen(onClickSingleTeam : (String?) -> Unit, onClickSingleMatch : (Stri
 
             SingleEventCard(
                 eventTitle = viewModel.upcomingTournament.value!!.name.toString(),
-                eventDate =  convertTimestampToDateDisplay(viewModel.upcomingTournament.value!!.startDateTimestamp),
+                eventDate = convertTimestampToDateDisplay(viewModel.upcomingTournament.value!!.startDateTimestamp),
                 eventLogo = rememberAsyncImagePainter(model = viewModel.upcomingTournamentlogo.value),
                 tier = "No Tier",
                 /*if (viewModel.uniqueTournament.value!!.uniqueTournamentInfo.tier != null)
@@ -114,11 +117,13 @@ fun HomeScreen(onClickSingleTeam : (String?) -> Unit, onClickSingleMatch : (Stri
         }
         Divider(modifier = Modifier.padding(horizontal = 8.dp), color = M.colorScheme.onBackground)
 
-        if (favoritteamID != 0 && favoritteamID != null){
-       SingleTeamScreen(teamID = favoritteamID.toString(),
-           onClickSinglePlayer = onClickSinglePlayer ,
-           onClickSingleTeam = onClickSingleTeam,
-           onClickSingleMatch = onClickSingleMatch)
+        if (favoritteamID != 0 || favoritteamID != null) {
+            SingleTeamScreen(
+                teamID = favoritteamID.toString(),
+                onClickSinglePlayer = onClickSinglePlayer,
+                onClickSingleTeam = onClickSingleTeam,
+                onClickSingleMatch = onClickSingleMatch
+            )
         }
 
 
@@ -229,13 +234,6 @@ fun HomeScreen(onClickSingleTeam : (String?) -> Unit, onClickSingleMatch : (Stri
                     )
                 }
             }
-
-            SingleTeamScreen(
-                teamID = "364378",
-                {},
-                {},
-                {})
-
         }
 
 
