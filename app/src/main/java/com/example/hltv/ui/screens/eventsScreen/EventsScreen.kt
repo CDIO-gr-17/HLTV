@@ -14,15 +14,18 @@ import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.painter.Painter
+import androidx.compose.ui.platform.LocalLifecycleOwner
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
+import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.viewmodel.compose.viewModel
 import coil.compose.rememberAsyncImagePainter
 import com.example.hltv.R
@@ -45,7 +48,7 @@ fun EventsScreen(onclickSingleEvent: (String?) -> Unit) {
     val uniqueTournaments = viewModel.uniqueTournaments
 
     //TODO: Optimize this for CPU performance so we dont resort on redraw
-    var sortedTournaments = mutableListOf<ThirdUniqueTournament>()
+    val sortedTournaments = mutableListOf<ThirdUniqueTournament>()
     val map = mutableMapOf<Int, Int>()
 
     val loadingState by viewModel.loadingState.collectAsState()
@@ -127,68 +130,68 @@ fun SingleEventCard(
         modifier = modifier,
         headText = eventTitle,
         subText = eventDate,
-        image = eventLogo,
-        bottomBox = {
-            Row {
-                Column(
-                    modifier = Modifier
-                        .weight(0.6f)
-                ) {
-                    tier?.let {
-                        Text(
-                            text = "Tier",
-                            modifier = Modifier
-                                .padding(all = 8.dp)
-                        )
-                    }
-                    prizePool?.let {
-                        Text(
-                            text = "PrizePool",
-                            modifier = Modifier
-                                .padding(all = 8.dp)
-                        )
-                    }
-                    competitors?.let {
-                        Text(
-                            text = "Number of competitors",
-                            modifier = Modifier
-                                .padding(all = 8.dp)
-                        )
-                    }
+        image = eventLogo
+    ) {
+        Row {
+            Column(
+                modifier = Modifier
+                    .weight(0.6f)
+            ) {
+                tier?.let {
+                    Text(
+                        text = "Tier",
+                        modifier = Modifier
+                            .padding(all = 8.dp)
+                    )
                 }
-                Column(
-                    modifier = Modifier
-                        .weight(0.4f),
-                    horizontalAlignment = Alignment.End
-                ) {
-                    tier?.let {
-                        Text(
-                            text = tier,
-                            textAlign = TextAlign.End,
-                            modifier = Modifier
-                                .padding(8.dp)
-                        )
-                    }
-                    prizePool?.let {
-                        Text(
-                            text = NumberFormat.getNumberInstance(Locale.getDefault()).format(prizePool) +
-                                    " ${prizePoolCurrency}",
-                            textAlign = TextAlign.End,
-                            modifier = Modifier
-                                .padding(8.dp)
-                        )
-                    }
-                    competitors?.let {
-                        Text(
-                            text = competitors.toString(),
-                            textAlign = TextAlign.End,
-                            modifier = Modifier
-                                .padding(8.dp)
-                        )
-                    }
+                prizePool?.let {
+                    Text(
+                        text = "PrizePool",
+                        modifier = Modifier
+                            .padding(all = 8.dp)
+                    )
+                }
+                competitors?.let {
+                    Text(
+                        text = "Number of competitors",
+                        modifier = Modifier
+                            .padding(all = 8.dp)
+                    )
+                }
+            }
+            Column(
+                modifier = Modifier
+                    .weight(0.4f),
+                horizontalAlignment = Alignment.End
+            ) {
+                tier?.let {
+                    Text(
+                        text = tier,
+                        textAlign = TextAlign.End,
+                        modifier = Modifier
+                            .padding(8.dp)
+                    )
+                }
+                prizePool?.let {
+                    Text(
+                        text = NumberFormat.getNumberInstance(Locale.getDefault())
+                            .format(prizePool) +
+                                " ${prizePoolCurrency}",
+                        textAlign = TextAlign.End,
+                        modifier = Modifier
+                            .padding(8.dp)
+                    )
+                }
+                competitors?.let {
+                    Text(
+                        text = competitors.toString(),
+                        textAlign = TextAlign.End,
+                        modifier = Modifier
+                            .padding(8.dp)
+                    )
                 }
             }
         }
-    )
+    }
 }
 

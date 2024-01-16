@@ -1,11 +1,13 @@
 package com.example.hltv.ui.screens.singleTeamScreen
 
+import android.util.Log
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.offset
@@ -18,6 +20,9 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.MutableState
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.snapshots.SnapshotStateList
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.painter.Painter
@@ -32,6 +37,8 @@ import coil.compose.rememberAsyncImagePainter
 import com.example.hltv.R
 import com.example.hltv.data.getFlagFromCountryCode
 import com.example.hltv.ui.common.CommonCard
+import com.example.hltv.ui.common.showToast
+import java.text.DecimalFormat
 
 @Composable
 fun SingleTeamScreen(
@@ -49,6 +56,11 @@ fun SingleTeamScreen(
     val statsOverview = viewModel.statisticsOverview
     val countryCode = statsOverview.value.countryCode
     val painter = getFlagFromCountryCode(countryCode = countryCode)
+    val winRate = viewModel.winRate.collectAsState()
+
+    if(viewModel.noInfoOnTeam.value){
+        showToast(message = "No info on this team", time = 5)
+    }
 
     LazyColumn {
         item {
@@ -76,13 +88,10 @@ fun SingleTeamScreen(
 
                     )
                     Statistics(
-                        coach = "Peter 'Castle' Ardenskjold",
-                        points = "1000",
-                        winRate = "61%",
-                        bestMap = "Overpass",
+                        winRate = winRate.value,
                         averagePlayerAge = statsOverview.value.avgAgeofPlayers,
-                        imageNat = painterResource(R.drawable.dk_flag)
                     )
+                    Spacer(modifier = Modifier.size(15.dp))
                     Text(
                         text = "Recent Matches",
                         fontWeight = FontWeight.Bold,
@@ -284,90 +293,56 @@ fun RecentMatches(
 
 @Composable
 fun Statistics(
-    coach: String,
-    points: String,
-    winRate: String,
-    bestMap: String,
+    winRate: Double ?= null,
     averagePlayerAge: Double?,
-    imageNat: Painter
-) {
-
-    Box {
-        Row(
-            modifier = Modifier
-                .fillMaxWidth(),
-            horizontalArrangement = Arrangement.SpaceBetween
-        ) {
-            Column(
-                horizontalAlignment = Alignment.Start
+    ) {
+    if (winRate != 0.0 || averagePlayerAge != null) {
+        Box {
+            Row(
+                modifier = Modifier
+                    .fillMaxWidth(),
+                horizontalArrangement = Arrangement.SpaceBetween
             ) {
-                Text(
-                    text = "Statistics",
-                    fontWeight = FontWeight.Bold,
-                    color = MaterialTheme.colorScheme.onPrimaryContainer
-                )
-                Text(
-                    text = "Coach:",
-                    color = MaterialTheme.colorScheme.onPrimaryContainer
-                )
-                Text(
-                    text = "Points:",
-                    color = MaterialTheme.colorScheme.onPrimaryContainer
-                )
-                Text(
-                    text = "Win Rate:",
-                    color = MaterialTheme.colorScheme.onPrimaryContainer
-                )
-                Text(
-                    text = "Best Map:",
-                    color = MaterialTheme.colorScheme.onPrimaryContainer
-                )
-                Text(
-                    text = "Average Player Age:",
-                    color = MaterialTheme.colorScheme.onPrimaryContainer
-                )
-            }
-            Column(
-                horizontalAlignment = Alignment.End
-            ) {
-                Text(text = "")
-                Row(
-                    verticalAlignment = Alignment.CenterVertically
+                Column(
+                    horizontalAlignment = Alignment.Start
                 ) {
                     Text(
-                        text = coach,
+                        text = "Statistics",
+                        fontWeight = FontWeight.Bold,
                         color = MaterialTheme.colorScheme.onPrimaryContainer
                     )
-                    Image(
-                        painter = imageNat,
-                        contentDescription = null,
-                        alignment = Alignment.CenterEnd,
-                        modifier = Modifier
-                            .size(20.dp)
-                            .padding(1.dp)
+                    Text(
+                        text = "Win Rate Recent Matches:",
+                        color = MaterialTheme.colorScheme.onPrimaryContainer
                     )
+                    if(averagePlayerAge!=null && averagePlayerAge!=0.0) {
+                        Text(
+                            text = "Average Player Age:",
+                            color = MaterialTheme.colorScheme.onPrimaryContainer
+                        )
+                    }
                 }
-                Text(
-                    text = points,
-                    color = MaterialTheme.colorScheme.onPrimaryContainer
-                )
-                Text(
-                    text = winRate,
-                    color = MaterialTheme.colorScheme.onPrimaryContainer
-                )
-                Text(
-                    text = bestMap,
-                    color = MaterialTheme.colorScheme.onPrimaryContainer
-                )
-                Text(
-                    text = averagePlayerAge.toString()
-                        .substring(0, minOf(4, averagePlayerAge.toString().length)),
-                    color = MaterialTheme.colorScheme.onPrimaryContainer
-                )
+                Column(
+                    horizontalAlignment = Alignment.End
+                ) {
+                    Text(text = "")
+                    Text(
+                        text = DecimalFormat("#.#").format(winRate) + "%",
+                        color = MaterialTheme.colorScheme.onPrimaryContainer
+                    )
+                    if (averagePlayerAge != null && averagePlayerAge!=0.0) {
+                        Text(
+                            text = DecimalFormat("#.#").format(averagePlayerAge),
+                            color = MaterialTheme.colorScheme.onPrimaryContainer
+                        )
+                    }
+                }
             }
         }
     }
 }
+
+
 
 
 @Composable

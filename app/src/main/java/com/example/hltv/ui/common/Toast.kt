@@ -5,7 +5,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.platform.LocalContext
 
 @Composable
-fun showToast(message: String) {
+fun showToast(message: String, time : Int = Toast.LENGTH_SHORT) {
     val context = LocalContext.current
-    Toast.makeText(context, message,Toast.LENGTH_SHORT).show()
+    Toast.makeText(context, message, time).show()
 }

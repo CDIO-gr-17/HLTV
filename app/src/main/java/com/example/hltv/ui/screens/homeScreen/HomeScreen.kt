@@ -39,8 +39,8 @@ import com.example.hltv.data.convertTimestampToWeekDateClock
 import com.example.hltv.data.local.PrefDataKeyValueStore
 import com.example.hltv.ui.common.LiveMatchCard
 import com.example.hltv.ui.common.UpcomingMatchCard
-import com.example.hltv.ui.screens.eventsScreen.SingleEventCard
 import com.example.hltv.ui.screens.singleTeamScreen.SingleTeamScreen
+import kotlinx.coroutines.delay
 
 val M = MaterialTheme
 
@@ -174,10 +174,7 @@ fun HomeScreen(
                             .padding(12.dp)
                             .fillMaxSize()
                     )
-
-
                 }
-
             }
             Row(modifier = Modifier.background(color = M.colorScheme.secondaryContainer)) {
                 Column(
@@ -221,7 +218,6 @@ fun HomeScreen(
                                 .padding(end = 8.dp)
                         )
                     }
-
                     Text(
                         text = "$1,000,000",
                         color = M.colorScheme.onSecondaryContainer,
@@ -229,14 +225,10 @@ fun HomeScreen(
                         modifier = Modifier
                             .padding(all = 8.dp)
                             .padding(end = 8.dp)
-
-
                     )
                 }
             }
         }
-
-
 
         Divider(modifier = Modifier.padding(horizontal = 8.dp), color = M.colorScheme.onBackground)
 

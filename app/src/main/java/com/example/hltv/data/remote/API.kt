@@ -10,8 +10,10 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.async
 import kotlinx.coroutines.awaitAll
 import kotlinx.coroutines.delay
+import kotlinx.coroutines.isActive
 import kotlinx.coroutines.sync.Mutex
 import kotlinx.coroutines.sync.withLock
+import kotlinx.coroutines.withContext
 import okhttp3.Request
 import java.io.ByteArrayOutputStream
 import java.io.IOException
@@ -31,7 +33,19 @@ var totalSaved = 0.0
 suspend fun waitForAPI() {
 
 
+
     mutexForAPI.withLock {
+
+        /*
+        withContext(Dispatchers.IO){ //IDK if this works
+            if (!isActive){
+                return@withContext
+            }
+        }
+
+         */
+
+
 
         //Mixing these two seemed to break it, so fix that
         val delta = ((lastAPIPull + CURRENTMILISBETWEENREQUEST) - java.util.Date().time)
@@ -84,7 +98,8 @@ suspend fun getPlayersFromEvent(eventID: Int? = 10945127): APIResponse.Lineup {
     return getAPIResponse(
         "event/" + eventID.toString() + "/lineups",
         APIKEY,
-        APIResponse.Lineup::class.java
+        APIResponse.Lineup::class.java,
+        1
     ) as APIResponse.Lineup
 }
 
@@ -133,6 +148,7 @@ suspend fun getTeamImage(teamID: Int? = 372647): Bitmap? {
 }
 
 suspend fun getPreviousMatches(teamID: Int, pageID: Int = 0): APIResponse.EventsWrapper {
+
     return getAPIResponse(
         "team/" + teamID.toString() + "/matches/previous/" + pageID,
         APIKEY,
@@ -174,7 +190,7 @@ suspend fun getEvent(eventID: Int?): APIResponse.EventWrapper {
 private suspend fun getAPIImage(apiURL: String, apiKEY: String): Bitmap? {
 
     Log.i(
-        "getAPIResponse",
+        "getAPIImage",
         "Attempting to get: https://allsportsapi2.p.rapidapi.com/api/esport/$apiURL"
     )
 
@@ -384,19 +400,20 @@ suspend fun checkRequestRate(jsonString: String?): Boolean {
 private suspend fun getAPIResponse(
     apiURL: String,
     apiKEY: String,
-    desiredClass: Class<*>
+    desiredClass: Class<*>,
+    tries : Int = 3
 ): APIResponse {
 
     var jsonString: String?
-    var tries = 3
+    var tries = tries
     var apiInUse: Boolean
     val gson = GsonSingleton.instance
 
-    Log.i(
-        "getAPIResponse",
-        "Attempting to get: https://allsportsapi2.p.rapidapi.com/api/esport/$apiURL"
-    )
     do {
+        Log.i(
+            "getAPIResponse",
+            "Attempting to get: https://allsportsapi2.p.rapidapi.com/api/esport/$apiURL"
+        )
         val request = Request.Builder()
             .url("https://allsportsapi2.p.rapidapi.com/api/esport/$apiURL")
             .get()
@@ -425,6 +442,7 @@ private suspend fun getAPIResponse(
 
     if (jsonString?.compareTo("") == 0) {
         Log.e("getAPIResponse", "jsonString is repeatedly null", IOException("STRING IS NULL"))
+        return APIResponse.Error //tried this
     }
 
     if (jsonString != null) {

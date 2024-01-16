@@ -17,12 +17,14 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyRow
+import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.Divider
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.MutableState
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.snapshots.SnapshotStateList
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -39,15 +41,12 @@ import androidx.compose.ui.text.buildAnnotatedString
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.withStyle
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
-import coil.compose.AsyncImagePainter
 import coil.compose.rememberAsyncImagePainter
 import com.example.hltv.R
 import com.example.hltv.data.getColorFromTier
-import com.example.hltv.data.getFlagFromCountryCode
 import com.example.hltv.ui.common.CommonCard
 import com.example.hltv.ui.common.ResizingText
 import com.example.hltv.ui.screens.singleTeamScreen.OverviewPlayer
@@ -99,7 +98,8 @@ fun SingleEventScreen(
                 onClickSingleTeam = onClickSingleTeam,
                 onClickSingleMatch = onClickSingleMatch,
                 recentMatches = recentMatches,
-                eventViewModel = eventViewModel
+                eventViewModel = eventViewModel,
+                winRate = teamViewModel.winRate.collectAsState().value
             )
         }
         item {
@@ -161,48 +161,47 @@ fun SingleEventScreen(
                                         )
                                     }
                                 }
-                            },
-                            bottomBox = {
-                                Column {
-                                    standing.attending.forEachIndexed { placement, attending ->
-                                        Row {
+                            }
+                        ) {
+                            Column {
+                                standing.attending.forEachIndexed { placement, attending ->
+                                    Row {
+                                        Text(
+                                            text = (placement + 1).toString(),
+                                            modifier = Modifier.weight(0.05f),
+                                            fontSize = MaterialTheme.typography.bodyLarge.fontSize,
+                                            color = MaterialTheme.colorScheme.onSecondaryContainer,
+                                        )
+                                        attending.team?.name?.let {
                                             Text(
-                                                text = (placement + 1).toString(),
-                                                modifier = Modifier.weight(0.05f),
-                                                fontSize = MaterialTheme.typography.bodyLarge.fontSize,
-                                                color = MaterialTheme.colorScheme.onSecondaryContainer,
-                                            )
-                                            attending.team?.name?.let {
-                                                Text(
-                                                    text = it,
-                                                    modifier = Modifier.weight(0.4f),
-                                                    fontSize = MaterialTheme.typography.bodyLarge.fontSize,
-                                                    color = MaterialTheme.colorScheme.onSecondaryContainer,
-                                                )
-                                            }
-                                            Spacer(modifier = Modifier.weight(0.2f))
-                                            Text(
-                                                text = attending.matches.toString(),
-                                                modifier = Modifier.weight(0.075f),
-                                                fontSize = MaterialTheme.typography.bodyLarge.fontSize,
-                                                color = MaterialTheme.colorScheme.onSecondaryContainer,
-                                            )
-                                            Text(
-                                                text = attending.wins.toString(),
-                                                modifier = Modifier.weight(0.075f),
-                                                fontSize = MaterialTheme.typography.bodyLarge.fontSize,
-                                                color = MaterialTheme.colorScheme.onSecondaryContainer,
-                                            )
-                                            Text(
-                                                text = attending.losses.toString(),
+                                                text = it,
+                                                modifier = Modifier.weight(0.4f),
                                                 fontSize = MaterialTheme.typography.bodyLarge.fontSize,
                                                 color = MaterialTheme.colorScheme.onSecondaryContainer,
                                             )
                                         }
+                                        Spacer(modifier = Modifier.weight(0.2f))
+                                        Text(
+                                            text = attending.matches.toString(),
+                                            modifier = Modifier.weight(0.075f),
+                                            fontSize = MaterialTheme.typography.bodyLarge.fontSize,
+                                            color = MaterialTheme.colorScheme.onSecondaryContainer,
+                                        )
+                                        Text(
+                                            text = attending.wins.toString(),
+                                            modifier = Modifier.weight(0.075f),
+                                            fontSize = MaterialTheme.typography.bodyLarge.fontSize,
+                                            color = MaterialTheme.colorScheme.onSecondaryContainer,
+                                        )
+                                        Text(
+                                            text = attending.losses.toString(),
+                                            fontSize = MaterialTheme.typography.bodyLarge.fontSize,
+                                            color = MaterialTheme.colorScheme.onSecondaryContainer,
+                                        )
                                     }
                                 }
                             }
-                        )
+                        }
                     }
                 }
             } else Log.i("SingleEvent", "There were no standings for the event")
@@ -219,7 +218,8 @@ fun SingleEventTopbox(
     onClickSinglePlayer: (playerID: String?) -> Unit,
     onClickSingleTeam: (teamID: String?) -> Unit,
     onClickSingleMatch: (matchID: String?) -> Unit,
-    recentMatches: SnapshotStateList<RecentMatch>
+    recentMatches: SnapshotStateList<RecentMatch>,
+    winRate: Double,
 ) {
 
     Column {
@@ -248,7 +248,7 @@ fun SingleEventTopbox(
                                     withStyle(
                                         style = SpanStyle(
                                             brush = Brush.verticalGradient(
-                                                colors = listOf(Color.White, eventViewModel.color.value)
+                                                colors = listOf(MaterialTheme.colorScheme.onSecondaryContainer, eventViewModel.color.value)
                                             ),
                                             fontWeight = FontWeight.ExtraBold,
 
@@ -265,7 +265,7 @@ fun SingleEventTopbox(
                                     withStyle(
                                         style = SpanStyle(
                                             brush = Brush.verticalGradient(
-                                                colors = listOf(eventViewModel.color.value, Color.White)
+                                                colors = listOf(eventViewModel.color.value, MaterialTheme.colorScheme.onSecondaryContainer)
                                             ),
                                             fontSize = 35.sp,
                                             fontWeight = FontWeight.Bold,
@@ -300,28 +300,46 @@ fun SingleEventTopbox(
                                     fontWeight = FontWeight.Bold,
                                     fontSize = 22.sp
                                 )
+                                if(eventViewModel.eventDetails.value.totalPrizeMoney != null) {
+                                    Text(
+                                        textAlign = TextAlign.End, //This doesn't do anything, the lord knows why
+                                        text = eventViewModel.eventDetails.value.totalPrizeMoney.toString() + " " + eventViewModel.eventDetails.value.totalPrizeMoneyCurrency.toString(),
+                                        color = Color(parseColor("#ffbf00")),
+                                        style = TextStyle(
+                                            shadow = Shadow(
+                                                color = Color(parseColor("#bf9b30")),
+                                                offset = Offset(2.0f, 2.0f),
+                                                blurRadius = 2f,
+                                            ),
+                                            fontSize = 22.sp
+                                        ),
+                                        fontWeight = FontWeight.Bold
+                                    )
+                                }
+                            } else if (eventViewModel.event.value.name == null){
+                                Row (modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.Center){
+                                    CircularProgressIndicator()
+                                }
+
+                                /*
+                                Text(
+                                    text = "Loading...",
+                                    color = getColorFromTier("Placeholder input"),
+                                    fontWeight = FontWeight.Bold,
+                                    fontSize = 22.sp
+                                )
+
+                                 */
                             }
 
-                            Text(
-                                textAlign = TextAlign.End, //This doesn't do anything, the lord knows why
-                                text = eventViewModel.eventDetails.value.totalPrizeMoney.toString() + " " + eventViewModel.eventDetails.value.totalPrizeMoneyCurrency.toString(),
-                                color = Color(parseColor("#ffbf00")),
-                                style = TextStyle(
-                                    shadow = Shadow(
-                                        color = Color(parseColor("#bf9b30")),
-                                        offset = Offset(2.0f, 2.0f),
-                                        blurRadius = 2f,
-                                    ),
-                                    fontSize = 22.sp
-                                ),
-                                fontWeight = FontWeight.Bold
-                            )
+
+
                         }
 
                         Text(
                             textAlign = TextAlign.Center,
                             text = if (!eventViewModel.startTime.value.contains("Unknown")) (eventViewModel.startTime.value + " - " + eventViewModel.endTime.value) else "",
-                            color = Color.White
+                            color = MaterialTheme.colorScheme.onSecondaryContainer
                         )
 
                         Divider(thickness = 1.dp)
@@ -336,110 +354,121 @@ fun SingleEventTopbox(
                             //COPY PASTE FROM SINGLETEAM
                             //I tried doing DI, but we cant because the lazycolumn needs an argument
                             //that you cant pass so wed need DI in the DI and that was too much work
+                            if (teamViewModel.team.value.id != null) {
+                                Column(modifier = Modifier.clickable {
+                                    onClickSingleTeam(
+                                        teamViewModel.team.value.id.toString()
+                                    )
+                                }) {
 
-                            Column(modifier = Modifier.clickable { onClickSingleTeam(teamViewModel.team.value.id.toString()) }) {
+                                    CommonCard(modifier = Modifier) {
+                                        Column {
 
-                                CommonCard(modifier = Modifier, bottomBox = {
-                                    Column {
-
-                                        /////////
-                                        Row(
-                                            modifier = Modifier.fillMaxWidth(),
-                                            //horizontalArrangement = Arrangement.SpaceBetween
-                                        ) {
-
-
-                                            Image(
-                                                rememberAsyncImagePainter(
-                                                    teamViewModel.teamImage.value
-                                                ),
-                                                contentDescription = teamViewModel.team.value.name,
-                                                Modifier.size(69.dp)
-                                            )
-
-                                            //TODO: Make this resize, possibly with resisingText? Bit hard to do while keeping it pretty
-                                            Text(
-                                                text = buildAnnotatedString {
-                                                    append("Winner\n\n")
-                                                    withStyle(
-                                                        style = SpanStyle(
-                                                            brush = Brush.linearGradient(
-                                                                colors = listOf(teamViewModel.color.value, Color.White)
-                                                            ),
-                                                            fontSize = 65.sp,
-                                                            fontWeight = FontWeight.ExtraBold,
+                                            /////////
+                                            Row(
+                                                modifier = Modifier.fillMaxWidth(),
+                                                //horizontalArrangement = Arrangement.SpaceBetween
+                                            ) {
 
 
-                                                            ),
-                                                    ) {
-                                                        append(
+                                                Image(
+                                                    rememberAsyncImagePainter(
+                                                        teamViewModel.teamImage.value
+                                                    ),
+                                                    contentDescription = teamViewModel.team.value.name,
+                                                    Modifier.size(69.dp)
+                                                )
 
-                                                            if (teamViewModel.team.value.name != null) teamViewModel.team.value.name.toString()
-                                                                .substring(
-                                                                    0, //TODO: Temporary fix. pls no
-                                                                    minOf(
-                                                                        teamViewModel.team.value.name.toString().length,
-                                                                        8
+                                                //TODO: Make this resize, possibly with resisingText? Bit hard to do while keeping it pretty
+                                                Text(
+                                                    text = buildAnnotatedString {
+                                                        append("Winner\n\n")
+                                                        withStyle(
+                                                            style = SpanStyle(
+                                                                brush = Brush.linearGradient(
+                                                                    colors = listOf(
+                                                                        teamViewModel.color.value,
+                                                                        MaterialTheme.colorScheme.onSecondaryContainer
                                                                     )
+                                                                ),
+                                                                fontSize = 65.sp,
+                                                                fontWeight = FontWeight.ExtraBold,
 
-                                                                ) else ""
-                                                        )
-                                                    }
-                                                },
-                                                maxLines = 3,
-                                            )
-                                        }
-                                        //////
-                                        LazyRow {
-                                            items(playerOverview.size) { index ->
-                                                OverviewPlayer(
-                                                    player = playerOverview[index],
-                                                    onClickSinglePlayer = onClickSinglePlayer
+
+                                                                ),
+                                                        ) {
+                                                            append(
+
+                                                                if (teamViewModel.team.value.name != null) teamViewModel.team.value.name.toString()
+                                                                    .substring(
+                                                                        0, //TODO: Temporary fix. pls no
+                                                                        minOf(
+                                                                            teamViewModel.team.value.name.toString().length,
+                                                                            8
+                                                                        )
+
+                                                                    ) else ""
+                                                            )
+                                                        }
+                                                    },
+                                                    maxLines = 3,
                                                 )
                                             }
-                                        }
-                                        Statistics(
-                                            coach = "Peter 'Castle' Ardenskjold",
-                                            points = "1000",
-                                            winRate = "61%",
-                                            bestMap = "Overpass",
-                                            averagePlayerAge = statsOverview.value.avgAgeofPlayers,
-                                            imageNat = painterResource(R.drawable.dk_flag)
-                                        )
-                                        Text(
-                                            text = "Recent Matches",
-                                            fontWeight = FontWeight.Bold,
-                                            color = MaterialTheme.colorScheme.onPrimaryContainer
-                                        )
-                                        recentMatches.forEachIndexed { index, match ->
-                                            RecentMatches(
-                                                modifier = Modifier.clickable {
-                                                    Log.i("Ive been clicked", "Clicked left team")
-                                                    onClickSingleMatch(
-                                                        match.matchID.toString()
+                                            //////
+                                            LazyRow {
+                                                items(playerOverview.size) { index ->
+                                                    OverviewPlayer(
+                                                        player = playerOverview[index],
+                                                        onClickSinglePlayer = onClickSinglePlayer
                                                     )
-                                                },
-                                                team1 = recentMatches[index].homeTeam?.name,
-                                                team2 = recentMatches[index].awayTeam?.name,
-                                                imageTeam1 = rememberAsyncImagePainter(
-                                                    recentMatches[index].homeTeamImage
-                                                ),
-                                                imageTeam2 = rememberAsyncImagePainter(
-                                                    recentMatches[index].awayTeamImage
-                                                ),
-                                                team2OnClick = {
-                                                    Log.i("Ive been clicked", "Clicked right team")
-                                                    onClickSingleTeam(
-                                                        recentMatches[index].awayTeam?.id.toString()
-                                                    )
-                                                },
-                                                score = recentMatches[index].homeScore?.display.toString() + " - " + recentMatches[index].awayScore?.display.toString(),
-                                                date = recentMatches[index].startTimestamp.toString()
+                                                }
+                                            }
+                                            Statistics(
+                                                winRate = winRate,
+                                                averagePlayerAge = statsOverview.value.avgAgeofPlayers,
                                             )
-                                        }
+                                            Spacer(modifier = Modifier.size(15.dp))
+                                            Text(
+                                                text = "Recent Matches",
+                                                fontWeight = FontWeight.Bold,
+                                                color = MaterialTheme.colorScheme.onPrimaryContainer
+                                            )
+                                            recentMatches.forEachIndexed { index, match ->
+                                                RecentMatches(
+                                                    modifier = Modifier.clickable {
+                                                        Log.i(
+                                                            "Ive been clicked",
+                                                            "Clicked left team"
+                                                        )
+                                                        onClickSingleMatch(
+                                                            match.matchID.toString()
+                                                        )
+                                                    },
+                                                    team1 = recentMatches[index].homeTeam?.name,
+                                                    team2 = recentMatches[index].awayTeam?.name,
+                                                    imageTeam1 = rememberAsyncImagePainter(
+                                                        recentMatches[index].homeTeamImage
+                                                    ),
+                                                    imageTeam2 = rememberAsyncImagePainter(
+                                                        recentMatches[index].awayTeamImage
+                                                    ),
+                                                    team2OnClick = {
+                                                        Log.i(
+                                                            "Ive been clicked",
+                                                            "Clicked right team"
+                                                        )
+                                                        onClickSingleTeam(
+                                                            recentMatches[index].awayTeam?.id.toString()
+                                                        )
+                                                    },
+                                                    score = recentMatches[index].homeScore?.display.toString() + " - " + recentMatches[index].awayScore?.display.toString(),
+                                                    date = recentMatches[index].startTimestamp.toString()
+                                                )
+                                            }
 
+                                        }
                                     }
-                                })
+                                }
                             }
                         }
                     }

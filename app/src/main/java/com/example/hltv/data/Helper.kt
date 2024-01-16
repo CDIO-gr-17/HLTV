@@ -41,11 +41,11 @@ fun capitalizeFirstLetter(input: String): String {
 
 fun getColorFromTier(input: String): Color {
     return when (input) {
-        "S" -> Color(parseColor("#CAAC05"))
-        "A" -> Color(parseColor("#EB4C4B"))
-        "B" -> Color(parseColor("#B12FC1"))
-        "C" -> Color(parseColor("#4B69FE"))
-        "D" -> Color(parseColor("#5E98D9"))
+        "S" -> Color(parseColor("#F53C3C"))
+        "A" -> Color(parseColor("#B12FC1"))
+        "B" -> Color(parseColor("#4B69FE"))
+        "C" -> Color(parseColor("#5E98D9"))
+        //"D" -> Color(parseColor("#AFC4D8"))
         else -> Color(parseColor("#AFC4D8"))
     }
 }

@@ -36,12 +36,10 @@ class PlayerScreenViewModel():ViewModel() {
     fun loadData(playerIDfullString: String?) {
         Log.i("PlayerScreenViewModel", "playerIDfullString is: $playerIDfullString")
         val playerID = playerIDfullString?.toInt()
-        viewModelScope.launch {
-            CoroutineScope(Dispatchers.IO).launch {
-                player.value = getPlayerFromPlayerID(playerID).player
-                playerImage.value = getPlayerImage(playerID)
-                teamImage.value = getTeamImage(player.value?.team?.id)
-            }
+        viewModelScope.launch(Dispatchers.IO) {
+            player.value = getPlayerFromPlayerID(playerID).player
+            playerImage.value = getPlayerImage(playerID)
+            teamImage.value = getTeamImage(player.value?.team?.id)
         }
     }
 }

@@ -7,6 +7,7 @@ import com.google.gson.annotations.SerializedName
 
 
 sealed class APIResponse{
+    object Error : APIResponse()
     data class GameWrapper (
         @SerializedName("games") var games: List<Game>
     ) : APIResponse()

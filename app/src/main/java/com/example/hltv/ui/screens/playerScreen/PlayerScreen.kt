@@ -4,15 +4,11 @@ import android.annotation.SuppressLint
 import android.util.Log
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.layout.width
 import androidx.compose.material3.Divider
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
@@ -24,18 +20,15 @@ import androidx.compose.ui.graphics.painter.Painter
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
-import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import coil.compose.rememberAsyncImagePainter
 import com.example.hltv.R
-import com.example.hltv.data.convertTimestampToDateDisplay
 import com.example.hltv.data.convertTimestampToDateURL
 import com.example.hltv.data.getAvgAgeFromTimestamp
 import com.example.hltv.data.getFlagFromCountryCode
-import com.example.hltv.data.remote.getTeamImage
 import com.example.hltv.ui.common.CommonCard
 
 
@@ -67,12 +60,12 @@ fun PlayerScreen(
                     horizontalAlignment = Alignment.CenterHorizontally
                 ) {
                     PlayerImage(image = rememberAsyncImagePainter(if(viewModel.playerImage.value!=null)viewModel.playerImage.value else R.drawable.playersilouhette))
-                    Row (
+                    Row(
                         modifier = Modifier.fillMaxWidth(),
                         horizontalArrangement = Arrangement.Center
-                    ){
+                    ) {
                         Text(
-                            text = "${player?.firstName} '${player?.name}' ${player?.lastName}",
+                            text = "${player?.firstName?:""} '${player?.name?:"Nickname"}' ${player?.lastName?:""}",
                             fontSize = 24.sp,
                             color = MaterialTheme.colorScheme.onSecondaryContainer,
                             textAlign = TextAlign.Center,
@@ -81,9 +74,10 @@ fun PlayerScreen(
                         )
                     }
                     CommonCard (
-                        modifier = Modifier,
-                        bottomBox = {
-                            Column {
+                        modifier = Modifier
+                    ) {
+                        Column {
+                            if(player?.firstName!=null || player?.lastName!=null) {
                                 Row {
                                     Text(
                                         modifier = Modifier.weight(1f),
@@ -92,7 +86,7 @@ fun PlayerScreen(
                                         color = MaterialTheme.colorScheme.onPrimaryContainer,
                                     )
                                     Text(
-                                        text = "${player?.firstName} ${player?.lastName}",
+                                        text = "${player.firstName?:""} ${player.lastName?:""}",
                                         fontSize = MaterialTheme.typography.bodyLarge.fontSize,
                                         color = MaterialTheme.colorScheme.onPrimaryContainer,
                                     )
@@ -100,25 +94,27 @@ fun PlayerScreen(
                                 Divider(
                                     color = MaterialTheme.colorScheme.primaryContainer
                                 )
-                                Row {
-                                    Text(
-                                        modifier = Modifier.weight(1f),
-                                        text = "Nickname:",
-                                        fontSize = MaterialTheme.typography.bodyLarge.fontSize,
-                                        color = MaterialTheme.colorScheme.onPrimaryContainer,
-                                    )
-                                    Text(
-                                        text = "${player?.name}",
-                                        fontSize = MaterialTheme.typography.bodyLarge.fontSize,
-                                        color = MaterialTheme.colorScheme.onPrimaryContainer,
-                                    )
-                                }
-                                Divider(
-                                    color = MaterialTheme.colorScheme.primaryContainer
+                            }
+                            Row {
+                                Text(
+                                    modifier = Modifier.weight(1f),
+                                    text = "Nickname:",
+                                    fontSize = MaterialTheme.typography.bodyLarge.fontSize,
+                                    color = MaterialTheme.colorScheme.onPrimaryContainer,
                                 )
-                                Row (
+                                Text(
+                                    text = player?.name?: "Nickname",
+                                    fontSize = MaterialTheme.typography.bodyLarge.fontSize,
+                                    color = MaterialTheme.colorScheme.onPrimaryContainer,
+                                )
+                            }
+                            Divider(
+                                color = MaterialTheme.colorScheme.primaryContainer
+                            )
+                            if(player?.country?.name!=null) {
+                                Row(
                                     horizontalArrangement = Arrangement.Center
-                                ){
+                                ) {
                                     Text(
                                         modifier = Modifier.weight(1f),
                                         text = "Country:",
@@ -126,13 +122,13 @@ fun PlayerScreen(
                                         color = MaterialTheme.colorScheme.onPrimaryContainer,
                                     )
                                     Text(
-                                        text = "${player?.country?.name} ",
+                                        text = "${player.country?.name ?: "Unknown"} ",
                                         fontSize = MaterialTheme.typography.bodyLarge.fontSize,
                                         color = MaterialTheme.colorScheme.onPrimaryContainer,
                                     )
                                     Image(
                                         modifier = Modifier.size(25.dp),
-                                        painter = getFlagFromCountryCode(player?.country?.alpha2),
+                                        painter = getFlagFromCountryCode(player.country?.alpha2),
                                         contentDescription = null,
                                         alignment = Alignment.CenterEnd
                                     )
@@ -140,6 +136,8 @@ fun PlayerScreen(
                                 Divider(
                                     color = MaterialTheme.colorScheme.primaryContainer
                                 )
+                            }
+                            if(playerAge!=0) {
                                 Row {
                                     Text(
                                         modifier = Modifier.weight(1f),
@@ -156,6 +154,8 @@ fun PlayerScreen(
                                 Divider(
                                     color = MaterialTheme.colorScheme.primaryContainer
                                 )
+                            }
+                            if(playerBorn!=0) {
                                 Row {
                                     Text(
                                         modifier = Modifier.weight(1f),
@@ -172,7 +172,9 @@ fun PlayerScreen(
                                 Divider(
                                     color = MaterialTheme.colorScheme.primaryContainer
                                 )
-                                Row (
+                            }
+                            if(player?.team?.name!=null && player.team?.name!="No team") {
+                                Row(
                                     horizontalArrangement = Arrangement.Center
                                 ) {
                                     Text(
@@ -182,7 +184,7 @@ fun PlayerScreen(
                                         color = MaterialTheme.colorScheme.onPrimaryContainer,
                                     )
                                     Text(
-                                        text = "${player?.team?.name} ",
+                                        text = "${player.team?.name} ",
                                         fontSize = MaterialTheme.typography.bodyLarge.fontSize,
                                         color = MaterialTheme.colorScheme.onPrimaryContainer,
                                     )
@@ -196,9 +198,11 @@ fun PlayerScreen(
                                 Divider(
                                     color = MaterialTheme.colorScheme.primaryContainer
                                 )
-                                Row (
+                            }
+                            if(player?.team?.country?.name!=null) {
+                                Row(
                                     horizontalArrangement = Arrangement.Center
-                                ){
+                                ) {
                                     Text(
                                         modifier = Modifier.weight(1f),
                                         text = "Team country:",
@@ -206,20 +210,20 @@ fun PlayerScreen(
                                         color = MaterialTheme.colorScheme.onPrimaryContainer,
                                     )
                                     Text(
-                                        text = "${player?.team?.country?.name} ",
+                                        text = "${player.team?.country?.name} ",
                                         fontSize = MaterialTheme.typography.bodyLarge.fontSize,
                                         color = MaterialTheme.colorScheme.onPrimaryContainer,
                                     )
                                     Image(
                                         modifier = Modifier.size(25.dp),
-                                        painter = getFlagFromCountryCode(player?.team?.country?.alpha2),
+                                        painter = getFlagFromCountryCode(player.team?.country?.alpha2),
                                         contentDescription = null,
                                         alignment = Alignment.CenterEnd
                                     )
                                 }
                             }
                         }
-                    )
+                    }
 
                 }
             }
@@ -245,7 +249,7 @@ fun InformationBox(
     name: String,
     age: Int,
 ) {
-    CommonCard(modifier = Modifier.fillMaxWidth(), headText = "Statistics", bottomBox = {
+    CommonCard(modifier = Modifier.fillMaxWidth(), headText = "Statistics") {
         Column {
             Text(
                 text = "Full name: $name",
@@ -258,7 +262,7 @@ fun InformationBox(
                 color = MaterialTheme.colorScheme.onPrimaryContainer,
             )
         }
-    })
+    }
 }
 
 

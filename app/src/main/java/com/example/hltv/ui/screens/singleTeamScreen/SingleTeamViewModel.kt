@@ -8,8 +8,8 @@ import androidx.compose.ui.graphics.Color
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import androidx.palette.graphics.Palette
+import com.example.hltv.data.getAvgAgeFromTimestamp
 import com.example.hltv.data.remote.APIResponse
-import com.example.hltv.data.remote.Map
 import com.example.hltv.data.remote.PlayerGroup
 import com.example.hltv.data.remote.Score
 import com.example.hltv.data.remote.Team
@@ -19,18 +19,12 @@ import com.example.hltv.data.remote.getPreviousMatches
 import com.example.hltv.data.remote.getTeamImage
 import kotlinx.coroutines.CompletableDeferred
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.launch
-import java.math.RoundingMode
-import java.text.DecimalFormat
+import java.io.IOException
 import java.text.SimpleDateFormat
 import java.util.Date
 
-
-var called = false
-
-data class SingleTeam(
-    val eventsWrapper: APIResponse.EventsWrapper
-    )
 data class RecentMatch(
     val homeTeam: Team? = null,
     val awayTeam: Team? = null,
@@ -42,12 +36,6 @@ data class RecentMatch(
     val bestOf: Int? = null,
     val matchID: Int? = null
 )
-data class RecentGame(
-    val homeScore: Score? = null,
-    val awayScore: Score? = null,
-    val hasCompletedStatistics : Boolean? = false,
-    val map: Map? = null
-)
 data class Player(
     val name: String ?= null,
     val image: Bitmap ?= null,
@@ -58,34 +46,31 @@ data class Stats(
     val countryName: String ?= null,
     val countryCode: String ?= null,
     val avgAgeofPlayers : Double ?= null,
+    val winRate : String ?= null,
 )
 class SingleTeamViewModel : ViewModel() {
 
-
     val recentMatches = mutableStateListOf<RecentMatch>()
     val playerOverview = mutableStateListOf<Player>()
-    //var lineup: PlayerGroup? = null
-    var statisticsOverview = mutableStateOf<Stats>(Stats())
+    var statisticsOverview = mutableStateOf(Stats())
     val teamImage = mutableStateOf<Bitmap?>(null)
     private var team1: Team? = null
     private var team2: Team? = null
-    val team = mutableStateOf<Team>(Team())
+    val team = mutableStateOf(Team())
     var team1score: Score? = null
     var team2score: Score? = null
-    var avgAgeofPlayers: Long = 0
-    var avgAgeofPlayersString = ""
-    var playersWithAge : Int = 0
     var teamID = 0
     val playersDateOfBirthTimestamp = mutableStateListOf<Int>()
-    val palette = mutableStateOf<Palette?>(null)
-    val color = mutableStateOf<Color>(Color.White)
+    val color = mutableStateOf(Color.White)
+    var winRate = MutableStateFlow(0.0)
+    val noInfoOnTeam = mutableStateOf(false)
 
     var dataLoaded = false
-    fun loadData(teamIDString: String, gamesToLoad: Int = 6){
+    fun loadData(teamIDString: String, gamesToLoad: Int = 6) {
 
         //I love how jank this is but it works, I think. Loading a new team loads a new viewmodel
         //where dataloaded will default to false, so I think it works?
-        if (dataLoaded){
+        if (dataLoaded) {
             return
         }
         dataLoaded = true
@@ -98,29 +83,52 @@ class SingleTeamViewModel : ViewModel() {
             teamImage.value = getTeamImage(teamID)
             //palette.value =  Palette.from(teamImage.value!!).generate()
             //color.value = Color(Palette.from(teamImage.value!!).generate().vibrantSwatch!!.rgb)
-            Log.d("SingleTeamViewModel", "Team image is now: ${teamImage.value}")
-            val palette = Palette.from(teamImage.value!!).generate()
-            if (teamImage.value != null && palette.vibrantSwatch?.rgb != null){
-                color.value = Color(palette.vibrantSwatch?.rgb!!)
+
+            if(teamImage.value != null) {
+                val palette = Palette.from(teamImage.value!!).generate()
+                if (teamImage.value != null && palette.vibrantSwatch?.rgb != null) {
+                    color.value = Color(palette.vibrantSwatch?.rgb!!)
+                } else color.value = Color.White
             } else color.value = Color.White
 
             Log.w(this.toString(), "Got previous matches of team with id: $teamID")
-            val completedMatches = getPreviousMatches(teamID, 0)
+            var completedMatches : APIResponse.EventsWrapper
+            try{
+                completedMatches = getPreviousMatches(teamID, 0)
+            } catch (e : IOException){
+                Log.w("getPreviousMatches", "Tried loading matches for team with no previous matches")
+                completedMatches = APIResponse.EventsWrapper(emptyList())
+                noInfoOnTeam.value = true
+            } catch (e : java.lang.ClassCastException){
+                Log.w("getPreviousMatches", "Tried loading matches for team with no previous matches")
+                completedMatches = APIResponse.EventsWrapper(emptyList())
+                noInfoOnTeam.value = true
+            }
+
             val filteredMatches = completedMatches.events
-                .filter { it.status?.type=="finished" }
-                .filter { it.homeScore?.current != null || it.awayScore?.current != null && it.homeScore?.current != 0 && it.awayScore?.current != 0}
+                .filter { it.status?.type == "finished" }
+                .filter { it.homeScore?.current != null || it.awayScore?.current != null && it.homeScore?.current != 0 && it.awayScore?.current != 0 }
             recentMatches.clear()
             //recentMatches
             team1 = null
+            var totalMatches = 0
+            var totalWins = 0
+            var lineupIncomplete = true
             for ((index, event) in filteredMatches.reversed().withIndex().take(gamesToLoad)) {
                 if (teamID == event.homeTeam.id) {
                     team1 = event.homeTeam
                     team2 = event.awayTeam
                     team1score = event.homeScore
                     team2score = event.awayScore
-                    if (index == 0){
-                        team.value = event.homeTeam
-                        lineup.complete(getPlayersFromEvent(event.id).home)
+                    if (lineupIncomplete) {
+                        team.value = event.homeTeam //TODO: Maybe? move this into the try, after the other thing
+                        try{
+                            lineup.complete(getPlayersFromEvent(event.id).home)
+                            lineupIncomplete = false
+                        } catch (e : ClassCastException){
+                            Log.w("SingleTeamViewModel", "There was no lineup available, attempting to get lineup from next event")
+                        }
+
                     }
                 }
                 if (teamID != event.homeTeam.id) {
@@ -128,9 +136,14 @@ class SingleTeamViewModel : ViewModel() {
                     team2 = event.homeTeam
                     team1score = event.awayScore
                     team2score = event.homeScore
-                    if (index == 0){
+                    if (lineupIncomplete) {
                         team.value = event.awayTeam
-                        lineup.complete(getPlayersFromEvent(event.id).away)
+                        try{
+                            lineup.complete(getPlayersFromEvent(event.id).away)
+                            lineupIncomplete = false
+                        } catch (e : ClassCastException){
+                            Log.w("SingleTeamViewModel", "There was no lineup available, attempting to get lineup from next event")
+                        }
                     }
                 }
                 val date = Date(event.startTimestamp?.toLong()?.times(1000) ?: 0)
@@ -147,11 +160,21 @@ class SingleTeamViewModel : ViewModel() {
                     bestOf = event.bestOf,
                     matchID = event.id
                 )
+                if (team1score?.current!! > team2score?.current!!) {
+                    totalWins++
+                }
+                totalMatches++
                 recentMatches.add(recentMatch)
                 Log.w(
                     this.toString(),
                     "Added recent match with homeTeam ${event.homeTeam.name}, ${event.homeScore}, ${event.bestOf}"
                 )
+            }
+            Log.i("winRate","Totalmatches $totalMatches, totalWins $totalWins")
+            winRate.value = if (totalMatches > 0.0) {
+                (totalWins.toDouble()/ totalMatches) * 100
+            } else {
+                0.0
             }
         }
         viewModelScope.launch(Dispatchers.IO) {
@@ -166,39 +189,22 @@ class SingleTeamViewModel : ViewModel() {
                         playerId = playerorsub.player?.id,
                     )
                     playerOverview.add(player)
-                    if(playerorsub.player?.dateOfBirthTimestamp!=null) { // Checks if the player has a dateOfBirthTimeStimp
+                    if (playerorsub.player?.dateOfBirthTimestamp != null) { // Checks if the player has a dateOfBirthTimeStimp
                         playersDateOfBirthTimestamp.add(playerorsub.player!!.dateOfBirthTimestamp!!)
-                    }
-                    else
-                        Log.i("avgAgeOfPlayers", "Player ${player.name} had dateOfBirthTimeStamp = null. Left out of calculation" )
-                }
+                    } else
+                        Log.i(
+                            "avgAgeOfPlayers",
+                            "Player ${player.name} had dateOfBirthTimeStamp = null. Left out of calculation"
+                        )
 
+                }
                 statisticsOverview.value = Stats(
                     avgAgeofPlayers = getAvgAgeFromTimestamp(playersDateOfBirthTimestamp),
                     countryName = team1?.country?.name,
-                    countryCode = team1?.country?.alpha2
+                    countryCode = team1?.country?.alpha2,
                 )
             }
         }
-    }
-    fun getAvgAgeFromTimestamp(dateOfBirthTimestampList: MutableList<Int>): Double {            //TODO: This should be moved to a more appropriate place
-        var totalAgeOfPlayers: Long = 0
-        for (dateOfBirthTimestamp in dateOfBirthTimestampList) {
-            totalAgeOfPlayers += ((System.currentTimeMillis() // Subtracts the current time in milliseconds from the players date of birth in milliseconds
-                    - (dateOfBirthTimestamp.toLong() * 1000)))
-        }
-        if(dateOfBirthTimestampList.size!=0) {
-            val avgAgeOfPlayersInMillis: Long = totalAgeOfPlayers / dateOfBirthTimestampList.size
-            val df = DecimalFormat("#.#")
-            val avgAgeOfPlayersInYears = avgAgeOfPlayersInMillis/365.25/3600/24/1000
-            df.roundingMode = RoundingMode.CEILING
-            print(avgAgeOfPlayersInYears.toDouble())
-            return avgAgeOfPlayersInYears.toDouble()
-
-            // String.format("%.1f", TimeUnit.MILLISECONDS.toDays(avgAgeOfPlayersInMillis) / 365.25).toDouble()
-
-        }
-        else return 0.0
     }
 }
 
