@@ -102,16 +102,16 @@ class SingleMatchViewModel() : ViewModel() {
             homeTeamIcon.value = getTeamImage(event.value!!.homeTeam.id)
             awayTeamIcon.value = getTeamImage(event.value!!.awayTeam.id)
 
-            val homeTeamPalette = Palette.from(homeTeamIcon.value!!).generate()
-            val awayTeamPalette = Palette.from(awayTeamIcon.value!!).generate()
 
             if (homeTeamIcon.value != null){
+                val homeTeamPalette = Palette.from(homeTeamIcon.value!!).generate()
                 if (homeTeamPalette.vibrantSwatch?.rgb != null) {
                     homeTeamColor.value = Color(homeTeamPalette.vibrantSwatch?.rgb!!)
                 } else homeTeamColor.value = Color.Blue
             } else homeTeamColor.value = Color.Blue
 
             if (awayTeamIcon.value != null){
+                val awayTeamPalette = Palette.from(awayTeamIcon.value!!).generate()
                 if (awayTeamIcon.value != null && awayTeamPalette.vibrantSwatch?.rgb != null) {
                     awayTeamColor.value = Color(awayTeamPalette.vibrantSwatch?.rgb!!)
                 } else awayTeamColor.value = Color.Red
