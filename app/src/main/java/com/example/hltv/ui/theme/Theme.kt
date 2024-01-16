@@ -74,7 +74,7 @@ private val DarkColors = darkColorScheme(
 
 @Composable
 fun HLTVTheme(
-  useDarkTheme: Boolean = true,//= isSystemInDarkTheme(),
+  useDarkTheme: Boolean = isSystemInDarkTheme(),
   content: @Composable() () -> Unit
 ) {
   val colors = if (!useDarkTheme) {
