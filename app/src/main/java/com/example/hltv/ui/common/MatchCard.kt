@@ -24,32 +24,6 @@ import com.example.hltv.ui.screens.homeScreen.M
 
 @Composable
 fun MatchCard(){
-    /*
-    LiveMatchCard(
-        teamOneName = "Team1name",
-        teamOneIcon = painterResource(id = R.drawable.astralis_logo),
-        teamOneScore = 1,
-        teamOneOnClick = { /*TODO*/ },
-        teamTwoName = "Team2name",
-        teamTwoIcon = painterResource(id = R.drawable.astralis_logo),
-        teamTwoScore = 2
-    ) {
-
-    }
-
-     */
-
-
-    UpcomingMatchCard(
-        teamOneName = "Astralis1",
-        teamOneIcon = painterResource(id = R.drawable.astralis_logo),
-        teamTwoName = "Astralis2",
-        teamTwoIcon = painterResource(id = R.drawable.astralis_logo),
-        matchDate = "Tuesday 22/10 - 18:00",
-        tournamentIcon = painterResource(id = R.drawable.astralis_logo),
-    )
-
-
 }
 
 

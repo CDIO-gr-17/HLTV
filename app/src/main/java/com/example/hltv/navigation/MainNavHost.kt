@@ -50,7 +50,7 @@ fun MainNavHost(navController: NavHostController, modifier: Modifier) {
             SearchScreen(
                 onClickSinglePlayer = { navController.navigate(SinglePlayer.route + it) },
                 onClickSingleTeam = { navController.navigate(SingleTeam.route + it) },
-                onClickSingleTournament = { navController.navigate(SingleEvent.route + it)})  //How it work? It just no. Ninjutsu
+                onClickSingleTournament = { navController.navigate(SingleEvent.route + it)})
         }
 
         composable(route = Settings.route) {
