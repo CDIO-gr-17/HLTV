@@ -70,48 +70,51 @@ fun SearchScreen(
             searchResults = searchResults,
             onClickSinglePlayer = onClickSinglePlayer,
             onClickSingleTeam = onClickSingleTeam,
-            onClickSingleTournament = onClickSingleTournament
+            onClickSingleTournament = onClickSingleTournament,
+            viewModel = viewModel
         )
     }
 }
 
 @Composable
 fun ShowSearchResult(
-    searchResults: List<Results>,
+    searchResults: List<Results>?,
     onClickSinglePlayer: (playerID: String?) -> Unit,
     onClickSingleTeam: (teamID: String?) -> Unit,
-    onClickSingleTournament: (tournamentID: String?) -> Unit
+    onClickSingleTournament: (tournamentID: String?) -> Unit,
+    viewModel: SearchScreenViewModel
 ) {
-    if (searchResults.isEmpty()) {
-        return
-    }
-    LazyColumn {
-        items(searchResults.size) {
-            val id = searchResults[it].entity?.id.toString()
-            val type = if (searchResults[it].type == null) {
-                "Unknown"
-            } else if (searchResults[it].type!!.isEmpty()) {
-                "Unknown"
-            } else {
-                capitalizeFirstLetter(searchResults[it].type!!)
-            }
-            val name = searchResults[it].entity?.name.toString()
-            val countryCode = searchResults[it].entity?.country?.alpha2.toString()
-            val flag = getFlagFromCountryCode(countryCode = countryCode)
 
-            CommonCard(
-                modifier = Modifier
-                    .clickable {
-                        when (searchResults[it].type) {
-                            "player" -> onClickSinglePlayer(id)
-                            "team" -> onClickSingleTeam(id)
-                            "tournament" -> onClickSingleTournament(id)
-                        }
-                    },
-                headText = name,
-                subText = type,
-                image = flag,
-            )
+
+    if (searchResults?.isNotEmpty() == true){
+        LazyColumn {
+            items(searchResults.size) {
+                val id = searchResults[it].entity?.id.toString()
+                val type = if (searchResults[it].type == null) {
+                    "Unknown"
+                } else if (searchResults[it].type!!.isEmpty()) {
+                    "Unknown"
+                } else {
+                    capitalizeFirstLetter(searchResults[it].type!!)
+                }
+                val name = searchResults[it].entity?.name.toString()
+                val countryCode = searchResults[it].entity?.country?.alpha2.toString()
+                val flag = getFlagFromCountryCode(countryCode = countryCode)
+
+                CommonCard(
+                    modifier = Modifier
+                        .clickable {
+                            when (searchResults[it].type) {
+                                "player" -> onClickSinglePlayer(id)
+                                "team" -> onClickSingleTeam(id)
+                                "tournament" -> onClickSingleTournament(id)
+                            }
+                        },
+                    headText = name,
+                    subText = type,
+                    image = flag,
+                )
+            }
         }
     }
 }
