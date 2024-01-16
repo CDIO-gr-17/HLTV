@@ -282,47 +282,52 @@ fun RecentMatches(
 fun Statistics(
     winRate: Double ?= null,
     averagePlayerAge: Double?,
-    )
-{
-            Box{
-                Row(
-                    modifier = Modifier
-                        .fillMaxWidth(),
-                    horizontalArrangement = Arrangement.SpaceBetween
-                ){
-                    Column (
-                        horizontalAlignment = Alignment.Start
-                    ){
-                        Text(text = "Statistics",
-                            fontWeight = FontWeight.Bold,
-                            color = MaterialTheme.colorScheme.onPrimaryContainer
-                        )
-                        Text(
-                            text = "Win Rate Recent Matches:",
-                            color = MaterialTheme.colorScheme.onPrimaryContainer
-                        )
+    ) {
+    if (winRate != 0.0 || averagePlayerAge != null) {
+        Box {
+            Row(
+                modifier = Modifier
+                    .fillMaxWidth(),
+                horizontalArrangement = Arrangement.SpaceBetween
+            ) {
+                Column(
+                    horizontalAlignment = Alignment.Start
+                ) {
+                    Text(
+                        text = "Statistics",
+                        fontWeight = FontWeight.Bold,
+                        color = MaterialTheme.colorScheme.onPrimaryContainer
+                    )
+                    Text(
+                        text = "Win Rate Recent Matches:",
+                        color = MaterialTheme.colorScheme.onPrimaryContainer
+                    )
+                    if(averagePlayerAge!=null && averagePlayerAge!=0.0) {
                         Text(
                             text = "Average Player Age:",
                             color = MaterialTheme.colorScheme.onPrimaryContainer
                         )
                     }
-                    Column (
-                        horizontalAlignment = Alignment.End
-                    ){
-                        Text(text = "")
-                            Text(
-                                text = DecimalFormat("#.#").format(winRate) + "%",
-                                color = MaterialTheme.colorScheme.onPrimaryContainer
-                            )
-                            Text(
-                                text = averagePlayerAge.toString()
-                                    .substring(0, minOf(4, averagePlayerAge.toString().length)),
-                                color = MaterialTheme.colorScheme.onPrimaryContainer
-                            )
-                        }
+                }
+                Column(
+                    horizontalAlignment = Alignment.End
+                ) {
+                    Text(text = "")
+                    Text(
+                        text = DecimalFormat("#.#").format(winRate) + "%",
+                        color = MaterialTheme.colorScheme.onPrimaryContainer
+                    )
+                    if (averagePlayerAge != null && averagePlayerAge!=0.0) {
+                        Text(
+                            text = DecimalFormat("#.#").format(averagePlayerAge),
+                            color = MaterialTheme.colorScheme.onPrimaryContainer
+                        )
                     }
                 }
             }
+        }
+    }
+}
         
 
 
