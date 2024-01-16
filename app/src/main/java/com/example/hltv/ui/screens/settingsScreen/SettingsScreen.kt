@@ -10,15 +10,11 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.material3.Surface
 import androidx.compose.material3.Switch
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.asImageBitmap
@@ -40,9 +36,6 @@ fun SettingsScreen(onClickSingleTeam: (String?) -> Unit) {
     val teamLogo by viewModel.teamLogo.collectAsState()
     val favoriteTeamOnHomeScreen by viewModel.favoriteTeamOnHomeScreen.collectAsState()
 
-    var darkModeEnabled by remember {
-        mutableStateOf(false)
-    }
 
 
     Column {
@@ -51,13 +44,6 @@ fun SettingsScreen(onClickSingleTeam: (String?) -> Unit) {
                 settingName = "Show team-info on homeScreen",
                 isChecked = favoriteTeamOnHomeScreen,
                 onCheckedChange = { viewModel.setFavoriteTeamPreference(dataStore,it) })
-        }
-
-        Surface(modifier = Modifier.padding(16.dp)) {
-            SettingsToggle(settingName = "Dark mode",
-                isChecked = darkModeEnabled,
-                onCheckedChange = { darkModeEnabled = it })
-
         }
     }
 }
