@@ -1,6 +1,5 @@
 package com.example.hltv.ui.screens.singleTeamScreen
 
-import android.util.Log
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
@@ -20,18 +19,16 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.collectAsState
-import androidx.compose.runtime.snapshots.SnapshotStateList
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.painter.Painter
-import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import coil.compose.rememberAsyncImagePainter
 import com.example.hltv.R
@@ -45,11 +42,35 @@ fun SingleTeamScreen(
     teamID: String?,
     onClickSinglePlayer: (String?) -> Unit,
     onClickSingleTeam: (String?) -> Unit,
-    onClickSingleMatch: (String?) -> Unit
+    onClickSingleMatch: (String?) -> Unit,
+    calledFromHomeScreen: Boolean = false
+) {
+    LazyColumn {
+        item {
+            SingleTeamScreenComposable(
+                teamID,
+                onClickSinglePlayer,
+                onClickSingleTeam,
+                onClickSingleMatch,
+                calledFromHomeScreen
+            )
+        }
+    }
+}
+
+@Composable
+fun SingleTeamScreenComposable(
+    teamID: String?,
+    onClickSinglePlayer: (String?) -> Unit,
+    onClickSingleTeam: (String?) -> Unit,
+    onClickSingleMatch: (String?) -> Unit,
+    calledFromHomeScreen: Boolean = false
 ) {
     val viewModel: SingleTeamViewModel = viewModel()
+    val gamesToLoad = if (calledFromHomeScreen) 3 else 10
     LaunchedEffect(teamID) {
-        viewModel.loadData(teamID!!)
+        viewModel.dataLoaded = false
+        viewModel.loadData(teamID!!, gamesToLoad = gamesToLoad)
     }
     val recentMatches = viewModel.recentMatches
     val playerOverview = viewModel.playerOverview
@@ -58,13 +79,30 @@ fun SingleTeamScreen(
     val painter = getFlagFromCountryCode(countryCode = countryCode)
     val winRate = viewModel.winRate.collectAsState()
 
-    if(viewModel.noInfoOnTeam.value){
+    if (viewModel.noInfoOnTeam.value) {
         showToast(message = "No info on this team", time = 5)
     }
 
-    LazyColumn {
-        item {
-            CommonCard(modifier = Modifier, bottomBox = {
+    Column(
+        modifier = Modifier
+    ) {
+        CommonCard(modifier = Modifier,
+            topBox = {
+                if (calledFromHomeScreen) {
+                    viewModel.team.value.name?.let {
+                        Text(
+                            text = it,
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .clickable { onClickSingleTeam(teamID) }
+                                ,
+                            fontSize = 20.sp,
+                            textAlign = TextAlign.Center,
+                        )
+                    }
+                } else null
+            },
+            bottomBox = {
                 Column {
                     LazyRow(
                         modifier = Modifier.fillMaxWidth(),
@@ -111,7 +149,7 @@ fun SingleTeamScreen(
                     }
                 }
             })
-        }
+
     }
 }
 
@@ -293,9 +331,9 @@ fun RecentMatches(
 
 @Composable
 fun Statistics(
-    winRate: Double ?= null,
+    winRate: Double? = null,
     averagePlayerAge: Double?,
-    ) {
+) {
     if (winRate != 0.0 || averagePlayerAge != null) {
         Box {
             Row(
@@ -315,7 +353,7 @@ fun Statistics(
                         text = "Win Rate Recent Matches:",
                         color = MaterialTheme.colorScheme.onPrimaryContainer
                     )
-                    if(averagePlayerAge!=null && averagePlayerAge!=0.0) {
+                    if (averagePlayerAge != null && averagePlayerAge != 0.0) {
                         Text(
                             text = "Average Player Age:",
                             color = MaterialTheme.colorScheme.onPrimaryContainer
@@ -330,7 +368,7 @@ fun Statistics(
                         text = DecimalFormat("#.#").format(winRate) + "%",
                         color = MaterialTheme.colorScheme.onPrimaryContainer
                     )
-                    if (averagePlayerAge != null && averagePlayerAge!=0.0) {
+                    if (averagePlayerAge != null && averagePlayerAge != 0.0) {
                         Text(
                             text = DecimalFormat("#.#").format(averagePlayerAge),
                             color = MaterialTheme.colorScheme.onPrimaryContainer
@@ -341,8 +379,6 @@ fun Statistics(
         }
     }
 }
-
-
 
 
 @Composable
