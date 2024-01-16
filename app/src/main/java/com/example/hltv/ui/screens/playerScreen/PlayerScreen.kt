@@ -8,6 +8,7 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.material3.Divider
 import androidx.compose.material3.MaterialTheme
@@ -79,27 +80,31 @@ fun PlayerScreen(
                             if(player?.firstName!=null || player?.lastName!=null) {
                                 Row {
                                     Text(
-                                        modifier = Modifier.weight(1f),
-                                        text = "Full name:",
+                                        modifier = Modifier.weight(1f)
+                                            .padding(3.dp),
+                                        text = "Full name",
                                         fontSize = MaterialTheme.typography.bodyLarge.fontSize,
                                         color = MaterialTheme.colorScheme.onPrimaryContainer,
+                                        fontWeight = FontWeight.Bold
                                     )
                                     Text(
-                                        text = "${player.firstName?:""} ${player.lastName?:""}",
+                                        text = "${player.firstName ?: ""} ${player.lastName ?: ""}",
                                         fontSize = MaterialTheme.typography.bodyLarge.fontSize,
                                         color = MaterialTheme.colorScheme.onPrimaryContainer,
                                     )
                                 }
+                            }
                                 Divider(
                                     color = MaterialTheme.colorScheme.primaryContainer
                                 )
-                            }
                             Row {
                                 Text(
-                                    modifier = Modifier.weight(1f),
-                                    text = "Nickname:",
+                                    modifier = Modifier.weight(1f)
+                                        .padding(3.dp),
+                                    text = "Nickname",
                                     fontSize = MaterialTheme.typography.bodyLarge.fontSize,
                                     color = MaterialTheme.colorScheme.onPrimaryContainer,
+                                    fontWeight = FontWeight.Bold
                                 )
                                 Text(
                                     text = player?.name?: "Nickname",
@@ -107,18 +112,20 @@ fun PlayerScreen(
                                     color = MaterialTheme.colorScheme.onPrimaryContainer,
                                 )
                             }
-                            Divider(
-                                color = MaterialTheme.colorScheme.primaryContainer
-                            )
                             if(player?.country?.name!=null) {
+                                Divider(
+                                    color = MaterialTheme.colorScheme.primaryContainer
+                                )
                                 Row(
                                     horizontalArrangement = Arrangement.Center
                                 ) {
                                     Text(
-                                        modifier = Modifier.weight(1f),
-                                        text = "Country:",
+                                        modifier = Modifier.weight(1f)
+                                            .padding(3.dp),
+                                        text = "Country",
                                         fontSize = MaterialTheme.typography.bodyLarge.fontSize,
                                         color = MaterialTheme.colorScheme.onPrimaryContainer,
+                                        fontWeight = FontWeight.Bold
                                     )
                                     Text(
                                         text = "${player.country?.name ?: "Unknown"} ",
@@ -132,17 +139,19 @@ fun PlayerScreen(
                                         alignment = Alignment.CenterEnd
                                     )
                                 }
+                            }
+                            if(playerAge!=0) {
                                 Divider(
                                     color = MaterialTheme.colorScheme.primaryContainer
                                 )
-                            }
-                            if(playerAge!=0) {
                                 Row {
                                     Text(
-                                        modifier = Modifier.weight(1f),
-                                        text = "Age:",
+                                        modifier = Modifier.weight(1f)
+                                            .padding(3.dp),
+                                        text = "Age",
                                         fontSize = MaterialTheme.typography.bodyLarge.fontSize,
                                         color = MaterialTheme.colorScheme.onPrimaryContainer,
+                                        fontWeight = FontWeight.Bold
                                     )
                                     Text(
                                         text = "$playerAge years old",
@@ -150,17 +159,19 @@ fun PlayerScreen(
                                         color = MaterialTheme.colorScheme.onPrimaryContainer,
                                     )
                                 }
+                            }
+                            if(playerBorn!=0) {
                                 Divider(
                                     color = MaterialTheme.colorScheme.primaryContainer
                                 )
-                            }
-                            if(playerBorn!=0) {
                                 Row {
                                     Text(
-                                        modifier = Modifier.weight(1f),
-                                        text = "Born:",
+                                        modifier = Modifier.weight(1f)
+                                            .padding(3.dp),
+                                        text = "Born",
                                         fontSize = MaterialTheme.typography.bodyLarge.fontSize,
                                         color = MaterialTheme.colorScheme.onPrimaryContainer,
+                                        fontWeight = FontWeight.Bold
                                     )
                                     Text(
                                         text = "$playerBorn",
@@ -168,19 +179,21 @@ fun PlayerScreen(
                                         color = MaterialTheme.colorScheme.onPrimaryContainer,
                                     )
                                 }
+                            }
+                            if(player?.team?.name!=null && player.team?.name!="No team") {
                                 Divider(
                                     color = MaterialTheme.colorScheme.primaryContainer
                                 )
-                            }
-                            if(player?.team?.name!=null && player.team?.name!="No team") {
                                 Row(
                                     horizontalArrangement = Arrangement.Center
                                 ) {
                                     Text(
-                                        modifier = Modifier.weight(1f),
-                                        text = "Team:",
+                                        modifier = Modifier.weight(1f)
+                                            .padding(3.dp),
+                                        text = "Team",
                                         fontSize = MaterialTheme.typography.bodyLarge.fontSize,
                                         color = MaterialTheme.colorScheme.onPrimaryContainer,
+                                        fontWeight = FontWeight.Bold
                                     )
                                     Text(
                                         text = "${player.team?.name} ",
@@ -194,19 +207,21 @@ fun PlayerScreen(
                                         alignment = Alignment.CenterEnd
                                     )
                                 }
+                            }
+                            if(player?.team?.country?.name!=null) {
                                 Divider(
                                     color = MaterialTheme.colorScheme.primaryContainer
                                 )
-                            }
-                            if(player?.team?.country?.name!=null) {
                                 Row(
                                     horizontalArrangement = Arrangement.Center
                                 ) {
                                     Text(
-                                        modifier = Modifier.weight(1f),
-                                        text = "Team country:",
+                                        modifier = Modifier.weight(1f)
+                                            .padding(3.dp),
+                                        text = "Team country",
                                         fontSize = MaterialTheme.typography.bodyLarge.fontSize,
                                         color = MaterialTheme.colorScheme.onPrimaryContainer,
+                                        fontWeight = FontWeight.Bold
                                     )
                                     Text(
                                         text = "${player.team?.country?.name} ",
