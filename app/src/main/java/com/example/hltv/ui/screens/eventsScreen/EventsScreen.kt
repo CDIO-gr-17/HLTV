@@ -20,11 +20,13 @@ import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.painter.Painter
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import coil.compose.rememberAsyncImagePainter
 import com.example.hltv.data.convertTimestampToDateDisplay
+import com.example.hltv.data.getColorFromTier
 import com.example.hltv.data.remote.ThirdUniqueTournament
 import com.example.hltv.ui.common.CommonCard
 import java.text.NumberFormat
@@ -162,6 +164,8 @@ fun SingleEventCard(
                     Text(
                         text = tier,
                         textAlign = TextAlign.End,
+                        fontWeight = FontWeight.ExtraBold,
+                        color = getColorFromTier(tier),
                         modifier = Modifier
                             .padding(8.dp)
                     )

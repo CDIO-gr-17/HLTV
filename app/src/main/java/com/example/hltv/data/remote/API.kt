@@ -256,7 +256,7 @@ suspend fun getRelevantTournaments(): List<ThirdUniqueTournament> {
 
     val tournaments: List<Int> = getCSTournamentsID(getCSCategory())
 
-    val croppedTournaments = tournaments.take(10)
+    val croppedTournaments = tournaments.take(15)
 
     val deferreds = croppedTournaments.map { tournamentID ->
         CoroutineScope(Dispatchers.IO).async {
