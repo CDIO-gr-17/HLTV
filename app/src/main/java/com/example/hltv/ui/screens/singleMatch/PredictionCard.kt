@@ -69,15 +69,18 @@ fun PredictionCard(
                     modifier = Modifier.weight(1f)
                 ) {
                     Text(
-                        text = "Get your prediction in!",
+                        text = if(!finished)"Predictions" else "Prediction results",
                         fontSize = MaterialTheme.typography.bodyLarge.fontSize,
                         color = MaterialTheme.colorScheme.onPrimaryContainer,
                     )
-                    Text(
-                        text = "Vote for the team you think will win",
-                        fontSize = MaterialTheme.typography.bodyMedium.fontSize,
-                        color = MaterialTheme.colorScheme.onPrimaryContainer,
-                    )
+                    if(!finished){
+                        Text(
+                            text = "Vote for the team you think will win",
+                            fontSize = MaterialTheme.typography.bodyMedium.fontSize,
+                            color = MaterialTheme.colorScheme.onPrimaryContainer,
+                        )
+                    }
+
                 }
             }
         }
@@ -214,6 +217,7 @@ private fun DrawCircle(
                     .offset(y = (-15).dp),
                 fontSize = 25.sp,
                 textAlign = TextAlign.Center,
+                fontWeight = FontWeight.Bold
             )
         }
     }

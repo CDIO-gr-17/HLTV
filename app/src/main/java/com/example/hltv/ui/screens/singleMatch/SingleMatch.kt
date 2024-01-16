@@ -436,7 +436,7 @@ fun ShowLiveStreams(mediaList: ArrayList<Media>) {
     CommonCard(
         modifier = Modifier.fillMaxWidth(),
         headText = "Livestreams",
-        subText = "May or may not have the game"
+        subText = "Watch the game live"
     ) {
         Column {
             mediaList.distinctBy { it.url }.forEach { media ->
