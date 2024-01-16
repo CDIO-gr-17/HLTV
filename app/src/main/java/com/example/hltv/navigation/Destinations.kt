@@ -61,7 +61,7 @@ object SingleEvent : Destination {
     override val name :String = "SingleEvent"
 }
 
-val bottomAppBarScreens = listOf(Search, Events, Home, Ranking, Matches)
+val bottomAppBarScreens = listOf(Home, Search, Events,  Matches)
 val allAppScreens = listOf(
     Home,
     Events,

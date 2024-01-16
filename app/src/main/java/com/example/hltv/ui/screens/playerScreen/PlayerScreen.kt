@@ -20,7 +20,6 @@ import androidx.compose.ui.graphics.painter.Painter
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
@@ -35,14 +34,14 @@ import com.example.hltv.ui.common.CommonCard
 @SuppressLint("StateFlowValueCalledInComposition")
 @Composable
 fun PlayerScreen(
-    playerIDfullString: String? = "Name"
+    playerIDFullString: String? = "Name"
 ) {
 
     val viewModel: PlayerScreenViewModel = viewModel()
     LaunchedEffect(Unit) {
-        viewModel.loadData(playerIDfullString)
+        viewModel.loadData(playerIDFullString)
     }
-    Log.i("playerID", "Transferred player \"ID\": " + playerIDfullString)
+    Log.i("playerID", "Transferred player \"ID\": $playerIDFullString")
     val player = viewModel.player.value
     val teamImage = viewModel.teamImage.value
     val playerAge = if (player?.dateOfBirthTimestamp != null)
@@ -230,8 +229,6 @@ fun PlayerScreen(
         )
     }
 }
-
-
 @Composable
 fun PlayerImage(
     image: Painter? = null,
@@ -242,32 +239,4 @@ fun PlayerImage(
         modifier = Modifier
             .size(250.dp)
     )
-}
-
-@Composable
-fun InformationBox(
-    name: String,
-    age: Int,
-) {
-    CommonCard(modifier = Modifier.fillMaxWidth(), headText = "Statistics") {
-        Column {
-            Text(
-                text = "Full name: $name",
-                fontSize = MaterialTheme.typography.bodyLarge.fontSize,
-                color = MaterialTheme.colorScheme.onPrimaryContainer,
-            )
-            Text(
-                text = "Age: $age",
-                fontSize = MaterialTheme.typography.bodyLarge.fontSize,
-                color = MaterialTheme.colorScheme.onPrimaryContainer,
-            )
-        }
-    }
-}
-
-
-@Preview
-@Composable
-fun PlayerScreenPreview() {
-    PlayerScreen("OBAMNA")
 }

@@ -30,11 +30,11 @@ fun FavoriteButton(
 ) {
 
     var isFavorite by remember { mutableStateOf(false) }
-    var localClickvar by remember { mutableStateOf(false)}
+    var localClickVar by remember { mutableStateOf(false)}
 
     LaunchedEffect(isFavorite){
         CoroutineScope(Dispatchers.IO).launch {
-            datastore.getFavouriteTeam().collect() {int ->
+            datastore.getFavouriteTeam().collect { int ->
                 isFavorite = int == teamID
             }
         }
@@ -45,11 +45,11 @@ fun FavoriteButton(
         checked = isFavorite,
         onCheckedChange = {
             isFavorite = it
-            localClickvar = it
+            localClickVar = it
             CoroutineScope(Dispatchers.IO).launch {
                 if (isFavorite) {
                     datastore.updateFavouriteTeam(teamID)
-                    datastore.getFavouriteTeam().collect() {int ->
+                    datastore.getFavouriteTeam().collect { int ->
                         Log.d("FavoriteButton", "Favourite team is now: $int vs  $teamID")
                     }
                 } else {
@@ -59,7 +59,7 @@ fun FavoriteButton(
             }
         }
     ) {
-        if (localClickvar)
+        if (localClickVar)
             showToast(message = "This team is now your favorite")
 
         Icon(

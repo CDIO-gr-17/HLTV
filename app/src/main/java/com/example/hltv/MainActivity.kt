@@ -38,10 +38,12 @@ import com.example.hltv.data.local.PrefDataKeyValueStore
 import com.example.hltv.data.remote.getEvent
 import com.example.hltv.data.remote.getPlayerFromPlayerID
 import com.example.hltv.data.remote.getTeamNameFromID
+import com.example.hltv.data.remote.getTournamentInfo
 import com.example.hltv.navigation.Destination
 import com.example.hltv.navigation.Home
 import com.example.hltv.navigation.MainNavHost
 import com.example.hltv.navigation.Settings
+import com.example.hltv.navigation.SingleEvent
 import com.example.hltv.navigation.SingleMatch
 import com.example.hltv.navigation.SinglePlayer
 import com.example.hltv.navigation.SingleTeam
@@ -176,6 +178,18 @@ private fun setTopAppBarTitle(currentScreen: Destination, currentBackStack: NavB
                 val player = getPlayerFromPlayerID(playerIDInt).player
                 Log.d("Topbar","Got player")
                 topAppBarTitle = player.name.toString()
+            }
+        }
+        Text(text = topAppBarTitle)
+    } else if (currentScreen == SingleEvent) {
+        var topAppBarTitle by remember { mutableStateOf("Event info") }
+        CoroutineScope(Dispatchers.IO).launch {
+            val eventID = currentBackStack?.arguments?.getString("eventID")
+            val eventIDInt = eventID?.toInt()
+            if (eventID != null) {
+                val event = getTournamentInfo(eventIDInt!!)
+                Log.d("Topbar", "Got event")
+                topAppBarTitle = event.tournamentDetails.name.toString()
             }
         }
         Text(text = topAppBarTitle)

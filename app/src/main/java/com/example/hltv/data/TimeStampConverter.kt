@@ -20,34 +20,34 @@ import java.util.TimeZone
 fun convertTimestampToDateDisplay(timestamp: Int?): String {
     val dateFormat = DateFormat.getDateInstance()
     dateFormat.timeZone = TimeZone.getTimeZone("CET")
-    if(timestamp != null) {
+    return if(timestamp != null) {
         val date = Date(timestamp.toLong()*1000L)// Assuming the timestamp is in seconds, multiply by 1000 for milliseconds
-        return dateFormat.format(date)
+        dateFormat.format(date)
     } else {
-        return "Unknown date"
+        "Unknown date"
     }
 }
 
 fun convertTimestampToDateURL(timestamp: Int?): String {
     val dateFormat = SimpleDateFormat("dd/MM/yyyy", Locale.getDefault())
     dateFormat.timeZone = TimeZone.getTimeZone("CET")
-    if (timestamp != null) {
+    return if (timestamp != null) {
         val date =
             Date(timestamp.toLong() * 1000) // Assuming the timestamp is in seconds, multiply by 1000 for milliseconds
-        return dateFormat.format(date)
+        dateFormat.format(date)
     } else {
-        return "Unknown date"
+        "Unknown date"
     }
 }
 
 fun convertTimestampToWeekDateClock(timestamp: Int?): String {
     val dateFormat = SimpleDateFormat("EEEE, dd/MM HH:mm", Locale.getDefault())
     dateFormat.timeZone = TimeZone.getTimeZone("CET")
-    if (timestamp != null) {
+    return if (timestamp != null) {
         val date = Date(timestamp.toLong() * 1000) // Assuming the timestamp is in seconds, multiply by 1000 for milliseconds
-        return dateFormat.format(date)
+        dateFormat.format(date)
     } else {
-        return "Unknown date"
+        "Unknown date"
     }
 }
 
@@ -70,6 +70,10 @@ fun convertYearToUnixTimestamp(stringWithYear: String): Int {
 
 }
 
+/**
+ * Source: https://stackoverflow.com/questions/75462531/restartable-count-down-in-kotlin
+ * Source: https://stackoverflow.com/questions/73470594/countdowntimer-in-jetpack-compose
+ */
 class CountdownViewModel : ViewModel() {
     private val _remainingTime = MutableStateFlow<Long?>(null)
     val remainingTime = _remainingTime.asStateFlow()
@@ -96,18 +100,6 @@ class CountdownViewModel : ViewModel() {
         countdownJob?.cancel()
     }
 }
-
-
-fun convertTimestampToDateClock(timestamp: Int?): String {
-    val dateFormat = SimpleDateFormat("dd/MM HH:mm", Locale.getDefault())
-    dateFormat.timeZone = TimeZone.getTimeZone("CET")
-    if (timestamp != null) {
-        val date = Date(timestamp.toLong() * 1000) // Assuming the timestamp is in seconds, multiply by 1000 for milliseconds
-        return dateFormat.format(date)
-    } else {
-        return "Unknown date"
-    }
-}
 fun Long.formatTime(): String {
     val hours = this / 3600
     val minutes = (this % 3600) / 60
@@ -115,23 +107,32 @@ fun Long.formatTime(): String {
     return String.format("%02d:%02d:%02d", hours, minutes, remainingSeconds)
 }
 
-fun getAvgAgeFromTimestamp(dateOfBirthTimestampList: MutableList<Int>): Double {            //TODO: This should be moved to a more appropriate place
+
+fun convertTimestampToDateClock(timestamp: Int?): String {
+    val dateFormat = SimpleDateFormat("dd/MM HH:mm", Locale.getDefault())
+    dateFormat.timeZone = TimeZone.getTimeZone("CET")
+    return if (timestamp != null) {
+        val date = Date(timestamp.toLong() * 1000) // Assuming the timestamp is in seconds, multiply by 1000 for milliseconds
+        dateFormat.format(date)
+    } else {
+        "Unknown date"
+    }
+}
+
+fun getAvgAgeFromTimestamp(dateOfBirthTimestampList: MutableList<Int>): Double {
     var totalAgeOfPlayers: Long = 0
     for (dateOfBirthTimestamp in dateOfBirthTimestampList) {
         totalAgeOfPlayers += ((System.currentTimeMillis() // Subtracts the current time in milliseconds from the players date of birth in milliseconds
                 - (dateOfBirthTimestamp.toLong() * 1000)))
     }
-    if(dateOfBirthTimestampList.size!=0) {
+    return if(dateOfBirthTimestampList.size!=0) {
         val avgAgeOfPlayersInMillis: Long = totalAgeOfPlayers / dateOfBirthTimestampList.size
         val df = DecimalFormat("#.#")
         val avgAgeOfPlayersInYears = avgAgeOfPlayersInMillis/365.25/3600/24/1000
         df.roundingMode = RoundingMode.CEILING
-        print(avgAgeOfPlayersInYears.toDouble())
-        return avgAgeOfPlayersInYears.toDouble()
-
-        // String.format("%.1f", TimeUnit.MILLISECONDS.toDays(avgAgeOfPlayersInMillis) / 365.25).toDouble()
+        avgAgeOfPlayersInYears
 
     }
-    else return 0.0
+    else 0.0
 }
 

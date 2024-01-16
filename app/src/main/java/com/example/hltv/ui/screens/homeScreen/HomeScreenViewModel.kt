@@ -2,22 +2,19 @@ package com.example.hltv.ui.screens.homeScreen
 
 import android.graphics.Bitmap
 import android.util.Log
+import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.hltv.data.convertTimestampToDateURL
-import com.example.hltv.data.local.PrefDataKeyValueStore
-import com.example.hltv.data.remote.APIResponse
 import com.example.hltv.data.remote.Event
-import com.example.hltv.data.remote.Season
-import com.example.hltv.data.remote.ThirdUniqueTournament
+import com.example.hltv.data.remote.Score
+import com.example.hltv.data.remote.Team
 import com.example.hltv.data.remote.getLiveMatches
 import com.example.hltv.data.remote.getMatchesFromDay
-import com.example.hltv.data.remote.getRelevantTournaments
 import com.example.hltv.data.remote.getTeamImage
 import com.example.hltv.data.remote.getTournamentLogo
-import com.example.hltv.data.remote.getUniqueTournamentDetails
-import com.example.hltv.data.remote.getUniqueTournamentSeasons
+import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -25,17 +22,8 @@ import kotlinx.coroutines.launch
 
 class HomeScreenViewModel: ViewModel() {
 
-
     val liveMatchValue = mutableStateOf<Event?>(null)
     val upcomingMatchValue = mutableStateOf<Event?>(null)
-
-    val upcomingTournament = mutableStateOf<ThirdUniqueTournament?>(null)
-    val uniqueTournament = mutableStateOf<APIResponse.UniqueTournamentInfoWrapper?>(null)
-    val upcomingTournamentlogo = mutableStateOf<Bitmap?>(null)
-    val tournamentSeason = mutableStateOf<Season?>(null)
-
-
-    val upcomingMatchesValue = mutableStateOf<Event>(Event())
 
     val awayTeamIcon = mutableStateOf<Bitmap?>(null)
     var homeTeamIcon = mutableStateOf<Bitmap?>(null)
@@ -60,6 +48,7 @@ class HomeScreenViewModel: ViewModel() {
                     liveMatchValue.value = event
                     homeTeamIcon.value = getTeamImage(event.homeTeam.id)
                     awayTeamIcon.value = getTeamImage(event.awayTeam.id)
+                    tournamentIcon.value = getTournamentLogo(event.tournament.uniqueTournament?.id)
                 }
                 else {
                     loadUpcomingMatch()
@@ -114,16 +103,16 @@ class HomeScreenViewModel: ViewModel() {
 
         if(upcomingMatches.events.isNotEmpty()){
             upcomingMatches.events = upcomingMatches.events.sortedBy { it.startTimestamp }
-            var goodevent : Event? = null
+            var goodEvent : Event? = null
             for (event in upcomingMatches.events) {
                 if (event.startTimestamp?.toLong() != null &&  //Makes sure that the upcoming match has an associated startTimestamp
                     event.startTimestamp!! > (System.currentTimeMillis() / 1000)
                 ) {
-                    goodevent = event
+                    goodEvent = event
                     break
                 }
             }
-            upcomingMatchValue.value = goodevent
+            upcomingMatchValue.value = goodEvent
             homeTeamIcon.value = getTeamImage(upcomingMatchValue.value?.homeTeam?.id)
             awayTeamIcon.value = getTeamImage(upcomingMatchValue.value?.awayTeam?.id)
             tournamentIcon.value = getTournamentLogo(upcomingMatchValue.value?.tournament?.uniqueTournament?.id)

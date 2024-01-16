@@ -6,7 +6,6 @@ import android.util.Log
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -33,8 +32,6 @@ import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.Shadow
 import androidx.compose.ui.layout.ContentScale
-
-import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.SpanStyle
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.buildAnnotatedString
@@ -45,7 +42,6 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import coil.compose.rememberAsyncImagePainter
-import com.example.hltv.R
 import com.example.hltv.data.getColorFromTier
 import com.example.hltv.ui.common.CommonCard
 import com.example.hltv.ui.common.ResizingText
@@ -65,8 +61,8 @@ fun SingleEventScreen(
     onClickSingleMatch: (matchID: String?) -> Unit,
     onClickSinglePlayer: (playerID: String?) -> Unit
 ) {
-    Log.i("SingleEventScreen", "TournamentID: " + tournamentID)
-    Log.i("SingleEventScreen", "seasonID: " + seasonID)
+    Log.i("SingleEventScreen", "TournamentID: $tournamentID")
+    Log.i("SingleEventScreen", "seasonID: $seasonID")
 
     val eventViewModel: SingleEventViewModel = viewModel()
     val teamViewModel: SingleTeamViewModel = viewModel()
@@ -81,8 +77,6 @@ fun SingleEventScreen(
         }
     }
 
-    //TODO: Make this prettier?
-
     val recentMatches = teamViewModel.recentMatches
     val playerOverview = teamViewModel.playerOverview
     val statsOverview = teamViewModel.statisticsOverview
@@ -90,7 +84,7 @@ fun SingleEventScreen(
 
     LazyColumn {
         item {
-            SingleEventTopbox(
+            SingleEventBox(
                 playerOverview = playerOverview,
                 teamViewModel = teamViewModel,
                 statsOverview = statsOverview,
@@ -104,65 +98,62 @@ fun SingleEventScreen(
         }
         item {
             if (standings.isNotEmpty()) {
-                standings.reversed().forEach() { standing ->
+                standings.reversed().forEach { standing ->
                     Column {
-                        CommonCard(
-                            modifier = Modifier,
-                            topBox = {
-                                Column {
-                                    Row(modifier = Modifier.fillMaxWidth()) {
-                                        Text(
-                                            text = if (standings.size != 0) "Standings ${
-                                                standing.name?.removePrefix(
-                                                    standing.tournament?.uniqueTournament?.name.toString() + " "
-                                                )
-                                                    ?.removeSuffix(standing.tournament?.uniqueTournament?.name.toString() + " ")
-                                            }" else "Standings",
-                                            fontSize = 18.sp,
-                                            color = MaterialTheme.colorScheme.onSecondaryContainer,
-                                            fontWeight = FontWeight.Bold
-                                        )
-                                    }
-                                    Row(modifier = Modifier.fillMaxWidth()) {
-                                        Text(
-                                            text = "#",
-                                            modifier = Modifier.weight(0.05f),
-                                            fontSize = MaterialTheme.typography.bodyLarge.fontSize,
-                                            color = MaterialTheme.colorScheme.onSecondaryContainer,
-                                            fontWeight = FontWeight.Bold
-                                        )
-                                        Text(
-                                            text = "Team",
-                                            modifier = Modifier.weight(0.4f),
-                                            fontSize = MaterialTheme.typography.bodyLarge.fontSize,
-                                            color = MaterialTheme.colorScheme.onSecondaryContainer,
-                                            fontWeight = FontWeight.Bold
-                                        )
-                                        Spacer(modifier = Modifier.weight(0.2f))
-                                        Text(
-                                            text = "P",
-                                            modifier = Modifier.weight(0.075f),
-                                            fontSize = MaterialTheme.typography.bodyLarge.fontSize,
-                                            color = MaterialTheme.colorScheme.onSecondaryContainer,
-                                            fontWeight = FontWeight.Bold
-                                        )
-                                        Text(
-                                            text = "W",
-                                            modifier = Modifier.weight(0.075f),
-                                            fontSize = MaterialTheme.typography.bodyLarge.fontSize,
-                                            color = MaterialTheme.colorScheme.onSecondaryContainer,
-                                            fontWeight = FontWeight.Bold
-                                        )
-                                        Text(
-                                            text = "L",
-                                            fontSize = MaterialTheme.typography.bodyLarge.fontSize,
-                                            color = MaterialTheme.colorScheme.onSecondaryContainer,
-                                            fontWeight = FontWeight.Bold
-                                        )
-                                    }
+                        CommonCard(modifier = Modifier, topBox = {
+                            Column {
+                                Row(modifier = Modifier.fillMaxWidth()) {
+                                    Text(
+                                        text = if (standings.size != 0) "Standings ${
+                                            standing.name?.removePrefix(
+                                                standing.tournament?.uniqueTournament?.name.toString() + " "
+                                            )
+                                                ?.removeSuffix(standing.tournament?.uniqueTournament?.name.toString() + " ")
+                                        }" else "Standings",
+                                        fontSize = 18.sp,
+                                        color = MaterialTheme.colorScheme.onSecondaryContainer,
+                                        fontWeight = FontWeight.Bold
+                                    )
+                                }
+                                Row(modifier = Modifier.fillMaxWidth()) {
+                                    Text(
+                                        text = "#",
+                                        modifier = Modifier.weight(0.05f),
+                                        fontSize = MaterialTheme.typography.bodyLarge.fontSize,
+                                        color = MaterialTheme.colorScheme.onSecondaryContainer,
+                                        fontWeight = FontWeight.Bold
+                                    )
+                                    Text(
+                                        text = "Team",
+                                        modifier = Modifier.weight(0.4f),
+                                        fontSize = MaterialTheme.typography.bodyLarge.fontSize,
+                                        color = MaterialTheme.colorScheme.onSecondaryContainer,
+                                        fontWeight = FontWeight.Bold
+                                    )
+                                    Spacer(modifier = Modifier.weight(0.2f))
+                                    Text(
+                                        text = "P",
+                                        modifier = Modifier.weight(0.075f),
+                                        fontSize = MaterialTheme.typography.bodyLarge.fontSize,
+                                        color = MaterialTheme.colorScheme.onSecondaryContainer,
+                                        fontWeight = FontWeight.Bold
+                                    )
+                                    Text(
+                                        text = "W",
+                                        modifier = Modifier.weight(0.075f),
+                                        fontSize = MaterialTheme.typography.bodyLarge.fontSize,
+                                        color = MaterialTheme.colorScheme.onSecondaryContainer,
+                                        fontWeight = FontWeight.Bold
+                                    )
+                                    Text(
+                                        text = "L",
+                                        fontSize = MaterialTheme.typography.bodyLarge.fontSize,
+                                        color = MaterialTheme.colorScheme.onSecondaryContainer,
+                                        fontWeight = FontWeight.Bold
+                                    )
                                 }
                             }
-                        ) {
+                        }) {
                             Column {
                                 standing.attending.forEachIndexed { placement, attending ->
                                     Row {
@@ -210,7 +201,7 @@ fun SingleEventScreen(
 }
 
 @Composable
-fun SingleEventTopbox(
+fun SingleEventBox(
     eventViewModel: SingleEventViewModel,
     teamViewModel: SingleTeamViewModel,
     playerOverview: SnapshotStateList<Player>,
@@ -223,259 +214,243 @@ fun SingleEventTopbox(
 ) {
 
     Column {
-            CommonCard(
-                modifier = Modifier,
-                customInnerPadding = 0.dp,
-                customOuterPadding = 0.dp,
-                topBox = {
-                    Column(
-                        horizontalAlignment = Alignment.CenterHorizontally,
-                        modifier = Modifier.fillMaxWidth()
-                    ) {
-                        Spacer(Modifier.height(15.dp))
+        CommonCard(
+            modifier = Modifier,
+            customInnerPadding = 0.dp,
+            customOuterPadding = 0.dp,
+            topBox = {
+                Column(
+                    horizontalAlignment = Alignment.CenterHorizontally,
+                    modifier = Modifier.fillMaxWidth()
+                ) {
+                    Spacer(Modifier.height(15.dp))
 
-                        Box {//TODO: Can this box be removed?
-                            Image(
-                                painter = rememberAsyncImagePainter(eventViewModel.tournamentImage.value),
-                                contentDescription = "Event logo",
-                                modifier = Modifier.size(200.dp),
-                                contentScale = ContentScale.Crop
-                            )
-                        }
-                        Column(horizontalAlignment = Alignment.CenterHorizontally){
-                            ResizingText(
-                                text = buildAnnotatedString {
-                                    withStyle(
-                                        style = SpanStyle(
-                                            brush = Brush.verticalGradient(
-                                                colors = listOf(MaterialTheme.colorScheme.onSecondaryContainer, eventViewModel.color.value)
-                                            ),
-                                            fontWeight = FontWeight.ExtraBold,
-
-                                            ),
-                                    ) {
-                                        append(eventViewModel.event.value.name.toString().uppercase())
-                                    }
-                                },
-                                maxFontSize = 70.sp,
-                                maxLines = 2
-                            )
-                            ResizingText(
-                                text = buildAnnotatedString {
-                                    withStyle(
-                                        style = SpanStyle(
-                                            brush = Brush.verticalGradient(
-                                                colors = listOf(eventViewModel.color.value, MaterialTheme.colorScheme.onSecondaryContainer)
-                                            ),
-                                            fontSize = 35.sp,
-                                            fontWeight = FontWeight.Bold,
+                    Image(
+                        painter = rememberAsyncImagePainter(eventViewModel.tournamentImage.value),
+                        contentDescription = "Event logo",
+                        modifier = Modifier.size(200.dp),
+                        contentScale = ContentScale.Crop
+                    )
+                    Column(horizontalAlignment = Alignment.CenterHorizontally) {
+                        ResizingText(
+                            text = buildAnnotatedString {
+                                withStyle(
+                                    style = SpanStyle(
+                                        brush = Brush.verticalGradient(
+                                            colors = listOf(
+                                                MaterialTheme.colorScheme.onSecondaryContainer,
+                                                eventViewModel.color.value
+                                            )
                                         ),
-                                    ) {
-                                        append(
-                                            eventViewModel.tournamentSeason.value.name.toString()
-                                                .uppercase()
-                                        )
-                                    }
-                                },
-                                modifier = Modifier.offset(y = (-20).dp),
-                                maxLines = 2,
-                                maxFontSize = 50.sp
-                            )
-                        }
+                                        fontWeight = FontWeight.ExtraBold,
 
-
-
-                        Row(
-                            horizontalArrangement = Arrangement.SpaceBetween,
-                            verticalAlignment = Alignment.Bottom,
-                            modifier = Modifier
-                                .fillMaxWidth()
-                                .padding(8.dp)
-                        ) {
-
-                            if (eventViewModel.eventDetails.value.tier != null) {
-                                Text(
-                                    text = eventViewModel.eventDetails.value.tier!!.uppercase() + "-tier",
-                                    color = getColorFromTier(eventViewModel.eventDetails.value.tier!!.uppercase()),
-                                    fontWeight = FontWeight.Bold,
-                                    fontSize = 22.sp
-                                )
-                                if(eventViewModel.eventDetails.value.totalPrizeMoney != null) {
-                                    Text(
-                                        textAlign = TextAlign.End, //This doesn't do anything, the lord knows why
-                                        text = eventViewModel.eventDetails.value.totalPrizeMoney.toString() + " " + eventViewModel.eventDetails.value.totalPrizeMoneyCurrency.toString(),
-                                        color = Color(parseColor("#ffbf00")),
-                                        style = TextStyle(
-                                            shadow = Shadow(
-                                                color = Color(parseColor("#bf9b30")),
-                                                offset = Offset(2.0f, 2.0f),
-                                                blurRadius = 2f,
-                                            ),
-                                            fontSize = 22.sp
                                         ),
-                                        fontWeight = FontWeight.Bold
+                                ) {
+                                    append(eventViewModel.event.value.name.toString().uppercase())
+                                }
+                            }, maxFontSize = 70.sp, maxLines = 2
+                        )
+                        ResizingText(
+                            text = buildAnnotatedString {
+                                withStyle(
+                                    style = SpanStyle(
+                                        brush = Brush.verticalGradient(
+                                            colors = listOf(
+                                                eventViewModel.color.value,
+                                                MaterialTheme.colorScheme.onSecondaryContainer
+                                            )
+                                        ),
+                                        fontSize = 35.sp,
+                                        fontWeight = FontWeight.Bold,
+                                    ),
+                                ) {
+                                    append(
+                                        eventViewModel.tournamentSeason.value.name.toString()
+                                            .uppercase()
                                     )
                                 }
-                            } else if (eventViewModel.event.value.name == null){
-                                Row (modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.Center){
-                                    CircularProgressIndicator()
-                                }
+                            },
+                            modifier = Modifier.offset(y = (-20).dp),
+                            maxLines = 2,
+                            maxFontSize = 50.sp
+                        )
+                    }
 
-                                /*
+
+
+                    Row(
+                        horizontalArrangement = Arrangement.SpaceBetween,
+                        verticalAlignment = Alignment.Bottom,
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(8.dp)
+                    ) {
+
+                        if (eventViewModel.eventDetails.value.tier != null) {
+                            Text(
+                                text = eventViewModel.eventDetails.value.tier!!.uppercase() + "-tier",
+                                color = getColorFromTier(eventViewModel.eventDetails.value.tier!!.uppercase()),
+                                fontWeight = FontWeight.Bold,
+                                fontSize = 22.sp
+                            )
+                            if (eventViewModel.eventDetails.value.totalPrizeMoney != null) {
                                 Text(
-                                    text = "Loading...",
-                                    color = getColorFromTier("Placeholder input"),
-                                    fontWeight = FontWeight.Bold,
-                                    fontSize = 22.sp
+                                    textAlign = TextAlign.End, //This doesn't do anything, the lord knows why
+                                    text = eventViewModel.eventDetails.value.totalPrizeMoney.toString() + " " + eventViewModel.eventDetails.value.totalPrizeMoneyCurrency.toString(),
+                                    color = Color(parseColor("#ffbf00")),
+                                    style = TextStyle(
+                                        shadow = Shadow(
+                                            color = Color(parseColor("#bf9b30")),
+                                            offset = Offset(2.0f, 2.0f),
+                                            blurRadius = 2f,
+                                        ), fontSize = 22.sp
+                                    ),
+                                    fontWeight = FontWeight.Bold
                                 )
-
-                                 */
+                            }
+                        } else if (eventViewModel.event.value.name == null) {
+                            Row(
+                                modifier = Modifier.fillMaxWidth(),
+                                horizontalArrangement = Arrangement.Center
+                            ) {
+                                CircularProgressIndicator()
                             }
 
+                            /*
+                            Text(
+                                text = "Loading...",
+                                color = getColorFromTier("Placeholder input"),
+                                fontWeight = FontWeight.Bold,
+                                fontSize = 22.sp
+                            )
 
-
+                             */
                         }
 
-                        Text(
-                            textAlign = TextAlign.Center,
-                            text = if (!eventViewModel.startTime.value.contains("Unknown")) (eventViewModel.startTime.value + " - " + eventViewModel.endTime.value) else "",
-                            color = MaterialTheme.colorScheme.onSecondaryContainer
-                        )
 
-                        Divider(thickness = 1.dp)
-                        Spacer(modifier = Modifier.size(4.dp))
+                    }
 
-                        Column(
-                            //horizontalAlignment = Alignment.CenterHorizontally,
-                            modifier = Modifier.fillMaxWidth()
-                        ) {
+                    Text(
+                        textAlign = TextAlign.Center,
+                        text = if (!eventViewModel.startTime.value.contains("Unknown")) (eventViewModel.startTime.value + " - " + eventViewModel.endTime.value) else "",
+                        color = MaterialTheme.colorScheme.onSecondaryContainer
+                    )
 
+                    Divider(thickness = 1.dp)
+                    Spacer(modifier = Modifier.size(4.dp))
 
-                            //COPY PASTE FROM SINGLETEAM
-                            //I tried doing DI, but we cant because the lazycolumn needs an argument
-                            //that you cant pass so wed need DI in the DI and that was too much work
-                            if (teamViewModel.team.value.id != null) {
-                                Column(modifier = Modifier.clickable {
-                                    onClickSingleTeam(
-                                        teamViewModel.team.value.id.toString()
-                                    )
-                                }) {
+                    Column(
+                        modifier = Modifier.fillMaxWidth()
+                    ) {
+                        if (teamViewModel.team.value.id != null) {
+                            Column(modifier = Modifier.clickable {
+                                onClickSingleTeam(
+                                    teamViewModel.team.value.id.toString()
+                                )
+                            }) {
 
-                                    CommonCard(modifier = Modifier) {
-                                        Column {
-
-                                            /////////
-                                            Row(
-                                                modifier = Modifier.fillMaxWidth(),
-                                                //horizontalArrangement = Arrangement.SpaceBetween
-                                            ) {
+                                CommonCard(modifier = Modifier) {
+                                    Column {
+                                        Row(
+                                            modifier = Modifier.fillMaxWidth(),
+                                        ) {
 
 
-                                                Image(
-                                                    rememberAsyncImagePainter(
-                                                        teamViewModel.teamImage.value
-                                                    ),
-                                                    contentDescription = teamViewModel.team.value.name,
-                                                    Modifier.size(69.dp)
-                                                )
-
-                                                //TODO: Make this resize, possibly with resisingText? Bit hard to do while keeping it pretty
-                                                Text(
-                                                    text = buildAnnotatedString {
-                                                        append("Winner\n\n")
-                                                        withStyle(
-                                                            style = SpanStyle(
-                                                                brush = Brush.linearGradient(
-                                                                    colors = listOf(
-                                                                        teamViewModel.color.value,
-                                                                        MaterialTheme.colorScheme.onSecondaryContainer
-                                                                    )
-                                                                ),
-                                                                fontSize = 65.sp,
-                                                                fontWeight = FontWeight.ExtraBold,
-
-
-                                                                ),
-                                                        ) {
-                                                            append(
-
-                                                                if (teamViewModel.team.value.name != null) teamViewModel.team.value.name.toString()
-                                                                    .substring(
-                                                                        0, //TODO: Temporary fix. pls no
-                                                                        minOf(
-                                                                            teamViewModel.team.value.name.toString().length,
-                                                                            8
-                                                                        )
-
-                                                                    ) else ""
-                                                            )
-                                                        }
-                                                    },
-                                                    maxLines = 3,
-                                                )
-                                            }
-                                            //////
-                                            LazyRow {
-                                                items(playerOverview.size) { index ->
-                                                    OverviewPlayer(
-                                                        player = playerOverview[index],
-                                                        onClickSinglePlayer = onClickSinglePlayer
-                                                    )
-                                                }
-                                            }
-                                            Statistics(
-                                                winRate = winRate,
-                                                averagePlayerAge = statsOverview.value.avgAgeofPlayers,
+                                            Image(
+                                                rememberAsyncImagePainter(
+                                                    teamViewModel.teamImage.value
+                                                ),
+                                                contentDescription = teamViewModel.team.value.name,
+                                                Modifier.size(69.dp)
                                             )
-                                            Spacer(modifier = Modifier.size(15.dp))
+
                                             Text(
-                                                text = "Recent Matches",
-                                                fontWeight = FontWeight.Bold,
-                                                color = MaterialTheme.colorScheme.onPrimaryContainer
+                                                text = buildAnnotatedString {
+                                                    append("Winner\n\n")
+                                                    withStyle(
+                                                        style = SpanStyle(
+                                                            brush = Brush.linearGradient(
+                                                                colors = listOf(
+                                                                    teamViewModel.color.value,
+                                                                    MaterialTheme.colorScheme.onSecondaryContainer
+                                                                )
+                                                            ),
+                                                            fontSize = 65.sp,
+                                                            fontWeight = FontWeight.ExtraBold
+                                                            ),
+                                                    ) {
+                                                        append(
+                                                            if (teamViewModel.team.value.name != null) teamViewModel.team.value.name.toString()
+                                                                .substring(
+                                                                    0, minOf(
+                                                                        teamViewModel.team.value.name.toString().length,
+                                                                        8
+                                                                    )
+                                                                ) else ""
+                                                        )
+                                                    }
+                                                },
+                                                maxLines = 3,
                                             )
-                                            recentMatches.forEachIndexed { index, match ->
-                                                RecentMatches(
-                                                    modifier = Modifier.clickable {
-                                                        Log.i(
-                                                            "Ive been clicked",
-                                                            "Clicked left team"
-                                                        )
-                                                        onClickSingleMatch(
-                                                            match.matchID.toString()
-                                                        )
-                                                    },
-                                                    team1 = recentMatches[index].homeTeam?.name,
-                                                    team2 = recentMatches[index].awayTeam?.name,
-                                                    imageTeam1 = rememberAsyncImagePainter(
-                                                        recentMatches[index].homeTeamImage
-                                                    ),
-                                                    imageTeam2 = rememberAsyncImagePainter(
-                                                        recentMatches[index].awayTeamImage
-                                                    ),
-                                                    team2OnClick = {
-                                                        Log.i(
-                                                            "Ive been clicked",
-                                                            "Clicked right team"
-                                                        )
-                                                        onClickSingleTeam(
-                                                            recentMatches[index].awayTeam?.id.toString()
-                                                        )
-                                                    },
-                                                    score = recentMatches[index].homeScore?.display.toString() + " - " + recentMatches[index].awayScore?.display.toString(),
-                                                    date = recentMatches[index].startTimestamp.toString()
+                                        }
+                                        LazyRow {
+                                            items(playerOverview.size) { index ->
+                                                OverviewPlayer(
+                                                    player = playerOverview[index],
+                                                    onClickSinglePlayer = onClickSinglePlayer
                                                 )
                                             }
-
                                         }
+                                        Statistics(
+                                            winRate = winRate,
+                                            averagePlayerAge = statsOverview.value.avgAgeOfPlayers,
+                                        )
+                                        Spacer(modifier = Modifier.size(15.dp))
+                                        Text(
+                                            text = "Recent Matches",
+                                            fontWeight = FontWeight.Bold,
+                                            color = MaterialTheme.colorScheme.onPrimaryContainer
+                                        )
+                                        recentMatches.forEachIndexed { index, match ->
+                                            RecentMatches(
+                                                modifier = Modifier.clickable {
+                                                    Log.i(
+                                                        "Ive been clicked", "Clicked left team"
+                                                    )
+                                                    onClickSingleMatch(
+                                                        match.matchID.toString()
+                                                    )
+                                                },
+                                                team1 = recentMatches[index].homeTeam?.name,
+                                                team2 = recentMatches[index].awayTeam?.name,
+                                                imageTeam1 = rememberAsyncImagePainter(
+                                                    recentMatches[index].homeTeamImage
+                                                ),
+                                                imageTeam2 = rememberAsyncImagePainter(
+                                                    recentMatches[index].awayTeamImage
+                                                ),
+                                                team2OnClick = {
+                                                    Log.i(
+                                                        "Ive been clicked", "Clicked right team"
+                                                    )
+                                                    onClickSingleTeam(
+                                                        recentMatches[index].awayTeam?.id.toString()
+                                                    )
+                                                },
+                                                score = recentMatches[index].homeScore?.display.toString() + " - " + recentMatches[index].awayScore?.display.toString(),
+                                                date = recentMatches[index].startTimestamp.toString()
+                                            )
+                                        }
+
                                     }
                                 }
                             }
                         }
                     }
                 }
-            )
-        }
+            })
     }
+}
 
 
 

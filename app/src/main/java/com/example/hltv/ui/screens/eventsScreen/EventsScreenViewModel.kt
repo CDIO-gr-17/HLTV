@@ -19,13 +19,11 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
-import kotlinx.coroutines.isActive
 import kotlinx.coroutines.launch
-import java.lang.NumberFormatException
 
 class EventsScreenViewModel : ViewModel() {
     var tournaments = mutableStateListOf(ThirdUniqueTournament("Loading Tournaments"))
-    val uniqueTournamentInfo = mutableStateListOf<UniqueTournamentInfo>()
+    private val uniqueTournamentInfo = mutableStateListOf<UniqueTournamentInfo>()
     var tournamentSeasons = mutableStateListOf<ArrayList<Season>>()
     var uniqueTournaments = mutableStateListOf<APIResponse.UniqueTournamentInfoWrapper>()
     val tournamentIcons = MutableList<Bitmap?>(999){null}
@@ -38,10 +36,6 @@ class EventsScreenViewModel : ViewModel() {
     private var job : Job? = null
 
 
-    fun cancelJob(){
-         job?.cancel()
-    }
-
     fun loadData(){
         if (isLoaded) return
         isLoaded = true
@@ -49,7 +43,7 @@ class EventsScreenViewModel : ViewModel() {
         job = viewModelScope.launch(Dispatchers.IO){
 
 
-            var tournamentsList = getRelevantTournaments()
+            val tournamentsList = getRelevantTournaments()
             tournaments.clear()
             for ((index, tournament) in tournamentsList.withIndex()) {
                 tournamentSeasons.add(getUniqueTournamentSeasons(tournament.id).seasons)

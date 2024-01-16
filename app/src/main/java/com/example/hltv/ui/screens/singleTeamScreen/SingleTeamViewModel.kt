@@ -45,7 +45,7 @@ data class Player(
 data class Stats(
     val countryName: String ?= null,
     val countryCode: String ?= null,
-    val avgAgeofPlayers : Double ?= null,
+    val avgAgeOfPlayers : Double ?= null,
     val winRate : String ?= null,
 )
 class SingleTeamViewModel : ViewModel() {
@@ -57,25 +57,21 @@ class SingleTeamViewModel : ViewModel() {
     private var team1: Team? = null
     private var team2: Team? = null
     val team = mutableStateOf(Team())
-    var team1score: Score? = null
-    var team2score: Score? = null
+    private var team1score: Score? = null
+    private var team2score: Score? = null
     var teamID = 0
-    val playersDateOfBirthTimestamp = mutableStateListOf<Int>()
+    private val playersDateOfBirthTimestamp = mutableStateListOf<Int>()
     val color = mutableStateOf(Color.White)
     var winRate = MutableStateFlow(0.0)
     val noInfoOnTeam = mutableStateOf(false)
 
-    var dataLoaded = false
+    private var dataLoaded = false
     fun loadData(teamIDString: String, gamesToLoad: Int = 6) {
-
-        //I love how jank this is but it works, I think. Loading a new team loads a new viewmodel
-        //where dataloaded will default to false, so I think it works?
         if (dataLoaded) {
             return
         }
         dataLoaded = true
         clearData()
-
 
 
         val teamID = teamIDString.toInt()
@@ -84,9 +80,6 @@ class SingleTeamViewModel : ViewModel() {
         viewModelScope.launch(Dispatchers.IO) {
 
             teamImage.value = getTeamImage(teamID)
-            //palette.value =  Palette.from(teamImage.value!!).generate()
-            //color.value = Color(Palette.from(teamImage.value!!).generate().vibrantSwatch!!.rgb)
-
             if(teamImage.value != null) {
                 val palette = Palette.from(teamImage.value!!).generate()
                 if (teamImage.value != null && palette.vibrantSwatch?.rgb != null) {
@@ -124,7 +117,7 @@ class SingleTeamViewModel : ViewModel() {
                     team1score = event.homeScore
                     team2score = event.awayScore
                     if (lineupIncomplete) {
-                        team.value = event.homeTeam //TODO: Maybe? move this into the try, after the other thing
+                        team.value = event.homeTeam
                         try{
                             lineup.complete(getPlayersFromEvent(event.id).home)
                             lineupIncomplete = false
@@ -150,7 +143,7 @@ class SingleTeamViewModel : ViewModel() {
                     }
                 }
                 val date = Date(event.startTimestamp?.toLong()?.times(1000) ?: 0)
-                val dateFormat = SimpleDateFormat("dd MMM.") //TODO: Fix this
+                val dateFormat = SimpleDateFormat("dd MMM.") // We always want this format
                 val formattedDate = dateFormat.format(date)
                 val recentMatch = RecentMatch(
                     homeTeam = team1,
@@ -173,7 +166,6 @@ class SingleTeamViewModel : ViewModel() {
                     "Added recent match with homeTeam ${event.homeTeam.name}, ${event.homeScore}, ${event.bestOf}"
                 )
             }
-            Log.i("winRate","Totalmatches $totalMatches, totalWins $totalWins")
             winRate.value = if (totalMatches > 0.0) {
                 (totalWins.toDouble()/ totalMatches) * 100
             } else {
@@ -182,31 +174,28 @@ class SingleTeamViewModel : ViewModel() {
         }
         viewModelScope.launch(Dispatchers.IO) {
             // Lineup
-            Log.w(this.toString(), "Loaded lineup ${lineup}")
-            if (lineup != null) {
-                playerOverview.clear() //TODO: Idk if this clear is really needed
-                for (playerorsub in lineup.await()!!.players) {
-                    val player = Player(
-                        name = playerorsub.player?.name,
-                        image = getPlayerImage(playerorsub.player?.id),
-                        playerId = playerorsub.player?.id,
-                    )
-                    playerOverview.add(player)
-                    if (playerorsub.player?.dateOfBirthTimestamp != null) { // Checks if the player has a dateOfBirthTimeStimp
-                        playersDateOfBirthTimestamp.add(playerorsub.player!!.dateOfBirthTimestamp!!)
-                    } else
-                        Log.i(
-                            "avgAgeOfPlayers",
-                            "Player ${player.name} had dateOfBirthTimeStamp = null. Left out of calculation"
-                        )
-
-                }
-                statisticsOverview.value = Stats(
-                    avgAgeofPlayers = getAvgAgeFromTimestamp(playersDateOfBirthTimestamp),
-                    countryName = team1?.country?.name,
-                    countryCode = team1?.country?.alpha2,
+            Log.w(this.toString(), "Loaded lineup $lineup")
+            for (playerOrSub in lineup.await()!!.players) {
+                val player = Player(
+                    name = playerOrSub.player?.name,
+                    image = getPlayerImage(playerOrSub.player?.id),
+                    playerId = playerOrSub.player?.id,
                 )
+                playerOverview.add(player)
+                if (playerOrSub.player?.dateOfBirthTimestamp != null) {
+                    playersDateOfBirthTimestamp.add(playerOrSub.player!!.dateOfBirthTimestamp!!)
+                } else
+                    Log.i(
+                        "avgAgeOfPlayers",
+                        "Player ${player.name} had dateOfBirthTimeStamp = null. Left out of calculation"
+                    )
+
             }
+            statisticsOverview.value = Stats(
+                avgAgeOfPlayers = getAvgAgeFromTimestamp(playersDateOfBirthTimestamp),
+                countryName = team1?.country?.name,
+                countryCode = team1?.country?.alpha2,
+            )
         }
     }
     private fun clearData() {

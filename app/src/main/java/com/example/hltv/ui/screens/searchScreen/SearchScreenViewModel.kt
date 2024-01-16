@@ -19,19 +19,19 @@ class SearchScreenViewModel : ViewModel(){
     private val _searchResults = MutableStateFlow(emptyList<Results>())
     val searchResult : MutableStateFlow<List<Results>> = _searchResults
 
-    private var lastsearch : String = ""
+    private var lastSearch : String = ""
 
 
     fun search(){
         viewModelScope.launch(Dispatchers.IO) {
-            if (_searchQuery.value.isEmpty() || _searchQuery.value == lastsearch){
+            if (_searchQuery.value.isEmpty() || _searchQuery.value == lastSearch){
                 return@launch
             }
             _isSearching.value = true
             val search = searchInAPIFromString(_searchQuery.value)
             _searchResults.value = search.results
             _isSearching.value = false
-            lastsearch = _searchQuery.value
+            lastSearch = _searchQuery.value
         }
     }
     fun setQuery(query: String){

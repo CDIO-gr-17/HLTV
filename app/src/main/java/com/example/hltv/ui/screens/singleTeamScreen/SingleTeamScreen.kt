@@ -127,7 +127,7 @@ fun SingleTeamScreenComposable(
                     )
                     Statistics(
                         winRate = winRate.value,
-                        averagePlayerAge = statsOverview.value.avgAgeofPlayers,
+                        averagePlayerAge = statsOverview.value.avgAgeOfPlayers,
                     )
                     Spacer(modifier = Modifier.size(15.dp))
                     Text(
@@ -190,7 +190,7 @@ fun OverviewPlayer(
                         modifier = Modifier.fillMaxWidth(),
                         fontWeight = FontWeight.Bold,
                         maxLines = 1,
-                        overflow = TextOverflow.Visible //TODO: Do we want ellipses
+                        overflow = TextOverflow.Visible
                     )
                 }
             )
