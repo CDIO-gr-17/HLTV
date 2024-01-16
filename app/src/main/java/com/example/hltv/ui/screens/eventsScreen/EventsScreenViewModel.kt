@@ -32,6 +32,7 @@ class EventsScreenViewModel : ViewModel() {
     var loading = mutableStateOf(false)
 
     private val _loadingState = MutableStateFlow(true)
+    private var isLoaded = false
     val loadingState: StateFlow<Boolean> get() = _loadingState
 
     private var job : Job? = null
@@ -42,7 +43,11 @@ class EventsScreenViewModel : ViewModel() {
     }
 
     fun loadData(){
+        if (isLoaded) return
+        isLoaded = true
+
         job = viewModelScope.launch(Dispatchers.IO){
+
 
             var tournamentsList = getRelevantTournaments()
             tournaments.clear()

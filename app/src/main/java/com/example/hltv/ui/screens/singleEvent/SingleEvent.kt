@@ -17,6 +17,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyRow
+import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.Divider
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
@@ -299,22 +300,38 @@ fun SingleEventTopbox(
                                     fontWeight = FontWeight.Bold,
                                     fontSize = 22.sp
                                 )
+                                Text(
+                                    textAlign = TextAlign.End, //This doesn't do anything, the lord knows why
+                                    text = eventViewModel.eventDetails.value.totalPrizeMoney.toString() + " " + eventViewModel.eventDetails.value.totalPrizeMoneyCurrency.toString(),
+                                    color = Color(parseColor("#ffbf00")),
+                                    style = TextStyle(
+                                        shadow = Shadow(
+                                            color = Color(parseColor("#bf9b30")),
+                                            offset = Offset(2.0f, 2.0f),
+                                            blurRadius = 2f,
+                                        ),
+                                        fontSize = 22.sp
+                                    ),
+                                    fontWeight = FontWeight.Bold
+                                )
+                            } else if (eventViewModel.event.value.name == null){
+                                Row (modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.Center){
+                                    CircularProgressIndicator()
+                                }
+
+                                /*
+                                Text(
+                                    text = "Loading...",
+                                    color = getColorFromTier("Placeholder input"),
+                                    fontWeight = FontWeight.Bold,
+                                    fontSize = 22.sp
+                                )
+
+                                 */
                             }
 
-                            Text(
-                                textAlign = TextAlign.End, //This doesn't do anything, the lord knows why
-                                text = eventViewModel.eventDetails.value.totalPrizeMoney.toString() + " " + eventViewModel.eventDetails.value.totalPrizeMoneyCurrency.toString(),
-                                color = Color(parseColor("#ffbf00")),
-                                style = TextStyle(
-                                    shadow = Shadow(
-                                        color = Color(parseColor("#bf9b30")),
-                                        offset = Offset(2.0f, 2.0f),
-                                        blurRadius = 2f,
-                                    ),
-                                    fontSize = 22.sp
-                                ),
-                                fontWeight = FontWeight.Bold
-                            )
+
+
                         }
 
                         Text(
