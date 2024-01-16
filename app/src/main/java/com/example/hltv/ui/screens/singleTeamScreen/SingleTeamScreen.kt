@@ -38,6 +38,7 @@ import coil.compose.rememberAsyncImagePainter
 import com.example.hltv.R
 import com.example.hltv.data.getFlagFromCountryCode
 import com.example.hltv.ui.common.CommonCard
+import com.example.hltv.ui.common.showToast
 import java.text.DecimalFormat
 
 @Composable
@@ -52,6 +53,10 @@ fun SingleTeamScreen(teamID : String? = "364378", onClickSinglePlayer: (String?)
     val countryCode = statsOverview.value.countryCode
     val painter = getFlagFromCountryCode(countryCode = countryCode)
     val winRate = viewModel.winRate.collectAsState()
+
+    if(viewModel.noInfoOnTeam.value){
+        showToast(message = "No info on this team", time = 5)
+    }
 
     LazyColumn {
         item{

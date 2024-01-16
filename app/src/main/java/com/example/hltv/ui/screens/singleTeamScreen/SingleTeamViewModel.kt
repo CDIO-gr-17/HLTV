@@ -9,6 +9,8 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.hltv.data.getAvgAgeFromTimestamp
 import androidx.palette.graphics.Palette
+import com.example.hltv.data.remote.APIKEY
+import com.example.hltv.data.remote.APIResponse
 import com.example.hltv.data.remote.PlayerGroup
 import com.example.hltv.data.remote.Score
 import com.example.hltv.data.remote.Team
@@ -16,10 +18,12 @@ import com.example.hltv.data.remote.getPlayerImage
 import com.example.hltv.data.remote.getPlayersFromEvent
 import com.example.hltv.data.remote.getPreviousMatches
 import com.example.hltv.data.remote.getTeamImage
+import com.example.hltv.ui.common.showToast
 import kotlinx.coroutines.CompletableDeferred
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.launch
+import java.io.IOException
 import java.text.SimpleDateFormat
 import java.util.Date
 
@@ -61,6 +65,7 @@ class SingleTeamViewModel : ViewModel() {
     val playersDateOfBirthTimestamp = mutableStateListOf<Int>()
     val color = mutableStateOf(Color.White)
     var winRate = MutableStateFlow(0.0)
+    val noInfoOnTeam = mutableStateOf(false)
 
     var dataLoaded = false
     fun loadData(teamIDString: String, gamesToLoad: Int = 6) {
@@ -87,7 +92,19 @@ class SingleTeamViewModel : ViewModel() {
             } else color.value = Color.White
 
             Log.w(this.toString(), "Got previous matches of team with id: $teamID")
-            val completedMatches = getPreviousMatches(teamID, 0)
+            var completedMatches : APIResponse.EventsWrapper
+            try{
+                completedMatches = getPreviousMatches(teamID, 0)
+            } catch (e : IOException){
+                Log.w("getPreviousMatches", "Tried loading matches for team with no previous matches")
+                completedMatches = APIResponse.EventsWrapper(emptyList())
+                noInfoOnTeam.value = true
+            } catch (e : java.lang.ClassCastException){
+                Log.w("getPreviousMatches", "Tried loading matches for team with no previous matches")
+                completedMatches = APIResponse.EventsWrapper(emptyList())
+                noInfoOnTeam.value = true
+            }
+
             val filteredMatches = completedMatches.events
                 .filter { it.status?.type == "finished" }
                 .filter { it.homeScore?.current != null || it.awayScore?.current != null && it.homeScore?.current != 0 && it.awayScore?.current != 0 }

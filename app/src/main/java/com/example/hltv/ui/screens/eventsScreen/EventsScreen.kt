@@ -14,15 +14,18 @@ import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.painter.Painter
+import androidx.compose.ui.platform.LocalLifecycleOwner
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
+import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.viewmodel.compose.viewModel
 import coil.compose.rememberAsyncImagePainter
 import com.example.hltv.R
@@ -45,7 +48,7 @@ fun EventsScreen(onclickSingleEvent: (String?) -> Unit) {
     val uniqueTournaments = viewModel.uniqueTournaments
 
     //TODO: Optimize this for CPU performance so we dont resort on redraw
-    var sortedTournaments = mutableListOf<ThirdUniqueTournament>()
+    val sortedTournaments = mutableListOf<ThirdUniqueTournament>()
     val map = mutableMapOf<Int, Int>()
 
     val loadingState by viewModel.loadingState.collectAsState()

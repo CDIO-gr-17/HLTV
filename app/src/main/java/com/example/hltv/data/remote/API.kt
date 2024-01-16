@@ -10,8 +10,10 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.async
 import kotlinx.coroutines.awaitAll
 import kotlinx.coroutines.delay
+import kotlinx.coroutines.isActive
 import kotlinx.coroutines.sync.Mutex
 import kotlinx.coroutines.sync.withLock
+import kotlinx.coroutines.withContext
 import okhttp3.Request
 import java.io.ByteArrayOutputStream
 import java.io.IOException
@@ -31,7 +33,19 @@ var totalSaved = 0.0
 suspend fun waitForAPI() {
 
 
+
     mutexForAPI.withLock {
+
+        /*
+        withContext(Dispatchers.IO){ //IDK if this works
+            if (!isActive){
+                return@withContext
+            }
+        }
+
+         */
+
+
 
         //Mixing these two seemed to break it, so fix that
         val delta = ((lastAPIPull + CURRENTMILISBETWEENREQUEST) - java.util.Date().time)
@@ -134,6 +148,7 @@ suspend fun getTeamImage(teamID: Int? = 372647): Bitmap? {
 }
 
 suspend fun getPreviousMatches(teamID: Int, pageID: Int = 0): APIResponse.EventsWrapper {
+
     return getAPIResponse(
         "team/" + teamID.toString() + "/matches/previous/" + pageID,
         APIKEY,

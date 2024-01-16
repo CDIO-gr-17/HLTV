@@ -16,8 +16,10 @@ import com.example.hltv.data.remote.getTournamentLogo
 import com.example.hltv.data.remote.getUniqueTournamentDetails
 import com.example.hltv.data.remote.getUniqueTournamentSeasons
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.Job
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.isActive
 import kotlinx.coroutines.launch
 import java.lang.NumberFormatException
 
@@ -32,9 +34,16 @@ class EventsScreenViewModel : ViewModel() {
     private val _loadingState = MutableStateFlow(true)
     val loadingState: StateFlow<Boolean> get() = _loadingState
 
+    private var job : Job? = null
+
+
+    fun cancelJob(){
+         job?.cancel()
+    }
 
     fun loadData(){
-        viewModelScope.launch(Dispatchers.IO){
+        job = viewModelScope.launch(Dispatchers.IO){
+
             var tournamentsList = getRelevantTournaments()
             tournaments.clear()
             for ((index, tournament) in tournamentsList.withIndex()) {

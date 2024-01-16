@@ -130,20 +130,18 @@ class MatchesScreenViewModel: ViewModel() {
         }
 
         dataLoaded = true
-        viewModelScope.launch {
-            CoroutineScope(Dispatchers.IO).launch {
-                val liveMatches = getLiveMatches()
-                if (liveMatches.events.isNotEmpty()) {
-                    for ((index, event) in liveMatches.events.withIndex()) {
-                        liveMatchesValues.add(event)
-                        homeTeamIcons[index] = (getTeamImage(event.homeTeam.id))
-                        awayTeamIcons[index] = (getTeamImage(event.awayTeam.id))
-                    }
-                } else {
-                    Log.w(this.toString(), "There were no live matches?")
+        viewModelScope.launch(Dispatchers.IO) {
+            val liveMatches = getLiveMatches()
+            if (liveMatches.events.isNotEmpty()) {
+                for ((index, event) in liveMatches.events.withIndex()) {
+                    liveMatchesValues.add(event)
+                    homeTeamIcons[index] = (getTeamImage(event.homeTeam.id))
+                    awayTeamIcons[index] = (getTeamImage(event.awayTeam.id))
                 }
-                loadUpcomingMatches()
+            } else {
+                Log.w(this.toString(), "There were no live matches?")
             }
+            loadUpcomingMatches()
         }
     }
 }

@@ -55,6 +55,7 @@ android {
 
 dependencies {
 
+    implementation("androidx.lifecycle:lifecycle-runtime-compose:2.7.0")
     implementation("androidx.palette:palette-ktx:1.0.0")
     implementation("androidx.core:core-ktx:1.12.0")
     // https://mvnrepository.com/artifact/com.google.code.gson/gson
