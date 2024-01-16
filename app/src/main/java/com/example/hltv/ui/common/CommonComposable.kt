@@ -22,6 +22,7 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 
 @Composable
 fun CommonComposable() {
@@ -119,7 +120,7 @@ fun CommonCard(
                     headText?.let {
                         Text(
                             text = it,
-                            fontSize = MaterialTheme.typography.bodyLarge.fontSize,
+                            fontSize = 20.sp,
                             color = MaterialTheme.colorScheme.onPrimaryContainer,
                             maxLines = 1
                         )
