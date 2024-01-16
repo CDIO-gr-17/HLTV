@@ -1,20 +1,16 @@
 package com.example.hltv.ui.screens.homeScreen
 
 import android.graphics.Bitmap
-import android.util.Log
-import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.hltv.data.convertTimestampToDateURL
+import com.example.hltv.data.local.PrefDataKeyValueStore
 import com.example.hltv.data.remote.Event
-import com.example.hltv.data.remote.Score
-import com.example.hltv.data.remote.Team
 import com.example.hltv.data.remote.getLiveMatches
 import com.example.hltv.data.remote.getMatchesFromDay
 import com.example.hltv.data.remote.getTeamImage
 import com.example.hltv.data.remote.getTournamentLogo
-import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -53,10 +49,10 @@ class HomeScreenViewModel: ViewModel() {
                 else {
                     loadUpcomingMatch()
                 }
-            viewModelScope.launch (Dispatchers.IO){
+           /* viewModelScope.launch (Dispatchers.IO){
                 loadUpcomingTournament()
             }
-
+*/
             dataLoaded = true
         }
 
@@ -76,7 +72,7 @@ class HomeScreenViewModel: ViewModel() {
             }
         }
     }
-
+/*
     private suspend fun loadUpcomingTournament(){
         val tournaments = getRelevantTournaments()
         if (tournaments.isNotEmpty())
@@ -96,7 +92,7 @@ class HomeScreenViewModel: ViewModel() {
             uniqueTournament.value = getUniqueTournamentDetails(tournament.id, seasonID)
         }
 
-    }
+    }*/
 
     private suspend fun loadUpcomingMatch() {
         val upcomingMatches = getMatchesFromDay(convertTimestampToDateURL((System.currentTimeMillis()/1000).toInt()))

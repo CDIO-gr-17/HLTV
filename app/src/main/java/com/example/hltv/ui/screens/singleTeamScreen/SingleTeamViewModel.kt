@@ -65,7 +65,7 @@ class SingleTeamViewModel : ViewModel() {
     var winRate = MutableStateFlow(0.0)
     val noInfoOnTeam = mutableStateOf(false)
 
-    private var dataLoaded = false
+    var dataLoaded = false
     fun loadData(teamIDString: String, gamesToLoad: Int = 6) {
         if (dataLoaded) {
             return
