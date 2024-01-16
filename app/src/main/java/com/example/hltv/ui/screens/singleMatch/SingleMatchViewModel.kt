@@ -105,13 +105,19 @@ class SingleMatchViewModel() : ViewModel() {
             val homeTeamPalette = Palette.from(homeTeamIcon.value!!).generate()
             val awayTeamPalette = Palette.from(awayTeamIcon.value!!).generate()
 
-            if (homeTeamIcon.value != null && homeTeamPalette.vibrantSwatch?.rgb != null) {
-                homeTeamColor.value = Color(homeTeamPalette.vibrantSwatch?.rgb!!)
+            if (homeTeamIcon.value != null){
+                if (homeTeamPalette.vibrantSwatch?.rgb != null) {
+                    homeTeamColor.value = Color(homeTeamPalette.vibrantSwatch?.rgb!!)
+                } else homeTeamColor.value = Color.Blue
             } else homeTeamColor.value = Color.Blue
 
-            if (awayTeamIcon.value != null && awayTeamPalette.vibrantSwatch?.rgb != null) {
-                awayTeamColor.value = Color(awayTeamPalette.vibrantSwatch?.rgb!!)
+            if (awayTeamIcon.value != null){
+                if (awayTeamIcon.value != null && awayTeamPalette.vibrantSwatch?.rgb != null) {
+                    awayTeamColor.value = Color(awayTeamPalette.vibrantSwatch?.rgb!!)
+                } else awayTeamColor.value = Color.Red
             } else awayTeamColor.value = Color.Red
+
+
 
             tournamentIcon.value = getTournamentLogo(event.value!!.tournament.uniqueTournament?.id)
             Log.i("tournamentIcon", "tournamentIcon added ${tournamentIcon.value}")
