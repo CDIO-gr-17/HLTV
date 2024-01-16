@@ -300,20 +300,22 @@ fun SingleEventTopbox(
                                     fontWeight = FontWeight.Bold,
                                     fontSize = 22.sp
                                 )
-                                Text(
-                                    textAlign = TextAlign.End, //This doesn't do anything, the lord knows why
-                                    text = eventViewModel.eventDetails.value.totalPrizeMoney.toString() + " " + eventViewModel.eventDetails.value.totalPrizeMoneyCurrency.toString(),
-                                    color = Color(parseColor("#ffbf00")),
-                                    style = TextStyle(
-                                        shadow = Shadow(
-                                            color = Color(parseColor("#bf9b30")),
-                                            offset = Offset(2.0f, 2.0f),
-                                            blurRadius = 2f,
+                                if(eventViewModel.eventDetails.value.totalPrizeMoney != null) {
+                                    Text(
+                                        textAlign = TextAlign.End, //This doesn't do anything, the lord knows why
+                                        text = eventViewModel.eventDetails.value.totalPrizeMoney.toString() + " " + eventViewModel.eventDetails.value.totalPrizeMoneyCurrency.toString(),
+                                        color = Color(parseColor("#ffbf00")),
+                                        style = TextStyle(
+                                            shadow = Shadow(
+                                                color = Color(parseColor("#bf9b30")),
+                                                offset = Offset(2.0f, 2.0f),
+                                                blurRadius = 2f,
+                                            ),
+                                            fontSize = 22.sp
                                         ),
-                                        fontSize = 22.sp
-                                    ),
-                                    fontWeight = FontWeight.Bold
-                                )
+                                        fontWeight = FontWeight.Bold
+                                    )
+                                }
                             } else if (eventViewModel.event.value.name == null){
                                 Row (modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.Center){
                                     CircularProgressIndicator()
