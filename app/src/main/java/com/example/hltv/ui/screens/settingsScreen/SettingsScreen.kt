@@ -47,9 +47,9 @@ fun SettingsScreen(onClickSingleTeam: (String?) -> Unit) {
     }
 
     Column {
-        favoriteTeamSection(teamName = teamName, teamLogo = teamLogo) {
+        FavoriteTeamSection(teamName = teamName, teamLogo = teamLogo) {
             SettingsToggle(
-                settingName = "Show team-info on homescreen",
+                settingName = "Show team-info on homeScreen",
                 isChecked = favoriteTeamOnHomeScreen,
                 onCheckedChange = { favoriteTeamOnHomeScreen = it })
         }
@@ -64,7 +64,7 @@ fun SettingsScreen(onClickSingleTeam: (String?) -> Unit) {
 }
 
 @Composable
-private fun favoriteTeamSection(
+private fun FavoriteTeamSection(
     teamName: String,
     teamLogo: Bitmap?,
     bottomBox: @Composable () -> Unit
@@ -96,7 +96,7 @@ private fun favoriteTeamSection(
                     LocalContext.current.resources, R.drawable.questionmark
                 ).asImageBitmap()
                 Image(
-                    bitmap = if (teamLogo != null) teamLogo!!.asImageBitmap() else stdBitmap,
+                    bitmap = teamLogo?.asImageBitmap() ?: stdBitmap,
                     contentDescription = "Team Logo",
                     modifier = Modifier
                         .height(70.dp)

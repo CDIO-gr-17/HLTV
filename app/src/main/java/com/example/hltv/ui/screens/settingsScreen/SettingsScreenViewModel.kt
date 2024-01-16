@@ -12,7 +12,7 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
 
-class SettingsScreenViewModel() : ViewModel() {
+class SettingsScreenViewModel : ViewModel() {
     private val _favoriteTeam = MutableStateFlow(0)
     val favoriteTeam: StateFlow<Int> = _favoriteTeam
 
