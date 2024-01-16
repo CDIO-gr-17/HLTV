@@ -10,7 +10,7 @@ data class Prediction(
     var awayTeamVotePercentage: Int = 50
 )
 
-suspend fun sendPredictionToFirestore(prediction: Prediction, matchID: Int) {
+fun sendPredictionToFirestore(prediction: Prediction, matchID: Int) {
     DatabaseSingleton.db.collection("predictions").document(matchID.toString()).set(prediction)
         .addOnSuccessListener { Log.d("Database","DocumentSnapshot successfully written!") }
         .addOnFailureListener { e -> Log.w("Database","Error writing document: $e") }
@@ -18,7 +18,7 @@ suspend fun sendPredictionToFirestore(prediction: Prediction, matchID: Int) {
 
 suspend fun getPredictionFromFirestore(matchID: Int): Prediction? {
     val docRef = DatabaseSingleton.db.collection("predictions").document(matchID.toString())
-    var prediction: Prediction? = null
+    var prediction: Prediction?
     try {
         prediction = docRef.get().await().toObject(Prediction::class.java)
         Log.w("Database","Got prediction from firestore: $prediction")
