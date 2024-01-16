@@ -64,7 +64,7 @@ fun SingleMatchScreen(matchID: String?, onClickSingleTeam: (String?) -> Unit) {
     val event = viewModel.event.value
     val mediaList = viewModel.tournamentMedia.collectAsState()
     val games = viewModel.games
-    LazyColumn (){
+    LazyColumn {
         if (viewModel.LiveEvent.value != null) {
             item {
                 Log.i("SingleMatch", "Drawing liveEvent")
@@ -151,8 +151,8 @@ fun SingleMatchScreen(matchID: String?, onClickSingleTeam: (String?) -> Unit) {
                     modifier = Modifier,
                     headText = "Map results"
                 ) {
-                    Column() {
-                        games.forEachIndexed() { gameNumber, game ->
+                    Column {
+                        games.forEachIndexed { gameNumber, game ->
                             Log.i("games", "${games.size}")
                             EventImage(
                                 backgroundImage = if (gameNumber < viewModel.mapImages.size) {
@@ -362,45 +362,49 @@ fun EventImage(
                             )
                         }
                         Spacer(modifier = Modifier.height(15.dp))
-                        if (eventStatusType == "inprogress") {
-                            Text(
-                                text = "Live",
-                                color = Color.White,
-                                fontSize = 20.sp,
-                                fontWeight = FontWeight.Medium,
-                                textAlign = TextAlign.Center,
-                                modifier = Modifier
-                                    .clip(RoundedCornerShape(10.dp))
-                                    .background(Color.Red)
-                                    .padding(horizontal = 12.dp, vertical = 3.dp)
-                                    .align(Alignment.CenterHorizontally)
-                            )
-                        } else if (eventStatusType == "finished") {
-                            Text(
-                                text = "Ended",
-                                color = Color.White,
-                                fontSize = 16.sp,
-                                fontWeight = FontWeight.Normal,
-                                textAlign = TextAlign.Center,
-                                modifier = Modifier.align(Alignment.CenterHorizontally)
-                            )
-                            Text(
-                                text = convertTimestampToDateClock(changeTimeStamp),
-                                color = Color.White,
-                                fontSize = 16.sp,
-                                fontWeight = FontWeight.Normal,
-                                textAlign = TextAlign.Center,
-                                modifier = Modifier.align(Alignment.CenterHorizontally)
-                            )
-                        } else {
-                            Text(
-                                text = formattedTime,
-                                color = Color.White,
-                                fontSize = 24.sp,
-                                fontWeight = FontWeight.Normal,
-                                textAlign = TextAlign.Center,
-                                modifier = Modifier.align(Alignment.CenterHorizontally)
-                            )
+                        when (eventStatusType) {
+                            "inprogress" -> {
+                                Text(
+                                    text = "Live",
+                                    color = Color.White,
+                                    fontSize = 20.sp,
+                                    fontWeight = FontWeight.Medium,
+                                    textAlign = TextAlign.Center,
+                                    modifier = Modifier
+                                        .clip(RoundedCornerShape(10.dp))
+                                        .background(Color.Red)
+                                        .padding(horizontal = 12.dp, vertical = 3.dp)
+                                        .align(Alignment.CenterHorizontally)
+                                )
+                            }
+                            "finished" -> {
+                                Text(
+                                    text = "Ended",
+                                    color = Color.White,
+                                    fontSize = 16.sp,
+                                    fontWeight = FontWeight.Normal,
+                                    textAlign = TextAlign.Center,
+                                    modifier = Modifier.align(Alignment.CenterHorizontally)
+                                )
+                                Text(
+                                    text = convertTimestampToDateClock(changeTimeStamp),
+                                    color = Color.White,
+                                    fontSize = 16.sp,
+                                    fontWeight = FontWeight.Normal,
+                                    textAlign = TextAlign.Center,
+                                    modifier = Modifier.align(Alignment.CenterHorizontally)
+                                )
+                            }
+                            else -> {
+                                Text(
+                                    text = formattedTime,
+                                    color = Color.White,
+                                    fontSize = 24.sp,
+                                    fontWeight = FontWeight.Normal,
+                                    textAlign = TextAlign.Center,
+                                    modifier = Modifier.align(Alignment.CenterHorizontally)
+                                )
+                            }
                         }
                     }
                     Column {
