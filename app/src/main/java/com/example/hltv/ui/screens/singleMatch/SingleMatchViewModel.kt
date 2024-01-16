@@ -2,7 +2,6 @@ package com.example.hltv.ui.screens.singleMatch
 
 import android.graphics.Bitmap
 import android.util.Log
-import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.mutableStateOf
@@ -28,14 +27,14 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.launch
 
-class SingleMatchViewModel() : ViewModel() {
+class SingleMatchViewModel : ViewModel() {
     var prediction: MutableState<Prediction> = mutableStateOf(Prediction(0, 0))
     val games = mutableListOf<Game>()
     val mapImages = mutableStateListOf<Bitmap?>(null)
     var event = mutableStateOf<Event?>(null)
-    var LiveEvent = mutableStateOf<Event?>(null)
-    var UpcomingEvent = mutableStateOf<Event?>(null)
-    var FinishedEvent = mutableStateOf<Event?>(null)
+    var liveEvent = mutableStateOf<Event?>(null)
+    var upcomingEvent = mutableStateOf<Event?>(null)
+    var finishedEvent = mutableStateOf<Event?>(null)
     var awayTeamIcon = mutableStateOf<Bitmap?>(null)
     var homeTeamIcon = mutableStateOf<Bitmap?>(null)
     var tournamentIcon = mutableStateOf<Bitmap?>(null)
@@ -47,7 +46,7 @@ class SingleMatchViewModel() : ViewModel() {
     private var _tournamentMedia = MutableStateFlow(ArrayList<Media>())
     var tournamentMedia: MutableStateFlow<ArrayList<Media>> = _tournamentMedia
 
-    fun getPrediction(matchID: String?) {
+    private fun getPrediction(matchID: String?) {
         val niceMatchID = matchID!!.toInt()
         CoroutineScope(Dispatchers.IO).launch {
             val tempPrediction =
@@ -65,25 +64,29 @@ class SingleMatchViewModel() : ViewModel() {
     fun updatePrediction(vote: Int, matchID: String?) {
         val niceMatchID = matchID!!.toInt()
         CoroutineScope(Dispatchers.IO).launch {
-            if (vote == 1) {
-                prediction.value = Prediction(
-                    prediction.value.homeTeamVoteCount + 1,
-                    prediction.value.awayTeamVoteCount
-                )
-            } else if (vote == 2) {
-                prediction.value = Prediction(
-                    prediction.value.homeTeamVoteCount,
-                    prediction.value.awayTeamVoteCount + 1
-                )
-            } else {
-                return@launch
+            when (vote) {
+                1 -> {
+                    prediction.value = Prediction(
+                        prediction.value.homeTeamVoteCount + 1,
+                        prediction.value.awayTeamVoteCount
+                    )
+                }
+                2 -> {
+                    prediction.value = Prediction(
+                        prediction.value.homeTeamVoteCount,
+                        prediction.value.awayTeamVoteCount + 1
+                    )
+                }
+                else -> {
+                    return@launch
+                }
             }
             calculateVotePercentage(prediction.value)
             sendPredictionToFirestore(prediction.value, niceMatchID)
         }
     }
 
-    fun calculateVotePercentage(prediction: Prediction) {
+    private fun calculateVotePercentage(prediction: Prediction) {
         val totalVotes = prediction.homeTeamVoteCount + prediction.awayTeamVoteCount
         if (totalVotes == 0) {
             Log.d("SingleMatchViewModel", "totalVotes = 0")
@@ -122,16 +125,20 @@ class SingleMatchViewModel() : ViewModel() {
             tournamentIcon.value = getTournamentLogo(event.value!!.tournament.uniqueTournament?.id)
             Log.i("tournamentIcon", "tournamentIcon added ${tournamentIcon.value}")
             getPrediction(matchID)
-            if (event.value!!.status?.type == "finished") { // Match with description "ended" has finished
-                FinishedEvent.value = event.value
-            } else if (event.value!!.status?.type == "inprogress") { // Match is not started
-                LiveEvent.value = event.value
-            } else { // Match must be upcoming
-                UpcomingEvent.value = event.value
-                description =
-                    "${event.value!!.homeTeam.name} will be playing against ${event.value!!.awayTeam.name}" +
-                            " at ${convertTimestampToWeekDateClock(event.value!!.startTimestamp)} in the ${event.value!!.tournament.name} tournament." +
-                            " They will be playing in a best of ${event.value!!.bestOf} map format."
+            when (event.value!!.status?.type) {
+                "finished" -> { // Match with description "ended" has finished
+                    finishedEvent.value = event.value
+                }
+                "inprogress" -> { // Match is not started
+                    liveEvent.value = event.value
+                }
+                else -> { // Match must be upcoming
+                    upcomingEvent.value = event.value
+                    description =
+                        "${event.value!!.homeTeam.name} will be playing against ${event.value!!.awayTeam.name}" +
+                                " at ${convertTimestampToWeekDateClock(event.value!!.startTimestamp)} in the ${event.value!!.tournament.name} tournament." +
+                                " They will be playing in a best of ${event.value!!.bestOf} map format."
+                }
             }
             _tournamentMedia.value =
                 getMedia(event.value!!.homeTeam.id, event.value!!.awayTeam.id)

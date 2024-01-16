@@ -65,7 +65,7 @@ fun SingleMatchScreen(matchID: String?, onClickSingleTeam: (String?) -> Unit) {
     val mediaList = viewModel.tournamentMedia.collectAsState()
     val games = viewModel.games
     LazyColumn {
-        if (viewModel.LiveEvent.value != null) {
+        if (viewModel.liveEvent.value != null) {
             item {
                 Log.i("SingleMatch", "Drawing liveEvent")
                 EventImage(
@@ -94,7 +94,7 @@ fun SingleMatchScreen(matchID: String?, onClickSingleTeam: (String?) -> Unit) {
                     finished = true
                 )
             }
-        } else if (viewModel.UpcomingEvent.value != null) {
+        } else if (viewModel.upcomingEvent.value != null) {
             item {
                 Log.i("SingleMatch", "Drawing upcomingEvent")
                 EventImage(
@@ -128,7 +128,7 @@ fun SingleMatchScreen(matchID: String?, onClickSingleTeam: (String?) -> Unit) {
                     matchID = matchID,
                 )
             }
-        } else if (viewModel.FinishedEvent.value != null) {
+        } else if (viewModel.finishedEvent.value != null) {
             item {
                 Log.i("SingleMatch", "Drawing finishedEvent")
                 EventImage(
