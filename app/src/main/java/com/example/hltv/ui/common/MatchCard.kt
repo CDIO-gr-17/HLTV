@@ -54,7 +54,7 @@ fun LiveMatchCard(
 
 
     CommonCard(
-        modifier = Modifier,
+        modifier = modifier,
         topBox = {
 
             Row(
