@@ -17,7 +17,7 @@ fun getFlagFromCountryCode(countryCode: String?): AsyncImagePainter {
     if ( countryCode != null) {
         return rememberAsyncImagePainter(
             model = ImageRequest.Builder(LocalContext.current)
-                .decoderFactory(SvgDecoder.Factory()) //TODO HLTV-144 Crash may be caused here although doesn't seem to be a bitmap?
+                .decoderFactory(SvgDecoder.Factory())
                 .data("https://flagcdn.com/${countryCode.lowercase()}.svg")
                 .size(Size.ORIGINAL) // Set the target size to load the image at.
                 .size(200) //This should fix HLTV-144

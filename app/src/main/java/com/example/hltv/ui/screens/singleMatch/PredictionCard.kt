@@ -39,12 +39,6 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.hltv.ui.common.CommonCard
 
-
-class PredictionCardState {
-    var hasVoted by mutableStateOf(false)
-    var isHomeTeamSelected by mutableStateOf(false)
-}
-
 @Composable
 fun PredictionCard(
     modifier: Modifier = Modifier,
@@ -106,17 +100,17 @@ fun PredictionCard(
                     .align(Alignment.Center),
                 horizontalArrangement = Arrangement.SpaceAround
             ) {
-                drawCircle(
+                DrawCircle(
                     modifier = modifier,
                     teamIcon = teamOneIcon,
                     voteCount = viewModel.prediction.value.homeTeamVotePercentage,
-                    hometeam = true,
+                    homeTeam = true,
                     hasVoted = hasVoted,
                     isHomeTeamSelected = isHomeTeamSelected,
                     finished = finished,
                     onClick = {
                         if (hasVoted) {
-                            return@drawCircle
+                            return@DrawCircle
                         }
                         hasVoted = true
                         isHomeTeamSelected = true
@@ -133,17 +127,17 @@ fun PredictionCard(
                     textAlign = TextAlign.Center,
                     fontWeight = FontWeight.Bold,
                 )
-                drawCircle(
+                DrawCircle(
                     modifier = modifier,
                     teamIcon = teamTwoIcon,
                     voteCount = viewModel.prediction.value.awayTeamVotePercentage,
-                    hometeam = false,
+                    homeTeam = false,
                     hasVoted = hasVoted,
                     isHomeTeamSelected = isHomeTeamSelected,
                     finished = finished,
                     onClick = {
                         if (hasVoted) {
-                            return@drawCircle
+                            return@DrawCircle
                         }
                         hasVoted = true
                         isHomeTeamSelected = false
@@ -156,11 +150,11 @@ fun PredictionCard(
 }
 
 @Composable
-private fun drawCircle(
+private fun DrawCircle(
     modifier: Modifier,
     teamIcon: Painter,
     voteCount: Int,
-    hometeam: Boolean,
+    homeTeam: Boolean,
     hasVoted: Boolean,
     isHomeTeamSelected: Boolean,
     finished: Boolean,
@@ -177,7 +171,7 @@ private fun drawCircle(
                         finished -> 6.dp
                         else -> 4.dp
                     }, if (hasVoted || finished) Color.White else Color.Black, CircleShape
-                )//here TODO
+                )
                 .clip(CircleShape)
                 .background(color = Color(0xFF8991A1))
                 .clickable {
@@ -206,7 +200,7 @@ private fun drawCircle(
                     .alpha(
                         if (!hasVoted) {
                             0f
-                        } else if ((isHomeTeamSelected && hometeam) || (!hometeam && !isHomeTeamSelected)) {
+                        } else if ((isHomeTeamSelected && homeTeam) || (!homeTeam && !isHomeTeamSelected)) {
                             1f
                         } else {
                             0f
@@ -214,7 +208,7 @@ private fun drawCircle(
                     )
             )
             Text(
-                text = voteCount.toString() + "%",
+                text = "$voteCount%",
                 modifier = Modifier
                     .align(Alignment.CenterHorizontally)
                     .offset(y = (-15).dp),

@@ -47,7 +47,6 @@ fun EventsScreen(onclickSingleEvent: (String?) -> Unit) {
     val tournamentSeasons = viewModel.tournamentSeasons
     val uniqueTournaments = viewModel.uniqueTournaments
 
-    //TODO: Optimize this for CPU performance so we dont resort on redraw
     val sortedTournaments = mutableListOf<ThirdUniqueTournament>()
     val map = mutableMapOf<Int, Int>()
 
@@ -118,7 +117,7 @@ fun EventsScreen(onclickSingleEvent: (String?) -> Unit) {
 fun SingleEventCard(
     eventTitle: String = "Unknown title",
     eventDate: String? = null,
-    eventLogo: Painter = painterResource(id = R.drawable.astralis_logo), //TODO: Change
+    eventLogo: Painter? = null,
     tier: String? = null,
     prizePool: Int? = null,
     competitors: Int? = null,

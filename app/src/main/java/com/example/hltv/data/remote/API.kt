@@ -224,7 +224,6 @@ private suspend fun getAPIImage(apiURL: String, apiKEY: String): Bitmap? {
     val jsonString = responseBodyCopy?.string()
     checkRequestRate(jsonString)
 
-    //TODO: This is unnecessary
     val base64String = Base64.encodeToString(output.toByteArray(), Base64.DEFAULT)
     val decodedImage: ByteArray = Base64.decode(base64String, 0)
     val bitmap = BitmapFactory.decodeByteArray(decodedImage, 0, decodedImage.size)
@@ -311,7 +310,6 @@ suspend fun getRelevantTournaments(): List<ThirdUniqueTournament> {
 
     val croppedTournaments = tournaments.take(10)
 
-    //TODO: This function needs to return things one at a time so we get dynamic loading of tournaments
     val deferreds = croppedTournaments.map { tournamentID ->
         CoroutineScope(Dispatchers.IO).async {
             getTournamentInfo(tournamentID).tournamentDetails

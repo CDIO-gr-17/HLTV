@@ -18,14 +18,6 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 
 
-/*data class SinglePlayerData(
-    var playerImage: Bitmap? = null,
-    var player : Player? = null,
-    var team : Team? = null,
-
-    //TODO: add stats?
-)
-*/
 
 class PlayerScreenViewModel():ViewModel() {
 
@@ -43,29 +35,6 @@ class PlayerScreenViewModel():ViewModel() {
         }
     }
 }
-
-
-
-
-
-
-
-
-
-    /*private val _singlePlayerData = MutableStateFlow<SinglePlayerData>(SinglePlayerData())
-    val singlePlayerData = _singlePlayerData.asStateFlow()
-
-
-    init{
-        val deferredPlayer = CompletableDeferred<Player>()
-        CoroutineScope(Dispatchers.IO).launch {
-            //deferredPlayer.complete(getPlayer("PlaceholderID"))
-        }
-        CoroutineScope(Dispatchers.IO).launch {
-            _singlePlayerData.value.playerImage = getPlayerImage(deferredPlayer.await().id)
-        }
-
-*/
 
 
 

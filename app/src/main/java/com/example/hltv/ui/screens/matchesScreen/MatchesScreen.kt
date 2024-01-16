@@ -224,7 +224,7 @@ fun teamCard(
                     Image(
 
                         painter = painter,
-                        contentDescription = null, //TODO
+                        contentDescription = null,
                         alignment = Alignment.TopStart,
                         modifier = Modifier
                             .size(69.dp)
@@ -259,5 +259,4 @@ fun teamCard(
 @Preview(showBackground = true)
 @Composable
 fun MatchesScreenPreview() {
-   //MatchesScreen(onClickSingleTeam = { /*TODO*/ })
 }
