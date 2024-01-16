@@ -1,7 +1,6 @@
 package com.example.hltv.data
 
 import android.graphics.Color.parseColor
-import android.util.Log
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
@@ -14,20 +13,19 @@ import com.example.hltv.R
 
 @Composable
 fun getFlagFromCountryCode(countryCode: String?): AsyncImagePainter {
-    if ( countryCode != null) {
-        return rememberAsyncImagePainter(
+    return if ( countryCode != null) {
+        rememberAsyncImagePainter(
             model = ImageRequest.Builder(LocalContext.current)
                 .decoderFactory(SvgDecoder.Factory())
                 .data("https://flagcdn.com/${countryCode.lowercase()}.svg")
-                .size(Size.ORIGINAL) // Set the target size to load the image at.
-                .size(200) //This should fix HLTV-144
+                .size(Size.ORIGINAL)
+                .size(200)
                 .build()
         )
     }
     else {
-        return rememberAsyncImagePainter(R.drawable.world_flag)
+        rememberAsyncImagePainter(R.drawable.world_flag)
     }
-
 
 }
 fun capitalizeFirstLetter(input: String): String {
