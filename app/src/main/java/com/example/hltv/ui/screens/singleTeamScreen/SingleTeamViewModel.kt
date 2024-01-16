@@ -139,7 +139,7 @@ class SingleTeamViewModel : ViewModel() {
                     if (lineupIncomplete) {
                         team.value = event.awayTeam
                         try{
-                            lineup.complete(getPlayersFromEvent(event.id).home)
+                            lineup.complete(getPlayersFromEvent(event.id).away)
                             lineupIncomplete = false
                         } catch (e : ClassCastException){
                             Log.w("SingleTeamViewModel", "There was no lineup available, attempting to get lineup from next event")
