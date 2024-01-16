@@ -1,6 +1,5 @@
 package com.example.hltv.ui.screens.searchScreen
 
-import android.util.Log
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -53,7 +52,7 @@ fun SearchScreen(
 
 
     Column(modifier = Modifier.fillMaxSize(), horizontalAlignment = Alignment.CenterHorizontally) {
-        viewModel.setQuery(SearchField())
+        viewModel.setQuery(searchField())
         androidx.compose.animation.AnimatedVisibility(visible = isSearching) {
             Row(
                 modifier = Modifier.fillMaxWidth(),
@@ -65,18 +64,14 @@ fun SearchScreen(
         LaunchedEffect(searchText) {
             delay(300) // Adjust the delay as needed
             viewModel.search()
-            Log.d("Launchedeffect", "Launchedeffect is used")
         }
 
-        if (searchResults != null) {
-            ShowSearchResult(
-                searchResults = searchResults,
-                onClickSinglePlayer = onClickSinglePlayer,
-                onClickSingleTeam = onClickSingleTeam,
-                onClickSingleTournament = onClickSingleTournament
-            )
-        }
-
+        ShowSearchResult(
+            searchResults = searchResults,
+            onClickSinglePlayer = onClickSinglePlayer,
+            onClickSingleTeam = onClickSingleTeam,
+            onClickSingleTournament = onClickSingleTournament
+        )
     }
 }
 
@@ -88,10 +83,8 @@ fun ShowSearchResult(
     onClickSingleTournament: (tournamentID: String?) -> Unit
 ) {
     if (searchResults.isEmpty()) {
-        Log.d("ShowSearchResult", "SearchResult is empty")
         return
     }
-    Log.d("ShowSearchResult", "Seatchresult is not empty")
     LazyColumn {
         items(searchResults.size) {
             val id = searchResults[it].entity?.id.toString()
@@ -104,8 +97,7 @@ fun ShowSearchResult(
             }
             val name = searchResults[it].entity?.name.toString()
             val countryCode = searchResults[it].entity?.country?.alpha2.toString()
-            val flag =  getFlagFromCountryCode(countryCode = countryCode)
-
+            val flag = getFlagFromCountryCode(countryCode = countryCode)
 
             CommonCard(
                 modifier = Modifier
@@ -119,16 +111,22 @@ fun ShowSearchResult(
                 headText = name,
                 subText = type,
                 image = flag,
-                )
+            )
         }
     }
 }
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-private fun SearchField(): String {
-    var text by rememberSaveable(stateSaver = TextFieldValue.Saver) { mutableStateOf(TextFieldValue("")) }
-    CommonCard (
+private fun searchField(): String {
+    var text by rememberSaveable(stateSaver = TextFieldValue.Saver) {
+        mutableStateOf(
+            TextFieldValue(
+                ""
+            )
+        )
+    }
+    CommonCard(
         modifier = Modifier.fillMaxWidth(),
         topBox = {
             TextField(
@@ -159,17 +157,18 @@ private fun SearchField(): String {
         }
 
     )
-    Divider(modifier = Modifier
-        .padding(top = 4.dp, bottom = 4.dp,start = 12.dp, end = 12.dp),
-        thickness = 4.dp,)
+    Divider(
+        modifier = Modifier
+            .padding(top = 4.dp, bottom = 4.dp, start = 12.dp, end = 12.dp),
+        thickness = 4.dp,
+    )
 
     return text.text
 }
 
 
-
 @Preview
 @Composable
 fun SearchScreenPreview() {
-    SearchField()
+    searchField()
 }
