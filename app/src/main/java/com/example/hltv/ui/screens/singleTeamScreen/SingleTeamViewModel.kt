@@ -7,9 +7,8 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.ui.graphics.Color
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.example.hltv.data.getAvgAgeFromTimestamp
 import androidx.palette.graphics.Palette
-import com.example.hltv.data.remote.APIKEY
+import com.example.hltv.data.getAvgAgeFromTimestamp
 import com.example.hltv.data.remote.APIResponse
 import com.example.hltv.data.remote.PlayerGroup
 import com.example.hltv.data.remote.Score
@@ -18,7 +17,6 @@ import com.example.hltv.data.remote.getPlayerImage
 import com.example.hltv.data.remote.getPlayersFromEvent
 import com.example.hltv.data.remote.getPreviousMatches
 import com.example.hltv.data.remote.getTeamImage
-import com.example.hltv.ui.common.showToast
 import kotlinx.coroutines.CompletableDeferred
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -86,9 +84,11 @@ class SingleTeamViewModel : ViewModel() {
             //palette.value =  Palette.from(teamImage.value!!).generate()
             //color.value = Color(Palette.from(teamImage.value!!).generate().vibrantSwatch!!.rgb)
 
-            val palette = Palette.from(teamImage.value!!).generate()
-            if (teamImage.value != null && palette.vibrantSwatch?.rgb != null) {
-                color.value = Color(palette.vibrantSwatch?.rgb!!)
+            if(teamImage.value != null) {
+                val palette = Palette.from(teamImage.value!!).generate()
+                if (teamImage.value != null && palette.vibrantSwatch?.rgb != null) {
+                    color.value = Color(palette.vibrantSwatch?.rgb!!)
+                } else color.value = Color.White
             } else color.value = Color.White
 
             Log.w(this.toString(), "Got previous matches of team with id: $teamID")

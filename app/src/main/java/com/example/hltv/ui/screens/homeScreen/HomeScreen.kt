@@ -2,7 +2,6 @@
 
 package com.example.hltv.ui.screens.homeScreen
 
-import android.util.Log
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
@@ -35,8 +34,6 @@ import coil.compose.rememberAsyncImagePainter
 import com.example.hltv.data.convertTimestampToWeekDateClock
 import com.example.hltv.ui.common.LiveMatchCard
 import com.example.hltv.ui.common.UpcomingMatchCard
-import com.example.hltv.ui.screens.singleTeamScreen.SingleTeamScreen
-import kotlinx.coroutines.delay
 
 val M = MaterialTheme
 
@@ -130,10 +127,7 @@ fun HomeScreen(onClickSingleTeam : (String?) -> Unit, onClickSingleMatch : (Stri
                             .padding(12.dp)
                             .fillMaxSize()
                     )
-
-
                 }
-
             }
             Row(modifier = Modifier.background(color = M.colorScheme.secondaryContainer)) {
                 Column(
@@ -177,7 +171,6 @@ fun HomeScreen(onClickSingleTeam : (String?) -> Unit, onClickSingleMatch : (Stri
                                 .padding(end = 8.dp)
                         )
                     }
-
                     Text(
                         text = "$1,000,000",
                         color = M.colorScheme.onSecondaryContainer,
@@ -185,21 +178,10 @@ fun HomeScreen(onClickSingleTeam : (String?) -> Unit, onClickSingleMatch : (Stri
                         modifier = Modifier
                             .padding(all = 8.dp)
                             .padding(end = 8.dp)
-
-
                     )
                 }
             }
-
-            SingleTeamScreen(
-                teamID = "364378",
-                {},
-                {},
-                {})
-
         }
-
-
 
         Divider(modifier = Modifier.padding(horizontal = 8.dp), color = M.colorScheme.onBackground)
 
