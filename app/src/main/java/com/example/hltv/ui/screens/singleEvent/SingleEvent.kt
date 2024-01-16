@@ -354,108 +354,119 @@ fun SingleEventTopbox(
                             //COPY PASTE FROM SINGLETEAM
                             //I tried doing DI, but we cant because the lazycolumn needs an argument
                             //that you cant pass so wed need DI in the DI and that was too much work
+                            if (teamViewModel.team.value.id != null) {
+                                Column(modifier = Modifier.clickable {
+                                    onClickSingleTeam(
+                                        teamViewModel.team.value.id.toString()
+                                    )
+                                }) {
 
-                            Column(modifier = Modifier.clickable { onClickSingleTeam(teamViewModel.team.value.id.toString()) }) {
+                                    CommonCard(modifier = Modifier) {
+                                        Column {
 
-                                CommonCard(modifier = Modifier) {
-                                    Column {
-
-                                        /////////
-                                        Row(
-                                            modifier = Modifier.fillMaxWidth(),
-                                            //horizontalArrangement = Arrangement.SpaceBetween
-                                        ) {
-
-
-                                            Image(
-                                                rememberAsyncImagePainter(
-                                                    teamViewModel.teamImage.value
-                                                ),
-                                                contentDescription = teamViewModel.team.value.name,
-                                                Modifier.size(69.dp)
-                                            )
-
-                                            //TODO: Make this resize, possibly with resisingText? Bit hard to do while keeping it pretty
-                                            Text(
-                                                text = buildAnnotatedString {
-                                                    append("Winner\n\n")
-                                                    withStyle(
-                                                        style = SpanStyle(
-                                                            brush = Brush.linearGradient(
-                                                                colors = listOf(
-                                                                    teamViewModel.color.value,
-                                                                    MaterialTheme.colorScheme.onSecondaryContainer
-                                                                )
-                                                            ),
-                                                            fontSize = 65.sp,
-                                                            fontWeight = FontWeight.ExtraBold,
+                                            /////////
+                                            Row(
+                                                modifier = Modifier.fillMaxWidth(),
+                                                //horizontalArrangement = Arrangement.SpaceBetween
+                                            ) {
 
 
-                                                            ),
-                                                    ) {
-                                                        append(
+                                                Image(
+                                                    rememberAsyncImagePainter(
+                                                        teamViewModel.teamImage.value
+                                                    ),
+                                                    contentDescription = teamViewModel.team.value.name,
+                                                    Modifier.size(69.dp)
+                                                )
 
-                                                            if (teamViewModel.team.value.name != null) teamViewModel.team.value.name.toString()
-                                                                .substring(
-                                                                    0, //TODO: Temporary fix. pls no
-                                                                    minOf(
-                                                                        teamViewModel.team.value.name.toString().length,
-                                                                        8
+                                                //TODO: Make this resize, possibly with resisingText? Bit hard to do while keeping it pretty
+                                                Text(
+                                                    text = buildAnnotatedString {
+                                                        append("Winner\n\n")
+                                                        withStyle(
+                                                            style = SpanStyle(
+                                                                brush = Brush.linearGradient(
+                                                                    colors = listOf(
+                                                                        teamViewModel.color.value,
+                                                                        MaterialTheme.colorScheme.onSecondaryContainer
                                                                     )
+                                                                ),
+                                                                fontSize = 65.sp,
+                                                                fontWeight = FontWeight.ExtraBold,
 
-                                                                ) else ""
-                                                        )
-                                                    }
-                                                },
-                                                maxLines = 3,
-                                            )
-                                        }
-                                        //////
-                                        LazyRow {
-                                            items(playerOverview.size) { index ->
-                                                OverviewPlayer(
-                                                    player = playerOverview[index],
-                                                    onClickSinglePlayer = onClickSinglePlayer
+
+                                                                ),
+                                                        ) {
+                                                            append(
+
+                                                                if (teamViewModel.team.value.name != null) teamViewModel.team.value.name.toString()
+                                                                    .substring(
+                                                                        0, //TODO: Temporary fix. pls no
+                                                                        minOf(
+                                                                            teamViewModel.team.value.name.toString().length,
+                                                                            8
+                                                                        )
+
+                                                                    ) else ""
+                                                            )
+                                                        }
+                                                    },
+                                                    maxLines = 3,
                                                 )
                                             }
-                                        }
-                                        Statistics(
-                                            winRate = winRate,
-                                            averagePlayerAge = statsOverview.value.avgAgeofPlayers,
-                                        )
-                                        Spacer(modifier = Modifier.size(15.dp))
-                                        Text(
-                                            text = "Recent Matches",
-                                            fontWeight = FontWeight.Bold,
-                                            color = MaterialTheme.colorScheme.onPrimaryContainer
-                                        )
-                                        recentMatches.forEachIndexed { index, match ->
-                                            RecentMatches(
-                                                modifier = Modifier.clickable {
-                                                    Log.i("Ive been clicked", "Clicked left team")
-                                                    onClickSingleMatch(
-                                                        match.matchID.toString()
+                                            //////
+                                            LazyRow {
+                                                items(playerOverview.size) { index ->
+                                                    OverviewPlayer(
+                                                        player = playerOverview[index],
+                                                        onClickSinglePlayer = onClickSinglePlayer
                                                     )
-                                                },
-                                                team1 = recentMatches[index].homeTeam?.name,
-                                                team2 = recentMatches[index].awayTeam?.name,
-                                                imageTeam1 = rememberAsyncImagePainter(
-                                                    recentMatches[index].homeTeamImage
-                                                ),
-                                                imageTeam2 = rememberAsyncImagePainter(
-                                                    recentMatches[index].awayTeamImage
-                                                ),
-                                                team2OnClick = {
-                                                    Log.i("Ive been clicked", "Clicked right team")
-                                                    onClickSingleTeam(
-                                                        recentMatches[index].awayTeam?.id.toString()
-                                                    )
-                                                },
-                                                score = recentMatches[index].homeScore?.display.toString() + " - " + recentMatches[index].awayScore?.display.toString(),
-                                                date = recentMatches[index].startTimestamp.toString()
+                                                }
+                                            }
+                                            Statistics(
+                                                winRate = winRate,
+                                                averagePlayerAge = statsOverview.value.avgAgeofPlayers,
                                             )
-                                        }
+                                            Spacer(modifier = Modifier.size(15.dp))
+                                            Text(
+                                                text = "Recent Matches",
+                                                fontWeight = FontWeight.Bold,
+                                                color = MaterialTheme.colorScheme.onPrimaryContainer
+                                            )
+                                            recentMatches.forEachIndexed { index, match ->
+                                                RecentMatches(
+                                                    modifier = Modifier.clickable {
+                                                        Log.i(
+                                                            "Ive been clicked",
+                                                            "Clicked left team"
+                                                        )
+                                                        onClickSingleMatch(
+                                                            match.matchID.toString()
+                                                        )
+                                                    },
+                                                    team1 = recentMatches[index].homeTeam?.name,
+                                                    team2 = recentMatches[index].awayTeam?.name,
+                                                    imageTeam1 = rememberAsyncImagePainter(
+                                                        recentMatches[index].homeTeamImage
+                                                    ),
+                                                    imageTeam2 = rememberAsyncImagePainter(
+                                                        recentMatches[index].awayTeamImage
+                                                    ),
+                                                    team2OnClick = {
+                                                        Log.i(
+                                                            "Ive been clicked",
+                                                            "Clicked right team"
+                                                        )
+                                                        onClickSingleTeam(
+                                                            recentMatches[index].awayTeam?.id.toString()
+                                                        )
+                                                    },
+                                                    score = recentMatches[index].homeScore?.display.toString() + " - " + recentMatches[index].awayScore?.display.toString(),
+                                                    date = recentMatches[index].startTimestamp.toString()
+                                                )
+                                            }
 
+                                        }
                                     }
                                 }
                             }
