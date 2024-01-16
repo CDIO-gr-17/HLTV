@@ -1,5 +1,6 @@
 package com.example.hltv.ui.screens.singleTeamScreen
 
+import android.util.Log
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
@@ -35,6 +36,7 @@ import com.example.hltv.R
 import com.example.hltv.data.getFlagFromCountryCode
 import com.example.hltv.ui.common.CommonCard
 import com.example.hltv.ui.common.showToast
+import com.example.hltv.ui.screens.homeScreen.oldTeamID
 import java.text.DecimalFormat
 
 @Composable
@@ -52,7 +54,8 @@ fun SingleTeamScreen(
                 onClickSinglePlayer,
                 onClickSingleTeam,
                 onClickSingleMatch,
-                calledFromHomeScreen
+                calledFromHomeScreen,
+ oldTeamID
             )
         }
     }
@@ -64,13 +67,20 @@ fun SingleTeamScreenComposable(
     onClickSinglePlayer: (String?) -> Unit,
     onClickSingleTeam: (String?) -> Unit,
     onClickSingleMatch: (String?) -> Unit,
-    calledFromHomeScreen: Boolean = false
+    calledFromHomeScreen: Boolean = false,
+    oldTeamID: Int = 1
 ) {
     val viewModel: SingleTeamViewModel = viewModel()
     val gamesToLoad = if (calledFromHomeScreen) 3 else 10
+    Log.i("SingleTeamScreenComposable", "Over here: " + oldTeamID.toString() + " vs "+ teamID)
     LaunchedEffect(teamID) {
-        viewModel.dataLoaded = false
-        viewModel.loadData(teamID!!, gamesToLoad = gamesToLoad)
+        Log.i("SingleTeamScreenComposable", oldTeamID.toString() + " vs " + teamID)
+        if (calledFromHomeScreen && oldTeamID.toString() != teamID){
+            viewModel.dataLoaded = false
+            viewModel.loadData(teamID!!, gamesToLoad = gamesToLoad)
+        } else {
+            viewModel.loadData(teamID!!, gamesToLoad = gamesToLoad)
+        }
     }
     val recentMatches = viewModel.recentMatches
     val playerOverview = viewModel.playerOverview

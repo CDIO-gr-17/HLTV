@@ -39,6 +39,7 @@ import com.example.hltv.ui.common.UpcomingMatchCard
 import com.example.hltv.ui.screens.singleTeamScreen.SingleTeamScreenComposable
 
 val M = MaterialTheme
+var oldTeamID: Int = 1
 
 @Composable
 fun HomeScreen(
@@ -52,10 +53,10 @@ fun HomeScreen(
     val favoritteamID by viewModel.favoriteTeam.collectAsState()
     val showFavoriteTeam by viewModel.showFavoriteTeam.collectAsState()
     LaunchedEffect(favoritteamID) {
-        viewModel.loadFavoriteTeam(dataStore)
+
     }
     LaunchedEffect(Unit) {
-
+        viewModel.loadFavoriteTeam(dataStore)
         viewModel.loadData()
     }
 
@@ -131,8 +132,10 @@ fun HomeScreen(
                         onClickSinglePlayer = onClickSinglePlayer,
                         onClickSingleTeam = onClickSingleTeam,
                         onClickSingleMatch = onClickSingleMatch,
-                        calledFromHomeScreen = true
+                        calledFromHomeScreen = true,
+                        oldTeamID = oldTeamID
                     )
+                    oldTeamID = favoritteamID
                 } else {
                     val stdBitmap = BitmapFactory.decodeResource(
                         LocalContext.current.resources, R.drawable.questionmark
