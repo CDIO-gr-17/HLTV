@@ -421,6 +421,7 @@ fun SingleEventTopbox(
                                             winRate = winRate,
                                             averagePlayerAge = statsOverview.value.avgAgeofPlayers,
                                         )
+                                        Spacer(modifier = Modifier.size(15.dp))
                                         Text(
                                             text = "Recent Matches",
                                             fontWeight = FontWeight.Bold,
