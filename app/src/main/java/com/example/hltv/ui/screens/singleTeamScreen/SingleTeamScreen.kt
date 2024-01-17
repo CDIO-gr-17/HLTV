@@ -59,7 +59,7 @@ fun SingleTeamScreen(
                 onClickSingleTeam,
                 onClickSingleMatch,
                 calledFromHomeScreen,
- oldTeamID
+                oldTeamID
             )
         }
     }
@@ -76,10 +76,10 @@ fun SingleTeamScreenComposable(
 ) {
     val viewModel: SingleTeamViewModel = viewModel()
     val gamesToLoad = if (calledFromHomeScreen) 3 else 10
-    Log.i("SingleTeamScreenComposable", "Over here: " + oldTeamID.toString() + " vs "+ teamID)
+    Log.i("SingleTeamScreenComposable", "Over here: " + oldTeamID.toString() + " vs " + teamID)
     LaunchedEffect(teamID) {
         Log.i("SingleTeamScreenComposable", oldTeamID.toString() + " vs " + teamID)
-        if (calledFromHomeScreen && oldTeamID.toString() != teamID){
+        if (calledFromHomeScreen && oldTeamID.toString() != teamID) {
             viewModel.dataLoaded = false
             viewModel.loadData(teamID!!, gamesToLoad = gamesToLoad)
         } else {
@@ -101,8 +101,9 @@ fun SingleTeamScreenComposable(
         modifier = Modifier
     ) {
         CommonCard(modifier = Modifier,
-            topBox = {
-                if (calledFromHomeScreen) {
+
+            topBox = if (calledFromHomeScreen) {
+                {
                     viewModel.team.value.name?.let {
                         Row(
                             modifier = Modifier
@@ -116,7 +117,7 @@ fun SingleTeamScreenComposable(
                                 tint = Color(0xFFFF0000)
                             )
                             Text(
-                                text = " " + it+ " ",
+                                text = " " + it + " ",
                                 fontSize = 20.sp,
                                 textAlign = TextAlign.Center,
                                 color = MaterialTheme.colorScheme.onPrimaryContainer,
@@ -124,14 +125,15 @@ fun SingleTeamScreenComposable(
                             Icon(
                                 imageVector = Icons.Default.Favorite,
                                 contentDescription = "Favorite Icon",
-                                tint =  Color(0xFFFF0000)
+                                tint = Color(0xFFFF0000)
                             )
 
                         }
 
                     }
-                } else null
-            },
+
+                }
+            } else null,
             bottomBox = {
                 Column {
                     LazyRow(
