@@ -2,6 +2,8 @@ package com.example.hltv.ui.screens.singleEvent
 
 import android.graphics.Bitmap
 import android.util.Log
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.MaterialTheme.colorScheme
 import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.ui.graphics.Color
@@ -59,14 +61,28 @@ class SingleEventViewModel : ViewModel() {
                 event.value = getTournamentInfo(tournamentID).tournamentDetails
             } catch (e: IOException) {
                 Log.w("SingleEventViewModel.loadData", "There was no tournament info: $e")
+            } catch (e : ClassCastException){
+                Log.w("SingleEventViewModel.loadData", "There was no tournament info: $e")
+
             }
 
             tournamentImage.value = getTournamentLogo(tournamentID)
 
-            val palette = Palette.from(tournamentImage.value!!).generate()
-            if (tournamentImage.value != null && palette.vibrantSwatch?.rgb != null) {
-                color.value = Color(palette.vibrantSwatch?.rgb!!)
-            } else color.value = Color.White
+            /*
+            if (homeTeamIcon.value != null){
+                val homeTeamPalette = Palette.from(homeTeamIcon.value!!).generate()
+                if (homeTeamPalette.vibrantSwatch?.rgb != null) {
+                    homeTeamColor.value = Color(homeTeamPalette.vibrantSwatch?.rgb!!)
+                } else homeTeamColor.value = Color.Blue
+            } else homeTeamColor.value = Color.Blue
+             */
+            if (tournamentImage.value != null){
+                val palette = Palette.from(tournamentImage.value!!).generate()
+                if (tournamentImage.value != null && palette.vibrantSwatch?.rgb != null) {
+                    color.value = Color(palette.vibrantSwatch?.rgb!!)
+                } else {color.value = Color.Cyan}
+            } else color.value = Color.Cyan
+
 
             val season = seasons.find { it.id == seasonID }
             if (season != null) {
