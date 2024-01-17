@@ -41,6 +41,7 @@ class SingleMatchViewModel : ViewModel() {
     var description = ""
     val homeTeamColor = mutableStateOf(Color.White)
     val awayTeamColor = mutableStateOf(Color.White)
+    private var dataLoaded = false
 
 
     private var _tournamentMedia = MutableStateFlow(ArrayList<Media>())
@@ -99,6 +100,8 @@ class SingleMatchViewModel : ViewModel() {
     }
 
     fun loadData(matchID: String?) {
+        if (dataLoaded) return
+        dataLoaded = true
         val niceMatchID = matchID!!.toInt()
         viewModelScope.launch(Dispatchers.IO) {
             event.value = getEvent(niceMatchID).event!!
