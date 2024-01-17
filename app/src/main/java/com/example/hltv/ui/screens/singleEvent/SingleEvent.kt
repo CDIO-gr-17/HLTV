@@ -332,7 +332,7 @@ fun SingleEventBox(
 
                     Text(
                         textAlign = TextAlign.Center,
-                        text = if (!eventViewModel.startTime.value.contains("Unknown")) (eventViewModel.startTime.value + " - " + eventViewModel.endTime.value) else "",
+                        text = if (!eventViewModel.startTime.value.contains("Unknown") || eventViewModel.startTime.value.isNotEmpty()) (eventViewModel.startTime.value + " - " + eventViewModel.endTime.value) else "",
                         color = MaterialTheme.colorScheme.onSecondaryContainer
                     )
 
