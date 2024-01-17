@@ -61,6 +61,9 @@ class SingleEventViewModel : ViewModel() {
                 event.value = getTournamentInfo(tournamentID).tournamentDetails
             } catch (e: IOException) {
                 Log.w("SingleEventViewModel.loadData", "There was no tournament info: $e")
+            } catch (e : ClassCastException){
+                Log.w("SingleEventViewModel.loadData", "There was no tournament info: $e")
+
             }
 
             tournamentImage.value = getTournamentLogo(tournamentID)
