@@ -113,7 +113,7 @@ fun SingleTeamScreenComposable(
                             Icon(
                                 imageVector = Icons.Default.Favorite,
                                 contentDescription = "Favorite Icon",
-                                tint = Color(0xffE91E63)
+                                tint = Color(0xFFFF0000)
                             )
                             Text(
                                 text = " " + it+ " ",
@@ -124,7 +124,7 @@ fun SingleTeamScreenComposable(
                             Icon(
                                 imageVector = Icons.Default.Favorite,
                                 contentDescription = "Favorite Icon",
-                                tint =  Color(0xffE91E63)
+                                tint =  Color(0xFFFF0000)
                             )
 
                         }

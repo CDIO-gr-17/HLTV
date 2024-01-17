@@ -26,7 +26,7 @@ fun FavoriteButton(
     datastore: PrefDataKeyValueStore,
     teamID: Int,
     modifier: Modifier = Modifier,
-    color: Color = Color(0xffE91E63)
+    color: Color = Color(0xFFFF0000)
 ) {
 
     var isFavorite by remember { mutableStateOf(false) }
