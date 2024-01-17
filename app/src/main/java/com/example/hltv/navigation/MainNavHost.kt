@@ -80,7 +80,8 @@ fun MainNavHost(navController: NavHostController, modifier: Modifier) {
         { backStackEntry ->
             SingleMatchScreen(
                 matchID = backStackEntry.arguments?.getString("matchID"),
-                onClickSingleTeam = {navController.navigate(SingleTeam.route + it) })
+                onClickSingleTeam = {navController.navigate(SingleTeam.route + it) },
+                onClickSingleEvent = { navController.navigate(SingleEvent.route + it)})
         }
 
         composable(

@@ -54,7 +54,7 @@ import com.example.hltv.ui.common.CommonCard
 
 
 @Composable
-fun SingleMatchScreen(matchID: String?, onClickSingleTeam: (String?) -> Unit) {
+fun SingleMatchScreen(matchID: String?, onClickSingleTeam: (String?) -> Unit, onClickSingleEvent: (String?) -> Unit) {
     val viewModel: SingleMatchViewModel = viewModel()
     val countdownViewModel = viewModel(CountdownViewModel::class.java)
     LaunchedEffect(Unit) {
@@ -84,6 +84,14 @@ fun SingleMatchScreen(matchID: String?, onClickSingleTeam: (String?) -> Unit) {
                 )
             }
             item{
+                TournamentInfo(
+                    tournamentName = event?.tournament?.name.toString(),
+                    tournamentLogo = rememberAsyncImagePainter(viewModel.tournamentIcon.value),
+                    tournamentOnClick = { onClickSingleEvent(event?.tournament?.id.toString() + "/"+ event?.season?.id) }
+                )
+
+            }
+            item{
                 PredictionCard(
                     teamOneColor = viewModel.homeTeamColor.value,
                     teamTwoColor = viewModel.awayTeamColor.value,
@@ -111,6 +119,13 @@ fun SingleMatchScreen(matchID: String?, onClickSingleTeam: (String?) -> Unit) {
                     changeTimeStamp = event?.changes?.changeTimestamp,
                     startTimeStamp = event?.startTimestamp,
                     countdownViewModel = countdownViewModel
+                )
+            }
+            item{
+                TournamentInfo(
+                    tournamentName = event?.tournament?.name.toString(),
+                    tournamentLogo = rememberAsyncImagePainter(viewModel.tournamentIcon.value),
+                    tournamentOnClick = { onClickSingleEvent(event?.tournament?.uniqueTournament?.id.toString() + "/"+ event?.season?.id) }
                 )
             }
             item {
@@ -176,6 +191,13 @@ fun SingleMatchScreen(matchID: String?, onClickSingleTeam: (String?) -> Unit) {
                         }
                     }
                 }
+            }
+            item{
+                TournamentInfo(
+                    tournamentName = event?.tournament?.name.toString(),
+                    tournamentLogo = rememberAsyncImagePainter(viewModel.tournamentIcon.value),
+                    tournamentOnClick = { onClickSingleEvent(event?.tournament?.uniqueTournament?.id.toString() + "/"+ event?.season?.id) }
+                )
             }
             item{
                 PredictionCard(
@@ -320,7 +342,8 @@ fun EventImage(
             )
             if (teamOneName != null && teamTwoName != null) {
                 Row(
-                    modifier = Modifier.fillMaxWidth()
+                    modifier = Modifier
+                        .fillMaxWidth()
                         .height(180.dp),
                     horizontalArrangement = Arrangement.SpaceAround,
                     verticalAlignment = Alignment.CenterVertically
@@ -470,6 +493,24 @@ fun ShowLiveStreams(mediaList: ArrayList<Media>) {
             }
         }
     }
+}
+@Composable
+fun TournamentInfo(
+    tournamentName: String,
+    tournamentDate: String ?= null,
+    tournamentLogo: Painter,
+    tournamentOnClick: () -> Unit,
+){
+    CommonCard(
+        modifier = Modifier
+            .clickable {
+                Log.d("tournamentOnClick","click")
+                tournamentOnClick()
+            },
+        headText = tournamentName,
+        subText = tournamentDate,
+        image = tournamentLogo
+    )
 }
 
 
