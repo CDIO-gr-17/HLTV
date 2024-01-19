@@ -16,7 +16,7 @@ class HomeScreenKtTest {
     @Test
     fun homeScreenShowLiveMatchTest() {
         composeTestRule.setContent {
-                HLTVApp()
+                //HLTVApp(prefDataKeyValueStore)
         }
         composeTestRule.onNodeWithText("Your match is live!").assertExists()
     }

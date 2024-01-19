@@ -1,44 +1,37 @@
 package com.example.hltv.ui.screens.playerScreen
 
 import android.graphics.Bitmap
+import android.util.Log
+import androidx.compose.runtime.mutableStateOf
+import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
 import com.example.hltv.data.remote.Player
-import com.example.hltv.data.remote.Team
+import com.example.hltv.data.remote.getPlayerFromPlayerID
 import com.example.hltv.data.remote.getPlayerImage
-import kotlinx.coroutines.CompletableDeferred
-import kotlinx.coroutines.CoroutineScope
+import com.example.hltv.data.remote.getTeamImage
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
 
 
-data class SinglePlayerData(
-    var playerImage: Bitmap? = null,
-    var player : Player? = null,
-    var team : Team? = null,
+class PlayerScreenViewModel :ViewModel() {
 
-    //TODO: add stats?
-)
+    var player = mutableStateOf<Player?>(null)
+    var playerImage = mutableStateOf<Bitmap?>(null)
+    var teamImage = mutableStateOf<Bitmap?>(null)
 
-class PlayerScreenViewModel(){
-
-    private val _singlePlayerData = MutableStateFlow<SinglePlayerData>(SinglePlayerData())
-    val singlePlayerData = _singlePlayerData.asStateFlow()
-
-    init{
-        val deferredPlayer = CompletableDeferred<Player>()
-        CoroutineScope(Dispatchers.IO).launch {
-            //deferredPlayer.complete(getPlayer("PlaceholderID"))
+    fun loadData(playerIDFullString: String?) {
+        Log.i("PlayerScreenViewModel", "playerIDFullString is: $playerIDFullString")
+        val playerID = playerIDFullString?.toInt()
+        viewModelScope.launch(Dispatchers.IO) {
+            player.value = getPlayerFromPlayerID(playerID).player
+            playerImage.value = getPlayerImage(playerID)
+            teamImage.value = getTeamImage(player.value?.team?.id)
         }
-        CoroutineScope(Dispatchers.IO).launch {
-            _singlePlayerData.value.playerImage = getPlayerImage(deferredPlayer.await().id)
-        }
-
-
-
-
-
-
-
     }
 }
+
+
+
+
+
+

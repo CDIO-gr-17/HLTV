@@ -1,6 +1,5 @@
 package com.example.hltv.navigation
 
-import android.util.Log
 import androidx.compose.foundation.layout.padding
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
@@ -9,12 +8,14 @@ import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.navArgument
-import com.example.hltv.ui.screens.matchesScreen.MatchesScreen
 import com.example.hltv.ui.screens.eventsScreen.EventsScreen
 import com.example.hltv.ui.screens.homeScreen.HomeScreen
-import com.example.hltv.ui.screens.newsScreen.NewsScreen
+import com.example.hltv.ui.screens.matchesScreen.MatchesScreen
 import com.example.hltv.ui.screens.playerScreen.PlayerScreen
+import com.example.hltv.ui.screens.searchScreen.SearchScreen
 import com.example.hltv.ui.screens.settingsScreen.SettingsScreen
+import com.example.hltv.ui.screens.singleEvent.SingleEventScreen
+import com.example.hltv.ui.screens.singleMatch.SingleMatchScreen
 import com.example.hltv.ui.screens.singleTeamScreen.SingleTeamScreen
 
 
@@ -26,40 +27,80 @@ fun MainNavHost(navController: NavHostController, modifier: Modifier) {
         modifier = modifier.padding()
     ) {
         composable(route = Home.route) {
-            HomeScreen()
+            HomeScreen(
+                onClickSingleTeam = {navController.navigate(SingleTeam.route + it) },
+                onClickSingleMatch = {navController.navigate(SingleMatch.route + it) },
+                onClickSingleEvent = {navController.navigate(SingleEvent.route + it)},
+                onClickSinglePlayer = {navController.navigate(SinglePlayer.route + it)}
+            )
         }
+
         composable(route = Events.route) {
-            EventsScreen()
+            EventsScreen(
+                onclickSingleEvent = { navController.navigate(SingleEvent.route + it) }
+            )
         }
+
         composable(route = Matches.route) {
-            MatchesScreen { navController.navigate(SingleTeam.route + it) }
+            MatchesScreen(
+                onClickSingleMatch = { navController.navigate(SingleMatch.route + it)},
+                onClickSingleTeam = { navController.navigate(SingleTeam.route + it)},
+                onClickSingleEvent = { navController.navigate(SingleEvent.route + it)})
         }
-        composable(route = News.route) {
-            NewsScreen { navController.navigate(SinglePlayer.route + it) } //How it work? It just no. Ninjutsu
+
+        composable(route = Search.route) {
+            SearchScreen(
+                onClickSinglePlayer = { navController.navigate(SinglePlayer.route + it) },
+                onClickSingleTeam = { navController.navigate(SingleTeam.route + it) },
+                onClickSingleTournament = { navController.navigate(SingleEvent.route + it)})
         }
+
         composable(route = Settings.route) {
-            SettingsScreen()
+            SettingsScreen(
+                onClickSingleTeam = {navController.navigate(SingleTeam.route + it) }
+            )
         }
+
         composable(route = Ranking.route) {
-            SettingsScreen()
         }
-        composable(route = SingleTeam.route,
+
+        composable(route = SingleTeam.route + "{teamID}",
             arguments = listOf(navArgument("teamID") { type = NavType.StringType }))
         { backStackEntry ->
-            Log.i("MainNavHost", backStackEntry.toString())
-            SingleTeamScreen(backStackEntry.arguments?.getString("teamID")){
-                navController.navigate(SinglePlayer.route + it)
-            }
+            SingleTeamScreen(
+                teamID = backStackEntry.arguments?.getString("teamID"),
+                onClickSinglePlayer = {navController.navigate(SinglePlayer.route + it)},
+                onClickSingleTeam = {navController.navigate(SingleTeam.route + it) },
+                onClickSingleMatch = {navController.navigate(SingleMatch.route + it) })
         }
 
+        composable(
+            route = SingleMatch.route + "{matchID}",
+            arguments = listOf(navArgument("matchID") { type = NavType.StringType }))
+        { backStackEntry ->
+            SingleMatchScreen(
+                matchID = backStackEntry.arguments?.getString("matchID"),
+                onClickSingleTeam = {navController.navigate(SingleTeam.route + it) },
+                onClickSingleEvent = { navController.navigate(SingleEvent.route + it)})
+        }
 
-
-        composable(route = SinglePlayer.route,
+        composable(
+            route = SinglePlayer.route + "{playerID}",
             arguments = listOf(navArgument("playerID") { type = NavType.StringType })
         )
         { backStackEntry ->
-            Log.i("MainNavHost", backStackEntry.toString())
             PlayerScreen(backStackEntry.arguments?.getString("playerID"))
+        }
+        composable(route = SingleEvent.route + "{eventID}"+"/"+"{seasonID}",
+            arguments = listOf(navArgument("eventID") { type = NavType.StringType }, navArgument("seasonID") { type = NavType.StringType }))
+        { backStackEntry ->
+            SingleEventScreen(
+                tournamentID = backStackEntry.arguments?.getString("eventID"),
+                seasonID = backStackEntry.arguments?.getString("seasonID"),
+                onClickSingleTeam = { navController.navigate(SingleTeam.route + it) },
+                onClickSingleMatch = {navController.navigate(SingleMatch.route + it) },
+                onClickSinglePlayer = {navController.navigate(SinglePlayer.route + it) }
+            )
         }
     }
 }
