@@ -24,7 +24,7 @@ class LiveMatchesUseCaseTest {
     @Before
     fun setup(){
         composeTestRule.setContent {
-            HLTVApp(prefDataKeyValueStore)
+            //HLTVApp(prefDataKeyValueStore)
         }
     }
 

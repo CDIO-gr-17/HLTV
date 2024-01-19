@@ -52,9 +52,7 @@ fun HomeScreen(
     val dataStore = PrefDataKeyValueStore.getInstance(LocalContext.current)
     val favoritteamID by viewModel.favoriteTeam.collectAsState()
     val showFavoriteTeam by viewModel.showFavoriteTeam.collectAsState()
-    LaunchedEffect(favoritteamID) {
 
-    }
     LaunchedEffect(Unit) {
         viewModel.loadFavoriteTeam(dataStore)
         viewModel.loadData()
